@@ -1,0 +1,6 @@
+.idea
+redpandas.iml
+build
+dist
+libquantum.egg-info
+.mypy_cache
