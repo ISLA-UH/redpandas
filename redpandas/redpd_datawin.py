@@ -1,8 +1,9 @@
+# Python libraries
 import numpy as np
 import os.path
 import pickle
-from pipeline_m.from_analysis_repo import rebinning
 import matplotlib.pyplot as plt
+# RedVox modules
 from redvox.common.data_window import DataWindow, DataWindowFast
 from redvox.common.io import serialize_data_window
 from redvox.common.station import Station
@@ -147,27 +148,4 @@ def plot_dw_baro(data_window):
                      label=station.id)
             ax1.legend(loc='upper right')
             ax1.set_title("Pressure raw normalized waveforms")
-            ax1.set_xlabel("Time from record start, s")
-
-
-def plot_dw_mic_rebinned(data_window, time_points):
-    station: Station
-    f1, ax1 = plt.subplots(figsize=(10, 8))  # Adjust to your screen
-    for k, station in enumerate(data_window.get_all_stations()):
-        if station.has_audio_data():
-            mic_wf_raw = station.audio_sensor().get_data_channel("microphone")
-            mic_epoch_s = station.audio_sensor().data_timestamps() / MICROSECONDS_IN_SECOND
-
-            if len(mic_epoch_s) > time_points:
-                bin_time_s, bin_wf = rebinning.rebin_wave_time(mic_epoch_s, mic_wf_raw, hor_res=time_points)
-                ax1.plot(bin_time_s-bin_time_s[0],
-                         bin_wf/np.nanmax(np.abs(bin_wf)),
-                         label=station.id)
-            else:
-                ax1.plot(mic_epoch_s-mic_epoch_s[0],
-                         mic_wf_raw/np.nanmax(np.abs(mic_wf_raw)),
-                         label=station.id)
-
-            ax1.legend(loc='upper right')
-            ax1.set_title("Audio raw normalized waveforms")
             ax1.set_xlabel("Time from record start, s")

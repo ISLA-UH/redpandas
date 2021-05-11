@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 from scipy import signal
 from libquantum import utils
-import pipeline_m.redpd_plot as rpd_plt
+import redpandas.redpd_plot as rpd_plt
 
 
 def coherence_numpy(sig_in,

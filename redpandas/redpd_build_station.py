@@ -5,8 +5,8 @@ import pandas as pd
 from redvox.api1000.wrapped_redvox_packet.station_information import NetworkType, PowerState, CellServiceState
 from redvox.common.station_raw import StationRaw
 
-import pipeline_m.redpd_preprocess as rpd_prep
-import pipeline_m.redpd_scales as rpd_scales
+import redpandas.redpd_preprocess as rpd_prep
+import redpandas.redpd_scales as rpd_scales
 
 
 """
@@ -15,6 +15,7 @@ This module contains general utilities that can work with values containing nans
 # TODO: Does synchronization still work
 # TODO: build luminosity
 # TODO: Build station timing
+
 
 # Define classes
 class NormType(Enum):
@@ -54,90 +55,6 @@ def sensor_uneven(station: StationRaw,
 
     return sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans
 
-
-# TODO: Clean up
-# def sensor_uneven_3c(sensor_x, sensor_y, sensor_z, sensor_epoch, sensor_sample_rate):
-#
-#     mag_waveform = [sensor_x, sensor_y, sensor_z]
-#     mag_epoch_diff = sensor_epoch[:-1]
-#
-#     mag_diff = np.diff(mag_waveform)
-#
-#     mag_waveform_dp_filtered_all = []
-#     mag_waveform_reconstruct_all = []
-#
-#     for vector in range(len(mag_waveform)):
-#
-#         # condition for when the record is too short for high pass at 100 seconds.
-#         # Needs to be at least 200 seconds
-#         if sensor_epoch[-1] - sensor_epoch[0] < 200:
-#             raise ValueError('Sensor record is too short for performing scalogram computations.' +
-#                              'Please provide a record longer than 200 seconds (3 minutes and 20 seconds).')
-#
-#         # apply high pass filter at 100 seconds for sample rate calculated from the mag sensor.
-#         mag_waveform_dp_filtered = obspy.signal.filter.highpass(mag_diff[vector], 0.01, sensor_sample_rate, corners=4,
-#                                                                 zerophase=True)
-#         mag_waveform_dp_filtered_all.append(mag_waveform_dp_filtered)
-#
-#         # mag data reconstruct reconstruct mag from dP: P(0) = 0, P(i) = dP(i) + P(i-1)
-#         mag_waveform_reconstruct = np.zeros(len(mag_epoch_diff))
-#         mag_waveform_reconstruct[0] = 0
-#
-#         # loop over the time series and reconstruct each data point
-#         for j in range(1, len(mag_waveform_reconstruct)):
-#             mag_waveform_reconstruct[j] = mag_waveform_dp_filtered[j] + mag_waveform_reconstruct[j - 1]
-#
-#         mag_waveform_reconstruct_all.append(mag_waveform_reconstruct)
-#
-#     # calculate and subtract the mean of each vector from each vector to remove the "DC offset".
-#     # Loop through each vector.
-#     mag_waveform_mean_removed_all = []
-#
-#     for vector in range(len(mag_waveform_reconstruct_all)):
-#         vector_mean = np.mean(mag_waveform_reconstruct_all[vector])
-#
-#         # subtract the mean of each vector from each value in that vector
-#         mag_waveform_mean_removed = []
-#         for j in range(len(mag_waveform_reconstruct_all[vector])):
-#             mag_waveform_mean_removed = mag_waveform_reconstruct_all[vector] - vector_mean
-#         mag_waveform_mean_removed_all.append(mag_waveform_mean_removed)
-#
-#     # calculate/ display the mean of each vector AFTER removing the mean
-#     mag_x_mean_removed = mag_waveform_mean_removed_all[0]
-#     mag_y_mean_removed = mag_waveform_mean_removed_all[1]
-#     mag_z_mean_removed = mag_waveform_mean_removed_all[2]
-#
-#     # calculate the max of all the components for use in the plot limits later on.
-#     mag_x_max_of_mean = np.max(mag_x_mean_removed)
-#     mag_y_max_of_mean = np.max(mag_y_mean_removed)
-#     mag_z_max_of_mean = np.max(mag_z_mean_removed)
-#     max_all_components = [mag_x_max_of_mean, mag_y_max_of_mean, mag_z_max_of_mean]
-#     max_final = np.round(np.max(max_all_components))
-#     min_final = -max_final
-#
-#     # plot setup for displaying the mean removed signal from each component
-#     df = pd.DataFrame({'x': mag_epoch_diff, 'x-component': mag_x_mean_removed, 'y-component': mag_y_mean_removed,
-#                        'z-component': mag_z_mean_removed})
-#
-#     # Calculate mag intensity from all three components
-#     mag_intensity_all = []
-#     for j in range(len(mag_x_mean_removed)):
-#         mag_intensity = np.sqrt(((mag_x_mean_removed[j]) ** 2) + ((mag_y_mean_removed[j]) ** 2) +
-#                                 ((mag_z_mean_removed[j]) ** 2))
-#         mag_intensity_all.append(mag_intensity)
-#
-#     # plot setup for mag intensity plot
-#     df2 = pd.DataFrame({'x': mag_epoch_diff, 'y': mag_intensity_all})
-#
-#     # # calculate the fft
-#     # mag_sample_rate = [mag_sample_rate]
-#     # mag_intensity_array = [np.array(mag_intensity_all)]
-#     # time_fft, frequency_fft, energy_fft, snr_fft = spectra.spectra_fft(mag_intensity_array, mag_sample_rate,
-#     #                                                                    redvox_id, minimum_frequency=0.1)
-#     #
-#     # # calculate fft limits for plotting
-#     # max_energy = (np.amax(energy_fft))
-#     # min_energy = (np.amin(energy_fft))
 
 # Build station modules
 def build_station(station: StationRaw,
