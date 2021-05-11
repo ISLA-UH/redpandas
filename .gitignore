@@ -2,5 +2,5 @@
 redpandas.iml
 build
 dist
-libquantum.egg-info
+redvox_pandas.egg-info
 .mypy_cache
