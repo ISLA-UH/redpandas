@@ -4,8 +4,8 @@ with open("requirements.txt", "r") as requirements_file:
     requirements = list(map(lambda line: line.strip(), requirements_file.readlines()))
     requirements = list(filter(lambda line: (not line.startswith("#")) and len(line) > 0, requirements))
 
-setup(name="redpandas",
-      version="1.0.0",
+setup(name="redvox-pandas",
+      version="0.0.2",
       url='https://github.com/RedVoxInc/redpandas',
       license='Apache',
       author='RedVox',
