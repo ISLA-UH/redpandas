@@ -5,7 +5,7 @@ This module contains panda versions of libquantum.
 import numpy as np
 import pandas as pd
 from libquantum import atoms, entropy, scales, spectra, utils, synthetics
-import pipeline_m.redpd_preprocess as rpd_prep
+import redpandas.redpd_preprocess as rpd_prep
 
 def frame_panda(df: pd.DataFrame,
                 sig_wf_label: str,
