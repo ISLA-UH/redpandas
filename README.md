@@ -1,3 +1,2 @@
 # redpandas
-
-Fill me in
+Fill in
