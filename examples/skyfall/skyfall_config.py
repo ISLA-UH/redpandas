@@ -1,7 +1,7 @@
 """
 Vegas Skyfall Configuration file
 """
-# TODO: Build load gui?
+# TODO: Build load gui
 EVENT_NAME = "Skyfall"
 # Absolute path to the skyfall data
 INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
