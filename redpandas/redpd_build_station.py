@@ -81,6 +81,9 @@ def build_station(station: StationRaw,
     elif sensor_label == 'location' or sensor_label == 'loc':
         df_sensor = location_build_station(station=station)
 
+    elif sensor_label == 'clock':
+        df_sensor = clock_build_station(station=station)
+
     elif sensor_label == 'synchronization' or sensor_label == 'synch':
         df_sensor = synchronization_build_station(station=station)
 
@@ -254,16 +257,18 @@ def image_build_station(station: StationRaw) -> pd.DataFrame:
 
 def synchronization_build_station(station: StationRaw) -> pd.DataFrame:
 
-    synchronization = station.timesync_analysis
-    dict_for_syn = {'synchronization_epoch_s': [synchronization.get_start_times() * rpd_scales.MICROS_TO_S],
-                    'synchronization_latency_ms': [synchronization.get_latencies() * rpd_scales.MICROS_TO_MILLIS],
-                    'synchronization_offset_ms': [synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS],
-                    'synchronization_best_offset_ms': [synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS],
-                    'synchronization_offset_delta_ms': [synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS -
-                                                        synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS]}
-
-    df_syn = pd.DataFrame.from_dict(data=dict_for_syn)
-    return df_syn
+    try:
+        synchronization = station.timesync_analysis
+        dict_for_syn = {'synchronization_epoch_s': [synchronization.get_start_times() * rpd_scales.MICROS_TO_S],
+                        'synchronization_latency_ms': [synchronization.get_latencies() * rpd_scales.MICROS_TO_MILLIS],
+                        'synchronization_offset_ms': [synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS],
+                        'synchronization_best_offset_ms': [synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS],
+                        'synchronization_offset_delta_ms': [synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS -
+                                                            synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS]}
+        df_syn = pd.DataFrame.from_dict(data=dict_for_syn)
+        return df_syn
+    except AttributeError:
+        print("No clock data")
 
 
 def clock_build_station(station: StationRaw) -> pd.DataFrame:
@@ -278,7 +283,7 @@ def clock_build_station(station: StationRaw) -> pd.DataFrame:
                     'clock_number_bins': [clock.k_bins],
                     'clock_number_samples': [clock.n_samples],
                     'clock_offset_slope': [clock.slope],
-                    'clock_offset_model_score': [clock.offset_model.score]}
+                    'clock_offset_model_score': [clock.score]}
 
     df_clock = pd.DataFrame.from_dict(data=dict_for_syn)
     return df_clock

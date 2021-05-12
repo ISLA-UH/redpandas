@@ -70,6 +70,7 @@ if __name__ == "__main__":
         list_df_sensors_per_station = []  # list to store sensor dataframes for one station
 
         # TODO Tyler: SDK version.
+        # TODO: Tyler, include has_timesynch_analysis_data
         # TODO MC: Location provider, how to access
         dict_for_station_id = {'station_id': [station.id],
                                'station_start_date_epoch_micros': [station.start_timestamp],
