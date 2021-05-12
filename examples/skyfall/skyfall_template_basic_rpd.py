@@ -69,15 +69,14 @@ if __name__ == "__main__":
 
         list_df_sensors_per_station = []  # list to store sensor dataframes for one station
 
-        # TODO: SDK version.
-        # TODO: app start time - how is it handled, as an enhanced station_id?
-        # TODO: Location provider, how to access
-        # TODO: Timing information from DQ
+        # TODO Tyler: SDK version.
+        # TODO MC: Location provider, how to access
         dict_for_station_id = {'station_id': [station.id],
+                               'station_start_date_epoch_micros': [station.start_timestamp],
                                'station_make': [station.metadata.make],
                                'station_model': [station.metadata.model],
                                'station_app_version': [station.metadata.app_version],
-                               'datawin_sdk_version': ["3.0.0rc31"]}
+                               'redvox_sdk_version': ["3.0.0rc34"]}
 
         df_station_id = pd.DataFrame.from_dict(data=dict_for_station_id)
         list_df_sensors_per_station.append(df_station_id)
