@@ -81,6 +81,9 @@ def build_station(station: StationRaw,
     elif sensor_label == 'location' or sensor_label == 'loc':
         df_sensor = location_build_station(station=station)
 
+    elif sensor_label == 'clock':
+        df_sensor = clock_build_station(station=station)
+
     elif sensor_label == 'synchronization' or sensor_label == 'synch':
         df_sensor = synchronization_build_station(station=station)
 
@@ -278,7 +281,7 @@ def clock_build_station(station: StationRaw) -> pd.DataFrame:
                     'clock_number_bins': [clock.k_bins],
                     'clock_number_samples': [clock.n_samples],
                     'clock_offset_slope': [clock.slope],
-                    'clock_offset_model_score': [clock.offset_model.score]}
+                    'clock_offset_model_score': [clock.score]}
 
     df_clock = pd.DataFrame.from_dict(data=dict_for_syn)
     return df_clock
