@@ -21,7 +21,6 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, E
 
 
 # Verify points to correct config file.
-# TODO MC: highpass three panels
 # TODO MC: plot hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
 # TODO MC: wiggles for sensors_raw and sensors_highpass
 
@@ -68,16 +67,19 @@ if __name__ == "__main__":
 
     # Accelerometer columns
     accelerometer_data_raw_label: str = "accelerometer_wf_raw"
+    accelerometer_data_highpass_label: str = "accelerometer_wf_highpass"
     accelerometer_epoch_s_label: str = "accelerometer_epoch_s"
     accelerometer_fs_label: str = "accelerometer_sample_rate_hz"
 
     # Gyroscope columns
     gyroscope_data_raw_label: str = "gyroscope_wf_raw"
+    gyroscope_data_highpass_label: str = "gyroscope_wf_highpass"
     gyroscope_epoch_s_label: str = "gyroscope_epoch_s"
     gyroscope_fs_label: str = "gyroscope_sample_rate_hz"
 
     # Magnetometer columns
     magnetometer_data_raw_label: str = "magnetometer_wf_raw"
+    magnetometer_data_highpass_label: str = "magnetometer_wf_highpass"
     magnetometer_epoch_s_label: str = "magnetometer_epoch_s"
     magnetometer_fs_label: str = "magnetometer_sample_rate_hz"
 
@@ -94,6 +96,7 @@ if __name__ == "__main__":
     location_speed_label: str = 'location_speed'
     location_epoch_s_label: str = 'location_epoch_s'
 
+    # Load data options
     if use_datawindow is True or use_pickle is True:
         if use_datawindow:  # Option A: Create DataWindow object
             rdvx_data = DataWindowFast(input_dir=INPUT_DIR,
@@ -188,17 +191,22 @@ if __name__ == "__main__":
             baro_height_from_bounder_km = barometer_height_m/1E3
 
         # Repeat here
-        if accelerometer_data_raw_label and accelerometer_fs_label in df_skyfall_data.columns:
+        if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label\
+                in df_skyfall_data.columns:
             if use_parquet:
                 # Reshape wf columns
                 df_column_unflatten(df=df_skyfall_data,
                                     col_wf_label=accelerometer_data_raw_label,
                                     col_ndim_label=accelerometer_data_raw_label + "_ndim")
+                df_column_unflatten(df=df_skyfall_data,
+                                    col_wf_label=accelerometer_data_highpass_label,
+                                    col_ndim_label=accelerometer_data_highpass_label + "_ndim")
 
             print('accelerometer_sample_rate_hz:', df_skyfall_data[accelerometer_fs_label][station])
             print('accelerometer_epoch_s_0:',  df_skyfall_data[accelerometer_epoch_s_label][station][0],
                   df_skyfall_data[accelerometer_epoch_s_label][station][-1])
-            # Plot aligned waveforms
+
+            # Plot aligned raw waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[accelerometer_data_raw_label][station][2],
                                    wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station],
@@ -212,12 +220,26 @@ if __name__ == "__main__":
                                    wf_panel_0_units="X, m/$s^2$",
                                    figure_title=EVENT_NAME + ": Accelerometer raw")
 
+            # Plot aligned highpassed waveforms
+            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+                                   wf_panel_2_sig=df_skyfall_data[accelerometer_data_highpass_label][station][2],
+                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                   wf_panel_1_sig=df_skyfall_data[accelerometer_data_highpass_label][station][1],
+                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                   wf_panel_0_sig=df_skyfall_data[accelerometer_data_highpass_label][station][0],
+                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                   start_time_epoch=event_reference_time_epoch_s,
+                                   wf_panel_2_units="Z, m/$s^2$",
+                                   wf_panel_1_units="Y, m/$s^2$",
+                                   wf_panel_0_units="X, m/$s^2$",
+                                   figure_title=EVENT_NAME + ": Accelerometer highpass")
+
         if accelerometer_data_raw_label and barometer_data_raw_label in df_skyfall_data.columns:
             # Plot aligned waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[audio_data_label][station],
                                    wf_panel_2_time=df_skyfall_data[audio_epoch_s_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[accelerometer_data_raw_label][station][2],
+                                   wf_panel_1_sig=df_skyfall_data[accelerometer_data_highpass_label][station][2],
                                    wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station],
                                    wf_panel_0_sig=df_skyfall_data[barometer_data_highpass_label][station][0],
                                    wf_panel_0_time=df_skyfall_data[barometer_epoch_s_label][station],
@@ -225,7 +247,7 @@ if __name__ == "__main__":
                                    wf_panel_2_units="Mic, Bits",
                                    wf_panel_1_units="Acc Z, m/$s^2$",
                                    wf_panel_0_units="Bar, kPa",
-                                   figure_title=EVENT_NAME)
+                                   figure_title=EVENT_NAME + " with Acc and Bar Highpass")
 
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[audio_data_label][station],
@@ -236,11 +258,12 @@ if __name__ == "__main__":
                                    wf_panel_0_time=df_skyfall_data[barometer_epoch_s_label][station],
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Mic, Norm",
-                                   wf_panel_1_units="Acc Z, m/$s^2$",
+                                   wf_panel_1_units="Raw Acc Z, m/$s^2$",
                                    wf_panel_0_units="Height (/Bar), km",
                                    figure_title=EVENT_NAME)
 
-        if gyroscope_data_raw_label and gyroscope_epoch_s_label and gyroscope_fs_label in df_skyfall_data.columns:
+        if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label\
+                in df_skyfall_data.columns:
 
             if use_parquet:
                 # Reshape wf columns
@@ -248,10 +271,14 @@ if __name__ == "__main__":
                                     col_wf_label=gyroscope_data_raw_label,
                                     col_ndim_label=gyroscope_data_raw_label + "_ndim")
 
+                df_column_unflatten(df=df_skyfall_data,
+                                    col_wf_label=gyroscope_data_highpass_label,
+                                    col_ndim_label=gyroscope_data_highpass_label + "_ndim")
+
             print('gyroscope_sample_rate_hz:', df_skyfall_data[gyroscope_fs_label][station])
             print('gyroscope_epoch_s_0:', df_skyfall_data[gyroscope_epoch_s_label][station][0],
                   df_skyfall_data[gyroscope_epoch_s_label][station][-1])
-            # Plot aligned waveforms
+            # Plot raw aligned waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[gyroscope_data_raw_label][station][2],
                                    wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station],
@@ -265,17 +292,35 @@ if __name__ == "__main__":
                                    wf_panel_0_units="X, rad/s",
                                    figure_title=EVENT_NAME + ": Gyroscope raw")
 
-        if magnetometer_data_raw_label and magnetometer_fs_label in df_skyfall_data.columns:
+            # Plot highpass aligned waveforms
+            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+                                   wf_panel_2_sig=df_skyfall_data[gyroscope_data_highpass_label][station][2],
+                                   wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                   wf_panel_1_sig=df_skyfall_data[gyroscope_data_highpass_label][station][1],
+                                   wf_panel_1_time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                   wf_panel_0_sig=df_skyfall_data[gyroscope_data_highpass_label][station][0],
+                                   wf_panel_0_time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                   start_time_epoch=event_reference_time_epoch_s,
+                                   wf_panel_2_units="Z, rad/s",
+                                   wf_panel_1_units="Y, rad/s",
+                                   wf_panel_0_units="X, rad/s",
+                                   figure_title=EVENT_NAME + ": Gyroscope highpass")
+
+        if magnetometer_data_raw_label and magnetometer_fs_label and magnetometer_data_highpass_label\
+                in df_skyfall_data.columns:
             if use_parquet:
                 # Reshape wf columns
                 df_column_unflatten(df=df_skyfall_data,
                                     col_wf_label=magnetometer_data_raw_label,
                                     col_ndim_label=magnetometer_data_raw_label + "_ndim")
+                df_column_unflatten(df=df_skyfall_data,
+                                    col_wf_label=magnetometer_data_highpass_label,
+                                    col_ndim_label=magnetometer_data_highpass_label + "_ndim")
 
             print('magnetometer_sample_rate_hz:', df_skyfall_data[magnetometer_fs_label][station])
             print('magnetometer_epoch_s_0:', df_skyfall_data[magnetometer_epoch_s_label][station][0],
                   df_skyfall_data[magnetometer_epoch_s_label][station][-1])
-            # Plot aligned waveforms
+            # Plot aligned raw waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[magnetometer_data_raw_label][station][2],
                                    wf_panel_2_time=df_skyfall_data[magnetometer_epoch_s_label][station],
@@ -287,7 +332,21 @@ if __name__ == "__main__":
                                    wf_panel_2_units="Z, $\mu$T",
                                    wf_panel_1_units="Y, $\mu$T",
                                    wf_panel_0_units="X, $\mu$T",
-                                   figure_title=EVENT_NAME + ": Magnetometer")
+                                   figure_title=EVENT_NAME + ": Magnetometer raw")
+
+            # Plot aligned highpass waveforms
+            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+                                   wf_panel_2_sig=df_skyfall_data[magnetometer_data_highpass_label][station][2],
+                                   wf_panel_2_time=df_skyfall_data[magnetometer_epoch_s_label][station],
+                                   wf_panel_1_sig=df_skyfall_data[magnetometer_data_highpass_label][station][1],
+                                   wf_panel_1_time=df_skyfall_data[magnetometer_epoch_s_label][station],
+                                   wf_panel_0_sig=df_skyfall_data[magnetometer_data_highpass_label][station][0],
+                                   wf_panel_0_time=df_skyfall_data[magnetometer_epoch_s_label][station],
+                                   start_time_epoch=event_reference_time_epoch_s,
+                                   wf_panel_2_units="Z, $\mu$T",
+                                   wf_panel_1_units="Y, $\mu$T",
+                                   wf_panel_0_units="X, $\mu$T",
+                                   figure_title=EVENT_NAME + ": Magnetometer highpass")
 
         if location_latitude_label and location_longitude_label and location_altitude_label and location_speed_label \
                 in df_skyfall_data.columns:
