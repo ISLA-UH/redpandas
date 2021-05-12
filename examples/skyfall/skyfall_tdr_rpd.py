@@ -3,17 +3,24 @@ import os.path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import pickle
 
 # RedVox and Red Pandas modules
+# from redvox.common.data_window import DataWindow
+from redvox.common.data_window import DataWindowFast
+import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
+import redpandas.redpd_build_station as rpd_build_sta
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration file
-from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, PD_PQT_FILE
+from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, EPISODE_START_EPOCH_S, \
+    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, is_pickle_serialized, use_parquet, \
+    PD_PQT_FILE, SENSOR_LABEL
+
 
 # Verify points to correct config file.
-# TODO MAG: build check in case file does not exist!
 # TODO MC: highpass three panels
 # TODO MC: plot hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
 # TODO MC: wiggles for sensors_raw and sensors_highpass
@@ -40,7 +47,7 @@ def df_column_unflatten(df: pd.DataFrame,
 if __name__ == "__main__":
     """
     Red Pandas time-frequency representation of API900 data
-    Last updated: 7 May 2021
+    Last updated: 11 May 2021
     """
 
     print('Let the sky fall')
@@ -87,8 +94,68 @@ if __name__ == "__main__":
     location_speed_label: str = 'location_speed'
     location_epoch_s_label: str = 'location_epoch_s'
 
-    # Open dataframe from parquet file
-    df_skyfall_data = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
+    if use_datawindow is True or use_pickle is True:
+        if use_datawindow:  # Option A: Create DataWindow object
+            rdvx_data = DataWindowFast(input_dir=INPUT_DIR,
+                                       station_ids=STATIONS,
+                                       start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
+                                       end_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_END_EPOCH_S),
+                                       apply_correction=True,
+                                       structured_layout=True)
+
+        else:  # Option B: Load pickle with DataWindow object
+            if is_pickle_serialized:
+                # Load DataWindow structure
+                rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
+                                                                          file_name=DW_FILE)
+
+            else:
+                with open(os.path.join(INPUT_DIR, DW_FILE), 'rb') as file:
+                    # Load DataWindow structure
+                    rdvx_data = pickle.load(file)
+
+        # BEGIN RED PANDAS
+        list_df_stations = []  # list to store dataframes with sensors for one station
+
+        for station in rdvx_data.stations:
+
+            list_df_sensors_per_station = []  # list to store sensor dataframes for one station
+
+            # TODO: update to copy skyfall template basic
+            dict_for_station_id = {'station_id': [station.id],
+                                   'station_make': [station.metadata.make],
+                                   'station_model': [station.metadata.model],
+                                   'station_app_version': [station.metadata.app_version],
+                                   'datawin_sdk_version': ["3.0.0rc31"]}
+
+            df_station_id = pd.DataFrame.from_dict(data=dict_for_station_id)
+            list_df_sensors_per_station.append(df_station_id)
+
+            print(f"Prep {station.id}...", end=" ")
+
+            for label in SENSOR_LABEL:
+                print(f"{label} sensor...", end=" ")
+                df_sensor = rpd_build_sta.build_station(station=station,
+                                                        sensor_label=label)
+                list_df_sensors_per_station.append(df_sensor)
+
+            print(f"Done.")
+
+            # convert list of sensor dataframes into one station dataframe
+            df_all_sensors_one_station = pd.concat(list_df_sensors_per_station, axis=1)
+            list_df_stations.append(df_all_sensors_one_station)
+
+        # convert list of station dataframes into one master dataframe to later parquet
+        df_skyfall_data = df_all_sensors_one_station = pd.concat(list_df_stations, axis=0)
+        df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)  # sort by station id
+
+    elif use_parquet:  # Option C: Open dataframe from parquet file
+        df_skyfall_data = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
+
+    else:
+        print('No data loading method selected. '
+              'Check use_datawindow, use_pickle, or use_parquet in the Skyfall configuration file are set to True.')
+        exit()
 
     # Start of building plots
     for station in df_skyfall_data.index:
@@ -103,14 +170,15 @@ if __name__ == "__main__":
             event_reference_time_epoch_s = df_skyfall_data[audio_epoch_s_label][station][0]
 
         if barometer_data_raw_label and barometer_data_highpass_label and barometer_fs_label in df_skyfall_data.columns:
-            # Reshape wf columns
-            df_column_unflatten(df=df_skyfall_data,
-                                col_wf_label=barometer_data_raw_label,
-                                col_ndim_label=barometer_data_raw_label + "_ndim")
+            if use_parquet:
+                # Reshape wf columns
+                df_column_unflatten(df=df_skyfall_data,
+                                    col_wf_label=barometer_data_raw_label,
+                                    col_ndim_label=barometer_data_raw_label + "_ndim")
 
-            df_column_unflatten(df=df_skyfall_data,
-                                col_wf_label=barometer_data_highpass_label,
-                                col_ndim_label=barometer_data_highpass_label + "_ndim")
+                df_column_unflatten(df=df_skyfall_data,
+                                    col_wf_label=barometer_data_highpass_label,
+                                    col_ndim_label=barometer_data_highpass_label + "_ndim")
 
             print('barometer_sample_rate_hz:', df_skyfall_data[barometer_fs_label][station])
             print('barometer_epoch_s_0:', df_skyfall_data[barometer_epoch_s_label][station][0])
@@ -121,10 +189,11 @@ if __name__ == "__main__":
 
         # Repeat here
         if accelerometer_data_raw_label and accelerometer_fs_label in df_skyfall_data.columns:
-            # Reshape wf columns
-            df_column_unflatten(df=df_skyfall_data,
-                                col_wf_label=accelerometer_data_raw_label,
-                                col_ndim_label=accelerometer_data_raw_label + "_ndim")
+            if use_parquet:
+                # Reshape wf columns
+                df_column_unflatten(df=df_skyfall_data,
+                                    col_wf_label=accelerometer_data_raw_label,
+                                    col_ndim_label=accelerometer_data_raw_label + "_ndim")
 
             print('accelerometer_sample_rate_hz:', df_skyfall_data[accelerometer_fs_label][station])
             print('accelerometer_epoch_s_0:',  df_skyfall_data[accelerometer_epoch_s_label][station][0],
@@ -172,10 +241,12 @@ if __name__ == "__main__":
                                    figure_title=EVENT_NAME)
 
         if gyroscope_data_raw_label and gyroscope_epoch_s_label and gyroscope_fs_label in df_skyfall_data.columns:
-            # Reshape wf columns
-            df_column_unflatten(df=df_skyfall_data,
-                                col_wf_label=gyroscope_data_raw_label,
-                                col_ndim_label=gyroscope_data_raw_label + "_ndim")
+
+            if use_parquet:
+                # Reshape wf columns
+                df_column_unflatten(df=df_skyfall_data,
+                                    col_wf_label=gyroscope_data_raw_label,
+                                    col_ndim_label=gyroscope_data_raw_label + "_ndim")
 
             print('gyroscope_sample_rate_hz:', df_skyfall_data[gyroscope_fs_label][station])
             print('gyroscope_epoch_s_0:', df_skyfall_data[gyroscope_epoch_s_label][station][0],
@@ -195,10 +266,11 @@ if __name__ == "__main__":
                                    figure_title=EVENT_NAME + ": Gyroscope raw")
 
         if magnetometer_data_raw_label and magnetometer_fs_label in df_skyfall_data.columns:
-            # Reshape wf columns
-            df_column_unflatten(df=df_skyfall_data,
-                                col_wf_label=magnetometer_data_raw_label,
-                                col_ndim_label=magnetometer_data_raw_label + "_ndim")
+            if use_parquet:
+                # Reshape wf columns
+                df_column_unflatten(df=df_skyfall_data,
+                                    col_wf_label=magnetometer_data_raw_label,
+                                    col_ndim_label=magnetometer_data_raw_label + "_ndim")
 
             print('magnetometer_sample_rate_hz:', df_skyfall_data[magnetometer_fs_label][station])
             print('magnetometer_epoch_s_0:', df_skyfall_data[magnetometer_epoch_s_label][station][0],
@@ -216,8 +288,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Y, $\mu$T",
                                    wf_panel_0_units="X, $\mu$T",
                                    figure_title=EVENT_NAME + ": Magnetometer")
-            
-        if location_latitude_label and location_longitude_label and location_altitude_label and location_speed_label\
+
+        if location_latitude_label and location_longitude_label and location_altitude_label and location_speed_label \
                 in df_skyfall_data.columns:
             # Range vs reference lat lon
             location_latitude_reference = 35.83728684
