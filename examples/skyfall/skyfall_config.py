@@ -5,7 +5,7 @@ Vegas Skyfall Configuration file
 # TODO: Build load gui
 EVENT_NAME = "Skyfall"
 # Absolute path to the skyfall data
-INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
+INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
 # INPUT_DIR = '/Users/jmtobin/Desktop/skyfall/api900'
 # INPUT_DIR = '/Users/spopen/redvox/data/spacex_data/falcon9/api900'
 # INPUT_DIR = "/Users/tyler/Documents/api900"
@@ -37,14 +37,16 @@ EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration
 # Available sensors: 'audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope', 'location', 'health', 'image'
 SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope', 'health', 'location']
 
-build_dw_pickle = True  # Handling of data window structure
+build_dw_pickle = True  # Handling of RDVX DataWindow structure
 print_datawindow_dq = True  # Print basic DQ/DA to screen
-plot_mic_waveforms = False  # Show raw data window waveforms
+plot_mic_waveforms = False  # Show raw RDVX DataWindow waveforms
 build_df_parquet = True  # Export pandas data frame as parquet
 
-# For skyfall_tdr_dw_test.py
-use_datawindow = False  # either use datawindow or existing pickle file
-is_pickle_serialized = True  # if pickle, is pickle serialized
+# For skyfall_tdr_rpd.py
+use_datawindow = False  # Load data using RDVX DataWindow
+use_pickle = False  # Load data using a pickle with RDVX DataWindow, either serialized or not
+is_pickle_serialized = False  # Indicate if pickle is serialized
+use_parquet = True  # Load data using parquet with RedPandas dataframe
 
 PIPELINE_LABEL = ['TBD']
 
