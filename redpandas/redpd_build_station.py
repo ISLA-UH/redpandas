@@ -14,7 +14,7 @@ This module contains general utilities that can work with values containing nans
 """
 # TODO: Does synchronization still work
 # TODO: build luminosity
-# TODO: Build station timing
+# TODO:
 
 
 # Define classes
@@ -271,8 +271,7 @@ def clock_build_station(station: StationRaw) -> pd.DataFrame:
     print('App start time:', station.start_timestamp)
 
     clock = station.timesync_analysis.offset_model
-    dict_for_syn = {'clock_startdate_epoch': [station.start_timestamp],  # app start time, microsecs
-                    'clock_start_time_epoch_s': [clock.start_time * rpd_scales.MICROS_TO_S],
+    dict_for_syn = {'clock_start_time_epoch_s': [clock.start_time * rpd_scales.MICROS_TO_S],
                     'clock_best_latency_ms': [clock.mean_latency * rpd_scales.MICROS_TO_MILLIS],
                     'clock_best_latency_std_ms': [clock.std_dev_latency * rpd_scales.MICROS_TO_MILLIS],
                     'clock_offset_s': [clock.intercept * rpd_scales.MICROS_TO_S],
