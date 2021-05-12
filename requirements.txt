@@ -1,4 +1,4 @@
-numpy == 1.19.5  # Tensorflow spec - it's very picky
+numpy == 1.19.5  # Tensorflow spec for Python 3.8.7 - it's very picky
 scipy >= 1.6.3
 pandas >= 1.2.4
 redvox >= 3.0.0rc34

@@ -266,3 +266,20 @@ def synchronization_build_station(station: StationRaw) -> pd.DataFrame:
     return df_syn
 
 
+def clock_build_station(station: StationRaw) -> pd.DataFrame:
+
+    print('App start time:', station.start_timestamp)
+
+    clock = station.timesync_analysis.offset_model
+    dict_for_syn = {'clock_startdate_epoch': [station.start_timestamp],  # app start time, microsecs
+                    'clock_start_time_epoch_s': [clock.start_time * rpd_scales.MICROS_TO_S],
+                    'clock_best_latency_ms': [clock.mean_latency * rpd_scales.MICROS_TO_MILLIS],
+                    'clock_best_latency_std_ms': [clock.std_dev_latency * rpd_scales.MICROS_TO_MILLIS],
+                    'clock_offset_s': [clock.intercept * rpd_scales.MICROS_TO_S],
+                    'clock_number_bins': [clock.k_bins],
+                    'clock_number_samples': [clock.n_samples],
+                    'clock_offset_slope': [clock.slope],
+                    'clock_offset_model_score': [clock.offset_model.score]}
+
+    df_clock = pd.DataFrame.from_dict(data=dict_for_syn)
+    return df_clock

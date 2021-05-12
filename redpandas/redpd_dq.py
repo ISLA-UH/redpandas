@@ -89,8 +89,8 @@ def mic_synch(data_window):
             mic_sample_rate_from_dt = MICROSECONDS_IN_SECOND / mic_sample_interval_from_dt
 
             print('Sample rate from dif mic time:', mic_sample_rate_from_dt)
-            sample_rate_percent_error = (
-                                                mic_sample_rate_from_dt - mic_sample_rate_nominal_hz) / mic_sample_rate_nominal_hz
+            sample_rate_percent_error = (mic_sample_rate_from_dt - mic_sample_rate_nominal_hz) \
+                                        / mic_sample_rate_nominal_hz
             sample_rate_percent_error *= 100.
             print("Percent sample rate computation error: {0:.2E} %".format(sample_rate_percent_error))
         else:
