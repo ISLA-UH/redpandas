@@ -45,7 +45,6 @@ build_df_parquet = True  # Export pandas data frame as parquet
 # For skyfall_tdr_rpd.py
 use_datawindow = False  # Load data using RDVX DataWindow
 use_pickle = False  # Load data using a pickle with RDVX DataWindow, either serialized or not
-is_pickle_serialized = False  # Indicate if pickle is serialized
 use_parquet = True  # Load data using parquet with RedPandas dataframe
 
 PIPELINE_LABEL = ['TBD']

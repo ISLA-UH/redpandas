@@ -5,6 +5,7 @@ import numpy as np
 import pandas as pd
 from libquantum import scales
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
+from typing import List
 
 """
 Utils for plotting pandas dataframes
@@ -220,6 +221,86 @@ def plot_wiggles_pandas(df: pd.DataFrame,
         ax1.plot(time_s, sig_j + wiggle_offset[i], color=wf_color)
         xlim_min[j] = np.min(time_s)
         xlim_max[j] = np.max(time_s)
+
+    ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
+    ax1.grid(True)
+    ax1.set_title('Normalized ' + fig_title, size=text_size)
+    ax1.set_ylabel(y_label, size=text_size)
+    if time_epoch_origin > 0:
+        x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
+    ax1.set_xlabel(x_label, size=text_size)
+    fig.tight_layout()
+
+
+def plot_station_wiggles_pandas(df: pd.DataFrame,
+                                station_id_str: str,
+                                # sig_wf_label: str,
+                                sensor_wf_label_list: List,
+                                sensor_timestamps_label_list: List,
+                                # sig_sample_rate_label: str,
+                                sig_id_label: str,
+                                x_label: str,
+                                y_label: str,
+                                fig_title: str = 'Signals',
+                                wf_color: str = 'midnightblue'):
+                                # sig_timestamps_label: str = None):
+
+    fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
+
+    wiggle_num = len(sensor_wf_label_list)  # depends on number of sensors
+
+    station_row_index = df[sig_id_label].str.find(station_id_str)  # find index of desired station
+    index_station = station_row_index[0]  # actually get index
+
+    offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
+    wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
+    wiggle_yticks = wiggle_offset
+
+    # wiggle_yticklabel = df[sig_id_label]
+    wiggle_yticklabel = sensor_wf_label_list
+
+    # For next iteration, include an epoch and/or elapsed time
+    ax1.set_yticks(wiggle_yticks)
+    ax1.set_yticklabels(wiggle_yticklabel)
+    ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
+    ax1.tick_params(axis='both', which='both', labelsize=text_size)
+
+    xlim_min = np.empty(wiggle_num)
+    xlim_max = np.empty(wiggle_num)
+
+    # Establish earliest timestamp among sensors, todo later
+    # if sig_timestamps_label is not None:
+    #     epoch_j = np.zeros(wiggle_num)
+    #     for i, j in enumerate(df.index):
+    #         epoch_j[i] = df[sig_timestamps_label][j].min()
+    #     time_epoch_origin = np.min(epoch_j)
+    # else:
+
+    sensor_timestamps_label = sensor_timestamps_label_list[0]  # assume sensors same start time
+    time_epoch_origin = df[sensor_timestamps_label][index_station][0]
+
+    # for i, j in enumerate(df.index):
+    for index_sensor_in_list, label in enumerate(sensor_wf_label_list):
+
+        sensor_wf_df = df[label][index_station]
+        sensor_timestamps_label = sensor_timestamps_label_list[index_sensor_in_list]  # assume same order sensor wf and timestamp
+        time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin
+
+        if sensor_wf_df.ndim == 1:
+
+            sig_j = df[label][index_station] / np.max(df[label][index_station])
+            ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_in_list], color=wf_color)
+            xlim_min[index_sensor_in_list] = np.min(time_s)
+            xlim_max[index_sensor_in_list] = np.max(time_s)
+
+        else:
+            for index_dimension, _ in enumerate(sensor_wf_df):
+                # TODO MC: wiggle_offset repeat for ndim wf sensors. In the same vein, name ytick too
+                sig_j = df[label][index_station][index_dimension] / np.max(df[label][index_station][index_dimension])
+
+                ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_in_list], color=wf_color)
+                xlim_min[index_sensor_in_list] = np.min(time_s)
+                xlim_max[index_sensor_in_list] = np.max(time_s)
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
     ax1.grid(True)

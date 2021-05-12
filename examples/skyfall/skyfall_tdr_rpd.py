@@ -12,12 +12,12 @@ import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
 import redpandas.redpd_build_station as rpd_build_sta
+import redpandas.redpd_plot as rpd_plot
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration file
 from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, EPISODE_START_EPOCH_S, \
-    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, is_pickle_serialized, use_parquet, \
-    PD_PQT_FILE, SENSOR_LABEL
+    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, use_parquet, PD_PQT_FILE, SENSOR_LABEL
 
 
 # Verify points to correct config file.
@@ -106,16 +106,8 @@ if __name__ == "__main__":
                                        apply_correction=True,
                                        structured_layout=True)
 
-        else:  # Option B: Load pickle with DataWindow object
-            if is_pickle_serialized:
-                # Load DataWindow structure
-                rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
-                                                                          file_name=DW_FILE)
-
-            else:
-                with open(os.path.join(INPUT_DIR, DW_FILE), 'rb') as file:
-                    # Load DataWindow structure
-                    rdvx_data = pickle.load(file)
+        else:  # Option B: Load pickle with DataWindow object. Assume compressed
+            rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
 
         # BEGIN RED PANDAS
         list_df_stations = []  # list to store dataframes with sensors for one station
@@ -442,6 +434,21 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Loc Height, m",
                                    wf_panel_0_units="Temp C",
                                    figure_title=EVENT_NAME + ": Height and Temperature")
-        plt.show()
+        # plt.show()
         # FOR API M: All other SOH fields.
 
+        # station_row_index = df_skyfall_data['station_id'].str.find('1637610021')
+        # index_station = station_row_index[0]
+
+        sensor_column_list = [audio_data_label, barometer_data_raw_label, barometer_data_highpass_label, accelerometer_data_highpass_label]
+        sensor_epoch_column_list = [audio_epoch_s_label, barometer_epoch_s_label, barometer_epoch_s_label, accelerometer_epoch_s_label]
+
+        rpd_plot.plot_station_wiggles_pandas(df=df_skyfall_data,
+                                             station_id_str='1637610021',
+                                             sensor_wf_label_list=sensor_column_list,
+                                             sensor_timestamps_label_list=sensor_epoch_column_list,
+                                             sig_id_label='station_id',
+                                             x_label='Time',
+                                             y_label='Sensor')
+
+        plt.show()
