@@ -1,17 +1,17 @@
+import os
 """
 Vegas Skyfall Configuration file
 """
 # TODO: Build load gui
 EVENT_NAME = "Skyfall"
 # Absolute path to the skyfall data
-INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
+INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 # INPUT_DIR = '/Users/jmtobin/Desktop/skyfall/api900'
 # INPUT_DIR = '/Users/spopen/redvox/data/spacex_data/falcon9/api900'
 # INPUT_DIR = "/Users/tyler/Documents/api900"
 # INPUT_DIR = "/Users/meritxell/Documents/api900"
 
-OUTPUT_DIR = INPUT_DIR + "rpd_files/"  # Absolute path for output pickle and parquet files
-
+OUTPUT_DIR = os.path.join(INPUT_DIR, "rpd_files")  # Absolute path for output pickle and parquet files
 DW_FILE = EVENT_NAME + ".pickle"
 PD_PQT_FILE = EVENT_NAME + "_df.parquet"
 STATIONS = {"1637610021"}
@@ -39,7 +39,7 @@ SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscop
 
 build_dw_pickle = True  # Handling of data window structure
 print_datawindow_dq = True  # Print basic DQ/DA to screen
-plot_mic_waveforms = True  # Show raw data window waveforms
+plot_mic_waveforms = False  # Show raw data window waveforms
 build_df_parquet = True  # Export pandas data frame as parquet
 
 # For skyfall_tdr_dw_test.py

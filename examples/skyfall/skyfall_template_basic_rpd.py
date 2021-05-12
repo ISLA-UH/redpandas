@@ -1,5 +1,5 @@
 # Python libraries
-import os.path
+import os
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -42,8 +42,8 @@ if __name__ == "__main__":
                           debug=True)
 
     # Import DataWindow
-    print("Assume compressed, JSON and pickled DW already built")
-    print("\nUsing build_dw_pickle =", build_dw_pickle)
+    print("\nAssume compressed, JSON and pickled DW already built")
+    print("Using build_dw_pickle =", build_dw_pickle)
     rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
                                                               file_name=DW_FILE)
 
