@@ -5,11 +5,11 @@ Vegas Skyfall Configuration file
 # TODO: Build load gui
 EVENT_NAME = "Skyfall"
 # Absolute path to the skyfall data
-# INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
+INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
 # INPUT_DIR = '/Users/jmtobin/Desktop/skyfall/api900'
 # INPUT_DIR = '/Users/spopen/redvox/data/spacex_data/falcon9/api900'
 # INPUT_DIR = "/Users/tyler/Documents/api900"
-INPUT_DIR = "/Users/meritxell/Documents/api900"
+# INPUT_DIR = "/Users/meritxell/Documents/api900"
 
 OUTPUT_DIR = os.path.join(INPUT_DIR, "rpd_files")  # Absolute path for output pickle and parquet files
 DW_FILE = EVENT_NAME + ".pickle"
