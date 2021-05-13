@@ -435,20 +435,26 @@ if __name__ == "__main__":
                                    wf_panel_0_units="Temp C",
                                    figure_title=EVENT_NAME + ": Height and Temperature")
         # plt.show()
-        # FOR API M: All other SOH fields.
 
-        # station_row_index = df_skyfall_data['station_id'].str.find('1637610021')
-        # index_station = station_row_index[0]
+        sensor_column_label_list = [audio_data_label, barometer_data_raw_label, barometer_data_highpass_label,
+                                    accelerometer_data_highpass_label, gyroscope_data_highpass_label, magnetometer_data_highpass_label]
 
-        sensor_column_list = [audio_data_label, barometer_data_raw_label, barometer_data_highpass_label, accelerometer_data_highpass_label]
-        sensor_epoch_column_list = [audio_epoch_s_label, barometer_epoch_s_label, barometer_epoch_s_label, accelerometer_epoch_s_label]
+        sensor_epoch_column_label_list = [audio_epoch_s_label, barometer_epoch_s_label, barometer_epoch_s_label,
+                                          accelerometer_epoch_s_label, gyroscope_epoch_s_label, magnetometer_epoch_s_label]
+
+        sensor_ticklabels_list = ['Mic', 'Baro raw', 'Baro highpass', 'Acc X highpass', 'Acc Y highpass',
+                                  'Acc Z highpass', 'Gyro X highpass', 'Gyro Y highpass', 'Gyro Z highpass',
+                                  'Mag X highpass', 'Mag Y highpass', 'Mag Z highpass']
 
         rpd_plot.plot_station_wiggles_pandas(df=df_skyfall_data,
                                              station_id_str='1637610021',
-                                             sensor_wf_label_list=sensor_column_list,
-                                             sensor_timestamps_label_list=sensor_epoch_column_list,
+                                             sensor_wf_label_list=sensor_column_label_list,
+                                             sensor_timestamps_label_list=sensor_epoch_column_label_list,
                                              sig_id_label='station_id',
                                              x_label='Time',
-                                             y_label='Sensor')
+                                             y_label='Sensor',
+                                             fig_title='sensor waveform for Station 1637610021',
+                                             wf_color='midnightblue',
+                                             sensor_yticks_label_list=sensor_ticklabels_list)
 
         plt.show()

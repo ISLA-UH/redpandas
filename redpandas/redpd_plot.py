@@ -232,34 +232,53 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     fig.tight_layout()
 
 
+# TODO MC: what if i only want component x of a sensor
 def plot_station_wiggles_pandas(df: pd.DataFrame,
                                 station_id_str: str,
-                                # sig_wf_label: str,
                                 sensor_wf_label_list: List,
                                 sensor_timestamps_label_list: List,
-                                # sig_sample_rate_label: str,
                                 sig_id_label: str,
                                 x_label: str,
                                 y_label: str,
                                 fig_title: str = 'Signals',
-                                wf_color: str = 'midnightblue'):
-                                # sig_timestamps_label: str = None):
+                                wf_color: str = 'midnightblue',
+                                sensor_yticks_label_list: List[str] = None):
 
     fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
 
-    wiggle_num = len(sensor_wf_label_list)  # depends on number of sensors
+    wiggle_num = len(sensor_wf_label_list)  # depends on number of sensors and if sensors are 3d wf
 
-    station_row_index = df[sig_id_label].str.find(station_id_str)  # find index of desired station
-    index_station = station_row_index[0]  # actually get index
+    # Check if sensors are 3d and if so add to wiggle_num
+    list_3d_sensor = ['accelerometer', 'gyroscope', 'magnetometer']
+    sensor_wf_label_list_modified_for_ticklabels = sensor_wf_label_list.copy()   # Copy sensor list
+    index_sensor_label_ticklabels_list = 0  # index for ticklabels once it includes x/y/z
+
+    for index_sensor_label_in_list, sensor_label_in_list in enumerate(sensor_wf_label_list):
+
+        if sensor_label_in_list.startswith(tuple(list_3d_sensor)):
+
+            wiggle_num += 2  # for the waveforms that have not been counted yet
+
+            # Modify the copy sensor labels list for yticks labels to include x,y,z labels
+            sensor_wf_label_list_modified_for_ticklabels.remove(sensor_wf_label_list_modified_for_ticklabels[index_sensor_label_ticklabels_list])
+            sensor_wf_label_list_modified_for_ticklabels.extend((sensor_wf_label_list[index_sensor_label_in_list] + '_x',
+                                                                sensor_wf_label_list[index_sensor_label_in_list] + '_y',
+                                                                sensor_wf_label_list[index_sensor_label_in_list] + '_z'))
+
+            index_sensor_label_ticklabels_list += 2
+
+        index_sensor_label_ticklabels_list += 1
 
     offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
     wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
     wiggle_yticks = wiggle_offset
 
-    # wiggle_yticklabel = df[sig_id_label]
-    wiggle_yticklabel = sensor_wf_label_list
+    # Set ytick labels
+    if sensor_yticks_label_list is None:
+        wiggle_yticklabel = sensor_wf_label_list_modified_for_ticklabels
+    else:
+        wiggle_yticklabel = sensor_yticks_label_list
 
-    # For next iteration, include an epoch and/or elapsed time
     ax1.set_yticks(wiggle_yticks)
     ax1.set_yticklabels(wiggle_yticklabel)
     ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
@@ -268,39 +287,38 @@ def plot_station_wiggles_pandas(df: pd.DataFrame,
     xlim_min = np.empty(wiggle_num)
     xlim_max = np.empty(wiggle_num)
 
-    # Establish earliest timestamp among sensors, todo later
-    # if sig_timestamps_label is not None:
-    #     epoch_j = np.zeros(wiggle_num)
-    #     for i, j in enumerate(df.index):
-    #         epoch_j[i] = df[sig_timestamps_label][j].min()
-    #     time_epoch_origin = np.min(epoch_j)
-    # else:
+    station_row_index = df[sig_id_label].str.find(station_id_str)  # find index of desired station
+    index_station = station_row_index[0]  # actually get index
 
     sensor_timestamps_label = sensor_timestamps_label_list[0]  # assume sensors same start time
     time_epoch_origin = df[sensor_timestamps_label][index_station][0]
 
-    # for i, j in enumerate(df.index):
+    index_sensor_label_ticklabels_list = 0  # keep track of total sensor wf including x/y/z
     for index_sensor_in_list, label in enumerate(sensor_wf_label_list):
 
+        # assume same order sensor wf and timestamp in lists
         sensor_wf_df = df[label][index_station]
-        sensor_timestamps_label = sensor_timestamps_label_list[index_sensor_in_list]  # assume same order sensor wf and timestamp
+        sensor_timestamps_label = sensor_timestamps_label_list[index_sensor_in_list]
         time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin
 
-        if sensor_wf_df.ndim == 1:
+        if sensor_wf_df.ndim == 1:  # sensor that is NOT acceleration/gyroscope/magnetometer
 
             sig_j = df[label][index_station] / np.max(df[label][index_station])
-            ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_in_list], color=wf_color)
-            xlim_min[index_sensor_in_list] = np.min(time_s)
-            xlim_max[index_sensor_in_list] = np.max(time_s)
+            ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=wf_color)
+            xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
+            xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+
+            index_sensor_label_ticklabels_list += 1
 
         else:
-            for index_dimension, _ in enumerate(sensor_wf_df):
-                # TODO MC: wiggle_offset repeat for ndim wf sensors. In the same vein, name ytick too
-                sig_j = df[label][index_station][index_dimension] / np.max(df[label][index_station][index_dimension])
+            for index_dimension, sensor_array in enumerate(sensor_wf_df):
 
-                ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_in_list], color=wf_color)
-                xlim_min[index_sensor_in_list] = np.min(time_s)
-                xlim_max[index_sensor_in_list] = np.max(time_s)
+                sig_j = sensor_array / np.max(sensor_array)
+                ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=wf_color)
+                xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
+                xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+
+                index_sensor_label_ticklabels_list += 1
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
     ax1.grid(True)
@@ -358,7 +376,7 @@ def plot_response_scatter(h_magnitude,
                           f_max_hz,
                           f_scale: str = 'log',
                           fig_title: str = 'Response only valid at high coherence'):
-    #plot magnitude and coherence
+    # plot magnitude and coherence
     fig = plt.figure()
     fig.set_size_inches(8, 6)
     ax1 = plt.subplot(211)
@@ -387,7 +405,7 @@ def plot_response_scatter(h_magnitude,
     # ax32.axis([.01, 20, -15, 15])
     ax2.set_xlabel('Frequency [Hz]')
     ax2.set_ylabel('Phase [deg]')
-    #ax32.grid('on',which='both')
+    # ax32.grid('on',which='both')
     # h32.set_clim(CLIM)
     hc = plt.colorbar(im2)
     hc.set_label('Coherence')
