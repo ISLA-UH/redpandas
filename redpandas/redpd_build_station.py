@@ -84,7 +84,7 @@ def build_station(station: Station,
     elif sensor_label == 'clock':
         df_sensor = clock_build_station(station=station)
 
-    elif sensor_label == 'synchronization' or sensor_label == 'synch':
+    elif sensor_label == 'synchronization' or sensor_label == 'sync':
         df_sensor = synchronization_build_station(station=station)
 
     elif sensor_label == 'health' or sensor_label == 'soh':
@@ -257,7 +257,7 @@ def image_build_station(station: Station) -> pd.DataFrame:
 
 def synchronization_build_station(station: Station) -> pd.DataFrame:
 
-    if station.has_timesync_analysis():
+    if station.has_timesync_data():
         synchronization = station.timesync_analysis
         dict_for_syn = {'synchronization_epoch_s': [synchronization.get_start_times() * rpd_scales.MICROS_TO_S],
                         'synchronization_latency_ms': [synchronization.get_latencies() * rpd_scales.MICROS_TO_MILLIS],
@@ -274,7 +274,7 @@ def synchronization_build_station(station: Station) -> pd.DataFrame:
 def clock_build_station(station: Station) -> pd.DataFrame:
 
     # print(f'Station {station.id} app start time: {station.start_timestamp}')
-    if station.has_timesync_analysis():
+    if station.has_timesync_data():
         clock = station.timesync_analysis.offset_model
         dict_for_syn = {'clock_start_time_epoch_s': [clock.start_time * rpd_scales.MICROS_TO_S],
                         'clock_best_latency_ms': [clock.mean_latency * rpd_scales.MICROS_TO_MILLIS],

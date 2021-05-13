@@ -52,7 +52,7 @@ if __name__ == "__main__":
         print("\nDQ/DA LAYER: STATION")
         rpd_dq.station_metadata(rdvx_data)
         print("DQ/DA LAYER: MIC & SYNCH")
-        rpd_dq.mic_synch(rdvx_data)
+        rpd_dq.mic_sync(rdvx_data)
         print("DQ/DA LAYER: SENSOR TIMING")
         rpd_dq.station_channel_timing(rdvx_data)
 

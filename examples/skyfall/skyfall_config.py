@@ -35,7 +35,8 @@ EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration
 
 # For skyfall_template_basic_rpd.py
 # Available sensors: 'audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope', 'location', 'health', 'image'
-SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope', 'health', 'location', 'clock', 'synch']
+SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
+                'health', 'location', 'clock', 'sync']
 
 build_dw_pickle = False  # Handling of RDVX DataWindow structure
 print_datawindow_dq = True  # Print basic DQ/DA to screen
