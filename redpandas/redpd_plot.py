@@ -3,8 +3,9 @@ from matplotlib.colorbar import Colorbar
 import datetime as dt
 import numpy as np
 import pandas as pd
-from libquantum import scales
+# from libquantum import scales
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
+import redpandas.redpd_scales as rpd_scales
 from typing import List
 
 """
@@ -31,8 +32,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      sig_id_label: str,
                      fig_title: str,
                      frequency_scaling: str = "log",
-                     frequency_hz_ymin: float = scales.Slice.FU,
-                     frequency_hz_ymax: float = scales.Slice.F0):
+                     frequency_hz_ymin: float = rpd_scales.Slice.FU,
+                     frequency_hz_ymax: float = rpd_scales.Slice.F0):
 
     """
      Plots spectrogram for all signals in df
