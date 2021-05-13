@@ -3,7 +3,6 @@ from matplotlib.colorbar import Colorbar
 import datetime as dt
 import numpy as np
 import pandas as pd
-# from libquantum import scales
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 import redpandas.redpd_scales as rpd_scales
 from typing import List
@@ -11,7 +10,7 @@ from typing import List
 """
 Utils for plotting pandas dataframes
 Created: 23 March 2021
-Last updated: 31 March 2021
+Last updated: 12 May 2021
 """
 
 # Wiggle plot scaling
