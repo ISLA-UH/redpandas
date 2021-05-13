@@ -12,9 +12,9 @@ import redpandas.redpd_scales as rpd_scales
 """
 This module contains general utilities that can work with values containing nans.
 """
-# TODO: Does synchronization still work
+# TODO: Check synchronization and clock payloads
 # TODO: build luminosity
-# TODO:
+# TODO: Location provider
 
 
 # Define classes
