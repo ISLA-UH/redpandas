@@ -3,7 +3,7 @@ from enum import Enum
 import numpy as np
 import pandas as pd
 from redvox.api1000.wrapped_redvox_packet.station_information import NetworkType, PowerState, CellServiceState
-from redvox.common.station_raw import StationRaw
+from redvox.common.station import Station
 
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
@@ -12,9 +12,9 @@ import redpandas.redpd_scales as rpd_scales
 """
 This module contains general utilities that can work with values containing nans.
 """
-# TODO: Does synchronization still work
+# TODO: Check synchronization and clock payloads
 # TODO: build luminosity
-# TODO:
+# TODO: Location provider
 
 
 # Define classes
@@ -28,7 +28,7 @@ class NormType(Enum):
     OTHER: str = "other"
 
 
-def sensor_uneven(station: StationRaw,
+def sensor_uneven(station: Station,
                   sensor_label: str):
     """
     ID nans, sample rate, epoch, raw of uneven sensor
@@ -57,7 +57,7 @@ def sensor_uneven(station: StationRaw,
 
 
 # Build station modules
-def build_station(station: StationRaw,
+def build_station(station: Station,
                   sensor_label: str,
                   highpass_type: str = 'obspy',
                   frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
@@ -84,7 +84,7 @@ def build_station(station: StationRaw,
     elif sensor_label == 'clock':
         df_sensor = clock_build_station(station=station)
 
-    elif sensor_label == 'synchronization' or sensor_label == 'synch':
+    elif sensor_label == 'synchronization' or sensor_label == 'sync':
         df_sensor = synchronization_build_station(station=station)
 
     elif sensor_label == 'health' or sensor_label == 'soh':
@@ -121,7 +121,7 @@ def build_station(station: StationRaw,
 
 
 # Modules for specific sensors
-def audio_wf_time_build_station(station: StationRaw,
+def audio_wf_time_build_station(station: Station,
                                 mean_type: str = "simple",
                                 raw: bool = False) -> pd.DataFrame:
     """
@@ -160,7 +160,7 @@ def audio_wf_time_build_station(station: StationRaw,
         print(f'Station {station.id} has no audio data.')
 
 
-def location_build_station(station: StationRaw) -> pd.DataFrame:
+def location_build_station(station: Station) -> pd.DataFrame:
     """
     Obtains location data from station
     :param station: RDVX DataWindow station object
@@ -189,7 +189,7 @@ def location_build_station(station: StationRaw) -> pd.DataFrame:
         print(f'Station {station.id} has no location data.')
 
 
-def state_of_health_build_station(station: StationRaw) -> pd.DataFrame:
+def state_of_health_build_station(station: Station) -> pd.DataFrame:
     """
     Obtains state of health data from station
     :param station: RDVX DataWindow station object
@@ -235,7 +235,7 @@ def state_of_health_build_station(station: StationRaw) -> pd.DataFrame:
         print(f'Station {station.id} has no health data.')
 
 
-def image_build_station(station: StationRaw) -> pd.DataFrame:
+def image_build_station(station: Station) -> pd.DataFrame:
     """
     Obtains images from station
     :param station: RDVX DataWindow station object
@@ -255,9 +255,9 @@ def image_build_station(station: StationRaw) -> pd.DataFrame:
         print(f'Station {station.id} has no image data.')
 
 
-def synchronization_build_station(station: StationRaw) -> pd.DataFrame:
+def synchronization_build_station(station: Station) -> pd.DataFrame:
 
-    try:
+    if station.has_timesync_data():
         synchronization = station.timesync_analysis
         dict_for_syn = {'synchronization_epoch_s': [synchronization.get_start_times() * rpd_scales.MICROS_TO_S],
                         'synchronization_latency_ms': [synchronization.get_latencies() * rpd_scales.MICROS_TO_MILLIS],
@@ -267,23 +267,25 @@ def synchronization_build_station(station: StationRaw) -> pd.DataFrame:
                                                             synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS]}
         df_syn = pd.DataFrame.from_dict(data=dict_for_syn)
         return df_syn
-    except AttributeError:
-        print("No clock data")
+    else:
+        print(f'Station {station.id} has no timesync analysis.')
 
 
-def clock_build_station(station: StationRaw) -> pd.DataFrame:
+def clock_build_station(station: Station) -> pd.DataFrame:
 
-    print('App start time:', station.start_timestamp)
+    # print(f'Station {station.id} app start time: {station.start_timestamp}')
+    if station.has_timesync_data():
+        clock = station.timesync_analysis.offset_model
+        dict_for_syn = {'clock_start_time_epoch_s': [clock.start_time * rpd_scales.MICROS_TO_S],
+                        'clock_best_latency_ms': [clock.mean_latency * rpd_scales.MICROS_TO_MILLIS],
+                        'clock_best_latency_std_ms': [clock.std_dev_latency * rpd_scales.MICROS_TO_MILLIS],
+                        'clock_offset_s': [clock.intercept * rpd_scales.MICROS_TO_S],
+                        'clock_number_bins': [clock.k_bins],
+                        'clock_number_samples': [clock.n_samples],
+                        'clock_offset_slope': [clock.slope],
+                        'clock_offset_model_score': [clock.score]}
 
-    clock = station.timesync_analysis.offset_model
-    dict_for_syn = {'clock_start_time_epoch_s': [clock.start_time * rpd_scales.MICROS_TO_S],
-                    'clock_best_latency_ms': [clock.mean_latency * rpd_scales.MICROS_TO_MILLIS],
-                    'clock_best_latency_std_ms': [clock.std_dev_latency * rpd_scales.MICROS_TO_MILLIS],
-                    'clock_offset_s': [clock.intercept * rpd_scales.MICROS_TO_S],
-                    'clock_number_bins': [clock.k_bins],
-                    'clock_number_samples': [clock.n_samples],
-                    'clock_offset_slope': [clock.slope],
-                    'clock_offset_model_score': [clock.score]}
-
-    df_clock = pd.DataFrame.from_dict(data=dict_for_syn)
-    return df_clock
+        df_clock = pd.DataFrame.from_dict(data=dict_for_syn)
+        return df_clock
+    else:
+        print(f'Station {station.id} has no timesync analysis.')

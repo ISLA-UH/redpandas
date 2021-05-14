@@ -30,7 +30,7 @@ class StationDq:
     # etc
 
 
-def mic_synch(data_window):
+def mic_sync(data_window):
     station: Station
     for k, station in enumerate(data_window.stations):
         if station.has_audio_data():
