@@ -52,9 +52,6 @@ def plot_mesh_pandas(df: pd.DataFrame,
      """
 
     wiggle_num = len(df.index)  # total number of signal that will be displayed
-    offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
-    wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
-    wiggle_yticks = wiggle_offset
 
     if sig_id_label == "index":
         wiggle_yticklabel = df.index
@@ -175,7 +172,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     :param x_label: x label
     :param y_label: y label
     :param fig_title: 'Normalized ' + title label
-    :param wf_color: waveform color
+    :param wf_color: waveform color. Default is midnightblue.
     :param sig_timestamps_label: name for the epoch time in df, default = None
     :param sig_id_label: usually the index converted to a str, default = None
     :return: plot
@@ -233,16 +230,31 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
 
 # TODO MC: what if i only want component x of a sensor
-def plot_station_wiggles_pandas(df: pd.DataFrame,
-                                station_id_str: str,
-                                sensor_wf_label_list: List,
-                                sensor_timestamps_label_list: List,
-                                sig_id_label: str,
-                                x_label: str,
-                                y_label: str,
-                                fig_title: str = 'Signals',
-                                wf_color: str = 'midnightblue',
-                                sensor_yticks_label_list: List[str] = None):
+def plot_sensor_wiggles_pandas(df: pd.DataFrame,
+                               station_id_str: str,
+                               sensor_wf_label_list: List,
+                               sensor_timestamps_label_list: List,
+                               sig_id_label: str,
+                               x_label: str,
+                               y_label: str,
+                               fig_title: str = 'Signals',
+                               wf_color: str = 'midnightblue',
+                               sensor_yticks_label_list: List[str] = None):
+    f"""
+    Plots sensor waveforms for one station
+
+    :param df: input pandas data frame
+    :param station_id_str:  string for the station name in df
+    :param sensor_wf_label_list: list of strings with sensor waveform names in df
+    :param sensor_timestamps_label_list: list of strings with sensor timestamps names in df
+    :param sig_id_label: string for the waveform name in df
+    :param x_label: x label
+    :param y_label: y label
+    :param fig_title: 'Normalized ' + title label + 'for Station ' + station_id_str
+    :param wf_color: waveform color. Default is midnightblue.
+    :param sensor_yticks_label_list: list of strings with sensor waveform y tick names
+    :return: plot
+    """
 
     fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
 
@@ -250,7 +262,7 @@ def plot_station_wiggles_pandas(df: pd.DataFrame,
 
     # Check if sensors are 3d and if so add to wiggle_num
     list_3d_sensor = ['accelerometer', 'gyroscope', 'magnetometer']
-    sensor_wf_label_list_modified_for_ticklabels = sensor_wf_label_list.copy()   # Copy sensor list
+    sensor_wf_label_list_modified_for_ticklabels = sensor_wf_label_list.copy()   # Copy sensor list to modify it
     index_sensor_label_ticklabels_list = 0  # index for ticklabels once it includes x/y/z
 
     for index_sensor_label_in_list, sensor_label_in_list in enumerate(sensor_wf_label_list):
@@ -322,7 +334,7 @@ def plot_station_wiggles_pandas(df: pd.DataFrame,
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
     ax1.grid(True)
-    ax1.set_title('Normalized ' + fig_title, size=text_size)
+    ax1.set_title('Normalized ' + fig_title + ' for Station ' + station_id_str, size=text_size)
     ax1.set_ylabel(y_label, size=text_size)
     if time_epoch_origin > 0:
         x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
