@@ -4,6 +4,7 @@ pandas >= 1.2.4
 redvox >= 3.0.0rc35
 libwwz >= 1.0.1
 obspy
+libquantum
 
 # Plotting
 matplotlib >= 3.4.2

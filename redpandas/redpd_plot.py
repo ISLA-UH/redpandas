@@ -1,17 +1,19 @@
-import matplotlib.pyplot as plt
-from matplotlib.colorbar import Colorbar
-import datetime as dt
-import numpy as np
-import pandas as pd
-from libquantum.plot_templates import plot_time_frequency_reps as pnl
-import redpandas.redpd_scales as rpd_scales
-from typing import List
-
 """
 Utils for plotting pandas dataframes
 Created: 23 March 2021
 Last updated: 12 May 2021
 """
+import datetime as dt
+from typing import List
+
+import matplotlib.pyplot as plt
+from matplotlib.colorbar import Colorbar
+import numpy as np
+import pandas as pd
+from libquantum.plot_templates import plot_time_frequency_reps as pnl
+
+import redpandas.redpd_scales as rpd_scales
+
 
 # Wiggle plot scaling
 scale = 1.25*1080/8

@@ -1,13 +1,14 @@
-import numpy as np
-import pandas as pd
-from scipy import signal
-from libquantum import utils
-
 """
 Utils for managing pandas dataframes
 
 Last updated: 31 March 2021
 """
+import numpy as np
+import pandas as pd
+from scipy import signal
+from libquantum import utils
+
+
 # TODO: to add lowpass and highpass filters
 # TODO: Add HP uneven sensor resampling
 # TODO: standardize language

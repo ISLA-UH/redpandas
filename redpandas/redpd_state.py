@@ -1,6 +1,6 @@
 from dataclasses import dataclass
-
 from dataclasses_json import dataclass_json
+
 from redvox.common.data_window_configuration import DataWindowConfig
 
 

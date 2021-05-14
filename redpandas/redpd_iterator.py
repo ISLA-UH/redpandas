@@ -1,9 +1,9 @@
-import numpy as np
-
-
 """
 This module contains iterators used in redpd_preprocess.
 """
+
+import numpy as np
+
 
 # RC filter response: mag first contribution to stack overflow as slipstream
 # https://stackoverflow.com/questions/62448904/how-to-implement-continuous-time-high-low-pass-filter-in-python
