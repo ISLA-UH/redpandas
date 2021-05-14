@@ -1,14 +1,14 @@
-from dataclasses import dataclass
-
-import numpy as np
-from dataclasses_json import dataclass_json
-from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
-import redvox.common.date_time_utils as dt
-from redvox.common.station import Station
-
 """
 DQ/DA/UQ statistics/metrics
 """
+# todo: finish class and function definitions and descriptions
+from dataclasses import dataclass
+from dataclasses_json import dataclass_json
+
+import numpy as np
+from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
+import redvox.common.date_time_utils as dt
+from redvox.common.station import Station
 
 
 @dataclass_json
@@ -32,7 +32,7 @@ class StationDq:
 
 def mic_sync(data_window):
     station: Station
-    for k, station in enumerate(data_window.stations):
+    for station in data_window.stations:
         if station.has_audio_data():
             print(f"{station.id} Audio Sensor (All timestamps are in microseconds since epoch UTC):\n"
                   f"mic sample rate in hz: {station.audio_sensor().sample_rate_hz}\n"
@@ -101,7 +101,7 @@ def mic_sync(data_window):
 
 def station_channel_timing(data_window):
     station: Station
-    for k, station in enumerate(data_window.stations):
+    for station in data_window.stations:
         print("STATION CHANNEL TIMING FOR ID", station.id)
         if station.start_timestamp > 0:
             print('App start time:',
@@ -173,7 +173,7 @@ def station_channel_timing(data_window):
 
 def station_metadata(data_window):
     station: Station
-    for station in (data_window.stations):
+    for station in data_window.stations:
         if station.start_timestamp > 0:
             print(f"STATION SPECS FOR ID: " 
                   f"{station.id}\n"

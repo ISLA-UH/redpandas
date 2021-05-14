@@ -1,11 +1,13 @@
 # Python libraries
 import os
+
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 
 # RedVox and Red Pandas modules
 from redvox.common.data_window import DataWindowFast
+
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
 import redpandas.redpd_build_station as rpd_build_sta
@@ -27,7 +29,7 @@ if __name__ == "__main__":
         os.mkdir(OUTPUT_DIR)
 
     if build_dw_pickle:
-        print("Building Data Window")
+        print("Creating New Data Window")
         # RECOMMENDED USE
         # Load signals, create a RedVox DataWindow structure, export to pickle.
         rpd_dw.build_fast(api_input_directory=INPUT_DIR,
@@ -42,8 +44,8 @@ if __name__ == "__main__":
                           debug=True)
 
     # Import DataWindow
-    print("\nAssume compressed, JSON and pickled DW already built")
-    print("Using build_dw_pickle =", build_dw_pickle)
+    else:
+        print("\nAssuming compressed and pickled DW with JSON already built")
     rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
                                                               file_name=DW_FILE)
 
@@ -63,46 +65,16 @@ if __name__ == "__main__":
         plt.show()
 
     # BEGIN RED PANDAS
-    list_df_stations = []  # list to store dataframes with sensors for one station
-
-    for station in rdvx_data.stations:
-
-        list_df_sensors_per_station = []  # list to store sensor dataframes for one station
-
-        # TODO Tyler: SDK version.
-        # TODO MC: Location provider, how to access
-        dict_for_station_id = {'station_id': [station.id],
-                               'station_start_date_epoch_micros': [station.start_timestamp],
-                               'station_make': [station.metadata.make],
-                               'station_model': [station.metadata.model],
-                               'station_app_version': [station.metadata.app_version],
-                               'redvox_sdk_version': [rdvx_data.sdk_version]}
-
-        df_station_id = pd.DataFrame.from_dict(data=dict_for_station_id)
-        list_df_sensors_per_station.append(df_station_id)
-
-        print(f"Prep {station.id}...", end=" ")
-
-        for label in SENSOR_LABEL:
-            print(f"{label} sensor...", end=" ")
-            df_sensor = rpd_build_sta.build_station(station=station,
-                                                    sensor_label=label)
-            list_df_sensors_per_station.append(df_sensor)
-
-        print(f"Done.")
-
-        # convert list of sensor dataframes into one station dataframe
-        df_all_sensors_one_station = pd.concat(list_df_sensors_per_station, axis=1)
-        list_df_stations.append(df_all_sensors_one_station)
-
-    # convert list of station dataframes into one master dataframe to later parquet
-    df_all_sensors_all_stations = df_all_sensors_one_station = pd.concat(list_df_stations, axis=0)
-    df_all_sensors_all_stations.sort_values(by="station_id", ignore_index=True, inplace=True)  # sort by station id
+    df_all_sensors_all_stations = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
+                                                                                      sdk_version=rdvx_data.sdk_version,
+                                                                                      sensor_labels=SENSOR_LABEL)
+                                                for station in rdvx_data.stations])
+    df_all_sensors_all_stations.sort_values(by="station_id", ignore_index=True, inplace=True)
 
     if build_df_parquet:
         # Need to flatten to save to parquet
         for label in SENSOR_LABEL:
-            if label == 'barometer' or label == 'accelerometer' or label == 'gyroscope' or label == 'magnetometer':
+            if label in ['barometer', 'accelerometer', 'gyroscope', 'magnetometer']:
 
                 # Create new columns with shape tuple for future unflattening/reshaping
                 df_all_sensors_all_stations[[f'{label}_wf_raw_ndim',

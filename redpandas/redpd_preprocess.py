@@ -1,19 +1,22 @@
-from enum import Enum
-
-
-import numpy as np
-from scipy import signal
-
-from redvox.common import date_time_utils as dt
-import redpandas.redpd_iterator as rdp_iter
-import redpandas.redpd_scales as rpd_scales
-
-import obspy.signal.filter
-
-
 """
 This module contains general utilities that can work with values containing nans.
 """
+# todo: add types in function definitions
+# todo: finish function documentation
+from enum import Enum
+from typing import Tuple
+
+import numpy as np
+from scipy import signal
+import obspy.signal.filter
+from redvox.common import date_time_utils as dt
+
+import redpandas.redpd_iterator as rdp_iter
+import redpandas.redpd_scales as rpd_scales
+
+
+MG_RT = 0.00012  # Molar mass of air x gravity / (gas constant x standard temperature)
+PRESSURE_REF_kPa = 101.325
 
 
 # Define classes
@@ -67,7 +70,7 @@ def demean_nan(sig: np.ndarray) -> np.ndarray:
     Detrend and normalize a 1D time series
     :param sig: time series with (possibly) non-zero mean
     :return: Detrended and normalized time series
-    """""
+    """
     return np.nan_to_num(sig - np.nanmean(sig))
 
 
@@ -76,7 +79,7 @@ def detrend_nan(sig: np.ndarray) -> np.ndarray:
     Detrend and normalize a 1D time series
     :param sig: time series with (possibly) non-zero mean
     :return: Detrended and normalized time series
-    """""
+    """
     return signal.detrend(demean_nan(sig))
 
 
@@ -87,9 +90,8 @@ def demean_nan_norm(sig: np.ndarray, scaling: float = 1., norm_type: NormType = 
     :param scaling: scaling parameter, division
     :param norm_type: {'max', l1, l2}, overrides scikit default of 'l2' by 'max'
     :return: The detrended and denormalized series.
-    """""
-    sig_detrend = demean_nan(sig)
-    return normalize(sig_detrend, scaling=scaling, norm_type=norm_type)
+    """
+    return normalize(demean_nan(sig), scaling=scaling, norm_type=norm_type)
 
 
 def demean_nan_matrix(sig: np.ndarray) -> np.ndarray:
@@ -97,7 +99,7 @@ def demean_nan_matrix(sig: np.ndarray) -> np.ndarray:
     Detrend and normalize a matrix of time series
     :param sig: time series with (possibly) non-zero mean
     :return: The detrended and normalized signature
-    """""
+    """
     return np.nan_to_num(np.subtract(sig.transpose(), np.nanmean(sig, axis=1))).transpose()
 
 
@@ -109,12 +111,10 @@ def taper_tukey(sig_or_time: np.ndarray, fraction_cosine: float) -> np.ndarray:
     :param fraction_cosine: fraction of the window inside the cosine tapered window, shared between the head and tail
     :return: tukey taper window amplitude
     """
-    number_points = np.size(sig_or_time)
-    amplitude = signal.windows.tukey(M=number_points, alpha=fraction_cosine, sym=True)
-    return amplitude
+    return signal.windows.tukey(M=np.size(sig_or_time), alpha=fraction_cosine, sym=True)
 
 
-def pad_reflection_symmetric(sig_wf):
+def pad_reflection_symmetric(sig_wf) -> Tuple[np.ndarray, int]:
     """
     Apply reflection transformation
     :param sig_wf:
@@ -128,23 +128,21 @@ def pad_reflection_symmetric(sig_wf):
     return wf_folded, number_points_to_flip_per_edge
 
 
-def filter_reflection_highpass(sig_wf, filter_cutoff_hz, sample_rate_hz):
+def filter_reflection_highpass(sig_wf, filter_cutoff_hz, sample_rate_hz) -> np.ndarray:
     """
     Apply filter
     :param sig_wf:
     :param filter_cutoff_hz:
     :param sample_rate_hz:
-    :param filter_type:
-    :return:
+    :return: sig filtered
     """
     wf_folded, number_points_to_flip_per_edge = pad_reflection_symmetric(sig_wf)
 
     sig_folded_filtered = highpass_obspy(sensor_wf=wf_folded,
                                          frequency_low_hz=filter_cutoff_hz,
                                          sample_rate_hz=sample_rate_hz)
-    sig_filtered = sig_folded_filtered[number_points_to_flip_per_edge:-number_points_to_flip_per_edge]
 
-    return sig_filtered
+    return sig_folded_filtered[number_points_to_flip_per_edge:-number_points_to_flip_per_edge]
 
 
 def height_asl_from_pressure_below10km(bar_waveform: np.ndarray) -> np.ndarray:
@@ -153,61 +151,76 @@ def height_asl_from_pressure_below10km(bar_waveform: np.ndarray) -> np.ndarray:
     :param bar_waveform: barometric pressure in kPa
     :return: height ASL in m
     """
-    mg_rt = 0.00012  # Molar mass of air x gravity / (gas constant x standard temperature)
-    elevation_m = -np.log(bar_waveform/rpd_scales.Slice.PREF_KPA)/mg_rt
-    return elevation_m
+    return -np.log(bar_waveform/rpd_scales.Slice.PREF_KPA)/MG_RT
 
 
-def model_height_from_pressure_skyfall(pressure_kPa):
+def model_height_from_pressure_skyfall(pressure_kPa) -> float:
     """
     Returns empirical height in m from input pressure
     :param pressure_kPa: barometric pressure in kPa
     :return: height in m
     """
-    pressure_ref_kPa = 101.325
-    scaled_pressure = -np.log(pressure_kPa/pressure_ref_kPa)
+    scaled_pressure = -np.log(pressure_kPa/PRESSURE_REF_kPa)
     # Empirical model constructed from
     # c, stats = np.polynomial.polynomial.polyfit(poly_x, bounder_loc['Alt_m'], 8, full=True)
     c = [1.52981286e+02, 7.39552295e+03, 2.44663285e+03, -3.57402081e+03, 2.02653051e+03,
          -6.26581722e+02, 1.11758211e+02, -1.08674469e+01, 4.46784010e-01]
-    elevation_m = np.polynomial.polynomial.polyval(scaled_pressure, c, tensor=False)
-    return elevation_m
+    return np.polynomial.polynomial.polyval(scaled_pressure, c, tensor=False)
 
 
-def rc_high_pass_signal(sig, sample_rate, highpass_cutoff):
-    highpass_signal = np.array([[high]
-                                for high
-                                in rdp_iter.rc_iterator_high_pass(sig, sample_rate, highpass_cutoff)])
-    return highpass_signal
+def rc_high_pass_signal(sig, sample_rate, highpass_cutoff) -> np.array:
+    """
+    todo: complete me
+    :param sig:
+    :param sample_rate:
+    :param highpass_cutoff:
+    :return: highpass_signal
+    """
+    return np.array([[high]
+                     for high
+                     in rdp_iter.rc_iterator_high_pass(sig, sample_rate, highpass_cutoff)])
 
 
 # "Traditional" solution, up to Nyquist
-def bandpass_butter_uneven(sensor_wf, filter_order, frequency_cut_low_hz, sample_rate_hz):
+def bandpass_butter_uneven(sensor_wf, filter_order, frequency_cut_low_hz, sample_rate_hz) -> np.ndarray:
+    """
+    todo: complete me
+    :param sensor_wf:
+    :param filter_order:
+    :param frequency_cut_low_hz:
+    :param sample_rate_hz:
+    :return:
+    """
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     # filter_order = 4,
     nyquist = 0.5 * sample_rate_hz
     edge_low = frequency_cut_low_hz / nyquist
     edge_high = 0.5
     [b, a] = signal.butter(N=filter_order, Wn=[edge_low, edge_high], btype='bandpass')
-    sensor_bandpass = signal.filtfilt(b, a, np.copy(sensor_wf))
-    return sensor_bandpass
+    return signal.filtfilt(b, a, np.copy(sensor_wf))
 
 
-def highpass_obspy(sensor_wf, frequency_low_hz, sample_rate_hz, filter_order=4):
-    sensor_highpass = obspy.signal.filter.highpass(np.copy(sensor_wf),
-                                                   frequency_low_hz,
-                                                   sample_rate_hz, corners=filter_order,
-                                                   zerophase=True)
-    return sensor_highpass
+def highpass_obspy(sensor_wf, frequency_low_hz, sample_rate_hz, filter_order=4) -> np.ndarray:
+    """
+    todo: complete me
+    :param sensor_wf:
+    :param frequency_low_hz:
+    :param sample_rate_hz:
+    :param filter_order:
+    :return: sensor_highpass
+    """
+    return obspy.signal.filter.highpass(np.copy(sensor_wf),
+                                        frequency_low_hz,
+                                        sample_rate_hz, corners=filter_order,
+                                        zerophase=True)
 
 
-def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
+def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float, int, np.ndarray]:
     """
     Variation of cross-correlation function cross_stas.xcorr_all for unevenly sampled data
     with identical sampling and duration.
     :param sig_x: processed signal
     :param sig_ref: reference signal
-    :param xcorr_mode: 'same', 'full', and 'valid'. Valid is the default setting for corrcoeff
     :return: cross-correlation metrics
     """
     nx = len(sig_x)
@@ -233,7 +246,8 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
 
     else:
         print('One of the waveforms is broken')
-        return
+        # todo: use better defaults
+        return np.array([]), np.array([]), np.nan, np.nan, np.array([])
 
     return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
 
@@ -243,7 +257,7 @@ def highpass_from_diff(sensor_waveform: np.ndarray,
                        sample_rate: int or float,
                        highpass_type: str = 'obspy',
                        frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
-                       filter_order: int = 4) -> (np.ndarray, float):
+                       filter_order: int = 4) -> Tuple[np.ndarray, float]:
     """
     Preprocess barometer data:
     - remove nans and DC offset by getting the differential pressure in kPa

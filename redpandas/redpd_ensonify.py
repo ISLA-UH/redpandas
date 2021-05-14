@@ -1,3 +1,9 @@
+"""
+These methods make assumptions about the RedVox sensor sample rates, which seldom exceed 500 Hz.
+I also assume the highest audio sample rate we'll use is 8 kHz.
+M. Garces, last updated 20210419
+"""
+
 import numpy as np
 import pandas as pd
 import scipy.io.wavfile
@@ -6,9 +12,6 @@ from scipy.fft import rfft, fftfreq
 from libquantum import synthetics
 import matplotlib.pyplot as plt
 
-"""These methods make assumptions about the RedVox sensor sample rates, which seldom exceed 500 Hz.
-I also assume the highest audio sample rate we'll use is 8 kHz.
-M. Garces, last updated 20210419"""
 
 # Supported wav sample rates
 permitted_wav_fs_values = 8000., 16000., 48000., 96000.
