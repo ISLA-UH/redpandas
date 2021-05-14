@@ -16,17 +16,6 @@ import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
 
 
-# Define classes
-class NormType(Enum):
-    """
-    Enumeration of normalization types.
-    """
-    MAX: str = "max"
-    L1: str = "l1"
-    L2: str = "l2"
-    OTHER: str = "other"
-
-
 def station_to_dict_from_dw(
         station: Station,
         sdk_version: str,

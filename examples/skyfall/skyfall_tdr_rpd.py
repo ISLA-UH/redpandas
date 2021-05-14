@@ -1,10 +1,11 @@
+# todo: address possible invalid values in building plots section
 # Python libraries
 import os.path
+import pickle
+
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import pickle
-
 # RedVox and Red Pandas modules
 # from redvox.common.data_window import DataWindow
 from redvox.common.data_window import DataWindowFast

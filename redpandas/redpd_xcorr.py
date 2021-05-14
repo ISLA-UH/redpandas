@@ -4,7 +4,7 @@ from scipy import signal
 import matplotlib.pyplot as plt
 
 
-def find_nearest(array,value):
+def find_nearest(array, value):
     # https://stackoverflow.com/questions/2566412/find-nearest-value-in-numpy-array
     xi = np.argmin(np.abs(np.ceil(array[None].T - value)), axis=0)
     return xi
@@ -13,7 +13,7 @@ def find_nearest(array,value):
 def plot_square(xnorm_max, xoffset_s, xoffset_points, sig_descriptor: str = "Signal"):
     color_map = plt.get_cmap("Spectral_r")
     fig, ax = plt.subplots()
-    im = ax.imshow(xnorm_max, cmap=color_map, origin='lower') #, vmax=1, vmin=0)
+    im = ax.imshow(xnorm_max, cmap=color_map, origin='lower')
     fig.colorbar(im)
     ax.set_title(sig_descriptor + ' max cross-correlation in the time domain')
 
@@ -30,7 +30,7 @@ def plot_square(xnorm_max, xoffset_s, xoffset_points, sig_descriptor: str = "Sig
 
 def most_similar_station_index(xnorm_max):
     """
-    Sums over column, substract self xcorr (1), divides by number of stations-1
+    Sums over column, subtract self xcorr (1), divides by number of stations - 1
     :param xnorm_max: normalized cross correlation
     :return: index of most self-similar station to the ensemble
     """
@@ -57,11 +57,6 @@ def xcorr_pandas(df: pd.DataFrame,
     :param sig_sample_rate_label:
     :param fs_fractional_tolerance:
     :param abs_xcorr:
-    :param return_xcorr_full:
-    :param new_column_label_xcorr_offset_points:
-    :param new_column_label_xcorr_offset_seconds:
-    :param new_column_label_xcorr_normalized_max:
-    :param new_column_label_xcorr_full_array:
     :return:
     """
 
@@ -83,7 +78,7 @@ def xcorr_pandas(df: pd.DataFrame,
             else:
                 sig_n = np.copy(df[sig_label][n])
                 sig_m = np.copy(df[sig_label][m])
-                #Generalized sensor cross correlations, including unequal lengths
+                # Generalized sensor cross correlations, including unequal lengths
                 n_points = len(sig_n)
                 m_points = len(sig_m)
                 # Faster as floats

@@ -1,7 +1,10 @@
+# todo: finish function descriptions and definitions
+
 # Python libraries
-import numpy as np
 import os.path
 import pickle
+
+import numpy as np
 import matplotlib.pyplot as plt
 # RedVox modules
 from redvox.common.data_window import DataWindow, DataWindowFast
