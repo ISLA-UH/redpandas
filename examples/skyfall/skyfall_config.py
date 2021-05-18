@@ -5,11 +5,11 @@ Vegas Skyfall Configuration file
 # TODO: Build load gui
 EVENT_NAME = "Skyfall"
 # Absolute path to the skyfall data
-INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
+# INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
 # INPUT_DIR = '/Users/jmtobin/Desktop/skyfall/api900'
 # INPUT_DIR = '/Users/spopen/redvox/data/spacex_data/falcon9/api900'
 # INPUT_DIR = "/Users/tyler/Documents/api900"
-# INPUT_DIR = "/Users/meritxell/Documents/api900"
+INPUT_DIR = "/Users/meritxell/Documents/api900"
 
 OUTPUT_DIR = os.path.join(INPUT_DIR, "rpd_files")  # Absolute path for output pickle and parquet files
 DW_FILE = EVENT_NAME + ".pickle"
@@ -38,8 +38,8 @@ EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration
 SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
                 'health', 'location', 'clock', 'sync']
 
-build_dw_pickle = False  # Handling of RDVX DataWindow structure
-print_datawindow_dq = True  # Print basic DQ/DA to screen
+build_dw_pickle = True  # Handling of RDVX DataWindow structure
+print_datawindow_dq = False  # Print basic DQ/DA to screen
 plot_mic_waveforms = False  # Show raw RDVX DataWindow waveforms
 build_df_parquet = True  # Export pandas data frame as parquet
 

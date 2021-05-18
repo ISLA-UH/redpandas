@@ -23,7 +23,6 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, E
 
 # Verify points to correct config file.
 # TODO MC: plot hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
-# TODO MC: wiggles for sensors_raw and sensors_highpass
 
 # TODO: decide where this fcn lives
 def df_column_unflatten(df: pd.DataFrame,
@@ -47,7 +46,7 @@ def df_column_unflatten(df: pd.DataFrame,
 if __name__ == "__main__":
     """
     Red Pandas time-frequency representation of API900 data
-    Last updated: 11 May 2021
+    Last updated: 17 May 2021
     """
 
     print('Let the sky fall')
@@ -99,7 +98,9 @@ if __name__ == "__main__":
 
     # Load data options
     if use_datawindow is True or use_pickle is True:
+        print("\nInitiating Conversion from DataWindow to RedPandas")
         if use_datawindow:  # Option A: Create DataWindow object
+            print("Creating New Data Window")
             rdvx_data = DataWindowFast(input_dir=INPUT_DIR,
                                        station_ids=STATIONS,
                                        start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
@@ -108,44 +109,18 @@ if __name__ == "__main__":
                                        structured_layout=True)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
+            print("\nAssuming compressed and pickled DW with JSON already built")
             rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
 
-        # BEGIN RED PANDAS
-        list_df_stations = []  # list to store dataframes with sensors for one station
-
-        for station in rdvx_data.stations:
-
-            list_df_sensors_per_station = []  # list to store sensor dataframes for one station
-
-            # TODO: update to copy skyfall template basic
-            dict_for_station_id = {'station_id': [station.id],
-                                   'station_make': [station.metadata.make],
-                                   'station_model': [station.metadata.model],
-                                   'station_app_version': [station.metadata.app_version],
-                                   'datawin_sdk_version': ["3.0.0rc31"]}
-
-            df_station_id = pd.DataFrame.from_dict(data=dict_for_station_id)
-            list_df_sensors_per_station.append(df_station_id)
-
-            print(f"Prep {station.id}...", end=" ")
-
-            for label in SENSOR_LABEL:
-                print(f"{label} sensor...", end=" ")
-                df_sensor = rpd_build_sta.build_station(station=station,
-                                                        sensor_label=label)
-                list_df_sensors_per_station.append(df_sensor)
-
-            print(f"Done.")
-
-            # convert list of sensor dataframes into one station dataframe
-            df_all_sensors_one_station = pd.concat(list_df_sensors_per_station, axis=1)
-            list_df_stations.append(df_all_sensors_one_station)
-
-        # convert list of station dataframes into one master dataframe to later parquet
-        df_skyfall_data = df_all_sensors_one_station = pd.concat(list_df_stations, axis=0)
-        df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)  # sort by station id
+        # For option A or B, BEGIN RED PANDAS
+        df_skyfall_data = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
+                                                                              sdk_version=rdvx_data.sdk_version,
+                                                                              sensor_labels=SENSOR_LABEL)
+                                        for station in rdvx_data.stations])
+        df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
 
     elif use_parquet:  # Option C: Open dataframe from parquet file
+        print("\nAssuming compressed and parquet DW with JSON already built")
         df_skyfall_data = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
 
     else:
