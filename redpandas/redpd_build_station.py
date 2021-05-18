@@ -73,7 +73,7 @@ def sensor_uneven(station: Station, sensor_label: str):
 
     :param station: RDVX Station object
     :param sensor_label: one of: ['barometer', 'accelerometer', 'gyroscope', 'magnetometer']
-    :return: todo complete
+    :return: sensor sample rate (Hz), timestamps, raw data and nans in sensor.
     """
 
     # default parameters
@@ -274,7 +274,8 @@ def synchronization_build_station(station: Station) -> dict:
     """
     gets time sync data from the station if it exists
     :param station: RDVX Station object
-    :return: dictionary with stuff in it todo fix me
+    :return: dictionary with synchronization start time (s), synchronization latency (ms), synchronization offset (ms),
+     synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.
     """
     if station.has_timesync_data():
         synchronization = station.timesync_analysis
@@ -283,7 +284,8 @@ def synchronization_build_station(station: Station) -> dict:
                 'synchronization_offset_ms': synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_best_offset_ms': synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_offset_delta_ms': synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS -
-                                                    synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS}
+                                                    synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
+                'synchronization_number_exchanges': synchronization.timesync_data[0].num_tri_messages()}
     else:
         print(f'Station {station.id} has no time sync data.')
         return {}
@@ -293,7 +295,8 @@ def clock_build_station(station: Station) -> dict:
     """
     gets clock model data from the station if it exists
     :param station: RDVX Station object
-    :return: dictionary with stuff in it todo fix me
+    :return: dictionary with clock start time (s), clock latency (ms), clock best latency (ms), clock offset (s),
+     clock number bins, clock number samples, clock offset slope, and clock offset model score.
     """
     if station.has_timesync_data():
         print('App start time:', station.start_timestamp)

@@ -95,6 +95,15 @@ if __name__ == "__main__":
     location_altitude_label: str = "location_altitude"
     location_speed_label: str = 'location_speed'
     location_epoch_s_label: str = 'location_epoch_s'
+    location_provider_label: str = 'location_provider'
+
+    # Synchronization columns
+    synchronization_epoch_label: str = 'synchronization_epoch_s'
+    synchronization_latency_label: str = 'synchronization_latency_ms'
+    synchronization_offset_label: str = 'synchronization_offset_ms'
+    synchronization_best_offset_label: str = 'synchronization_best_offset_ms'
+    synchronization_offset_delta_label: str = 'synchronization_offset_delta_ms'
+    synchronization_number_exchanges_label: str = 'synchronization_number_exchanges'
 
     # Load data options
     if use_datawindow is True or use_pickle is True:
@@ -112,7 +121,7 @@ if __name__ == "__main__":
             print("\nAssuming compressed and pickled DW with JSON already built")
             rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
 
-        # For option A or B, BEGIN RED PANDAS
+        # For option A or B, begin RedPandas
         df_skyfall_data = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
                                                                               sdk_version=rdvx_data.sdk_version,
                                                                               sensor_labels=SENSOR_LABEL)
@@ -120,7 +129,7 @@ if __name__ == "__main__":
         df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
 
     elif use_parquet:  # Option C: Open dataframe from parquet file
-        print("\nAssuming compressed and parquet DW with JSON already built")
+        print("\nAssuming parquet already built using RedPandas")
         df_skyfall_data = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
 
     else:
@@ -328,12 +337,6 @@ if __name__ == "__main__":
                         * rpd_scales.DEGREES_TO_M
             range_m = np.sqrt(np.array(range_lat**2 + range_lon**2).astype(np.float64))
 
-            # TODO, TYLER: ADDRESS AND PROVIDE RECOMMENDATIONS
-            # location_provider = station.location_sensor().get_data_channel("location_provider")
-            # location_bearing = station.location_sensor().get_channel("bearing")
-            # print('Why does bearing only have nans?', location_bearing)
-            # print('Why does vertical accuracy only have nans?', location_vertical_accuracy)
-
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=range_m,
                                    wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
@@ -348,12 +351,12 @@ if __name__ == "__main__":
                                    figure_title=EVENT_NAME + ": Location Framework")
 
         if health_battery_charge_label and health_internal_temp_deg_C_label and health_network_type_label \
-                and barometer_data_raw_label in df_skyfall_data.columns:
+                and barometer_data_raw_label and location_provider_label in df_skyfall_data.columns:
 
-            # TODO, ANTHONY: How to handle these
-            # print("\nLocation provider:", location_provider)
-            print(f"network_type_epoch_s_0:", df_skyfall_data[health_network_type_label][station][0],
-                  f", network_type_epoch_s_end:", df_skyfall_data[health_network_type_label][station][-1])
+            print(f"\nlocation_provider_epoch_s_0: {df_skyfall_data[location_provider_label][station][0]}",
+                  f", location_provider_epoch_s_end: {df_skyfall_data[location_provider_label][station][-1]}")
+            print(f"network_type_epoch_s_0: {df_skyfall_data[health_network_type_label][station][0]}",
+                  f", network_type_epoch_s_end: {df_skyfall_data[health_network_type_label][station][-1]}")
 
             # Other interesting fields: Estimated Height ASL, Internal Temp, % Battery
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
@@ -369,30 +372,22 @@ if __name__ == "__main__":
                                    wf_panel_0_units="Battery %",
                                    figure_title=EVENT_NAME + ": Station Status")
 
-        # TODO: Convert synchronization to a sensor object. In fact, convert everything to a sensor object.
-        # TODO: Get number of synch exchanges per packet
-        # synchronization = station.timesync_analysis
-        # synchronization_epoch_s = synchronization.get_start_times() * rpd_scales.MICROS_TO_S
-        # synchronization_latency_ms = synchronization.get_latencies() * rpd_scales.MICROS_TO_MILLIS
-        # synchronization_offset_ms = synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS
-        # synchronization_best_offset_ms = synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS
-        # synchronization_offset_delta_ms = synchronization_offset_ms - synchronization_best_offset_ms
-        # # TODO, TYLER: Get number of synch exchanges per packet as a time series
-        # synchronization_number_exchanges = synchronization.timesync_data[0].num_tri_messages()
-        #
-        # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-        #                        wf_panel_2_sig=synchronization_latency_ms,
-        #                        wf_panel_2_time=synchronization_epoch_s,
-        #                        wf_panel_1_sig=synchronization_offset_ms,
-        #                        wf_panel_1_time=synchronization_epoch_s,
-        #                        wf_panel_0_sig=synchronization_offset_delta_ms,
-        #                        wf_panel_0_time=synchronization_epoch_s,
-        #                        start_time_epoch=event_reference_time_epoch_s,
-        #                        wf_panel_2_units="Latency, ms",
-        #                        wf_panel_1_units="Offset, s",
-        #                        wf_panel_0_units="Offset delta, s",
-        #                        figure_title=EVENT_NAME + ": Synchronization Framework")
-        # TODO: Address nan padding on location framework
+        if synchronization_epoch_label and synchronization_latency_label and synchronization_offset_label \
+                and synchronization_best_offset_label and synchronization_offset_delta_label and \
+                synchronization_number_exchanges_label in df_skyfall_data.columns:
+
+            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+                                   wf_panel_2_sig=df_skyfall_data[synchronization_latency_label][station],
+                                   wf_panel_2_time=df_skyfall_data[synchronization_epoch_label][station],
+                                   wf_panel_1_sig=df_skyfall_data[synchronization_offset_label][station],
+                                   wf_panel_1_time=df_skyfall_data[synchronization_epoch_label][station],
+                                   wf_panel_0_sig=df_skyfall_data[synchronization_offset_delta_label][station],
+                                   wf_panel_0_time=df_skyfall_data[synchronization_epoch_label][station],
+                                   start_time_epoch=event_reference_time_epoch_s,
+                                   wf_panel_2_units="Latency, ms",
+                                   wf_panel_1_units="Offset, s",
+                                   wf_panel_0_units="Offset delta, s",
+                                   figure_title=EVENT_NAME + ": Synchronization Framework")
 
         if health_internal_temp_deg_C_label and barometer_data_raw_label and location_altitude_label \
                 in df_skyfall_data.columns:
