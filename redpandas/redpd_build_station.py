@@ -45,29 +45,6 @@ def station_to_dict_from_dw(
     return sensors
 
 
-def convert_enum(enum_type: str, values: list) -> List[str]:
-    """
-    convert list of enum values into strings
-
-    :param enum_type: type of enum to convert into
-    :param values: list of enum values
-    :return: list of string representation of enum values
-    """
-    if enum_type == "location_provider":
-        return [LocationProvider(c).name for c in values]
-    elif enum_type == "image_codec":
-        return [ImageCodec(c).name for c in values]
-    elif enum_type == "network_type":
-        return [NetworkType(c).name for c in values]
-    elif enum_type == "power_state":
-        return [PowerState(c).name for c in values]
-    elif enum_type == "cell_service":
-        return [CellServiceState(c).name for c in values]
-    elif enum_type == "operating_system":
-        return [OsType(c).name for c in values]
-    return []
-
-
 def sensor_uneven(station: Station, sensor_label: str):
     """
     ID nans, sample rate, epoch, raw of uneven sensor
@@ -216,9 +193,7 @@ def location_build_station(station: Station) -> dict:
                 'location_vertical_accuracy': station.location_sensor().get_data_channel("vertical_accuracy"),
                 'location_bearing_accuracy': station.location_sensor().get_data_channel("bearing_accuracy"),
                 'location_speed_accuracy': station.location_sensor().get_data_channel("speed_accuracy"),
-                'location_provider':
-                    convert_enum("location_provider",
-                                  station.location_sensor().get_data_channel("location_provider"))}
+                'location_provider': station.location_sensor().get_data_channel("location_provider")}
     else:
         print(f'Station {station.id} has no location data.')
         return {}
@@ -240,15 +215,12 @@ def state_of_health_build_station(station: Station) -> dict:
                 'battery_current_strength_mA':
                     station.health_sensor().get_data_channel('battery_current_strength'),
                 'internal_temp_deg_C': station.health_sensor().get_data_channel('internal_temp_c'),
-                'network_type': convert_enum('network_type',
-                                              station.health_sensor().get_data_channel('network_type')),
+                'network_type': station.health_sensor().get_data_channel('network_type'),
                 'network_strength_dB': station.health_sensor().get_data_channel('network_strength'),
-                'power_state': convert_enum('power_state',
-                                             station.health_sensor().get_data_channel('power_state')),
+                'power_state': station.health_sensor().get_data_channel('power_state'),
                 'available_ram_byte': station.health_sensor().get_data_channel('avail_ram'),
                 'available_disk_byte': station.health_sensor().get_data_channel('avail_disk'),
-                'cell_service_state': convert_enum('cell_service',
-                                                    station.health_sensor().get_data_channel('cell_service'))}
+                'cell_service_state': station.health_sensor().get_data_channel('cell_service')}
     else:
         print(f'Station {station.id} has no health data.')
         return {}
