@@ -104,7 +104,7 @@ def build_fast(api_input_directory: str,
     :return:
     """
 
-    print("Load data and construct DataWindow for", event_name)
+    print(f"Loading data and constructing RedVox DataWindow for {event_name}.", end=" ")
     # Load signals
     rdvx_data = DataWindowFast(input_dir=api_input_directory,
                                station_ids=redvox_station_ids,
@@ -116,10 +116,11 @@ def build_fast(api_input_directory: str,
                                end_buffer_td=dt.timedelta(minutes=end_buffer_minutes),
                                debug=debug)
 
+    print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
     rdvx_data.to_json_file(base_dir=output_directory,
                            file_name=output_filename)
 
-    print("Exported data window json and pickle")
+    print("Done.")
 
 
 def plot_dw_mic(data_window):

@@ -24,13 +24,12 @@ if __name__ == "__main__":
     Last updated: 17 May 2021
     """
     print('Let the sky fall')
-    print("Initiating Conversion from DataWindow to RedPandas")
+    print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
 
     if not os.path.exists(OUTPUT_DIR):
         os.mkdir(OUTPUT_DIR)
 
     if build_dw_pickle:
-        print("Creating New Data Window")
         # RECOMMENDED USE
         # Load signals, create a RedVox DataWindow structure, export to pickle.
         rpd_dw.build_fast(api_input_directory=INPUT_DIR,
@@ -46,7 +45,7 @@ if __name__ == "__main__":
 
     # Import DataWindow
     else:
-        print("\nAssuming compressed and pickled DW with JSON already built")
+        print("\nUnpickling existing compressed RedVox DataWindow with JSON...")
     rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
                                                               file_name=DW_FILE)
 
@@ -66,6 +65,7 @@ if __name__ == "__main__":
         plt.show()
 
     # BEGIN RED PANDAS
+    print("Initiating RedVox Redpandas:")
     df_all_sensors_all_stations = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
                                                                                       sdk_version=rdvx_data.sdk_version,
                                                                                       sensor_labels=SENSOR_LABEL)
@@ -103,13 +103,14 @@ if __name__ == "__main__":
 
         # Export pandas data frame to parquet
         df_all_sensors_all_stations.to_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
-        print("\nExported pandas data frame to " + os.path.join(OUTPUT_DIR, PD_PQT_FILE))
+        print("\nExported Pandas DataFrame to " + os.path.join(OUTPUT_DIR, PD_PQT_FILE))
 
         # Check that parquet file saves and opens correctly
         df_open = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
-        print("Total stations:", len(df_open['station_id']))
+        print("Total stations in DataFrame:", len(df_open['station_id']))
         print("Available stations names:", df_open['station_id'])
-        print("Total available columns:", df_open.columns)
+        print("Total columns in DataFrame:", len(df_open.columns))
+        print("Available columns names:", df_open.columns)
 
     else:
         print("\nDid not export pandas data frame, must set build_df_parquet = True")

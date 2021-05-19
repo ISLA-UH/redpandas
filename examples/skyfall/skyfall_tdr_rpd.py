@@ -53,6 +53,7 @@ if __name__ == "__main__":
 
     # Label columns in dataframe
     station_label: str = "station_id"
+    redvox_sdk_version_label: str = 'redvox_sdk_version'
 
     # Audio columns
     audio_data_label: str = "audio_wf"
@@ -107,21 +108,24 @@ if __name__ == "__main__":
 
     # Load data options
     if use_datawindow is True or use_pickle is True:
-        print("\nInitiating Conversion from DataWindow to RedPandas")
+        print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
         if use_datawindow:  # Option A: Create DataWindow object
-            print("Creating New Data Window")
+            print("Constructing RedVox DataWindow Fast...", end=" ")
             rdvx_data = DataWindowFast(input_dir=INPUT_DIR,
                                        station_ids=STATIONS,
                                        start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
                                        end_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_END_EPOCH_S),
                                        apply_correction=True,
                                        structured_layout=True)
+            print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
-            print("\nAssuming compressed and pickled DW with JSON already built")
+            print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
             rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
+            print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         # For option A or B, begin RedPandas
+        print("Initiating RedVox Redpandas:")
         df_skyfall_data = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
                                                                               sdk_version=rdvx_data.sdk_version,
                                                                               sensor_labels=SENSOR_LABEL)
@@ -129,21 +133,23 @@ if __name__ == "__main__":
         df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
 
     elif use_parquet:  # Option C: Open dataframe from parquet file
-        print("\nAssuming parquet already built using RedPandas")
+        print("Loading exisiting RedPandas Parquet...", end=" ")
         df_skyfall_data = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
+        print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
     else:
-        print('No data loading method selected. '
+        print('\nNo data loading method selected. '
               'Check use_datawindow, use_pickle, or use_parquet in the Skyfall configuration file are set to True.')
         exit()
 
     # Start of building plots
+    print("\nInitiating Time-frequency representation of API900 data:")
     for station in df_skyfall_data.index:
         station_id_str = df_skyfall_data[station_label][station]  # Get the station id
 
         if audio_data_label and audio_fs_label in df_skyfall_data.columns:
 
-            print('\nmic_sample_rate_hz: ', df_skyfall_data[audio_fs_label][station])
+            print('mic_sample_rate_hz: ', df_skyfall_data[audio_fs_label][station])
             print('mic_epoch_s_0: ', df_skyfall_data[audio_epoch_s_label][station][0])
 
             # Frame to mic start and end and plot
@@ -353,7 +359,7 @@ if __name__ == "__main__":
         if health_battery_charge_label and health_internal_temp_deg_C_label and health_network_type_label \
                 and barometer_data_raw_label and location_provider_label in df_skyfall_data.columns:
 
-            print(f"\nlocation_provider_epoch_s_0: {df_skyfall_data[location_provider_label][station][0]}",
+            print(f"location_provider_epoch_s_0: {df_skyfall_data[location_provider_label][station][0]}",
                   f", location_provider_epoch_s_end: {df_skyfall_data[location_provider_label][station][-1]}")
             print(f"network_type_epoch_s_0: {df_skyfall_data[health_network_type_label][station][0]}",
                   f", network_type_epoch_s_end: {df_skyfall_data[health_network_type_label][station][-1]}")
@@ -408,10 +414,12 @@ if __name__ == "__main__":
         # plt.show()
 
         sensor_column_label_list = [audio_data_label, barometer_data_highpass_label,
-                                    accelerometer_data_highpass_label, gyroscope_data_highpass_label, magnetometer_data_highpass_label]
+                                    accelerometer_data_highpass_label, gyroscope_data_highpass_label,
+                                    magnetometer_data_highpass_label]
 
         sensor_epoch_column_label_list = [audio_epoch_s_label, barometer_epoch_s_label,
-                                          accelerometer_epoch_s_label, gyroscope_epoch_s_label, magnetometer_epoch_s_label]
+                                          accelerometer_epoch_s_label, gyroscope_epoch_s_label,
+                                          magnetometer_epoch_s_label]
 
         sensor_ticklabels_list = ['Audio', 'Baro highpass', 'Acc X highpass', 'Acc Y highpass',
                                   'Acc Z highpass', 'Gyro X highpass', 'Gyro Y highpass', 'Gyro Z highpass',
@@ -428,5 +436,7 @@ if __name__ == "__main__":
                                             fig_title='sensor waveforms',
                                             wf_color='midnightblue',
                                             sensor_yticks_label_list=sensor_ticklabels_list)
+
+        # power_signal =
 
         plt.show()

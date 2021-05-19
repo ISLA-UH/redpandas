@@ -36,7 +36,7 @@ def station_to_dict_from_dw(
                'station_app_version': station.metadata.app_version,
                'redvox_sdk_version': sdk_version}
 
-    print(f"Prep {station.id}...", end=" ")
+    print(f"Prep Station {station.id}...", end=" ")
     for label in sensor_labels:
         print(f"{label} sensor...", end=" ")
         df_sensor = build_station(station=station, sensor_label=label)
