@@ -9,6 +9,7 @@ import numpy as np
 from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
 import redvox.common.date_time_utils as dt
 from redvox.common.station import Station
+from redvox.api1000.wrapped_redvox_packet.station_information import OsType
 
 
 @dataclass_json
@@ -186,7 +187,7 @@ def station_metadata(data_window):
         else:
             print(f"STATION SPECS FOR ID: "
                   f"{station.id}\n"
-                  f"App start time not available"
+                  f"App start time not available\n"
                   f"Station first time stamp: "
                   f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"
                   f"Station last time stamp: "
@@ -198,7 +199,7 @@ def station_metadata(data_window):
               f"Model: "
               f"{station.metadata.model}\n"
               f"OS: "
-              f"{station.metadata.os}\n"
+              f"{OsType(station.metadata.os).name}\n"
               f"OS version: "
               f"{station.metadata.os_version}\n"
               f"App Version: "
