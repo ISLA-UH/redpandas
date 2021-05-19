@@ -7,7 +7,7 @@ from enum import Enum
 from typing import List
 
 import numpy as np
-from redvox.api1000.wrapped_redvox_packet.station_information import NetworkType, PowerState, CellServiceState
+from redvox.api1000.wrapped_redvox_packet.station_information import NetworkType, PowerState, CellServiceState, OsType
 from redvox.api1000.wrapped_redvox_packet.sensors.location import LocationProvider
 from redvox.api1000.wrapped_redvox_packet.sensors.image import ImageCodec
 from redvox.common.station import Station
@@ -19,8 +19,7 @@ import redpandas.redpd_scales as rpd_scales
 def station_to_dict_from_dw(
         station: Station,
         sdk_version: str,
-        sensor_labels: List[str]
-):
+        sensor_labels: List[str]):
     """
     converts information from a station object created by a data window into a dictionary easily converted into
     a dataframe
@@ -64,6 +63,8 @@ def convert_enum(enum_type: str, values: list) -> List[str]:
         return [PowerState(c).name for c in values]
     elif enum_type == "cell_service":
         return [CellServiceState(c).name for c in values]
+    elif enum_type == "operating_system":
+        return [OsType(c).name for c in values]
     return []
 
 
