@@ -1,7 +1,5 @@
-# Python libraries
-import os
-
 import csv
+# To export to Excel, save to Pandas first
 
 # RedVox and Red Pandas modules
 from redvox.common.data_window import DataWindowFast
@@ -38,39 +36,26 @@ def station_specs_to_csv(data_window, export_file):
             writer.writerow(["SDK Version", "station.metadata.os_version", data_window.sdk_version])
             writer.writerow([])
 
-            writer.writerow(["Description", "Field", "Value"])
-            writer.writerow(["Station ID", "station.id", station.id])
+            writer.writerow(["Station and Event Date"])
+            writer.writerow(["Description", "Field", "Epoch s", "Human UTC"])
+            if station.start_timestamp > 0:
+                writer.writerow(["Station Start Date", "station.start_timestamp",
+                                 str(station.start_timestamp/1E6),
+                                 dt.datetime_from_epoch_microseconds_utc(station.start_timestamp)])
+            else:
+                writer.writerow(["Station Start Date", "station.start_timestamp",
+                                 "N/A",
+                                 "N/A before v2.6.3"])
+            writer.writerow(["Event Start Date", "station.first_data_timestamp",
+                             str(station.first_data_timestamp/1E6),
+                             dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)])
+            writer.writerow(["Event End Date", "station.first_data_timestamp",
+                             str(station.last_data_timestamp/1E6),
+                             dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp)])
+            writer.writerow([])
 
-            # if station.start_timestamp > 0:
-            #     writer.writerow("STATION SPECS FOR ID: "
-            #           f"{station.id}\n"
-            #           f"App start time: "
-            #           f"{dt.datetime_from_epoch_microseconds_utc(station.start_timestamp)}\n"
-            #           f"Station first time stamp: "
-            #           f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"
-            #           f"Station last time stamp: "
-            #           f"{dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp)}\n")
-            # else:
-            #     writer.writerow(f"STATION SPECS FOR ID: "
-            #           f"{station.id}\n"
-            #           f"App start time not available\n"
-            #           f"Station first time stamp: "
-            #           f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"
-            #           f"Station last time stamp: "
-            #           f"{dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp)}\n")
-        #
-        # print(f"Station Metadata:\n"
-        #       f"Make: "
-        #       f"{station.metadata.make}\n"
-        #       f"Model: "
-        #       f"{station.metadata.model}\n"
-        #       f"OS: "
-        #       f"{OsType(station.metadata.os).name}\n"
-        #       f"OS version: "
-        #       f"{station.metadata.os_version}\n"
-        #       f"App Version: "
-        #       f"{station.metadata.app_version}\n")
-        #
+            writer.writerow(["Station Sensors"])
+            writer.writerow(["Description", "Field", "Value"])
         # if station.has_audio_data():
         #     print(f"\nAudio Sensor:\n"
         #           f"Model: "
@@ -142,10 +127,12 @@ if __name__ == "__main__":
     Last updated: 17 May 2021
     """
     print('Let the sky fall')
-    print("Plot station information")
+    print("Print and save station information")
 
     rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
                                                               file_name=DW_FILE)
+    rpd_dq.station_metadata(rdvx_data)
+
     print("\nSave Station specs to file")
     station_file = "skyfall_station.csv"
     station_specs_to_csv(rdvx_data, station_file)
