@@ -2,12 +2,11 @@
 # Python libraries
 import os.path
 import pickle
-
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-# RedVox and Red Pandas modules
-# from redvox.common.data_window import DataWindow
+
+# RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindowFast
 import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
@@ -22,7 +21,7 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, E
 
 
 # Verify points to correct config file.
-# TODO MC: plot hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
+# TODO MC: plot 3c hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
 
 # TODO MC and MAG: decide where this fcn lives
 def df_column_unflatten(df: pd.DataFrame,
@@ -46,7 +45,7 @@ def df_column_unflatten(df: pd.DataFrame,
 if __name__ == "__main__":
     """
     Red Pandas time-frequency representation of API900 data
-    Last updated: 17 May 2021
+    Last updated: 19 May 2021
     """
 
     print('Let the sky fall')
@@ -143,7 +142,7 @@ if __name__ == "__main__":
         exit()
 
     # Start of building plots
-    print("\nInitiating Time-frequency representation of API900 data:")
+    print("\nInitiating Time-frequency representation of Skyfall:")
     for station in df_skyfall_data.index:
         station_id_str = df_skyfall_data[station_label][station]  # Get the station id
 

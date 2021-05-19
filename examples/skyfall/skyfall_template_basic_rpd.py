@@ -21,7 +21,7 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, EPISODE_START
 if __name__ == "__main__":
     """
     Beta workflow for API M pipeline
-    Last updated: 17 May 2021
+    Last updated: 19 May 2021
     """
     print('Let the sky fall')
     print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
