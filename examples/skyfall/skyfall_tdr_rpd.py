@@ -24,7 +24,7 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, E
 # Verify points to correct config file.
 # TODO MC: plot hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
 
-# TODO: decide where this fcn lives
+# TODO MC and MAG: decide where this fcn lives
 def df_column_unflatten(df: pd.DataFrame,
                         col_wf_label: str,
                         col_ndim_label: str):
@@ -417,6 +417,7 @@ if __name__ == "__main__":
                                   'Acc Z highpass', 'Gyro X highpass', 'Gyro Y highpass', 'Gyro Z highpass',
                                   'Mag X highpass', 'Mag Y highpass', 'Mag Z highpass']
 
+        # TODO: MC XYZ order, follow other order from previous plots
         rpd_plot.plot_sensor_wiggles_pandas(df=df_skyfall_data,
                                             station_id_str='1637610021',
                                             sensor_wf_label_list=sensor_column_label_list,
