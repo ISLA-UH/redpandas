@@ -33,7 +33,7 @@ EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration
 # EPISODE_START_EPOCH_S = EPISODE_CENTER_EPOCH_S - time_edge_s
 # EPISODE_END_EPOCH_S = EPISODE_CENTER_EPOCH_S + time_edge_s
 
-# For skyfall_template_basic_rpd.py
+# For skyfall_template_basic_rpd.py (Step 1)
 # Available sensors: 'audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope', 'location', 'health', 'image',
 # 'clock' and 'synchronization'
 SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
@@ -44,7 +44,7 @@ print_datawindow_dq: bool = False  # Print basic DQ/DA to screen
 plot_mic_waveforms: bool = False  # Show raw RDVX DataWindow waveforms
 build_df_parquet: bool = True  # Export pandas data frame as parquet
 
-# For skyfall_tdr_rpd.py
+# For skyfall_tdr_rpd.py (Step 2)
 use_datawindow: bool = False  # Load data using RDVX DataWindow
 use_pickle: bool = False  # Load data using a pickle with RDVX DataWindow, either serialized or not
 use_parquet: bool = True  # Load data using parquet with RedPandas dataframe

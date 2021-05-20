@@ -132,10 +132,10 @@ def station_channel_timing(data_window):
                                                station.audio_sensor().first_data_timestamp())
             barometer_last_timestamp_delta = (station.barometer_sensor().last_data_timestamp() -
                                               station.audio_sensor().last_data_timestamp())
-            print(f"Barometer Sensor:\n"
-                  f"Barometer first data timestamp diff from mic: "
+            print(f"barometer Sensor:\n"
+                  f"barometer first data timestamp diff from mic: "
                   '{0:.17}'.format(barometer_first_timestamp_delta),"\n"
-                  f"Barometer last data timestamp diff from mic: "
+                  f"barometer last data timestamp diff from mic: "
                   f"{barometer_last_timestamp_delta}\n")
 
         if station.has_accelerometer_data():

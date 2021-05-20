@@ -7,7 +7,7 @@ import numpy as np
 
 # RedVox and Red Pandas modules
 from redvox.common.data_window import DataWindowFast
-
+import redvox.settings as settings
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
 import redpandas.redpd_build_station as rpd_build_sta
@@ -25,6 +25,8 @@ if __name__ == "__main__":
     """
     print('Let the sky fall')
     print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
+
+    settings.set_parallelism_enabled(True)
 
     if not os.path.exists(OUTPUT_DIR):
         os.mkdir(OUTPUT_DIR)
@@ -65,7 +67,7 @@ if __name__ == "__main__":
         plt.show()
 
     # BEGIN RED PANDAS
-    print("Initiating RedVox Redpandas:")
+    print("\nInitiating RedVox Redpandas:")
     df_all_sensors_all_stations = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
                                                                                       sdk_version=rdvx_data.sdk_version,
                                                                                       sensor_labels=SENSOR_LABEL)
@@ -103,7 +105,7 @@ if __name__ == "__main__":
 
         # Export pandas data frame to parquet
         df_all_sensors_all_stations.to_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
-        print("\nExported Pandas DataFrame to " + os.path.join(OUTPUT_DIR, PD_PQT_FILE))
+        print("\nExported Parquet RedPandas DataFrame to " + os.path.join(OUTPUT_DIR, PD_PQT_FILE))
 
         # Check that parquet file saves and opens correctly
         df_open = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))

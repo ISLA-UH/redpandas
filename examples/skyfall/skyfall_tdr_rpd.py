@@ -44,7 +44,7 @@ def df_column_unflatten(df: pd.DataFrame,
 
 if __name__ == "__main__":
     """
-    Red Pandas time-frequency representation of API900 data
+    Red Pandas time-domain representation of API900 data
     Last updated: 19 May 2021
     """
 
@@ -124,7 +124,7 @@ if __name__ == "__main__":
             print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         # For option A or B, begin RedPandas
-        print("Initiating RedVox Redpandas:")
+        print("\nInitiating RedVox Redpandas:")
         df_skyfall_data = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
                                                                               sdk_version=rdvx_data.sdk_version,
                                                                               sensor_labels=SENSOR_LABEL)
@@ -138,11 +138,11 @@ if __name__ == "__main__":
 
     else:
         print('\nNo data loading method selected. '
-              'Check use_datawindow, use_pickle, or use_parquet in the Skyfall configuration file are set to True.')
+              'Check that use_datawindow, use_pickle, or use_parquet in the Skyfall configuration file are set to True.')
         exit()
 
     # Start of building plots
-    print("\nInitiating Time-frequency representation of Skyfall:")
+    print("\nInitiating time-domain representation of Skyfall:")
     for station in df_skyfall_data.index:
         station_id_str = df_skyfall_data[station_label][station]  # Get the station id
 
@@ -381,6 +381,7 @@ if __name__ == "__main__":
                 and synchronization_best_offset_label and synchronization_offset_delta_label and \
                 synchronization_number_exchanges_label in df_skyfall_data.columns:
 
+            # Plot synchronization
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[synchronization_latency_label][station],
                                    wf_panel_2_time=df_skyfall_data[synchronization_epoch_label][station],
@@ -439,3 +440,5 @@ if __name__ == "__main__":
         # power_signal =
 
         plt.show()
+
+
