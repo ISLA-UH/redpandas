@@ -37,6 +37,7 @@ def station_specs_to_csv(data_window, export_file):
             writer.writerow([])
 
             writer.writerow(["Station and Event Date"])
+            writer.writerow([])
             writer.writerow(["Description", "Field", "Epoch s", "Human UTC"])
             if station.start_timestamp > 0:
                 writer.writerow(["Station Start Date", "station.start_timestamp",
@@ -55,18 +56,22 @@ def station_specs_to_csv(data_window, export_file):
             writer.writerow([])
 
             writer.writerow(["Station Sensors"])
-            writer.writerow(["Description", "Field", "Value"])
-        # if station.has_audio_data():
-        #     print(f"\nAudio Sensor:\n"
-        #           f"Model: "
-        #           f"{station.audio_sensor().name}\n"
-        #           f"Sample rate, Hz: "
-        #           f"{station.audio_sensor().sample_rate_hz}\n"
-        #           f"Sample interval, seconds: "
-        #           f"{station.audio_sensor().sample_interval_s}\n"
-        #           f"Sample interval standard dev, seconds: "
-        #           f"{station.audio_sensor().sample_interval_std_s}\n")
-        #
+            writer.writerow([])
+
+            if station.has_audio_data():
+                writer.writerow(["Microphone"])
+                writer.writerow(["Description", "Field", "Value"])
+                writer.writerow(["Sensor Name", "station.audio_sensor().name",
+                                 station.audio_sensor().name])
+                writer.writerow(["Nominal Sample Rate Hz", "station.audio_sample_rate_nominal_hz",
+                                 station.audio_sample_rate_nominal_hz])
+                writer.writerow(["Computed Sample Rate Hz", "station.audio_sensor().sample_rate_hz",
+                                 station.audio_sensor().sample_rate_hz])
+                writer.writerow(["Computed Sample Interval ms", "station.audio_sensor().sample_interval_s",
+                                 station.audio_sensor().sample_interval_s])
+                writer.writerow(["Computed Interval Dev ms", "station.audio_sensor().sample_interval_std_s",
+                                 station.audio_sensor().sample_interval_std_s])
+
         # if station.has_barometer_data():
         #     print(f"Barometer Sensor:\n"
         #           f"Model: "
