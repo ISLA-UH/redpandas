@@ -53,77 +53,88 @@ def station_specs_to_csv(data_window, export_file):
             writer.writerow(["Event End Date", "station.first_data_timestamp",
                              str(station.last_data_timestamp/1E6),
                              dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp)])
-            writer.writerow([])
 
+            writer.writerow([])
             writer.writerow(["Station Sensors"])
-            writer.writerow([])
-
             if station.has_audio_data():
-                writer.writerow(["Microphone"])
+                writer.writerow([])
+                writer.writerow(["audio"])
                 writer.writerow(["Description", "Field", "Value"])
                 writer.writerow(["Sensor Name", "station.audio_sensor().name",
                                  station.audio_sensor().name])
-                writer.writerow(["Nominal Sample Rate Hz", "station.audio_sample_rate_nominal_hz",
+                writer.writerow(["Nominal Rate Hz", "station.audio_sample_rate_nominal_hz",
                                  station.audio_sample_rate_nominal_hz])
-                writer.writerow(["Computed Sample Rate Hz", "station.audio_sensor().sample_rate_hz",
+                writer.writerow(["Sample Rate Hz", "station.audio_sensor().sample_rate_hz",
                                  station.audio_sensor().sample_rate_hz])
-                writer.writerow(["Computed Sample Interval ms", "station.audio_sensor().sample_interval_s",
+                writer.writerow(["Sample Interval s", "station.audio_sensor().sample_interval_s",
                                  station.audio_sensor().sample_interval_s])
-                writer.writerow(["Computed Interval Dev ms", "station.audio_sensor().sample_interval_std_s",
+                writer.writerow(["Interval Dev s", "station.audio_sensor().sample_interval_std_s",
                                  station.audio_sensor().sample_interval_std_s])
 
-        # if station.has_barometer_data():
-        #     print(f"Barometer Sensor:\n"
-        #           f"Model: "
-        #           f"{station.barometer_sensor().name}\n"
-        #           f"Sample rate, Hz: "
-        #           f"{station.barometer_sensor().sample_rate_hz}\n"
-        #           f"Sample interval, seconds: "
-        #           f"{station.barometer_sensor().sample_interval_s}\n"
-        #           f"Sample interval standard dev, seconds: "
-        #           f"{station.barometer_sensor().sample_interval_std_s}\n")
-        # if station.has_accelerometer_data():
-        #     print(f"Accelerometer Sensor:\n"
-        #           f"Model: "
-        #           f"{station.accelerometer_sensor().name}\n"
-        #           f"Sample rate, Hz: "
-        #           f"{station.accelerometer_sensor().sample_rate_hz}\n"
-        #           f"Sample interval, seconds: "
-        #           f"{station.accelerometer_sensor().sample_interval_s}\n"
-        #           f"Sample interval standard dev, seconds: "
-        #           f"{station.accelerometer_sensor().sample_interval_std_s}\n")
-        # if station.has_magnetometer_data():
-        #     print(f"Magnetometer Sensor:\n"
-        #           f"Model: "
-        #           f"{station.magnetometer_sensor().name}\n"
-        #           f"Sample rate, Hz: "
-        #           f"{station.magnetometer_sensor().sample_rate_hz}\n"
-        #           f"Sample interval, seconds: "
-        #           f"{station.magnetometer_sensor().sample_interval_s}\n"
-        #           f"Sample interval standard dev, seconds: "
-        #           f"{station.magnetometer_sensor().sample_interval_std_s}\n")
-        # if station.has_gyroscope_data():
-        #     print(f"Gyroscope Sensor:\n"
-        #           f"Model: "
-        #           f"{station.gyroscope_sensor().name}\n"
-        #           f"Sample rate, Hz: "
-        #           f"{station.gyroscope_sensor().sample_rate_hz}\n"
-        #           f"Sample interval, seconds: "
-        #           f"{station.gyroscope_sensor().sample_interval_s}\n"
-        #           f"Sample interval standard dev, seconds: "
-        #           f"{station.gyroscope_sensor().sample_interval_std_s}\n")
-        # if station.has_location_sensor():
-        #     print(f"Location Sensor:\n"
-        #           f"Model: "
-        #           f"{station.location_sensor().name}\n"
-        #           f"Sample rate, Hz: "
-        #           f"{station.location_sensor().sample_rate_hz}\n"
-        #           f"Sample interval, seconds: "
-        #           f"{station.location_sensor().sample_interval_s}\n"
-        #           f"Sample interval standard dev, seconds: "
-        #           f"{station.location_sensor().sample_interval_std_s}\n"
-        #           f"Number of GPS Points, Samples: "
-        #           f"{station.location_sensor().num_samples()}\n")
+            if station.has_barometer_data():
+                writer.writerow([])
+                writer.writerow(["barometer"])
+                writer.writerow(["Description", "Field", "Value"])
+                writer.writerow(["Sensor Name", "station.barometer_sensor().name",
+                                 station.barometer_sensor().name])
+                writer.writerow(["Sample Rate Hz", "station.barometer_sensor().sample_rate_hz",
+                                 station.barometer_sensor().sample_rate_hz])
+                writer.writerow(["Sample Interval s", "station.barometer_sensor().sample_interval_s",
+                                 station.barometer_sensor().sample_interval_s])
+                writer.writerow(["Interval Dev s", "station.barometer_sensor().sample_interval_std_s",
+                                 station.barometer_sensor().sample_interval_std_s])
+
+            if station.has_accelerometer_data():
+                writer.writerow([])
+                writer.writerow(["accelerometer"])
+                writer.writerow(["Description", "Field", "Value"])
+                writer.writerow(["Sensor Name", "station.accelerometer_sensor().name",
+                                 station.accelerometer_sensor().name])
+                writer.writerow(["Sample Rate Hz", "station.accelerometer_sensor().sample_rate_hz",
+                                 station.accelerometer_sensor().sample_rate_hz])
+                writer.writerow(["Sample Interval s", "station.accelerometer_sensor().sample_interval_s",
+                                 station.accelerometer_sensor().sample_interval_s])
+                writer.writerow(["Interval Dev s", "station.accelerometer_sensor().sample_interval_std_s",
+                                 station.accelerometer_sensor().sample_interval_std_s])
+
+            if station.has_gyroscope_data():
+                writer.writerow([])
+                writer.writerow(["gyroscope"])
+                writer.writerow(["Description", "Field", "Value"])
+                writer.writerow(["Sensor Name", "station.gyroscope_sensor().name",
+                                 station.gyroscope_sensor().name])
+                writer.writerow(["Sample Rate Hz", "station.gyroscope_sensor().sample_rate_hz",
+                                 station.gyroscope_sensor().sample_rate_hz])
+                writer.writerow(["Sample Interval s", "station.gyroscope_sensor().sample_interval_s",
+                                 station.gyroscope_sensor().sample_interval_s])
+                writer.writerow(["Interval Dev s", "station.gyroscope_sensor().sample_interval_std_s",
+                                 station.gyroscope_sensor().sample_interval_std_s])
+
+            if station.has_magnetometer_data():
+                writer.writerow([])
+                writer.writerow(["magnetometer"])
+                writer.writerow(["Description", "Field", "Value"])
+                writer.writerow(["Sensor Name", "station.magnetometer_sensor().name",
+                                 station.magnetometer_sensor().name])
+                writer.writerow(["Sample Rate Hz", "station.magnetometer_sensor().sample_rate_hz",
+                                 station.magnetometer_sensor().sample_rate_hz])
+                writer.writerow(["Sample Interval s", "station.magnetometer_sensor().sample_interval_s",
+                                 station.magnetometer_sensor().sample_interval_s])
+                writer.writerow(["Interval Dev s", "station.magnetometer_sensor().sample_interval_std_s",
+                                 station.magnetometer_sensor().sample_interval_std_s])
+
+            if station.has_location_data():
+                writer.writerow([])
+                writer.writerow(["location"])
+                writer.writerow(["Description", "Field", "Value"])
+                writer.writerow(["Sensor Name", "station.location_sensor().name",
+                                 station.location_sensor().name])
+                writer.writerow(["Sample Rate Hz", "station.location_sensor().sample_rate_hz",
+                                 station.location_sensor().sample_rate_hz])
+                writer.writerow(["Sample Interval s", "station.location_sensor().sample_interval_s",
+                                 station.location_sensor().sample_interval_s])
+                writer.writerow(["Interval Dev s", "station.location_sensor().sample_interval_std_s",
+                                 station.location_sensor().sample_interval_std_s])
 
 
 if __name__ == "__main__":
