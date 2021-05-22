@@ -22,30 +22,12 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, E
 
 # Verify points to correct config file.
 # TODO MC: plot 3c hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
-
-# TODO MC and MAG: decide where this fcn lives
-def df_column_unflatten(df: pd.DataFrame,
-                        col_wf_label: str,
-                        col_ndim_label: str):
-    """
-    Restores original shape of elements in column
-
-    :param df: pandas DataFrame
-    :param col_wf_label: column label for data that needs reshaping, usually waveform arrays.
-    :param col_ndim_label: column label with dimensions for reshaping. Elements in column need to be a numpy array.
-    :return: original df, replaces column values with reshaped ones
-    """
-
-    col_values = df[col_wf_label].to_numpy()
-    for index_array in df.index:
-        col_values[index_array].shape = (df[col_ndim_label][index_array][0],
-                                         df[col_ndim_label][index_array][1])
-
+# TODO MC: location masking
 
 if __name__ == "__main__":
     """
-    Red Pandas time-domain representation of API900 data
-    Last updated: 19 May 2021
+    RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
+    Last updated: 21 May 2021
     """
 
     print('Let the sky fall')
@@ -157,13 +139,13 @@ if __name__ == "__main__":
         if barometer_data_raw_label and barometer_data_highpass_label and barometer_fs_label in df_skyfall_data.columns:
             if use_parquet:
                 # Reshape wf columns
-                df_column_unflatten(df=df_skyfall_data,
-                                    col_wf_label=barometer_data_raw_label,
-                                    col_ndim_label=barometer_data_raw_label + "_ndim")
+                rpd_prep.df_column_unflatten(df=df_skyfall_data,
+                                             col_wf_label=barometer_data_raw_label,
+                                             col_ndim_label=barometer_data_raw_label + "_ndim")
 
-                df_column_unflatten(df=df_skyfall_data,
-                                    col_wf_label=barometer_data_highpass_label,
-                                    col_ndim_label=barometer_data_highpass_label + "_ndim")
+                rpd_prep.df_column_unflatten(df=df_skyfall_data,
+                                             col_wf_label=barometer_data_highpass_label,
+                                             col_ndim_label=barometer_data_highpass_label + "_ndim")
 
             print('barometer_sample_rate_hz:', df_skyfall_data[barometer_fs_label][station])
             print('barometer_epoch_s_0:', df_skyfall_data[barometer_epoch_s_label][station][0])
@@ -177,12 +159,12 @@ if __name__ == "__main__":
                 in df_skyfall_data.columns:
             if use_parquet:
                 # Reshape wf columns
-                df_column_unflatten(df=df_skyfall_data,
-                                    col_wf_label=accelerometer_data_raw_label,
-                                    col_ndim_label=accelerometer_data_raw_label + "_ndim")
-                df_column_unflatten(df=df_skyfall_data,
-                                    col_wf_label=accelerometer_data_highpass_label,
-                                    col_ndim_label=accelerometer_data_highpass_label + "_ndim")
+                rpd_prep.df_column_unflatten(df=df_skyfall_data,
+                                             col_wf_label=accelerometer_data_raw_label,
+                                             col_ndim_label=accelerometer_data_raw_label + "_ndim")
+                rpd_prep.df_column_unflatten(df=df_skyfall_data,
+                                             col_wf_label=accelerometer_data_highpass_label,
+                                             col_ndim_label=accelerometer_data_highpass_label + "_ndim")
 
             print('accelerometer_sample_rate_hz:', df_skyfall_data[accelerometer_fs_label][station])
             print('accelerometer_epoch_s_0:',  df_skyfall_data[accelerometer_epoch_s_label][station][0],
@@ -249,13 +231,13 @@ if __name__ == "__main__":
 
             if use_parquet:
                 # Reshape wf columns
-                df_column_unflatten(df=df_skyfall_data,
-                                    col_wf_label=gyroscope_data_raw_label,
-                                    col_ndim_label=gyroscope_data_raw_label + "_ndim")
+                rpd_prep.df_column_unflatten(df=df_skyfall_data,
+                                             col_wf_label=gyroscope_data_raw_label,
+                                             col_ndim_label=gyroscope_data_raw_label + "_ndim")
 
-                df_column_unflatten(df=df_skyfall_data,
-                                    col_wf_label=gyroscope_data_highpass_label,
-                                    col_ndim_label=gyroscope_data_highpass_label + "_ndim")
+                rpd_prep.df_column_unflatten(df=df_skyfall_data,
+                                             col_wf_label=gyroscope_data_highpass_label,
+                                             col_ndim_label=gyroscope_data_highpass_label + "_ndim")
 
             print('gyroscope_sample_rate_hz:', df_skyfall_data[gyroscope_fs_label][station])
             print('gyroscope_epoch_s_0:', df_skyfall_data[gyroscope_epoch_s_label][station][0],
@@ -292,12 +274,12 @@ if __name__ == "__main__":
                 in df_skyfall_data.columns:
             if use_parquet:
                 # Reshape wf columns
-                df_column_unflatten(df=df_skyfall_data,
-                                    col_wf_label=magnetometer_data_raw_label,
-                                    col_ndim_label=magnetometer_data_raw_label + "_ndim")
-                df_column_unflatten(df=df_skyfall_data,
-                                    col_wf_label=magnetometer_data_highpass_label,
-                                    col_ndim_label=magnetometer_data_highpass_label + "_ndim")
+                rpd_prep.df_column_unflatten(df=df_skyfall_data,
+                                             col_wf_label=magnetometer_data_raw_label,
+                                             col_ndim_label=magnetometer_data_raw_label + "_ndim")
+                rpd_prep.df_column_unflatten(df=df_skyfall_data,
+                                             col_wf_label=magnetometer_data_highpass_label,
+                                             col_ndim_label=magnetometer_data_highpass_label + "_ndim")
 
             print('magnetometer_sample_rate_hz:', df_skyfall_data[magnetometer_fs_label][station])
             print('magnetometer_epoch_s_0:', df_skyfall_data[magnetometer_epoch_s_label][station][0],
@@ -341,6 +323,11 @@ if __name__ == "__main__":
             range_lon = (df_skyfall_data[location_longitude_label][station] - location_longitude_reference) \
                         * rpd_scales.DEGREES_TO_M
             range_m = np.sqrt(np.array(range_lat**2 + range_lon**2).astype(np.float64))
+
+            # apply mask
+            # list_bool = [True] + [False]*(len(df_skyfall_data[location_speed_label][0])-1)
+            # mx = np.ma.masked_array(df_skyfall_data[location_speed_label][0], mask=list_bool)
+            # df_skyfall_data.loc[0, location_speed_label] = mx.tolist()
 
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=range_m,

@@ -21,7 +21,7 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, EPISODE_START
 if __name__ == "__main__":
     """
     Beta workflow for API M pipeline
-    Last updated: 19 May 2021
+    Last updated: 21 May 2021
     """
     print('Let the sky fall')
     print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
@@ -47,9 +47,10 @@ if __name__ == "__main__":
 
     # Import DataWindow
     else:
-        print("\nUnpickling existing compressed RedVox DataWindow with JSON...")
+        print("Unpickling existing compressed RedVox DataWindow with JSON...")
     rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
                                                               file_name=DW_FILE)
+    print(f"RedVox SDK version: {rdvx_data.sdk_version}")
 
     # Print out basic stats
     if print_datawindow_dq:
@@ -110,9 +111,9 @@ if __name__ == "__main__":
         # Check that parquet file saves and opens correctly
         df_open = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
         print("Total stations in DataFrame:", len(df_open['station_id']))
-        print("Available stations names:", df_open['station_id'])
+        print("Available stations:", df_open['station_id'])
         print("Total columns in DataFrame:", len(df_open.columns))
-        print("Available columns names:", df_open.columns)
+        print("Available columns:", df_open.columns)
 
     else:
         print("\nDid not export pandas data frame, must set build_df_parquet = True")

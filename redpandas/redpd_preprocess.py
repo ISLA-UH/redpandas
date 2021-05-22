@@ -9,8 +9,10 @@ from typing import Tuple
 import numpy as np
 from scipy import signal
 import obspy.signal.filter
-from redvox.common import date_time_utils as dt
+import pandas as pd
 
+# RedVox and RedPandas
+from redvox.common import date_time_utils as dt
 import redpandas.redpd_iterator as rdp_iter
 import redpandas.redpd_scales as rpd_scales
 
@@ -327,3 +329,22 @@ def highpass_from_diff(sensor_waveform: np.ndarray,
         sensor_waveform_reconstruct[i] = sensor_waveform_dp_filtered[i] + sensor_waveform_reconstruct[i-1]
 
     return sensor_waveform_reconstruct, frequency_filter_low
+
+
+def df_column_unflatten(df: pd.DataFrame,
+                        col_wf_label: str,
+                        col_ndim_label: str):
+    """
+    Restores original shape of elements in column
+
+    :param df: pandas DataFrame
+    :param col_wf_label: column label for data that needs reshaping, usually waveform arrays.
+    :param col_ndim_label: column label with dimensions for reshaping. Elements in column need to be a numpy array.
+    :return: original df, replaces column values with reshaped ones
+    """
+
+    col_values = df[col_wf_label].to_numpy()
+    for index_array in df.index:
+        col_values[index_array].shape = (df[col_ndim_label][index_array][0],
+                                         df[col_ndim_label][index_array][1])
+

@@ -1,17 +1,14 @@
 """
 This module contains general utilities that can work with values containing nans.
 """
-# TODO: build luminosity
+# TODO MC: finish build station luminosity
 
-from enum import Enum
 from typing import List
 
 import numpy as np
-from redvox.api1000.wrapped_redvox_packet.station_information import NetworkType, PowerState, CellServiceState, OsType
-from redvox.api1000.wrapped_redvox_packet.sensors.location import LocationProvider
-from redvox.api1000.wrapped_redvox_packet.sensors.image import ImageCodec
 from redvox.common.station import Station
 
+# RedPandas library
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
 
@@ -174,7 +171,7 @@ def audio_wf_time_build_station(station: Station,
 
 def location_build_station(station: Station) -> dict:
     """
-    Obtains location data from station if it exists
+    Obtains location data from RedVox station if it exists
     :param station: RDVX Station object
     :return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
     horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.
@@ -201,7 +198,7 @@ def location_build_station(station: Station) -> dict:
 
 def state_of_health_build_station(station: Station) -> dict:
     """
-    Obtains state of health data from station if it exists
+    Obtains state of health data from RedVox station if it exists
     :param station: RDVX Station object
     :return: dictionary with sensor name, sample rate, timestamps, batt. charge, batt. current strength,
     internal temp., network type, network strength, power state, available ram and disk, and cell service state
@@ -228,7 +225,7 @@ def state_of_health_build_station(station: Station) -> dict:
 
 def image_build_station(station: Station) -> dict:
     """
-    Obtains images from station if it exists
+    Obtains images from RedVox station if it exists
     :param station: RDVX Station object
     :return: dictionary with sensor name, sample rate, timestamps, image (bytes), and image codec.
     """
@@ -245,7 +242,7 @@ def image_build_station(station: Station) -> dict:
 
 def synchronization_build_station(station: Station) -> dict:
     """
-    gets time sync data from the station if it exists
+    Obtains time sync data from RedVox station if it exists
     :param station: RDVX Station object
     :return: dictionary with synchronization start time (s), synchronization latency (ms), synchronization offset (ms),
      synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.
@@ -266,13 +263,13 @@ def synchronization_build_station(station: Station) -> dict:
 
 def clock_build_station(station: Station) -> dict:
     """
-    gets clock model data from the station if it exists
+    Obtains clock model data from the station if it exists
     :param station: RDVX Station object
     :return: dictionary with clock start time (s), clock latency (ms), clock best latency (ms), clock offset (s),
      clock number bins, clock number samples, clock offset slope, and clock offset model score.
     """
     if station.has_timesync_data():
-        print('App start time:', station.start_timestamp)
+        print('App start time s:', station.start_timestamp)
         clock = station.timesync_analysis.offset_model
         return {'clock_start_time_epoch_s': clock.start_time * rpd_scales.MICROS_TO_S,
                 'clock_best_latency_ms': clock.mean_latency * rpd_scales.MICROS_TO_MILLIS,
@@ -284,4 +281,20 @@ def clock_build_station(station: Station) -> dict:
                 'clock_offset_model_score': clock.score}
     else:
         print(f'Station {station.id} has no timesync analysis.')
+        return {}
+
+
+def light_build_station(station: Station) -> dict:
+    """
+    Obtains luminosity data from RedVox station if it exists
+    :param station: RDVX Station object
+    :return:
+    """
+    if station.has_light_data():
+
+        return {'light_sensor_name': station.light_sensor().name,
+                'light_sample_rate_hz': station.light_sensor().sample_rate_hz,
+                'light_epoch_s': station.light_sensor().data_timestamps() * rpd_scales.MICROS_TO_S}
+    else:
+        print(f'Station {station.id} has no luminosity data.')
         return {}
