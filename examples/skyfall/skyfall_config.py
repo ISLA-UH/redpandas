@@ -9,6 +9,7 @@ EVENT_NAME = "Skyfall"
 # INPUT_DIR = '/Users/jmtobin/Desktop/skyfall/api900'
 # INPUT_DIR = '/Users/spopen/redvox/data/spacex_data/falcon9/api900'
 # INPUT_DIR = "/Users/tyler/Documents/api900"
+# INPUT_DIR = "/Users/tokyok/Desktop/skyfall/api900"
 INPUT_DIR = "/Users/meritxell/Documents/api900"
 
 OUTPUT_DIR = os.path.join(INPUT_DIR, "rpd_files")  # Absolute path for output pickle and parquet files
