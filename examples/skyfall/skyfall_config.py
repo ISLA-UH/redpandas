@@ -1,4 +1,5 @@
 import os
+
 """
 Skyfall 2020 Configuration file
 """
@@ -14,12 +15,28 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall/api900"
 # INPUT_DIR = "/Users/meritxell/Documents/api900"
 
-OUTPUT_DIR = os.path.join(INPUT_DIR, "rpd_files")  # Absolute path for output pickle and parquet files
+# Absolute path to bounder input data, could be a list
+OTHER_INPUTS = "bounder/"
+OTHER_INPUT_DIR = os.path.join(INPUT_DIR, OTHER_INPUTS)
+
+# Absolute path for output pickle and parquet files
+RPD_DIR = "rpd_files"
+OUTPUT_DIR = os.path.join(INPUT_DIR, RPD_DIR)
+
+# Check
+if not os.path.exists(INPUT_DIR):
+    print("Input directory does not exist, check path")
+
+if not os.path.exists(OUTPUT_DIR):
+    print("Creating output directory")
+    os.mkdir(OUTPUT_DIR)
+
 # Data Window Pickle
 DW_FILE = EVENT_NAME + ".pickle"
 # RedPandas Parquets
 PD_PQT_FILE = EVENT_NAME + "_df.parquet"
-PD_PQT_FILE_LOC = EVENT_NAME + "loc_df.parquet"
+PD_PQT_FILE_GEO = EVENT_NAME + "_df_geo.parquet"
+PD_PQT_FILE_OTHER = EVENT_NAME + "_df_bounder.parquet"
 
 # Step 1: Station ID and Event time
 STATIONS = ["1637610021"]
