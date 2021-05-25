@@ -344,8 +344,9 @@ if __name__ == "__main__":
 
             range_m = np.sqrt(np.array(range_lat**2 + range_lon**2).astype(np.float64))
             list_bool_range = [True] + [False]*(len(range_m)-1)
-            range_m = np.ma.masked_array(df_skyfall_data[location_altitude_label][0], mask=list_bool_range)
 
+            range_m = np.ma.masked_array(df_skyfall_data[location_altitude_label][0], mask=list_bool_range)
+            # TODO: Fix altitude -> range
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=range_m,
                                    wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],

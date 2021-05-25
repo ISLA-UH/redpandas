@@ -14,6 +14,7 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 import redpandas.redpd_scales as rpd_scales
 
+# TODO: Construct a title option (True/False) for press. Update labels.
 
 # Wiggle plot scaling
 scale = 1.25*1080/8
