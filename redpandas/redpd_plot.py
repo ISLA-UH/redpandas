@@ -1,7 +1,7 @@
 """
 Utils for plotting pandas dataframes
 Created: 23 March 2021
-Last updated: 12 May 2021
+Last updated: 25 May 2021
 """
 import datetime as dt
 from typing import List
@@ -13,8 +13,6 @@ import pandas as pd
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 import redpandas.redpd_scales as rpd_scales
-
-# TODO: Construct a title option (True/False) for press. Update labels.
 
 # Wiggle plot scaling
 scale = 1.25*1080/8
@@ -32,7 +30,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      mesh_tfr_label: str,
                      t0_sig_epoch_s: float,
                      sig_id_label: str,
-                     fig_title: str,
+                     fig_title_show: bool = True,
+                     fig_title: str = " ",
                      frequency_scaling: str = "log",
                      frequency_hz_ymin: float = rpd_scales.Slice.FU,
                      frequency_hz_ymax: float = rpd_scales.Slice.F0):
@@ -44,8 +43,9 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param mesh_time_label: string for the mesh time column name in df
      :param mesh_frequency_label: string for the mesh frequency column name in df
      :param mesh_tfr_label: string for the mesh tfr column name in df
-     :param sig_id_label: string for column name with station ids in df
      :param t0_sig_epoch_s: epoch time in seconds of first timestamp
+     :param sig_id_label: string for column name with station ids in df
+     :param fig_title_show: include a title in the figure. Default is True
      :param fig_title: figure title label
      :param frequency_hz_ymin: y axis min lim
      :param frequency_hz_ymax: y axis max lim
@@ -143,7 +143,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
     # Common x and y labels
     plt.xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
                size=text_size, labelpad=10)
-    plt.title(fig_title, size=text_size + 2, y=1.05)
+    if fig_title_show:
+        plt.title(fig_title, size=text_size + 2, y=1.05)
 
     # Format colorbar
     cax = fig.add_subplot(gs[:, 1])
@@ -162,6 +163,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         sig_id_label: str,
                         x_label: str,
                         y_label: str,
+                        fig_title_show: bool = True,
                         fig_title: str = 'Signals',
                         wf_color: str = 'midnightblue',
                         sig_timestamps_label: str = None):
@@ -174,8 +176,9 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     :param sig_sample_rate_label: string for the sample rate name in df
     :param x_label: x label
     :param y_label: y label
+    :param fig_title_show: Include a title in the figure. Default is True
     :param fig_title: 'Normalized ' + title label
-    :param wf_color: waveform color. Default is midnightblue.
+    :param wf_color: waveform color. Default is midnightblue
     :param sig_timestamps_label: name for the epoch time in df, default = None
     :param sig_id_label: usually the index converted to a str, default = None
     :return: plot
@@ -224,7 +227,8 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
     ax1.grid(True)
-    ax1.set_title('Normalized ' + fig_title, size=text_size)
+    if fig_title_show:
+        ax1.set_title('Normalized ' + fig_title, size=text_size)
     ax1.set_ylabel(y_label, size=text_size)
     if time_epoch_origin > 0:
         x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
@@ -232,18 +236,18 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     fig.tight_layout()
 
 
-# TODO MC: what if i only want component x of a sensor
 def plot_sensor_wiggles_pandas(df: pd.DataFrame,
                                station_id_str: str,
-                               sensor_wf_label_list: List,
-                               sensor_timestamps_label_list: List,
+                               sensor_wf_label_list: List[str],
+                               sensor_timestamps_label_list: List[str],
                                sig_id_label: str,
                                x_label: str,
                                y_label: str,
+                               fig_title_show: bool = True,
                                fig_title: str = 'Signals',
                                wf_color: str = 'midnightblue',
                                sensor_yticks_label_list: List[str] = None):
-    f"""
+    """
     Plots sensor waveforms for one station
 
     :param df: input pandas data frame
@@ -253,6 +257,7 @@ def plot_sensor_wiggles_pandas(df: pd.DataFrame,
     :param sig_id_label: string for the waveform name in df
     :param x_label: x label
     :param y_label: y label
+    :param fig_title_show: Include a title in the figure. Default is True
     :param fig_title: 'Normalized ' + title label + 'for Station ' + station_id_str
     :param wf_color: waveform color. Default is midnightblue.
     :param sensor_yticks_label_list: list of strings with sensor waveform y tick names
@@ -337,7 +342,8 @@ def plot_sensor_wiggles_pandas(df: pd.DataFrame,
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
     ax1.grid(True)
-    ax1.set_title('Normalized ' + fig_title + ' for Station ' + station_id_str, size=text_size)
+    if fig_title_show:
+        ax1.set_title('Normalized ' + fig_title + ' for Station ' + station_id_str, size=text_size)
     ax1.set_ylabel(y_label, size=text_size)
     if time_epoch_origin > 0:
         x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
@@ -358,6 +364,23 @@ def plot_psd_coh(psd_sig,
                  coh_label: str = 'Coherence',
                  f_label: str = 'Frequency (Hz)',
                  fig_title: str = 'Power spectral density and coherence'):
+    """
+
+    :param psd_sig:
+    :param psd_ref:
+    :param coherence_sig_ref:
+    :param f_hz:
+    :param f_min_hz:
+    :param f_max_hz:
+    :param f_scale:
+    :param sig_label:
+    :param ref_label:
+    :param psd_label:
+    :param coh_label:
+    :param f_label:
+    :param fig_title:
+    :return:
+    """
     # Plot PSDs
     fig1 = plt.figure()
     fig1.set_size_inches(8, 6)
@@ -391,6 +414,18 @@ def plot_response_scatter(h_magnitude,
                           f_max_hz,
                           f_scale: str = 'log',
                           fig_title: str = 'Response only valid at high coherence'):
+    """
+
+    :param h_magnitude:
+    :param h_phase_deg:
+    :param color_guide:
+    :param f_hz:
+    :param f_min_hz:
+    :param f_max_hz:
+    :param f_scale:
+    :param fig_title:
+    :return:
+    """
     # plot magnitude and coherence
     fig = plt.figure()
     fig.set_size_inches(8, 6)
