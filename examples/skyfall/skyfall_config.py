@@ -1,54 +1,77 @@
 import os
+
 """
-Vegas Skyfall Configuration file
+Skyfall 2020 Configuration file
 """
-# TODO: Build load gui
+
 EVENT_NAME = "Skyfall"
+
+# Step 0: I/O files
 # Absolute path to the skyfall data
-INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
-# INPUT_DIR = '/Users/jmtobin/Desktop/skyfall/api900'
-# INPUT_DIR = '/Users/spopen/redvox/data/spacex_data/falcon9/api900'
-# INPUT_DIR = "/Users/tyler/Documents/api900"
-# INPUT_DIR = "/Users/tokyok/Desktop/skyfall/api900"
-# INPUT_DIR = "/Users/meritxell/Documents/api900"
+INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 
-OUTPUT_DIR = os.path.join(INPUT_DIR, "rpd_files")  # Absolute path for output pickle and parquet files
+# TODO: /api900 only necessary to isolate 900, not good if both 900 and 1000 co-exist. Remove.
+# INPUT_DIR = '/Users/jmtobin/Desktop/skyfall'
+# TODO: Sarah, please separate Skyfall event into a new directory
+# INPUT_DIR = "/Users/spopen/redvox/data/spacex_data/falcon9"
+# INPUT_DIR = "/Users/tyler/Documents"
+# INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
+# INPUT_DIR = "/Users/meritxell/Documents"
+
+# Absolute path to bounder input data, could be a list
+OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder/skyfall_bounder.csv")
+
+# Absolute path for output pickle and parquet files
+RPD_DIR = "rpd_files"
+OUTPUT_DIR = os.path.join(INPUT_DIR, RPD_DIR)
+
+# Check
+if not os.path.exists(INPUT_DIR):
+    print("Input directory does not exist, check path:")
+    print(INPUT_DIR)
+    exit()
+
+if not os.path.exists(OTHER_INPUT_PATH):
+    print("Other input directory does not exist, check path:")
+    print(OTHER_INPUT_PATH)
+    exit()
+
+if not os.path.exists(OUTPUT_DIR):
+    print("Creating output directory")
+    os.mkdir(OUTPUT_DIR)
+
+# Data Window Pickle
 DW_FILE = EVENT_NAME + ".pickle"
-PD_PQT_FILE = EVENT_NAME + "_df.parquet"
-STATIONS = {"1637610021"}
 
+# RedPandas Parquets
+PD_PQT_FILE = EVENT_NAME + "_df.parquet"
+OTHER_PD_PQT_FILE = EVENT_NAME + "_df_bounder.parquet"
+
+# Step 1: Station ID and Event time
+STATIONS = ["1637610021"]
 # Timestamps in seconds since UTC epoch
-# EVENT_ORIGIN_EPOCH_S = 1603806300  # 2020-10-27T13:45
-EVENT_ORIGIN_EPOCH_S = 1603806314  # 2020-10-27T13:45:13.132 start time of first data packet
-# minutes = 2
-# duration = minutes*60  # ALWAYS start small
-duration = 30*60  # 30 minutes
+EVENT_ORIGIN_EPOCH_S = 1603806314  # 2020-10-27T13:45:14
+duration_s = 30*60  # 30 minutes
+
 # From start
 EPISODE_START_EPOCH_S = EVENT_ORIGIN_EPOCH_S
-EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration
+EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration_s
 
-# # From impact SOI
-# time_edge_s = 120
-# duration = 30*60  # 30 minutes
-# EPISODE_CENTER_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration - 150
-# EPISODE_START_EPOCH_S = EPISODE_CENTER_EPOCH_S - time_edge_s
-# EPISODE_END_EPOCH_S = EPISODE_CENTER_EPOCH_S + time_edge_s
-
-# Settings for skyfall_template_basic_rpd.py (Step 1)
-# Available sensors: 'audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope', 'location', 'health', 'image',
-# 'clock' and 'synchronization'
+# Step 2: Sensor selection
 SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
                 'health', 'location', 'clock', 'synchronization']
 
-build_dw_pickle: bool = True  # Handling of RDVX DataWindow structure
+# Step 3: Pipeline actions, needed parquet for geospatial
+build_dw_pickle: bool = False  # Handling of RDVX DataWindow structure
 print_datawindow_dq: bool = False  # Print basic DQ/DA to screen
 plot_mic_waveforms: bool = False  # Show raw RDVX DataWindow waveforms
 build_df_parquet: bool = True  # Export pandas data frame as parquet
 
-# Settings for skyfall_tdr_rpd.py (Step 2)
+# Build TDR Data Products: Settings for skyfall_tdr_rpd.py
 use_datawindow: bool = False  # Load data using RDVX DataWindow
 use_pickle: bool = False  # Load data using a pickle with RDVX DataWindow, either serialized or not
 use_parquet: bool = True  # Load data using parquet with RedPandas dataframe
 
+# Build TFR Data Products: Settings for skyfall_tfr_rpd.py
 PIPELINE_LABEL = ['TBD']
 
