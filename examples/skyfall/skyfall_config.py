@@ -13,7 +13,7 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 # TODO: /api900 only necessary to isolate 900, not good if both 900 and 1000 co-exist. Remove.
 # INPUT_DIR = '/Users/jmtobin/Desktop/skyfall'
 # TODO: Sarah, please separate Skyfall event into a new directory
-# INPUT_DIR = "/Users/spopen/redvox/data/spacex_data/falcon9"
+# INPUT_DIR = "/Users/spopen/redvox/data/skyfall_data"
 # INPUT_DIR = "/Users/tyler/Documents"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
 # INPUT_DIR = "/Users/meritxell/Documents"
