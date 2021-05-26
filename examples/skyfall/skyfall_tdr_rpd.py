@@ -137,7 +137,7 @@ if __name__ == "__main__":
             event_reference_time_epoch_s = df_skyfall_data[audio_epoch_s_label][station][0]
 
         if barometer_data_raw_label and barometer_data_highpass_label and barometer_fs_label in df_skyfall_data.columns:
-            if use_parquet:
+            if use_parquet and use_datawindow is False and use_pickle is False:
                 # Reshape wf columns
                 rpd_prep.df_column_unflatten(df=df_skyfall_data,
                                              col_wf_label=barometer_data_raw_label,
@@ -157,7 +157,7 @@ if __name__ == "__main__":
         # Repeat here
         if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label\
                 in df_skyfall_data.columns:
-            if use_parquet:
+            if use_parquet and use_datawindow is False and use_pickle is False:
                 # Reshape wf columns
                 rpd_prep.df_column_unflatten(df=df_skyfall_data,
                                              col_wf_label=accelerometer_data_raw_label,
@@ -232,7 +232,7 @@ if __name__ == "__main__":
         if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label\
                 in df_skyfall_data.columns:
 
-            if use_parquet:
+            if use_parquet and use_datawindow is False and use_pickle is False:
                 # Reshape wf columns
                 rpd_prep.df_column_unflatten(df=df_skyfall_data,
                                              col_wf_label=gyroscope_data_raw_label,
@@ -276,7 +276,7 @@ if __name__ == "__main__":
 
         if magnetometer_data_raw_label and magnetometer_fs_label and magnetometer_data_highpass_label\
                 in df_skyfall_data.columns:
-            if use_parquet:
+            if use_parquet and use_datawindow is False and use_pickle is False:
                 # Reshape wf columns
                 rpd_prep.df_column_unflatten(df=df_skyfall_data,
                                              col_wf_label=magnetometer_data_raw_label,
@@ -450,36 +450,36 @@ if __name__ == "__main__":
                                             wf_color='midnightblue',
                                             sensor_yticks_label_list=sensor_ticklabels_list)
 
-        scale = 1.25*1080/8
-        figure_size_x = int(1920/scale)
-        figure_size_y = int(1080/scale)
-
-        fig_3c, ax_3c = plt.subplots(ncols=1, nrows=3, sharex='col', figsize=(figure_size_x, figure_size_y))
-        time = df_skyfall_data[accelerometer_epoch_s_label][station]-df_skyfall_data[accelerometer_epoch_s_label][station][0]
-        ax_3c[0].plot(time, df_skyfall_data[accelerometer_data_raw_label][station][2], label='Z')
-        ax_3c[0].plot(time, df_skyfall_data[accelerometer_data_raw_label][station][1], label='Y')
-        ax_3c[0].plot(time, df_skyfall_data[accelerometer_data_raw_label][station][0], label='X')
-        ax_3c[0].legend()
-        ax_3c[0].grid()
-        ax_3c[0].set_ylabel('Acc, $m/s^2$')
-
-        time = df_skyfall_data[gyroscope_epoch_s_label][station]-df_skyfall_data[gyroscope_epoch_s_label][station][0]
-        ax_3c[1].plot(time, df_skyfall_data[gyroscope_data_raw_label][station][2], label='Z')
-        ax_3c[1].plot(time, df_skyfall_data[gyroscope_data_raw_label][station][1], label='Y')
-        ax_3c[1].plot(time, df_skyfall_data[gyroscope_data_raw_label][station][0], label='X')
-        ax_3c[1].legend()
-        ax_3c[1].grid()
-        ax_3c[1].set_ylabel('Gyr, rad/s')
-
-        time = df_skyfall_data[magnetometer_epoch_s_label][station]-df_skyfall_data[magnetometer_epoch_s_label][station][0]
-        ax_3c[2].plot(time, df_skyfall_data[magnetometer_data_raw_label][station][2], label='Z')
-        ax_3c[2].plot(time, df_skyfall_data[magnetometer_data_raw_label][station][1], label='Y')
-        ax_3c[2].plot(time, df_skyfall_data[magnetometer_data_raw_label][station][0], label='X')
-        ax_3c[2].legend()
-        ax_3c[2].grid()
-        ax_3c[2].set_ylabel('Mag, $\mu$T')
-        plt.xlabel(f"Time (s) relative to {dtime.datetime.utcfromtimestamp(df_skyfall_data[accelerometer_epoch_s_label][station][0]).strftime('%Y-%m-%d %H:%M:%S')}")
-        plt.tight_layout()
+        # scale = 1.25*1080/8
+        # figure_size_x = int(1920/scale)
+        # figure_size_y = int(1080/scale)
+        #
+        # fig_3c, ax_3c = plt.subplots(ncols=1, nrows=3, sharex='col', figsize=(figure_size_x, figure_size_y))
+        # time = df_skyfall_data[accelerometer_epoch_s_label][station]-df_skyfall_data[accelerometer_epoch_s_label][station][0]
+        # ax_3c[0].plot(time, df_skyfall_data[accelerometer_data_raw_label][station][2], label='Z')
+        # ax_3c[0].plot(time, df_skyfall_data[accelerometer_data_raw_label][station][1], label='Y')
+        # ax_3c[0].plot(time, df_skyfall_data[accelerometer_data_raw_label][station][0], label='X')
+        # ax_3c[0].legend()
+        # ax_3c[0].grid()
+        # ax_3c[0].set_ylabel('Acc, $m/s^2$')
+        #
+        # time = df_skyfall_data[gyroscope_epoch_s_label][station]-df_skyfall_data[gyroscope_epoch_s_label][station][0]
+        # ax_3c[1].plot(time, df_skyfall_data[gyroscope_data_raw_label][station][2], label='Z')
+        # ax_3c[1].plot(time, df_skyfall_data[gyroscope_data_raw_label][station][1], label='Y')
+        # ax_3c[1].plot(time, df_skyfall_data[gyroscope_data_raw_label][station][0], label='X')
+        # ax_3c[1].legend()
+        # ax_3c[1].grid()
+        # ax_3c[1].set_ylabel('Gyr, rad/s')
+        #
+        # time = df_skyfall_data[magnetometer_epoch_s_label][station]-df_skyfall_data[magnetometer_epoch_s_label][station][0]
+        # ax_3c[2].plot(time, df_skyfall_data[magnetometer_data_raw_label][station][2], label='Z')
+        # ax_3c[2].plot(time, df_skyfall_data[magnetometer_data_raw_label][station][1], label='Y')
+        # ax_3c[2].plot(time, df_skyfall_data[magnetometer_data_raw_label][station][0], label='X')
+        # ax_3c[2].legend()
+        # ax_3c[2].grid()
+        # ax_3c[2].set_ylabel('Mag, $\mu$T')
+        # plt.xlabel(f"Time (s) relative to {dtime.datetime.utcfromtimestamp(df_skyfall_data[accelerometer_epoch_s_label][station][0]).strftime('%Y-%m-%d %H:%M:%S')}")
+        # plt.tight_layout()
         plt.show()
 
 
