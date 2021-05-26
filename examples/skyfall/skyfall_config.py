@@ -8,16 +8,18 @@ EVENT_NAME = "Skyfall"
 
 # Step 0: I/O files
 # Absolute path to the skyfall data
-INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/"
-# INPUT_DIR = '/Users/jmtobin/Desktop/skyfall/api900'
-# INPUT_DIR = '/Users/spopen/redvox/data/spacex_data/falcon9/api900'
-# INPUT_DIR = "/Users/tyler/Documents/api900"
-# INPUT_DIR = "/Users/tokyok/Desktop/skyfall/api900"
-# INPUT_DIR = "/Users/meritxell/Documents/api900"
+INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
+
+# TODO: /api900 only necessary to isolate 900, not good if both 900 and 1000 co-exist. Remove.
+# INPUT_DIR = '/Users/jmtobin/Desktop/skyfall'
+# TODO: Sarah, please separate Skyfall event into a new directory
+# INPUT_DIR = "/Users/spopen/redvox/data/spacex_data/falcon9"
+# INPUT_DIR = "/Users/tyler/Documents"
+# INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
+# INPUT_DIR = "/Users/meritxell/Documents"
 
 # Absolute path to bounder input data, could be a list
-OTHER_INPUTS = "bounder/"
-OTHER_INPUT_DIR = os.path.join(INPUT_DIR, OTHER_INPUTS)
+OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder/skyfall_bounder.csv")
 
 # Absolute path for output pickle and parquet files
 RPD_DIR = "rpd_files"
@@ -25,7 +27,14 @@ OUTPUT_DIR = os.path.join(INPUT_DIR, RPD_DIR)
 
 # Check
 if not os.path.exists(INPUT_DIR):
-    print("Input directory does not exist, check path")
+    print("Input directory does not exist, check path:")
+    print(INPUT_DIR)
+    exit()
+
+if not os.path.exists(OTHER_INPUT_PATH):
+    print("Other input directory does not exist, check path:")
+    print(OTHER_INPUT_PATH)
+    exit()
 
 if not os.path.exists(OUTPUT_DIR):
     print("Creating output directory")
@@ -33,10 +42,10 @@ if not os.path.exists(OUTPUT_DIR):
 
 # Data Window Pickle
 DW_FILE = EVENT_NAME + ".pickle"
+
 # RedPandas Parquets
 PD_PQT_FILE = EVENT_NAME + "_df.parquet"
-PD_PQT_FILE_GEO = EVENT_NAME + "_df_geo.parquet"
-PD_PQT_FILE_OTHER = EVENT_NAME + "_df_bounder.parquet"
+OTHER_PD_PQT_FILE = EVENT_NAME + "_df_bounder.parquet"
 
 # Step 1: Station ID and Event time
 STATIONS = ["1637610021"]
@@ -52,8 +61,8 @@ EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration_s
 SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
                 'health', 'location', 'clock', 'synchronization']
 
-# Step 3: Pipeline actions
-build_dw_pickle: bool = True  # Handling of RDVX DataWindow structure
+# Step 3: Pipeline actions, needed parquet for geospatial
+build_dw_pickle: bool = False  # Handling of RDVX DataWindow structure
 print_datawindow_dq: bool = False  # Print basic DQ/DA to screen
 plot_mic_waveforms: bool = False  # Show raw RDVX DataWindow waveforms
 build_df_parquet: bool = True  # Export pandas data frame as parquet

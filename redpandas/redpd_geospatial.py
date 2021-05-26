@@ -1,11 +1,11 @@
 import numpy as np
 import pandas as pd
+import os
 from typing import List
 import redvox.common.date_time_utils as dt
-from redvox.common.data_window import DataWindow
+# import datetime as dt
 
-
-def redvox_loc(path_redvox: str, stations: List[str], redvox_loc_filename: str):
+def redvox_loc(DF_PICKLE_PATH):
     """
     Extract the location, temperature, and DC pressure payload from the microphones
     :param path_redvox:
@@ -13,30 +13,31 @@ def redvox_loc(path_redvox: str, stations: List[str], redvox_loc_filename: str):
     :param redvox_loc_filename:
     :return: save to parquet
     """
-    # If Need to rerun with raw data: Load RedVox data
-    print('Loading rdvx data')
-    data_window = DataWindow(input_dir=path_redvox,
-                             station_ids=stations,
-                             apply_correction=True,
-                             structured_layout=True)
-    print('Running rdvx data')
+    # Check
+    if not os.path.exists(DF_PICKLE_PATH):
+        print("Input file does not exist, check path:")
+        print(DF_PICKLE_PATH)
+        exit()
 
-    # Extract RedVox location samples, location epoch micros
-    locations, phone_loc_times = extract_location(data_window, stations[0])
-    phone_loc_times_dt = [dt.datetime_from_epoch_microseconds_utc(time) for time in phone_loc_times]
+    df = pd.read_parquet(DF_PICKLE_PATH)
+    print('Read parquet data frame')
 
-    # Some of the fields are empty or wrong:
-    # TODO: Check on 'horizontal_accuracy', 'location_provider',
-    #  'bearing', 'vertical_accuracy', 'speed_accuracy', 'bearing_accuracy'
-    skyfall_phone_loc = pd.DataFrame(data={'Unixtime_micros': phone_loc_times,
-                                           'Datetime': phone_loc_times_dt,
-                                           'Lat_deg': locations[0],
-                                           'Lon_deg': locations[1],
-                                           'Alt_m': locations[2],
-                                           'Speed_mps': locations[3]})
-    # Save to parquet
-    skyfall_phone_loc.to_parquet(redvox_loc_filename)
-    print('Saved Redvox data to ', redvox_loc_filename)
+    # Extract selected fields
+    loc_fields = ['location_epoch_s',
+                  'location_latitude',
+                  'location_longitude',
+                  'location_altitude',
+                  'location_bearing',
+                  'location_speed',
+                  'location_horizontal_accuracy',
+                  'location_vertical_accuracy',
+                  'location_bearing_accuracy',
+                  'location_speed_accuracy',
+                  'barometer_epoch_s',
+                  'barometer_wf_raw']
+    df_loc = df[loc_fields]
+
+    return df_loc
 
 
 def bounder_data(path_bounder_cvs: str, bounder_filename: str):
@@ -56,28 +57,14 @@ def bounder_data(path_bounder_cvs: str, bounder_filename: str):
     df = pd.read_csv(path_bounder_cvs, usecols=[5, 6, 7, 8, 9, 10, 11], skiprows=lambda x: x not in rows,
                      names=['Pres_kPa', 'Temp_C', 'Batt_V', 'Lon_deg', 'Lat_deg', 'Alt_m', 'Time_hhmmss'])
     dtime = pd.to_datetime(yyyymmdd + df['Time_hhmmss'])
-    dtime_unix_micros = dtime.astype('int64')/1E3
+    dtime_unix_s = dtime.astype('int64')/1E9
 
     skyfall_bounder_loc = df.filter(['Lat_deg', 'Lon_deg', 'Alt_m', 'Pres_kPa', 'Temp_C', 'Batt_V'])
-    skyfall_bounder_loc.insert(0, 'Unixtime_micros', dtime_unix_micros)
+    skyfall_bounder_loc.insert(0, 'Epoch_s', dtime_unix_s)
     skyfall_bounder_loc.insert(1, 'Datetime', dtime)
 
     # Save to parquet
     skyfall_bounder_loc.to_parquet(bounder_filename)
-
-
-def extract_location(data_window, phone_id):
-    station = data_window.stations.get_station(phone_id)
-    print("RedVox location fields:", station.location_sensor().data_fields())
-    print("Mean RedVox location sample rate:")
-    print(np.mean(np.diff([dt.datetime_from_epoch_microseconds_utc(i)
-                           for i in station.location_sensor().data_timestamps()])))
-    # TODO: Print episode start and stop
-    print("RedVox location start time:")
-    print(dt.datetime_from_epoch_microseconds_utc(station.location_sensor().first_data_timestamp()))
-    print("RedVox location stop time:")
-    print(dt.datetime_from_epoch_microseconds_utc(station.location_sensor().last_data_timestamp()))
-    return station.location_sensor().samples(), station.location_sensor().data_timestamps()
 
 
 def model_height_from_pressure(pressure_kPa):
@@ -96,7 +83,7 @@ def model_height_from_pressure(pressure_kPa):
     return elevation_m
 
 
-def compute_t_xyz_uvw(unix_micros, lat_deg, lon_deg, alt_m):
+def compute_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m):
     """
     Assuming no movement at the end
     :param unix_micros:
@@ -109,7 +96,7 @@ def compute_t_xyz_uvw(unix_micros, lat_deg, lon_deg, alt_m):
     x_m = (lon_deg - lon_deg.iloc[-1]).astype(float)*111000
     y_m = (lat_deg - lat_deg.iloc[-1]).astype(float)*111000
     z_m = (alt_m - alt_m.iloc[-1]).astype(float)
-    t_s = (unix_micros - unix_micros.iloc[-1]).astype(float)/1E6
+    t_s = (unix_s - unix_s.iloc[-1]).astype(float)
 
     # Speed in mps. Compute diff and add zero at terminus (at rest)
     u_mps = np.append(np.diff(x_m)/np.diff(t_s), 0)
