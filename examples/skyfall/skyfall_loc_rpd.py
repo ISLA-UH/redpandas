@@ -5,11 +5,12 @@ import redvox.common.date_time_utils as dt
 import pandas as pd
 import redpandas.redpd_geospatial as rpd_geo
 
+# TODO: Fix deprecated call
 from libquantum.plot_templates import plot_geo_scatter_2d_3d as geo_scatter
 
 # Configuration file
 from examples.skyfall.skyfall_config import OUTPUT_DIR, PD_PQT_FILE, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
-
+# TODO: Add proper geospatial framework
 
 def main(rerun_bounder: bool):
     """
@@ -36,6 +37,11 @@ def main(rerun_bounder: bool):
 
     # exit()
     # Bounder data is a standard rectangular matrix
+    if not os.path.exists(OTHER_INPUT_PATH):
+        print("Other input directory does not exist, check path:")
+        print(OTHER_INPUT_PATH)
+        exit()
+
     if rerun_bounder:
         rpd_geo.bounder_data(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE)
         print('Constructing bounder parquet')

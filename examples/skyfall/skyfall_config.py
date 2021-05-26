@@ -31,11 +31,6 @@ if not os.path.exists(INPUT_DIR):
     print(INPUT_DIR)
     exit()
 
-if not os.path.exists(OTHER_INPUT_PATH):
-    print("Other input directory does not exist, check path:")
-    print(OTHER_INPUT_PATH)
-    exit()
-
 if not os.path.exists(OUTPUT_DIR):
     print("Creating output directory")
     os.mkdir(OUTPUT_DIR)
