@@ -1,6 +1,8 @@
 import numpy as np
 import pandas as pd
 import os
+from redpandas.redpd_scales import EPSILON
+
 from typing import List
 import redvox.common.date_time_utils as dt
 # import datetime as dt
@@ -23,16 +25,13 @@ def redvox_loc(DF_PICKLE_PATH):
     print('Read parquet data frame')
 
     # Extract selected fields
-    loc_fields = ['location_epoch_s',
+    loc_fields = ['station_id',
+                  'location_epoch_s',
                   'location_latitude',
                   'location_longitude',
                   'location_altitude',
-                  'location_bearing',
                   'location_speed',
                   'location_horizontal_accuracy',
-                  'location_vertical_accuracy',
-                  'location_bearing_accuracy',
-                  'location_speed_accuracy',
                   'barometer_epoch_s',
                   'barometer_wf_raw']
     df_loc = df[loc_fields]
@@ -83,7 +82,7 @@ def model_height_from_pressure(pressure_kPa):
     return elevation_m
 
 
-def compute_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m):
+def compute_bounder_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m):
     """
     Assuming no movement at the end
     :param unix_micros:
@@ -99,9 +98,42 @@ def compute_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m):
     t_s = (unix_s - unix_s.iloc[-1]).astype(float)
 
     # Speed in mps. Compute diff and add zero at terminus (at rest)
-    u_mps = np.append(np.diff(x_m)/np.diff(t_s), 0)
-    v_mps = np.append(np.diff(y_m)/np.diff(t_s), 0)
-    w_mps = np.append(np.diff(z_m)/np.diff(t_s), 0)
+    u_mps = np.append(np.diff(x_m)/(np.diff(t_s)+EPSILON), 0)
+    v_mps = np.append(np.diff(y_m)/(np.diff(t_s)+EPSILON), 0)
+    w_mps = np.append(np.diff(z_m)/(np.diff(t_s)+EPSILON), 0)
+
+    speed_mps = np.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
+
+    txyzuvw = pd.DataFrame(data={'T_s': t_s,
+                                 'X_m': x_m,
+                                 'Y_m': y_m,
+                                 'Z_m': z_m,
+                                 'U_mps': u_mps,
+                                 'V_mps': v_mps,
+                                 'W_mps': w_mps,
+                                 'Speed_mps': speed_mps})
+    return txyzuvw
+
+
+def compute_phone_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m):
+    """
+    Assuming no movement at the end
+    :param unix_micros:
+    :param lat_deg:
+    :param lon_deg:
+    :param alt_m:
+    :return:
+    """
+    # Convert to XY for computation of "speed" from derivative
+    x_m = (lon_deg - lon_deg[-1]).astype(float)*111000
+    y_m = (lat_deg - lat_deg[-1]).astype(float)*111000
+    z_m = (alt_m - alt_m[-1]).astype(float)
+    t_s = (unix_s - unix_s[-1]).astype(float)
+
+    # Speed in mps. Compute diff and add zero at terminus (at rest)
+    u_mps = np.append(np.diff(x_m)/(np.diff(t_s)+EPSILON), 0)
+    v_mps = np.append(np.diff(y_m)/(np.diff(t_s)+EPSILON), 0)
+    w_mps = np.append(np.diff(z_m)/(np.diff(t_s)+EPSILON), 0)
 
     speed_mps = np.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
 
