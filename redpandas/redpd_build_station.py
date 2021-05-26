@@ -245,7 +245,7 @@ def synchronization_build_station(station: Station) -> dict:
     Obtains time sync data from RedVox station if it exists
     :param station: RDVX Station object
     :return: dictionary with synchronization start time (s), synchronization latency (ms), synchronization offset (ms),
-     synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.
+    synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.
     """
     if station.has_timesync_data():
         synchronization = station.timesync_analysis
@@ -266,7 +266,7 @@ def clock_build_station(station: Station) -> dict:
     Obtains clock model data from the station if it exists
     :param station: RDVX Station object
     :return: dictionary with clock start time (s), clock latency (ms), clock best latency (ms), clock offset (s),
-     clock number bins, clock number samples, clock offset slope, and clock offset model score.
+    clock number bins, clock number samples, clock offset slope, and clock offset model score.
     """
     if station.has_timesync_data():
         print('App start time s:', station.start_timestamp)

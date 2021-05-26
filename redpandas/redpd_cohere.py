@@ -7,6 +7,7 @@ from libquantum import utils
 import redpandas.redpd_plot as rpd_plt
 
 
+# TODO: function variables description
 def coherence_numpy(sig_in,
                     sig_in_ref,
                     sig_sample_rate_hz,

@@ -10,7 +10,6 @@ from libquantum import utils
 
 
 # TODO: to add lowpass and highpass filters
-# TODO: Add HP uneven sensor resampling
 # TODO: standardize language
 
 
