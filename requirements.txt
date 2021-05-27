@@ -12,4 +12,8 @@ matplotlib >= 3.4.2
 # TFR
 librosa
 
+# Geospatial
+pymap3d
+fastkml
+
 

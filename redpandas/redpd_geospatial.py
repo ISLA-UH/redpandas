@@ -1,11 +1,14 @@
+import os
+from typing import Optional, Tuple, List, Dict
+
 import numpy as np
 import pandas as pd
-import os
-from redpandas.redpd_scales import EPSILON
 
-from typing import List
+import pymap3d as pm
+from redpandas.redpd_scales import EPSILON, METERS_TO_KM
+
 import redvox.common.date_time_utils as dt
-# import datetime as dt
+
 
 def redvox_loc(DF_PICKLE_PATH):
     """
@@ -37,6 +40,56 @@ def redvox_loc(DF_PICKLE_PATH):
     df_loc = df[loc_fields]
 
     return df_loc
+
+
+# ENU, NED, or ECEF, depending on reference frame
+def geodetic_ecef(lat_lon_alt):
+    # Earth Centered, Earth Fixed (ECEF) coordinate frame re World Geodetic System (WGS84) ellipsoid
+    # lat_lon_alt = latitude and longitude in decimal degrees, altitude above the ellipsoid in m
+    # Returns
+    # xyz_ned_m = tuple with North, East, Down in meters
+    # Default WGS84 ellipsoid
+    xyz_ecef_m = pm.geodetic2ecef(*lat_lon_alt, deg=True)
+    return xyz_ecef_m
+
+
+def geodetic_enu(lat_lon_alt, lat_lon_alt_ref):
+    # East, North, Up coordinate frame. OK for ground based sensors and ground vehicles.
+    # lat_lon_alt = latitude and longitude in decimal degrees, altitude above the ellipsoid in m
+    # lat_lon_alt_ref = reference latitude, longitude and altitude, set as xyz = 000
+    # Returns
+    # xyz_enu_m = tuple with East, North, and Up in meters
+    # Default WGS84 ellipsoid
+    xyz_enu_m = pm.geodetic2enu(*lat_lon_alt, *lat_lon_alt_ref, deg=True)
+    return xyz_enu_m
+
+
+def geodetic_ned(lat_lon_alt, lat_lon_alt_ref):
+    # North, East, Down coordinate frame. OK for marine, aircraft, and spaceships with gravity down
+    # lat_lon_alt = latitude and longitude in decimal degrees, altitude above the ellipsoid in m
+    # lat_lon_alt_ref = reference latitude, longitude and altitude, set as xyz = 000
+    # Returns
+    # xyz_ned_m = tuple with North, East, Down in meters
+    # Default WGS84 ellipsoid
+    xyz_ned_m = pm.geodetic2ned(*lat_lon_alt, *lat_lon_alt_ref, deg=True)
+    return xyz_ned_m
+
+
+# Distance
+def pythag_dist(x1, x2, y1, y2) -> float:
+    x_dist = x2 - x1
+    y_dist = y2 - y1
+    dist = np.sqrt(x_dist ** 2 + y_dist ** 2)
+    return dist
+
+
+def euclid_dist(x1, x2, y1, y2, z1, z2) -> float:
+    x_dist = x2 - x1
+    y_dist = y2 - y1
+    z_dist = z2 - z1
+    dist = np.sqrt(x_dist ** 2 + y_dist ** 2 + z_dist ** 2)
+    return dist
+
 
 
 def bounder_data(path_bounder_cvs: str, bounder_filename: str):
