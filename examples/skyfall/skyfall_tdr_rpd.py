@@ -333,37 +333,34 @@ if __name__ == "__main__":
             # construct mask for location
             # location speed
             list_bool_speed = [True] + [False]*(len(df_skyfall_data[location_speed_label][0])-1)
-            mask_speed = np.ma.masked_array(df_skyfall_data[location_speed_label][0], mask=list_bool_speed)
+            mask_speed_m_s = np.ma.masked_array(df_skyfall_data[location_speed_label][0], mask=list_bool_speed)
             # location latitude
             list_bool_lat = [True] + [False]*(len(df_skyfall_data[location_latitude_label][0])-1)
-            mask_lat = np.ma.masked_array(df_skyfall_data[location_latitude_label][0], mask=list_bool_lat)
+            mask_lat_degrees = np.ma.masked_array(df_skyfall_data[location_latitude_label][0], mask=list_bool_lat)
             # location longitude
             list_bool_long = [True] + [False]*(len(df_skyfall_data[location_longitude_label][0])-1)
-            mask_long = np.ma.masked_array(df_skyfall_data[location_longitude_label][0], mask=list_bool_long)
+            mask_long_degrees = np.ma.masked_array(df_skyfall_data[location_longitude_label][0], mask=list_bool_long)
             # location altitude
             list_bool_alt = [True] + [False]*(len(df_skyfall_data[location_altitude_label][0])-1)
-            mask_alt = np.ma.masked_array(df_skyfall_data[location_altitude_label][0], mask=list_bool_alt)
+            mask_alt_m = np.ma.masked_array(df_skyfall_data[location_altitude_label][0], mask=list_bool_alt)
 
             print("LAT LON at landing:", location_latitude_reference, location_longitude_reference)
-            # range_lat = (df_skyfall_data[location_latitude_label][station] - location_latitude_reference) \
-            #             * rpd_scales.DEGREES_TO_M
-            range_lat = (mask_lat - location_latitude_reference) * rpd_scales.DEGREES_TO_M
-            # range_lon = (df_skyfall_data[location_longitude_label][station] - location_longitude_reference) \
-            #             * rpd_scales.DEGREES_TO_M
-            range_lon = (mask_long - location_longitude_reference) * rpd_scales.DEGREES_TO_M
+            # Calculate range in m
+            range_lat_m = (mask_lat_degrees - location_latitude_reference) * rpd_scales.DEGREES_TO_KM \
+                          * rpd_scales.KM_TO_METERS
+            range_lon_m = (mask_long_degrees - location_longitude_reference) * rpd_scales.DEGREES_TO_KM \
+                          * rpd_scales.KM_TO_METERS
 
-            range_m_original = np.sqrt(np.array(range_lat**2 + range_lon**2).astype(np.float64))
-            list_bool_range = [True] + [False]*(len(range_m_original)-1)
+            range_m_original = np.sqrt(np.array(range_lat_m ** 2 + range_lon_m ** 2).astype(np.float64))
+            list_bool_range = [True] + [False]*(len(range_m_original) - 1)
             range_m = np.ma.masked_array(range_m_original, mask=list_bool_range)  # masked
 
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=range_m,
                                    wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
-                                   # wf_panel_1_sig=df_skyfall_data[location_altitude_label][station],
-                                   wf_panel_1_sig=mask_alt,
+                                   wf_panel_1_sig=mask_alt_m,
                                    wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
-                                   # wf_panel_0_sig=df_skyfall_data[location_speed_label][station],
-                                   wf_panel_0_sig=mask_speed,
+                                   wf_panel_0_sig=mask_speed_m_s,
                                    wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Range, m",
@@ -424,7 +421,7 @@ if __name__ == "__main__":
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=barometer_height_m,
                                    wf_panel_2_time=df_skyfall_data[barometer_epoch_s_label][station],
-                                   wf_panel_1_sig=mask_alt,
+                                   wf_panel_1_sig=mask_alt_m,
                                    wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
                                    wf_panel_0_sig=df_skyfall_data[health_internal_temp_deg_C_label][station],
                                    wf_panel_0_time=df_skyfall_data[health_epoch_s_label][station],
