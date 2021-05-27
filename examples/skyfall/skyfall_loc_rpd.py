@@ -9,22 +9,51 @@ import redpandas.redpd_geospatial as rpd_geo
 from libquantum.plot_templates import plot_geo_scatter_2d_3d as geo_scatter
 
 # Configuration file
-from examples.skyfall.skyfall_config import OUTPUT_DIR, PD_PQT_FILE, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
-# TODO: Add proper geospatial framework
+from examples.skyfall.skyfall_config import OUTPUT_DIR, PD_PQT_FILE, \
+    OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
 
-def main(rerun_bounder: bool):
+import csv
+
+from redvox.api1000.wrapped_redvox_packet.station_information import OsType
+import redvox.common.date_time_utils as dt
+from redvox.common.station import Station
+
+
+# def location_specs_to_csv(data_window, export_file):
+#     station: Station
+#     with open(export_file, 'w', newline='') as csvfile:
+#         writer = csv.writer(csvfile, delimiter=',')
+#
+#         writer.writerow(["Description", "Field", "Value"])
+#         writer.writerow(["Station ID", "station.id", station.id])
+#         writer.writerow(["Make", "station.metadata.make", station.metadata.make])
+#         writer.writerow(["Model", "station.metadata.model", station.metadata.model])
+#         writer.writerow(["OS", "station.metadata.os", OsType(station.metadata.os).name])
+#         writer.writerow(["OS Version", "station.metadata.os_version", station.metadata.os_version])
+#         writer.writerow(["App Version", "station.metadata.app_version", station.metadata.app_version])
+#         writer.writerow(["SDK Version", "station.metadata.os_version", data_window.sdk_version])
+
+
+if __name__ == '__main__':
+    """
+    Paths from phone and bounder for NNSS Skyfall data set
+    If true, rerun and save as parquet
+    """
+    # is_rerun_bounder = True
+    is_rerun_bounder = False
+
     """
     Skyfall trajectory information
     :param rerun_bounder:
     :return:
     """
     # Use configuration file to load rdvx parquet for the data window
-    path_pickle_df = os.path.join(OUTPUT_DIR, PD_PQT_FILE)
+    rdvx_path_pickle_df = os.path.join(OUTPUT_DIR, PD_PQT_FILE)
     # Concentrate on single station
     phone_id = "1637610021"
 
     # Load for all stations
-    df_loc = rpd_geo.redvox_loc(path_pickle_df)
+    df_loc = rpd_geo.redvox_loc(rdvx_path_pickle_df)
     print(df_loc.shape)
 
     # Pick only the balloon station
@@ -42,14 +71,15 @@ def main(rerun_bounder: bool):
         print(OTHER_INPUT_PATH)
         exit()
 
-    if rerun_bounder:
-        rpd_geo.bounder_data(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE)
+    if is_rerun_bounder:
+        rpd_geo.bounder_data(OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE)
         print('Constructing bounder parquet')
 
     # Load parquet with bounder data fields
-    bounder_loc = pd.read_parquet(OTHER_PD_PQT_FILE)
+    bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
     print('Loaded Bounder parquet')
     print(bounder_loc.shape)
+    print(bounder_loc.columns)
 
     # Remove bounder repeated values and NaNs
     # DataWindow should be cleared of nans
@@ -57,8 +87,15 @@ def main(rerun_bounder: bool):
     bounder_loc = bounder_loc[~bounder_loc['Epoch_s'].duplicated(keep='first')].dropna()
 
     # Clock check
-    print('Bounder start:', bounder_loc['Datetime'].iloc[0])
-    print('Bounder end:', bounder_loc['Datetime'].iloc[-1])
+    print('Bounder Start Time:', bounder_loc['Datetime'].iloc[0])
+    print('Bounder Start Lat:', bounder_loc['Lat_deg'].iloc[0])
+    print('Bounder Start Lon:', bounder_loc['Lon_deg'].iloc[0])
+    print('Bounder Start Alt:', bounder_loc['Alt_m'].iloc[0])
+    print('\nBounder End Time:', bounder_loc['Datetime'].iloc[-1])
+    print('Bounder Terminus Parameters (Ref):')
+    print('Bounder Ref Lat:', bounder_loc['Lat_deg'].iloc[-1])
+    print('Bounder Ref Lon:', bounder_loc['Lon_deg'].iloc[-1])
+    print('Bounder Ref Alt:', bounder_loc['Alt_m'].iloc[-1])
 
     phone_datetime_start = dt.datetime_from_epoch_seconds_utc(phone_loc['location_epoch_s'][0])
     phone_datetime_end = dt.datetime_from_epoch_seconds_utc(phone_loc['location_epoch_s'][-1])
@@ -188,12 +225,3 @@ def main(rerun_bounder: bool):
 
     plt.show()
 
-
-if __name__ == '__main__':
-    """
-    Paths from phone and bounder for NNSS Skyfall data set
-    If true, rerun and save as parquet
-    """
-    is_rerun_bounder = True
-    # is_rerun_bounder = False
-    main(is_rerun_bounder)

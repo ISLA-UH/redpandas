@@ -32,9 +32,9 @@ if __name__ == "__main__":
 
     print('Let the sky fall')
 
-    # Range vs reference lat lon at terminus
-    location_latitude_reference = 35.83728684
-    location_longitude_reference = -115.57228988
+    # # Range vs reference lat lon at terminus
+    # location_latitude_reference = 35.83728684
+    # location_longitude_reference = -115.57228988
 
 
     # Label columns in dataframe
@@ -339,33 +339,35 @@ if __name__ == "__main__":
             list_bool_alt = [True] + [False]*(len(df_skyfall_data[location_altitude_label][0])-1)
             mask_alt = np.ma.masked_array(df_skyfall_data[location_altitude_label][0], mask=list_bool_alt)
 
-            print("LAT LON at landing:", location_latitude_reference, location_longitude_reference)
-            # range_lat = (df_skyfall_data[location_latitude_label][station] - location_latitude_reference) \
-            #             * rpd_scales.DEGREES_TO_M
-            range_lat = (mask_lat - location_latitude_reference) * rpd_scales.DEGREES_TO_M
-            # range_lon = (df_skyfall_data[location_longitude_label][station] - location_longitude_reference) \
-            #             * rpd_scales.DEGREES_TO_M
-            range_lon = (mask_long - location_longitude_reference) * rpd_scales.DEGREES_TO_M
-
-            range_m_original = np.sqrt(np.array(range_lat**2 + range_lon**2).astype(np.float64))
-            list_bool_range = [True] + [False]*(len(range_m_original)-1)
-            range_m = np.ma.masked_array(range_m_original, mask=list_bool_range)  # masked
-
-            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=range_m,
-                                   wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
-                                   # wf_panel_1_sig=df_skyfall_data[location_altitude_label][station],
-                                   wf_panel_1_sig=mask_alt,
-                                   wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
-                                   # wf_panel_0_sig=df_skyfall_data[location_speed_label][station],
-                                   wf_panel_0_sig=mask_speed,
-                                   wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
-                                   start_time_epoch=event_reference_time_epoch_s,
-                                   wf_panel_2_units="Range, m",
-                                   wf_panel_1_units="Altitude, m",
-                                   wf_panel_0_units="Speed, m/s",
-                                   figure_title=EVENT_NAME + ": Location Framework",
-                                   figure_title_show=False)
+            # # TODO: FIX THIS, it's wrong at multiple levels
+            # TODO: Write geospatial function, add reference time and location in configuration
+            # print("LAT LON at landing:", location_latitude_reference, location_longitude_reference)
+            # # range_lat = (df_skyfall_data[location_latitude_label][station] - location_latitude_reference) \
+            # #             * rpd_scales.DEGREES_TO_M
+            # range_lat = (mask_lat - location_latitude_reference) * rpd_scales.DEGREES_TO_M
+            # # range_lon = (df_skyfall_data[location_longitude_label][station] - location_longitude_reference) \
+            # #             * rpd_scales.DEGREES_TO_M
+            # range_lon = (mask_long - location_longitude_reference) * rpd_scales.DEGREES_TO_M
+            #
+            # range_m_original = np.sqrt(np.array(range_lat**2 + range_lon**2).astype(np.float64))
+            # list_bool_range = [True] + [False]*(len(range_m_original)-1)
+            # range_m = np.ma.masked_array(range_m_original, mask=list_bool_range)  # masked
+            #
+            # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+            #                        wf_panel_2_sig=range_m,
+            #                        wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
+            #                        # wf_panel_1_sig=df_skyfall_data[location_altitude_label][station],
+            #                        wf_panel_1_sig=mask_alt,
+            #                        wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
+            #                        # wf_panel_0_sig=df_skyfall_data[location_speed_label][station],
+            #                        wf_panel_0_sig=mask_speed,
+            #                        wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
+            #                        start_time_epoch=event_reference_time_epoch_s,
+            #                        wf_panel_2_units="Range, m",
+            #                        wf_panel_1_units="Altitude, m",
+            #                        wf_panel_0_units="Speed, m/s",
+            #                        figure_title=EVENT_NAME + ": Location Framework",
+            #                        figure_title_show=False)
 
         if health_battery_charge_label and health_internal_temp_deg_C_label and health_network_type_label \
                 and barometer_data_raw_label and location_provider_label in df_skyfall_data.columns:

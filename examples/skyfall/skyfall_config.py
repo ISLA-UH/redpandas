@@ -19,7 +19,8 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 # INPUT_DIR = "/Users/meritxell/Documents"
 
 # Absolute path to bounder input data, could be a list
-OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder/skyfall_bounder.csv")
+OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder")
+OTHER_INPUT_FILE = "skyfall_bounder.csv"
 
 # Absolute path for output pickle and parquet files
 RPD_DIR = "rpd_files"
@@ -51,6 +52,12 @@ duration_s = 30*60  # 30 minutes
 # From start
 EPISODE_START_EPOCH_S = EVENT_ORIGIN_EPOCH_S
 EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration_s
+
+# # Reference lat lon altitude and time at terminus
+event_ref_latitude_deg = 35.83728
+event_ref_longitude_deg = -115.57234
+event_ref_altitude_m = 1028.2
+event_ref_epoch_s = EPISODE_END_EPOCH_S
 
 # Step 2: Sensor selection
 SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
