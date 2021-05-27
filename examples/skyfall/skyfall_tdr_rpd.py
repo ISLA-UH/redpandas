@@ -183,7 +183,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Acc Y, m/$s^2$",
                                    wf_panel_0_units="Acc X, m/$s^2$",
                                    figure_title=EVENT_NAME + ": Accelerometer raw",
-                                   figure_title_show=False)  # for press
+                                   figure_title_show=False,
+                                   label_panel_show=True)  # for press
 
             # Plot aligned highpassed waveforms
             # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
@@ -213,7 +214,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Acc Z hp, m/$s^2$",
                                    wf_panel_0_units="Bar hp, kPa",
                                    figure_title=EVENT_NAME + " with Acc and Bar Highpass",
-                                   figure_title_show=False)
+                                   figure_title_show=False,
+                                   label_panel_show=True)
 
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[audio_data_label][station],
@@ -227,7 +229,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Acc Z, m/$s^2$",
                                    wf_panel_0_units="Bar Z Height, km",
                                    figure_title=EVENT_NAME,
-                                   figure_title_show=False)
+                                   figure_title_show=False,
+                                   label_panel_show=True)
 
         if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label\
                 in df_skyfall_data.columns:
@@ -258,7 +261,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Gyr Y, rad/s",
                                    wf_panel_0_units="Gyr X, rad/s",
                                    figure_title=EVENT_NAME + ": Gyroscope raw",
-                                   figure_title_show=False)
+                                   figure_title_show=False,
+                                   label_panel_show=True)
 
             # Plot highpass aligned waveforms
             # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
@@ -301,7 +305,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Mag Y, $\mu$T",
                                    wf_panel_0_units="Mag X, $\mu$T",
                                    figure_title=EVENT_NAME + ": Magnetometer raw",
-                                   figure_title_show=False)
+                                   figure_title_show=False,
+                                   label_panel_show=True)
 
             # Plot aligned highpass waveforms
             # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
@@ -363,7 +368,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Altitude, m",
                                    wf_panel_0_units="Speed, m/s",
                                    figure_title=EVENT_NAME + ": Location Framework",
-                                   figure_title_show=False)
+                                   figure_title_show=False,
+                                   label_panel_show=True)
 
         if health_battery_charge_label and health_internal_temp_deg_C_label and health_network_type_label \
                 and barometer_data_raw_label and location_provider_label in df_skyfall_data.columns:
@@ -386,7 +392,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Temp, $^oC$",
                                    wf_panel_0_units="Battery %",
                                    figure_title=EVENT_NAME + ": Station Status",
-                                   figure_title_show=False)
+                                   figure_title_show=False,
+                                   label_panel_show=True)
 
         if synchronization_epoch_label and synchronization_latency_label and synchronization_offset_label \
                 and synchronization_best_offset_label and synchronization_offset_delta_label and \
@@ -405,7 +412,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Offset, s",
                                    wf_panel_0_units="Offset delta, s",
                                    figure_title=EVENT_NAME + ": Synchronization Framework",
-                                   figure_title_show=False)
+                                   figure_title_show=False,
+                                   label_panel_show=True)
 
         if health_internal_temp_deg_C_label and barometer_data_raw_label and location_altitude_label \
                 in df_skyfall_data.columns:
@@ -423,7 +431,8 @@ if __name__ == "__main__":
                                    wf_panel_1_units="Loc Height, m",
                                    wf_panel_0_units="Temp, $^oC$",
                                    figure_title=EVENT_NAME + ": Height and Temperature",
-                                   figure_title_show=False)
+                                   figure_title_show=False,
+                                   label_panel_show=True)
 
         sensor_column_label_list = [audio_data_label, barometer_data_highpass_label,
                                     accelerometer_data_highpass_label, gyroscope_data_highpass_label,

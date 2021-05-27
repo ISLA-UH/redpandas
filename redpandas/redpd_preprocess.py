@@ -335,7 +335,7 @@ def df_column_unflatten(df: pd.DataFrame,
                         col_wf_label: str,
                         col_ndim_label: str):
     """
-    Restores original shape of elements in column
+    Restores original shape of elements in column. Used for loading columns in dataframe from parquet.
 
     :param df: pandas DataFrame
     :param col_wf_label: column label for data that needs reshaping, usually waveform arrays.
