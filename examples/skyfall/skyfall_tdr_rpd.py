@@ -32,9 +32,9 @@ if __name__ == "__main__":
 
     print('Let the sky fall')
 
-    # Range vs reference lat lon at terminus
-    location_latitude_reference = 35.83728684
-    location_longitude_reference = -115.57228988
+    # # Range vs reference lat lon at terminus
+    # location_latitude_reference = 35.83728684
+    # location_longitude_reference = -115.57228988
 
 
     # Label columns in dataframe

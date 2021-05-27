@@ -1,13 +1,8 @@
 import os
-from typing import Optional, Tuple, List, Dict
-
 import numpy as np
 import pandas as pd
-
 import pymap3d as pm
-from redpandas.redpd_scales import EPSILON, METERS_TO_KM
-
-import redvox.common.date_time_utils as dt
+from redpandas.redpd_scales import EPSILON, DEGREES_TO_METERS, PRESSURE_SEA_LEVEL_KPA
 
 
 def redvox_loc(DF_PICKLE_PATH):
@@ -42,63 +37,15 @@ def redvox_loc(DF_PICKLE_PATH):
     return df_loc
 
 
-# ENU, NED, or ECEF, depending on reference frame
-def geodetic_ecef(lat_lon_alt):
-    # Earth Centered, Earth Fixed (ECEF) coordinate frame re World Geodetic System (WGS84) ellipsoid
-    # lat_lon_alt = latitude and longitude in decimal degrees, altitude above the ellipsoid in m
-    # Returns
-    # xyz_ned_m = tuple with North, East, Down in meters
-    # Default WGS84 ellipsoid
-    xyz_ecef_m = pm.geodetic2ecef(*lat_lon_alt, deg=True)
-    return xyz_ecef_m
-
-
-def geodetic_enu(lat_lon_alt, lat_lon_alt_ref):
-    # East, North, Up coordinate frame. OK for ground based sensors and ground vehicles.
-    # lat_lon_alt = latitude and longitude in decimal degrees, altitude above the ellipsoid in m
-    # lat_lon_alt_ref = reference latitude, longitude and altitude, set as xyz = 000
-    # Returns
-    # xyz_enu_m = tuple with East, North, and Up in meters
-    # Default WGS84 ellipsoid
-    xyz_enu_m = pm.geodetic2enu(*lat_lon_alt, *lat_lon_alt_ref, deg=True)
-    return xyz_enu_m
-
-
-def geodetic_ned(lat_lon_alt, lat_lon_alt_ref):
-    # North, East, Down coordinate frame. OK for marine, aircraft, and spaceships with gravity down
-    # lat_lon_alt = latitude and longitude in decimal degrees, altitude above the ellipsoid in m
-    # lat_lon_alt_ref = reference latitude, longitude and altitude, set as xyz = 000
-    # Returns
-    # xyz_ned_m = tuple with North, East, Down in meters
-    # Default WGS84 ellipsoid
-    xyz_ned_m = pm.geodetic2ned(*lat_lon_alt, *lat_lon_alt_ref, deg=True)
-    return xyz_ned_m
-
-
-# Distance
-def pythag_dist(x1, x2, y1, y2) -> float:
-    x_dist = x2 - x1
-    y_dist = y2 - y1
-    dist = np.sqrt(x_dist ** 2 + y_dist ** 2)
-    return dist
-
-
-def euclid_dist(x1, x2, y1, y2, z1, z2) -> float:
-    x_dist = x2 - x1
-    y_dist = y2 - y1
-    z_dist = z2 - z1
-    dist = np.sqrt(x_dist ** 2 + y_dist ** 2 + z_dist ** 2)
-    return dist
-
-
-
-def bounder_data(path_bounder_cvs: str, bounder_filename: str):
+def bounder_data(path_bounder_csv, file_bounder_csv: str, file_bounder_parquet: str):
     """
     Load data from balloon-based Bounder platform
-    :param path_bounder_cvs:
+    :param path_bounder_csv:
+    :param file_bounder_csv:
     :param bounder_filename:
     :return:
     """
+
     # 2020-10-27T13:45:13.132 start time of first RedVox data packet
     # Event-specific start date
     yyyymmdd = "2020-10-27 "
@@ -106,26 +53,32 @@ def bounder_data(path_bounder_cvs: str, bounder_filename: str):
     # Manual, but can be automated. CSV has been cleaned so can now load all.
     rows = np.arange(5320, 7174)
 
-    df = pd.read_csv(path_bounder_cvs, usecols=[5, 6, 7, 8, 9, 10, 11], skiprows=lambda x: x not in rows,
+    input_path = os.path.join(path_bounder_csv, file_bounder_csv)
+    print('Input', input_path)
+    output_path = os.path.join(path_bounder_csv, file_bounder_parquet)
+
+    df = pd.read_csv(input_path, usecols=[5, 6, 7, 8, 9, 10, 11], skiprows=lambda x: x not in rows,
                      names=['Pres_kPa', 'Temp_C', 'Batt_V', 'Lon_deg', 'Lat_deg', 'Alt_m', 'Time_hhmmss'])
     dtime = pd.to_datetime(yyyymmdd + df['Time_hhmmss'])
+    # TODO: Clean up, there is a cleaner way
     dtime_unix_s = dtime.astype('int64')/1E9
 
     skyfall_bounder_loc = df.filter(['Lat_deg', 'Lon_deg', 'Alt_m', 'Pres_kPa', 'Temp_C', 'Batt_V'])
     skyfall_bounder_loc.insert(0, 'Epoch_s', dtime_unix_s)
     skyfall_bounder_loc.insert(1, 'Datetime', dtime)
 
+    print(skyfall_bounder_loc['Epoch_s'])
     # Save to parquet
-    skyfall_bounder_loc.to_parquet(bounder_filename)
+    skyfall_bounder_loc.to_parquet(output_path)
 
 
-def model_height_from_pressure(pressure_kPa):
+def bounder_model_height_from_pressure(pressure_kPa):
     """
     Returns empirical height in m from input pressure
     :param pressure_kPa:
     :return:
     """
-    pressure_ref_kPa = 101.325
+    pressure_ref_kPa = PRESSURE_SEA_LEVEL_KPA
     scaled_pressure = -np.log(pressure_kPa/pressure_ref_kPa)
     # Empirical model constructed from
     # c, stats = np.polynomial.polynomial.polyfit(poly_x, bounder_loc['Alt_m'], 8, full=True)
@@ -135,67 +88,50 @@ def model_height_from_pressure(pressure_kPa):
     return elevation_m
 
 
-def compute_bounder_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m):
+def compute_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m,
+                      ref_unix_s, ref_lat_deg, ref_lon_deg, ref_alt_m,
+                      geodetic_type: str = 'enu'):
     """
-    Assuming no movement at the end
-    :param unix_micros:
+    Compute time and location relative to a reference value; compute speed.
+    :param unix_s:
     :param lat_deg:
     :param lon_deg:
     :param alt_m:
+    :param ref_unix_s:
+    :param ref_lat_deg:
+    :param ref_lon_deg:
+    :param ref_alt_m:
+    :param geodetic_type:
     :return:
     """
-    # Convert to XY for computation of "speed" from derivative
-    x_m = (lon_deg - lon_deg.iloc[-1]).astype(float)*111000
-    y_m = (lat_deg - lat_deg.iloc[-1]).astype(float)*111000
-    z_m = (alt_m - alt_m.iloc[-1]).astype(float)
-    t_s = (unix_s - unix_s.iloc[-1]).astype(float)
 
-    # Speed in mps. Compute diff and add zero at terminus (at rest)
-    u_mps = np.append(np.diff(x_m)/(np.diff(t_s)+EPSILON), 0)
-    v_mps = np.append(np.diff(y_m)/(np.diff(t_s)+EPSILON), 0)
-    w_mps = np.append(np.diff(z_m)/(np.diff(t_s)+EPSILON), 0)
+    if geodetic_type == 'enu':
+        x_m, y_m, z_m = pm.geodetic2enu(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    elif geodetic_type == 'ned':
+        y_m, x_m, z_m = pm.geodetic2ned(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    else:
+        x_m = (lon_deg - ref_lon_deg).astype(float) * DEGREES_TO_METERS
+        y_m = (lat_deg - ref_lat_deg).astype(float) * DEGREES_TO_METERS
+        z_m = (alt_m - ref_alt_m).astype(float)
+        t_s = (unix_s - ref_unix_s).astype(float)
+
+    # Speed in mps. Compute diff, add EPSILON to avoid divide by zero on repeat values
+    u_mps = np.gradient(x_m)/(np.gradient(t_s)+EPSILON)
+    v_mps = np.gradient(y_m)/(np.gradient(t_s)+EPSILON)
+    w_mps = np.gradient(z_m)/(np.gradient(t_s)+EPSILON)
 
     speed_mps = np.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
 
-    txyzuvw = pd.DataFrame(data={'T_s': t_s,
-                                 'X_m': x_m,
-                                 'Y_m': y_m,
-                                 'Z_m': z_m,
-                                 'U_mps': u_mps,
-                                 'V_mps': v_mps,
-                                 'W_mps': w_mps,
-                                 'Speed_mps': speed_mps})
-    return txyzuvw
-
-
-def compute_phone_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m):
-    """
-    Assuming no movement at the end
-    :param unix_micros:
-    :param lat_deg:
-    :param lon_deg:
-    :param alt_m:
-    :return:
-    """
-    # Convert to XY for computation of "speed" from derivative
-    x_m = (lon_deg - lon_deg[-1]).astype(float)*111000
-    y_m = (lat_deg - lat_deg[-1]).astype(float)*111000
-    z_m = (alt_m - alt_m[-1]).astype(float)
-    t_s = (unix_s - unix_s[-1]).astype(float)
-
-    # Speed in mps. Compute diff and add zero at terminus (at rest)
-    u_mps = np.append(np.diff(x_m)/(np.diff(t_s)+EPSILON), 0)
-    v_mps = np.append(np.diff(y_m)/(np.diff(t_s)+EPSILON), 0)
-    w_mps = np.append(np.diff(z_m)/(np.diff(t_s)+EPSILON), 0)
-
-    speed_mps = np.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
-
-    txyzuvw = pd.DataFrame(data={'T_s': t_s,
-                                 'X_m': x_m,
-                                 'Y_m': y_m,
-                                 'Z_m': z_m,
-                                 'U_mps': u_mps,
-                                 'V_mps': v_mps,
-                                 'W_mps': w_mps,
-                                 'Speed_mps': speed_mps})
-    return txyzuvw
+    t_xyzuvw_s_m = pd.DataFrame(data={'T_s': t_s,
+                                      'X_m': x_m,
+                                      'Y_m': y_m,
+                                      'Z_m': z_m,
+                                      'U_mps': u_mps,
+                                      'V_mps': v_mps,
+                                      'W_mps': w_mps,
+                                      'Speed_mps': speed_mps})
+    return t_xyzuvw_s_m

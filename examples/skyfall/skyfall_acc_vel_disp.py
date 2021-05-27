@@ -354,10 +354,10 @@ if __name__ == "__main__":
             print("LAT LON at landing:", location_latitude_reference, location_longitude_reference)
             # range_lat = (df_skyfall_data[location_latitude_label][station] - location_latitude_reference) \
             #             * rpd_scales.DEGREES_TO_M
-            range_lat = (mask_lat - location_latitude_reference) * rpd_scales.DEGREES_TO_M
+            range_lat = (mask_lat - location_latitude_reference) * rpd_scales.DEGREES_TO_METERS
             # range_lon = (df_skyfall_data[location_longitude_label][station] - location_longitude_reference) \
             #             * rpd_scales.DEGREES_TO_M
-            range_lon = (mask_long - location_longitude_reference) * rpd_scales.DEGREES_TO_M
+            range_lon = (mask_long - location_longitude_reference) * rpd_scales.DEGREES_TO_METERS
 
             range_m = np.sqrt(np.array(range_lat ** 2 + range_lon ** 2).astype(np.float64))
             list_bool_range = [True] + [False] * (len(range_m) - 1)
