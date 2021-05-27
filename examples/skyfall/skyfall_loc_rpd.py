@@ -194,6 +194,6 @@ if __name__ == '__main__':
     Paths from phone and bounder for NNSS Skyfall data set
     If true, rerun and save as parquet
     """
-    # is_rerun_bounder = True
-    is_rerun_bounder = False
+    is_rerun_bounder = True
+    # is_rerun_bounder = False
     main(is_rerun_bounder)

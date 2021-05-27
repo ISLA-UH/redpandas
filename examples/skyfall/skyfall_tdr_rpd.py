@@ -32,6 +32,11 @@ if __name__ == "__main__":
 
     print('Let the sky fall')
 
+    # Range vs reference lat lon at terminus
+    location_latitude_reference = 35.83728684
+    location_longitude_reference = -115.57228988
+
+
     # Label columns in dataframe
     station_label: str = "station_id"
     redvox_sdk_version_label: str = 'redvox_sdk_version'
@@ -339,9 +344,6 @@ if __name__ == "__main__":
             list_bool_alt = [True] + [False]*(len(df_skyfall_data[location_altitude_label][0])-1)
             mask_alt = np.ma.masked_array(df_skyfall_data[location_altitude_label][0], mask=list_bool_alt)
 
-            # Range vs reference lat lon
-            location_latitude_reference = 35.83728684
-            location_longitude_reference = -115.57228988
             print("LAT LON at landing:", location_latitude_reference, location_longitude_reference)
             # range_lat = (df_skyfall_data[location_latitude_label][station] - location_latitude_reference) \
             #             * rpd_scales.DEGREES_TO_M
