@@ -53,11 +53,11 @@ duration_s = 30*60  # 30 minutes
 EPISODE_START_EPOCH_S = EVENT_ORIGIN_EPOCH_S
 EPISODE_END_EPOCH_S = EVENT_ORIGIN_EPOCH_S + duration_s
 
-# # Reference lat lon altitude and time at terminus
-event_ref_latitude_deg = 35.83728
-event_ref_longitude_deg = -115.57234
-event_ref_altitude_m = 1028.2
-event_ref_epoch_s = EPISODE_END_EPOCH_S
+# Reference lat lon altitude and time at terminus, from Bounder
+ref_latitude_deg = 35.83728
+ref_longitude_deg = -115.57234
+ref_altitude_m = 1028.2
+ref_epoch_s = 1603808160
 
 # Step 2: Sensor selection
 SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
