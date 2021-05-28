@@ -1,20 +1,16 @@
+import os
 import csv
-# To export to Excel, save to Pandas first
 
 # RedVox and Red Pandas modules
 from redvox.common.data_window import DataWindowFast
 
-import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
-import redpandas.redpd_build_station as rpd_build_sta
 from redvox.api1000.wrapped_redvox_packet.station_information import OsType
 import redvox.common.date_time_utils as dt
 from redvox.common.station import Station
 
 # Configuration file
-from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, EPISODE_START_EPOCH_S, \
-    EPISODE_END_EPOCH_S, STATIONS, PD_PQT_FILE, OUTPUT_DIR, DW_FILE, build_dw_pickle, build_df_parquet, \
-    plot_mic_waveforms, print_datawindow_dq, SENSOR_LABEL
+from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, DW_FILE
 
 
 def station_specs_to_csv(data_window, export_file):
@@ -150,6 +146,8 @@ if __name__ == "__main__":
     rpd_dq.station_metadata(rdvx_data)
 
     print("\nSave Station specs to file")
-    station_file = "skyfall_station.csv"
-    station_specs_to_csv(rdvx_data, station_file)
+    csv_station_file = EVENT_NAME + "_station.csv"
+    csv_station_full_path = os.path.join(OUTPUT_DIR, csv_station_file)
+
+    station_specs_to_csv(rdvx_data, csv_station_full_path)
 

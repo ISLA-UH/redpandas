@@ -4,6 +4,7 @@ import numpy as np
 
 """ Smallest number for 64-bit floats. Deploy to avoid division by zero or log zero singularities"""
 EPSILON = np.finfo(np.float64).eps
+NANOS_TO_S = 1E-9
 MICROS_TO_S = 1E-6
 MICROS_TO_MILLIS = 1E-3
 SECONDS_TO_MINUTES = 1./60.

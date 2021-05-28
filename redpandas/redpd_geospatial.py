@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import pymap3d as pm
-from redpandas.redpd_scales import EPSILON, DEGREES_TO_METERS, PRESSURE_SEA_LEVEL_KPA
+from redpandas.redpd_scales import EPSILON, NANOS_TO_S, DEGREES_TO_METERS, PRESSURE_SEA_LEVEL_KPA
 
 
 def redvox_loc(DF_PICKLE_PATH):
@@ -46,11 +46,9 @@ def bounder_data(path_bounder_csv, file_bounder_csv: str, file_bounder_parquet: 
     :return:
     """
 
-    # 2020-10-27T13:45:13.132 start time of first RedVox data packet
-    # Event-specific start date
+    # Event-specific start date and curated file
+    # Bounder Skyfall starts at 13:45:00, end at 14:16:00
     yyyymmdd = "2020-10-27 "
-    # Skyfall start at 13:45:00, end at 14:16:00
-    # Manual, but can be automated. CSV has been cleaned so can now load all.
     rows = np.arange(5320, 7174)
 
     input_path = os.path.join(path_bounder_csv, file_bounder_csv)
@@ -59,9 +57,10 @@ def bounder_data(path_bounder_csv, file_bounder_csv: str, file_bounder_parquet: 
 
     df = pd.read_csv(input_path, usecols=[5, 6, 7, 8, 9, 10, 11], skiprows=lambda x: x not in rows,
                      names=['Pres_kPa', 'Temp_C', 'Batt_V', 'Lon_deg', 'Lat_deg', 'Alt_m', 'Time_hhmmss'])
-    dtime = pd.to_datetime(yyyymmdd + df['Time_hhmmss'])
-    # TODO: Clean up, there is a cleaner way
-    dtime_unix_s = dtime.astype('int64')/1E9
+    dtime = pd.to_datetime(yyyymmdd + df['Time_hhmmss'], origin='unix')
+
+    # Convert datetime to unix nanoseconds, then to seconds
+    dtime_unix_s = dtime.astype('int64')*NANOS_TO_S
 
     skyfall_bounder_loc = df.filter(['Lat_deg', 'Lon_deg', 'Alt_m', 'Pres_kPa', 'Temp_C', 'Batt_V'])
     skyfall_bounder_loc.insert(0, 'Epoch_s', dtime_unix_s)
