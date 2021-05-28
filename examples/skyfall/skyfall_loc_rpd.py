@@ -11,7 +11,7 @@ import redpandas.redpd_geospatial as rpd_geo
 from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 
 # Configuration file
-from examples.skyfall.skyfall_config import OUTPUT_DIR, PD_PQT_FILE, \
+from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, PD_PQT_FILE, \
     OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
 
 
@@ -25,12 +25,12 @@ def bounder_specs_to_csv(df, csv_export_file):
         writer.writerow(['Start Epoch s', df['Epoch_s'].iloc[0]])
         writer.writerow(['Start Latitude degrees', df['Lat_deg'].iloc[0]])
         writer.writerow(['Start Longitude degrees', df['Lon_deg'].iloc[0]])
-        writer.writerow(['Start Altitude m /WGS-84', df['Alt_m'].iloc[0]])
+        writer.writerow(['Start Altitude m (WGS-84)', df['Alt_m'].iloc[0]])
         writer.writerow(['Stop Date Time', df['Datetime'].iloc[-1]])
-        writer.writerow(['Stop Epoch s:', df['Epoch_s'].iloc[-1]])
-        writer.writerow(['Stop Latitude degrees:', df['Lat_deg'].iloc[-1]])
-        writer.writerow(['Stop Longitude degrees:', df['Lon_deg'].iloc[-1]])
-        writer.writerow(['Stop Altitude m /WGS-84', df['Alt_m'].iloc[-1]])
+        writer.writerow(['Stop Epoch s', df['Epoch_s'].iloc[-1]])
+        writer.writerow(['Stop Latitude degrees', df['Lat_deg'].iloc[-1]])
+        writer.writerow(['Stop Longitude degrees', df['Lon_deg'].iloc[-1]])
+        writer.writerow(['Stop Altitude m  (WGS-84)', df['Alt_m'].iloc[-1]])
 
 
 if __name__ == '__main__':
@@ -38,8 +38,8 @@ if __name__ == '__main__':
     Paths from phone and bounder for NNSS Skyfall data set
     If true, rerun and save as parquet
     """
-    # is_rerun_bounder = True
-    is_rerun_bounder = False
+    is_rerun_bounder = True
+    # is_rerun_bounder = False
 
     """
     Skyfall trajectory information
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     print('Bounder Ref Alt:', bounder_loc['Alt_m'].iloc[-1])
 
     # Export Initial and Final states to CSV
-    file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, 'bounder_start_end.csv')
+    file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, EVENT_NAME + '_bounder_start_end.csv')
     bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
 
     # Use the bounder terminus values in the configuration file
