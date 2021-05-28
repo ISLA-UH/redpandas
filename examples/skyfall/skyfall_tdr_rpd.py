@@ -1,24 +1,24 @@
 # todo: address possible invalid values in building plots section
 # Python libraries
 import os.path
-import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import datetime as dtime
 
 # RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindowFast
 import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
-import redpandas.redpd_scales as rpd_scales
 import redpandas.redpd_build_station as rpd_build_sta
 import redpandas.redpd_plot as rpd_plot
+import redpandas.redpd_geospatial as rpd_geo
+from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration file
 from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, EPISODE_START_EPOCH_S, \
-    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, use_parquet, PD_PQT_FILE, SENSOR_LABEL
+    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, use_parquet, PD_PQT_FILE, SENSOR_LABEL, \
+    ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 
 
 # Verify points to correct config file.
@@ -156,8 +156,8 @@ if __name__ == "__main__":
             print('barometer_epoch_s_0:', df_skyfall_data[barometer_epoch_s_label][station][0])
 
             barometer_height_m = \
-                rpd_prep.model_height_from_pressure_skyfall(df_skyfall_data[barometer_data_raw_label][station][0])
-            baro_height_from_bounder_km = barometer_height_m/1E3
+                rpd_geo.bounder_model_height_from_pressure(df_skyfall_data[barometer_data_raw_label][station][0])
+            baro_height_from_bounder_km = barometer_height_m*METERS_TO_KM
 
         # Repeat here
         if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label\
@@ -339,16 +339,36 @@ if __name__ == "__main__":
             list_bool_alt = [True] + [False]*(len(df_skyfall_data[location_altitude_label][0])-1)
             mask_alt = np.ma.masked_array(df_skyfall_data[location_altitude_label][0], mask=list_bool_alt)
 
-            # # TODO: FIX THIS, it's wrong at multiple levels
-            # TODO: Write geospatial function, add reference time and location in configuration
-            # print("LAT LON at landing:", location_latitude_reference, location_longitude_reference)
-            # # range_lat = (df_skyfall_data[location_latitude_label][station] - location_latitude_reference) \
-            # #             * rpd_scales.DEGREES_TO_M
-            # range_lat = (mask_lat - location_latitude_reference) * rpd_scales.DEGREES_TO_M
-            # # range_lon = (df_skyfall_data[location_longitude_label][station] - location_longitude_reference) \
-            # #             * rpd_scales.DEGREES_TO_M
-            # range_lon = (mask_long - location_longitude_reference) * rpd_scales.DEGREES_TO_M
-            #
+            print("Bounder End EPOCH:", ref_epoch_s)
+            print("Bounder End LAT LON ALT:", ref_latitude_deg, ref_longitude_deg, ref_altitude_m)
+
+            # Compute ENU projections
+            df_range_z_speed = \
+                rpd_geo.compute_t_r_z_speed(unix_s=df_skyfall_data[location_epoch_s_label][station],
+                                            lat_deg=mask_lat,
+                                            lon_deg=mask_long,
+                                            alt_m=mask_alt,
+                                            ref_unix_s=ref_epoch_s,
+                                            ref_lat_deg=ref_latitude_deg,
+                                            ref_lon_deg=ref_longitude_deg,
+                                            ref_alt_m=ref_altitude_m)
+
+            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+                                   wf_panel_2_sig=df_range_z_speed['Range_m']*METERS_TO_KM,
+                                   wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
+                                   wf_panel_1_sig=df_range_z_speed['Z_m']*METERS_TO_KM,
+                                   wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
+                                   wf_panel_0_sig=mask_speed,
+                                   wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
+                                   start_time_epoch=event_reference_time_epoch_s,
+                                   wf_panel_2_units="Range, km",
+                                   wf_panel_1_units="Altitude, km",
+                                   wf_panel_0_units="Speed, m/s",
+                                   figure_title=EVENT_NAME + ": Location Framework",
+                                   figure_title_show=False)
+
+            # range_lat = (mask_lat - ref_latitude_deg) * rpd_scales.DEGREES_TO_METERS
+            # range_lon = (mask_long - ref_longitude_deg) * rpd_scales.DEGREES_TO_METERS
             # range_m_original = np.sqrt(np.array(range_lat**2 + range_lon**2).astype(np.float64))
             # list_bool_range = [True] + [False]*(len(range_m_original)-1)
             # range_m = np.ma.masked_array(range_m_original, mask=list_bool_range)  # masked
@@ -356,10 +376,8 @@ if __name__ == "__main__":
             # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
             #                        wf_panel_2_sig=range_m,
             #                        wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
-            #                        # wf_panel_1_sig=df_skyfall_data[location_altitude_label][station],
             #                        wf_panel_1_sig=mask_alt,
             #                        wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
-            #                        # wf_panel_0_sig=df_skyfall_data[location_speed_label][station],
             #                        wf_panel_0_sig=mask_speed,
             #                        wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
             #                        start_time_epoch=event_reference_time_epoch_s,
@@ -415,6 +433,7 @@ if __name__ == "__main__":
                 in df_skyfall_data.columns:
 
             # Finally, barometric and altitude estimates
+            # TODO: Overlay mask_alt, barometer_alt, and bounder_alt - single panel
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=barometer_height_m,
                                    wf_panel_2_time=df_skyfall_data[barometer_epoch_s_label][station],

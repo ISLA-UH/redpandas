@@ -4,7 +4,6 @@ import pandas as pd
 import pymap3d as pm
 from redpandas.redpd_scales import EPSILON, NANOS_TO_S, DEGREES_TO_METERS, PRESSURE_SEA_LEVEL_KPA
 
-
 def redvox_loc(DF_PICKLE_PATH):
     """
     Extract the location, temperature, and DC pressure payload from the microphones
@@ -134,3 +133,48 @@ def compute_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m,
                                       'W_mps': w_mps,
                                       'Speed_mps': speed_mps})
     return t_xyzuvw_s_m
+
+
+def compute_t_r_z_speed(unix_s, lat_deg, lon_deg, alt_m,
+                        ref_unix_s, ref_lat_deg, ref_lon_deg, ref_alt_m,
+                        geodetic_type: str = 'enu'):
+    """
+    Compute time and location relative to a reference value; compute speed.
+    :param unix_s:
+    :param lat_deg:
+    :param lon_deg:
+    :param alt_m:
+    :param ref_unix_s:
+    :param ref_lat_deg:
+    :param ref_lon_deg:
+    :param ref_alt_m:
+    :param geodetic_type:
+    :return:
+    """
+
+    if geodetic_type == 'enu':
+        x_m, y_m, z_m = pm.geodetic2enu(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    elif geodetic_type == 'ned':
+        y_m, x_m, z_m = pm.geodetic2ned(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    else:
+        x_m = (lon_deg - ref_lon_deg).astype(float) * DEGREES_TO_METERS
+        y_m = (lat_deg - ref_lat_deg).astype(float) * DEGREES_TO_METERS
+        z_m = (alt_m - ref_alt_m).astype(float)
+        t_s = (unix_s - ref_unix_s).astype(float)
+
+    # Speed in mps. Compute diff, add EPSILON to avoid divide by zero on repeat values
+    u_mps = np.gradient(x_m)/(np.gradient(t_s)+EPSILON)
+    v_mps = np.gradient(y_m)/(np.gradient(t_s)+EPSILON)
+    w_mps = np.gradient(z_m)/(np.gradient(t_s)+EPSILON)
+
+    range_m = np.sqrt(x_m**2 + y_m**2)
+    speed_mps = np.ma.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
+    time_range_z_speed_s_m = pd.DataFrame(data={'Elapsed_s': t_s,
+                                                'Range_m': range_m,
+                                                'Z_m': z_m,
+                                                'LatLon_speed_mps': speed_mps})
+    return time_range_z_speed_s_m
