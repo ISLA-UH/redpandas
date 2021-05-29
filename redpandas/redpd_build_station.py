@@ -1,7 +1,7 @@
 """
 This module contains general utilities that can work with values containing nans.
 """
-# TODO MC: finish build station luminosity
+# TODO MC: finish build station luminosity, best location station
 
 from typing import List
 

@@ -16,7 +16,7 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 # INPUT_DIR = "/Users/spopen/redvox/data/skyfall_data"
 # INPUT_DIR = "/Users/tyler/Documents"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
-# INPUT_DIR = "/Users/meritxell/Documents"
+# INPUT_DIR = "/Users/meritxell/Documents/skyfall"
 
 # Absolute path to bounder input data, could be a list
 OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder")
@@ -64,12 +64,13 @@ SENSOR_LABEL = ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscop
                 'health', 'location', 'clock', 'synchronization']
 
 # Step 3: Pipeline actions, needed parquet for geospatial
-build_dw_pickle: bool = False  # Handling of RDVX DataWindow structure
+build_dw_pickle: bool = True  # Handling of RDVX DataWindow structure
 print_datawindow_dq: bool = False  # Print basic DQ/DA to screen
 plot_mic_waveforms: bool = False  # Show raw RDVX DataWindow waveforms
 build_df_parquet: bool = True  # Export pandas data frame as parquet
 
 # Build TDR Data Products: Settings for skyfall_tdr_rpd.py
+# Choose one method to load the Skyfall data
 use_datawindow: bool = False  # Load data using RDVX DataWindow
 use_pickle: bool = False  # Load data using a pickle with RDVX DataWindow, either serialized or not
 use_parquet: bool = True  # Load data using parquet with RedPandas dataframe
