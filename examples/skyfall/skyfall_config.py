@@ -18,10 +18,6 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
 # INPUT_DIR = "/Users/meritxell/Documents/skyfall"
 
-# Absolute path to bounder input data, could be a list
-OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder")
-OTHER_INPUT_FILE = "skyfall_bounder.csv"
-
 # Absolute path for output pickle and parquet files
 RPD_DIR = "rpd_files"
 OUTPUT_DIR = os.path.join(INPUT_DIR, RPD_DIR)
@@ -41,6 +37,10 @@ DW_FILE = EVENT_NAME + ".pickle"
 
 # RedPandas Parquets
 PD_PQT_FILE = EVENT_NAME + "_df.parquet"
+
+# Absolute path to bounder data; could be a list
+OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder")
+OTHER_INPUT_FILE = "skyfall_bounder.csv"
 OTHER_PD_PQT_FILE = EVENT_NAME + "_df_bounder.parquet"
 
 # Step 1: Station ID and Event time
