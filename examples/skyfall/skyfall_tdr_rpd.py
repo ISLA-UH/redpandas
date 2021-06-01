@@ -286,29 +286,15 @@ if __name__ == "__main__":
         if location_latitude_label and location_longitude_label and location_altitude_label and location_speed_label \
                 in df_skyfall_data.columns:
 
-            # construct mask for location parameters, mask first value
-            # location speed
-            list_bool_speed = [True] + [False]*(len(df_skyfall_data[location_speed_label][station])-1)
-            mask_speed = np.ma.masked_array(df_skyfall_data[location_speed_label][station], mask=list_bool_speed)
-            # location latitude
-            list_bool_lat = [True] + [False]*(len(df_skyfall_data[location_latitude_label][station])-1)
-            mask_lat = np.ma.masked_array(df_skyfall_data[location_latitude_label][station], mask=list_bool_lat)
-            # location longitude
-            list_bool_long = [True] + [False]*(len(df_skyfall_data[location_longitude_label][station])-1)
-            mask_long = np.ma.masked_array(df_skyfall_data[location_longitude_label][station], mask=list_bool_long)
-            # location altitude
-            list_bool_alt = [True] + [False]*(len(df_skyfall_data[location_altitude_label][station])-1)
-            mask_alt = np.ma.masked_array(df_skyfall_data[location_altitude_label][station], mask=list_bool_alt)
-
             print("Bounder End EPOCH:", ref_epoch_s)
             print("Bounder End LAT LON ALT:", ref_latitude_deg, ref_longitude_deg, ref_altitude_m)
 
             # Compute ENU projections
             df_range_z_speed = \
                 rpd_geo.compute_t_r_z_speed(unix_s=df_skyfall_data[location_epoch_s_label][station],
-                                            lat_deg=mask_lat,
-                                            lon_deg=mask_long,
-                                            alt_m=mask_alt,
+                                            lat_deg=df_skyfall_data[location_latitude_label][station],
+                                            lon_deg=df_skyfall_data[location_longitude_label][station],
+                                            alt_m=df_skyfall_data[location_altitude_label][station],
                                             ref_unix_s=ref_epoch_s,
                                             ref_lat_deg=ref_latitude_deg,
                                             ref_lon_deg=ref_longitude_deg,
@@ -320,7 +306,7 @@ if __name__ == "__main__":
                                    wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
                                    wf_panel_1_sig=df_range_z_speed['Z_m']*METERS_TO_KM,
                                    wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
-                                   wf_panel_0_sig=mask_speed,
+                                   wf_panel_0_sig=df_skyfall_data[location_speed_label][station],
                                    wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Range, km",
@@ -334,14 +320,16 @@ if __name__ == "__main__":
             if location_epoch_s_label and location_altitude_label and barometer_epoch_s_label and \
                 barometer_data_raw_label in df_skyfall_data.columns:
 
-                # Plot overlay mask_alt, barometer_alt, and bounder_alt - single panel
+                # Plot overlay altitude from location sensor, barometer_alt, and bounder_alt - single panel
                 plt.figure()
+                # Time
                 t0_loc = df_skyfall_data[location_epoch_s_label][station][0]
                 time_loc = df_skyfall_data[location_epoch_s_label][station] - \
                            df_skyfall_data[location_epoch_s_label][station][0]
                 time_bar = df_skyfall_data[barometer_epoch_s_label][station] - \
                            df_skyfall_data[barometer_epoch_s_label][station][0]
-                plt.plot(time_loc, mask_alt * METERS_TO_KM, label='Location sensor')
+                # Actual plot
+                plt.plot(time_loc, df_skyfall_data[location_altitude_label][station] * METERS_TO_KM, label='Location sensor')
                 plt.plot(time_bar, barometer_height_m * METERS_TO_KM, label='Barometer Z')
                 plt.plot(time_loc, df_range_z_speed['Z_m'] * METERS_TO_KM, label='Bounder')
                 plt.ylabel('Height, km')

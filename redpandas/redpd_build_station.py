@@ -93,6 +93,9 @@ def build_station(station: Station,
     elif sensor_label == 'location' or sensor_label == 'loc':
         return location_build_station(station=station)
 
+    elif sensor_label == 'best_location' or sensor_label == 'best_loc':
+        return best_location_build_station(station=station)
+
     elif sensor_label == 'clock':
         return clock_build_station(station=station)
 
@@ -184,6 +187,8 @@ def location_build_station(station: Station) -> dict:
         return {'location_sensor_name': station.location_sensor().name,
                 'location_sample_rate_hz': station.location_sensor().sample_rate_hz,
                 'location_epoch_s': station.location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                'location_gps_epoch_s': station.location_sensor().get_data_channel('gps_timestamps')
+                                        * rpd_scales.MICROS_TO_S,
                 'location_latitude': station.location_sensor().get_data_channel("latitude"),
                 'location_longitude': station.location_sensor().get_data_channel("longitude"),
                 'location_altitude': station.location_sensor().get_data_channel("altitude"),
@@ -197,6 +202,35 @@ def location_build_station(station: Station) -> dict:
                 'location_provider': station.location_sensor().get_data_channel("location_provider")}
     else:
         print(f'Station {station.id} has no location data.')
+        return {}
+
+
+def best_location_build_station(station: Station) -> dict:
+    """
+    Obtains location data from RedVox station if it exists
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
+    horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.
+    """
+    if station.has_best_location_data():
+        return {'best_location_sensor_name': station.best_location_sensor().name,
+                'best_location_sample_rate_hz': station.best_location_sensor().sample_rate_hz,
+                'best_location_epoch_s': station.best_location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                'best_location_gps_epoch_s': station.best_location_sensor().get_data_channel('gps_timestamps')
+                                        * rpd_scales.MICROS_TO_S,
+                'best_location_latitude': station.best_location_sensor().get_data_channel("latitude"),
+                'best_location_longitude': station.best_location_sensor().get_data_channel("longitude"),
+                'best_location_altitude': station.best_location_sensor().get_data_channel("altitude"),
+                'best_location_bearing': station.best_location_sensor().get_data_channel("bearing"),
+                'best_location_speed': station.best_location_sensor().get_data_channel("speed"),
+                'best_location_horizontal_accuracy':
+                    station.best_location_sensor().get_data_channel("horizontal_accuracy"),
+                'best_location_vertical_accuracy': station.best_location_sensor().get_data_channel("vertical_accuracy"),
+                'best_location_bearing_accuracy': station.best_location_sensor().get_data_channel("bearing_accuracy"),
+                'best-location_speed_accuracy': station.best_location_sensor().get_data_channel("speed_accuracy"),
+                'best_location_provider': station.best_location_sensor().get_data_channel("location_provider")}
+    else:
+        print(f'Station {station.id} has no best location data.')
         return {}
 
 
