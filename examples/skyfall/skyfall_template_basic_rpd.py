@@ -5,7 +5,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # RedVox and Red Pandas modules
-from redvox.common.data_window import DataWindowFast
+from redvox.common.data_window import DataWindow
 import redvox.settings as settings
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
@@ -47,8 +47,7 @@ if __name__ == "__main__":
     # Import DataWindow
     else:
         print("Unpickling existing compressed RedVox DataWindow with JSON...")
-    rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
-                                                              file_name=DW_FILE)
+    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
     print(f"RedVox SDK version: {rdvx_data.sdk_version}")
 
     # Print out basic stats

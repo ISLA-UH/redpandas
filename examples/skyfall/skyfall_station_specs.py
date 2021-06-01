@@ -2,7 +2,7 @@ import os
 import csv
 
 # RedVox and Red Pandas modules
-from redvox.common.data_window import DataWindowFast
+from redvox.common.data_window import DataWindow
 
 import redpandas.redpd_dq as rpd_dq
 from redvox.api1000.wrapped_redvox_packet.station_information import OsType
@@ -141,7 +141,7 @@ if __name__ == "__main__":
     print('Let the sky fall')
     print("Print and save station information")
 
-    rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR,
+    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=OUTPUT_DIR,
                                                               file_name=DW_FILE)
     rpd_dq.station_metadata(rdvx_data)
 
