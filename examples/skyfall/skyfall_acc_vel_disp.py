@@ -10,7 +10,7 @@ from scipy.spatial.distance import euclidean
 from typing import List, Tuple
 
 # RedVox RedPandas and related RedVox modules
-from redvox.common.data_window import DataWindowFast
+from redvox.common.data_window import DataWindow
 import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
@@ -116,7 +116,7 @@ if __name__ == "__main__":
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
         if use_datawindow:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow Fast...", end=" ")
-            rdvx_data = DataWindowFast(input_dir=INPUT_DIR,
+            rdvx_data = DataWindow(input_dir=INPUT_DIR,
                                        station_ids=STATIONS,
                                        start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
                                        end_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_END_EPOCH_S),
@@ -126,7 +126,7 @@ if __name__ == "__main__":
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
-            rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
+            rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
             print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         # For option A or B, begin RedPandas

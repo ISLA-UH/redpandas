@@ -5,7 +5,7 @@ import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 # RedVox modules
-from redvox.common.data_window import DataWindow, DataWindowFast
+from redvox.common.data_window import DataWindow
 from redvox.common.io import serialize_data_window
 from redvox.common.station import Station
 import redvox.common.date_time_utils as dt
@@ -106,7 +106,7 @@ def build_fast(api_input_directory: str,
 
     print(f"Loading data and constructing RedVox DataWindow for {event_name}.", end=" ")
     # Load signals
-    rdvx_data = DataWindowFast(input_dir=api_input_directory,
+    rdvx_data = DataWindow(input_dir=api_input_directory,
                                station_ids=redvox_station_ids,
                                start_datetime=dt.datetime_from_epoch_seconds_utc(start_epoch_s),
                                end_datetime=dt.datetime_from_epoch_seconds_utc(end_epoch_s),

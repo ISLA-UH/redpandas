@@ -7,7 +7,7 @@ import pandas as pd
 import datetime as dtime
 
 # RedVox RedPandas and related RedVox modules
-from redvox.common.data_window import DataWindowFast
+from redvox.common.data_window import DataWindow
 import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
@@ -91,18 +91,17 @@ if __name__ == "__main__":
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
         if use_datawindow:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow Fast...", end=" ")
-            rdvx_data = DataWindowFast(input_dir=INPUT_DIR,
+            rdvx_data = DataWindow(input_dir=INPUT_DIR,
                                        station_ids=STATIONS,
                                        start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
                                        end_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_END_EPOCH_S),
                                        apply_correction=True,
                                        structured_layout=True)
-            print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
-            rdvx_data: DataWindowFast = DataWindowFast.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
-            print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
+            rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
+        print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         # For option A or B, begin RedPandas
         print("\nInitiating RedVox Redpandas:")
@@ -113,7 +112,7 @@ if __name__ == "__main__":
         df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
 
     elif use_parquet:  # Option C: Open dataframe from parquet file
-        print("Loading exisiting RedPandas Parquet...", end=" ")
+        print("Loading existing RedPandas Parquet...", end=" ")
         df_skyfall_data = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
         print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
