@@ -1,5 +1,6 @@
 """
-This module contains general utilities that can work with values containing nans.
+This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
+before construction of RedPandas DataFrame.
 """
 # todo: add types in function definitions
 # todo: finish function documentation
@@ -331,6 +332,7 @@ def highpass_from_diff(sensor_waveform: np.ndarray,
     return sensor_waveform_reconstruct, frequency_filter_low
 
 
+# Auxiliary function to open parquets
 def df_column_unflatten(df: pd.DataFrame,
                         col_wf_label: str,
                         col_ndim_label: str):

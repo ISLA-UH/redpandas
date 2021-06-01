@@ -1,5 +1,5 @@
 """
-Utils for plotting pandas dataframes
+This module constains main utils for plotting RedPandas DataFrames
 Created: 23 March 2021
 Last updated: 25 May 2021
 """

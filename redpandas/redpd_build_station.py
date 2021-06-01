@@ -1,7 +1,8 @@
 """
-This module contains general utilities that can work with values containing nans.
+This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
+to RedPandas DataFrames.
 """
-# TODO MC: finish build station luminosity, best location station
+# TODO MC: finish build station best location station
 
 from typing import List
 
@@ -103,6 +104,9 @@ def build_station(station: Station,
 
     elif sensor_label == 'image' or sensor_label == 'im':
         return image_build_station(station=station)
+
+    elif sensor_label == 'light':
+        return light_build_station(station=station)
 
     else:
         sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = sensor_uneven(station=station,
@@ -288,13 +292,14 @@ def light_build_station(station: Station) -> dict:
     """
     Obtains luminosity data from RedVox station if it exists
     :param station: RDVX Station object
-    :return:
+    :return: dictionary with sensor name, sample rate, timestamps, light data.
     """
     if station.has_light_data():
 
         return {'light_sensor_name': station.light_sensor().name,
                 'light_sample_rate_hz': station.light_sensor().sample_rate_hz,
-                'light_epoch_s': station.light_sensor().data_timestamps() * rpd_scales.MICROS_TO_S}
+                'light_epoch_s': station.light_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                'light_lux': station.light_sensor().get_data_channel('light')}
     else:
         print(f'Station {station.id} has no luminosity data.')
         return {}
