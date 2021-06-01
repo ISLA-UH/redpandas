@@ -2,8 +2,6 @@
 This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
 to RedPandas DataFrames.
 """
-# TODO MC: finish build station best location station
-
 from typing import List
 
 import numpy as np
@@ -12,6 +10,10 @@ from redvox.common.station import Station
 # RedPandas library
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
+# Note: Available sensors in build station: ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
+# 'health', 'location', 'clock', 'synchronization', 'best_location', 'light]
+# To construct: ['ambient_temperature', 'compressed_audio', 'gravity', 'linear_acceleration', 'orientation',
+# 'proximity', 'relative_humidity', 'rotation vector']
 
 
 def station_to_dict_from_dw(

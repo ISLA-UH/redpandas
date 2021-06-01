@@ -26,7 +26,7 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, E
 if __name__ == "__main__":
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
-    Last updated: 27 May 2021
+    Last updated: 1 June 2021
     """
 
     print('Let the sky fall')

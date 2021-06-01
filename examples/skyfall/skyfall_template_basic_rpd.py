@@ -20,7 +20,7 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, EPISODE_START
 if __name__ == "__main__":
     """
     Beta workflow for API M pipeline
-    Last updated: 21 May 2021
+    Last updated: 1 June 2021
     """
     print('Let the sky fall')
     print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
@@ -33,16 +33,16 @@ if __name__ == "__main__":
     if build_dw_pickle:
         # RECOMMENDED USE
         # Load signals, create a RedVox DataWindow structure, export to pickle.
-        rpd_dw.build_fast(api_input_directory=INPUT_DIR,
-                          start_epoch_s=EPISODE_START_EPOCH_S,
-                          end_epoch_s=EPISODE_END_EPOCH_S,
-                          redvox_station_ids=STATIONS,
-                          event_name=EVENT_NAME,
-                          output_directory=OUTPUT_DIR,
-                          output_filename=DW_FILE,
-                          start_buffer_minutes=3.,
-                          end_buffer_minutes=3.,
-                          debug=True)
+        rpd_dw.build(api_input_directory=INPUT_DIR,
+                     start_epoch_s=EPISODE_START_EPOCH_S,
+                     end_epoch_s=EPISODE_END_EPOCH_S,
+                     redvox_station_ids=STATIONS,
+                     event_name=EVENT_NAME,
+                     output_directory=OUTPUT_DIR,
+                     output_filename=DW_FILE,
+                     start_buffer_minutes=3.,
+                     end_buffer_minutes=3.,
+                     debug=True)
 
     # Import DataWindow
     else:
