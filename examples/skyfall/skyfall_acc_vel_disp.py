@@ -75,7 +75,6 @@ def complimentary_filtering(accelerometers: List, gyroscope: List, new_rate: flo
     :return: roll_angle, pitch_angle
     """
 
-
 if __name__ == "__main__":
 
     # Label columns in dataframe
@@ -117,11 +116,11 @@ if __name__ == "__main__":
         if use_datawindow:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow Fast...", end=" ")
             rdvx_data = DataWindow(input_dir=INPUT_DIR,
-                                       station_ids=STATIONS,
-                                       start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
-                                       end_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_END_EPOCH_S),
-                                       apply_correction=True,
-                                       structured_layout=True)
+                                   station_ids=STATIONS,
+                                   start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
+                                   end_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_END_EPOCH_S),
+                                   apply_correction=True,
+                                   structured_layout=True)
             print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
