@@ -71,10 +71,21 @@ build_df_parquet: bool = True  # Export pandas data frame as parquet
 
 # Build TDR Data Products: Settings for skyfall_tdr_rpd.py
 # Choose one method to load the Skyfall data
+use_datawindow_tdr: bool = False  # Load data using RDVX DataWindow
+use_pickle_tdr: bool = False  # Load data using a pickle with RDVX DataWindow, either serialized or not
+use_parquet_tdr: bool = True  # Load data using parquet with RedPandas dataframe
+
+# Build TFR Data Products: Settings for skyfall_tfr_rpd.py
+# Choose one method to load the Skyfall data
 use_datawindow: bool = False  # Load data using RDVX DataWindow
 use_pickle: bool = False  # Load data using a pickle with RDVX DataWindow, either serialized or not
 use_parquet: bool = True  # Load data using parquet with RedPandas dataframe
+band_order_Nth = 12
+axes = ["X", "Y", "Z"]
+verbosity = 1  # verbosity > 1, plots extra raw and highpass plots
 
-# Build TFR Data Products: Settings for skyfall_tfr_rpd.py
+# Build Bounder Data Products: Settings for skyfall_loc_rpd.py
+is_rerun_bounder: bool = True  # If true, rerun and save as parquet
+
 PIPELINE_LABEL = ['TBD']
 

@@ -20,7 +20,7 @@ def redvox_loc(DF_PICKLE_PATH):
         exit()
 
     df = pd.read_parquet(DF_PICKLE_PATH)
-    print('Read parquet data frame')
+    print('Read parquet with pandas DataFrame')
 
     # Extract selected fields
     loc_fields = ['station_id',

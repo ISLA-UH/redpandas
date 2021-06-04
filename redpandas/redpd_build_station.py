@@ -113,7 +113,7 @@ def build_station(station: Station,
     elif sensor_label == 'light':
         return light_build_station(station=station)
 
-    else:
+    else:  # barometer, acceleration, gyroscope, magnetometer, linear_accel, orientation, rotation_vector, gravity
         sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = sensor_uneven(station=station,
                                                                                        sensor_label=sensor_label)
 

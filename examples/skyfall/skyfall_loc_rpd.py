@@ -12,7 +12,7 @@ from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 
 # Configuration file
 from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, PD_PQT_FILE, \
-    OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
+    OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, is_rerun_bounder
 
 
 def bounder_specs_to_csv(df, csv_export_file):
@@ -38,7 +38,7 @@ if __name__ == '__main__':
     Paths from phone and bounder for NNSS Skyfall data set
     If true, rerun and save as parquet
     """
-    is_rerun_bounder = True
+    # is_rerun_bounder = True
     # is_rerun_bounder = False
 
     """
@@ -53,7 +53,7 @@ if __name__ == '__main__':
 
     # Load for all stations
     df_loc = rpd_geo.redvox_loc(rdvx_path_pickle_df)
-    print(df_loc.shape)
+    print(f'Dimensions (# of rows, # of columns): {df_loc.shape}')
 
     # Pick only the balloon station
     m_list = df_loc.index[df_loc['station_id'] == phone_id]
@@ -61,9 +61,8 @@ if __name__ == '__main__':
     phone_loc = df_loc.iloc[m]
 
     # Verify
-    print(phone_loc.shape)
+    print(f'Verify that balloon station selected matches # of columns: {phone_loc.shape}')
 
-    # exit()
     # Bounder data is a standard rectangular matrix
     if not os.path.exists(OTHER_INPUT_PATH):
         print("Other input directory does not exist, check path:")
@@ -75,10 +74,10 @@ if __name__ == '__main__':
         print('Constructing bounder parquet')
 
     # Load parquet with bounder data fields
+    print('Load Bounder parquet:')
     bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
-    print('Loaded Bounder parquet')
-    print(bounder_loc.shape)
-    print(bounder_loc.columns)
+    print(f'Dimensions (# of rows, # of columns): {bounder_loc.shape}')
+    print(f'Available columns: {bounder_loc.columns}')
 
     # Remove bounder repeated values and NaNs
     # DataWindow should be cleared of nans
@@ -86,7 +85,7 @@ if __name__ == '__main__':
     bounder_loc = bounder_loc[~bounder_loc['Epoch_s'].duplicated(keep='first')].dropna()
 
     # Bounder clock, initial, and final conditions
-    print('Bounder Start Time:', bounder_loc['Datetime'].iloc[0])
+    print('\nBounder Start Time:', bounder_loc['Datetime'].iloc[0])
     print('Bounder Start Epoch s:', bounder_loc['Epoch_s'].iloc[0])
     print('Bounder Start Lat:', bounder_loc['Lat_deg'].iloc[0])
     print('Bounder Start Lon:', bounder_loc['Lon_deg'].iloc[0])
@@ -99,6 +98,8 @@ if __name__ == '__main__':
     print('Bounder Ref Alt:', bounder_loc['Alt_m'].iloc[-1])
 
     # Export Initial and Final states to CSV
+    print(f"Export Bounder initial and final states to CSV. Path: "
+          f"{os.path.join(OTHER_INPUT_PATH, EVENT_NAME + '_bounder_start_end.csv')}")
     file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, EVENT_NAME + '_bounder_start_end.csv')
     bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
 
@@ -113,7 +114,7 @@ if __name__ == '__main__':
     phone_datetime_end = dt.datetime_from_epoch_seconds_utc(phone_loc['location_epoch_s'][-1])
     print('Phone loc start:', phone_datetime_start)
     print('Phone loc end:', phone_datetime_end)
-    #
+
     # Use atmospheric pressure to construct an elevation model
     elevation_model = rpd_geo.bounder_model_height_from_pressure(pressure_kPa=bounder_loc['Pres_kPa'])
 

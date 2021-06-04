@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import datetime as dtime
+from scipy.signal import welch
 
 # RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindow
@@ -18,7 +19,7 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration file
 from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, EPISODE_START_EPOCH_S, \
-    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, use_parquet, PD_PQT_FILE, SENSOR_LABEL, \
+    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow_tdr, use_pickle_tdr, use_parquet_tdr, PD_PQT_FILE, SENSOR_LABEL, \
     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 
 # TODO MC: plot 3c hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
@@ -87,16 +88,16 @@ if __name__ == "__main__":
     synchronization_number_exchanges_label: str = 'synchronization_number_exchanges'
 
     # Load data options
-    if use_datawindow is True or use_pickle is True:
+    if use_datawindow_tdr is True or use_pickle_tdr is True:
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
-        if use_datawindow:  # Option A: Create DataWindow object
+        if use_datawindow_tdr:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow Fast...", end=" ")
             rdvx_data = DataWindow(input_dir=INPUT_DIR,
-                                       station_ids=STATIONS,
-                                       start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
-                                       end_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_END_EPOCH_S),
-                                       apply_correction=True,
-                                       structured_layout=True)
+                                   station_ids=STATIONS,
+                                   start_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_START_EPOCH_S),
+                                   end_datetime=dt.datetime_from_epoch_seconds_utc(EPISODE_END_EPOCH_S),
+                                   apply_correction=True,
+                                   structured_layout=True)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
@@ -111,14 +112,14 @@ if __name__ == "__main__":
                                         for station in rdvx_data.stations])
         df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
 
-    elif use_parquet:  # Option C: Open dataframe from parquet file
+    elif use_parquet_tdr:  # Option C: Open dataframe from parquet file
         print("Loading existing RedPandas Parquet...", end=" ")
         df_skyfall_data = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
         print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
     else:
         print('\nNo data loading method selected. '
-              'Check that use_datawindow, use_pickle, or use_parquet in the Skyfall configuration file are set to True.')
+              'Check that use_datawindow_tdr, use_pickle_tdr, or use_parquet_tdr in the Skyfall configuration file are set to True.')
         exit()
 
     # Start of building plots
@@ -135,7 +136,7 @@ if __name__ == "__main__":
             event_reference_time_epoch_s = df_skyfall_data[audio_epoch_s_label][station][0]
 
         if barometer_data_raw_label and barometer_data_highpass_label and barometer_fs_label in df_skyfall_data.columns:
-            if use_parquet is True and use_datawindow is False and use_pickle is False:
+            if use_parquet_tdr is True and use_datawindow_tdr is False and use_pickle_tdr is False:
                 # Reshape wf columns
                 rpd_prep.df_column_unflatten(df=df_skyfall_data,
                                              col_wf_label=barometer_data_raw_label,
@@ -155,7 +156,7 @@ if __name__ == "__main__":
         # Repeat here
         if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label\
                 in df_skyfall_data.columns:
-            if use_parquet is True and use_datawindow is False and use_pickle is False:
+            if use_parquet_tdr is True and use_datawindow_tdr is False and use_pickle_tdr is False:
                 # Reshape wf columns
                 rpd_prep.df_column_unflatten(df=df_skyfall_data,
                                              col_wf_label=accelerometer_data_raw_label,
@@ -222,7 +223,7 @@ if __name__ == "__main__":
         if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label\
                 in df_skyfall_data.columns:
 
-            if use_parquet is True and use_datawindow is False and use_pickle is False:
+            if use_parquet_tdr is True and use_datawindow_tdr is False and use_pickle_tdr is False:
                 # Reshape wf columns
                 rpd_prep.df_column_unflatten(df=df_skyfall_data,
                                              col_wf_label=gyroscope_data_raw_label,
@@ -254,7 +255,7 @@ if __name__ == "__main__":
 
         if magnetometer_data_raw_label and magnetometer_fs_label and magnetometer_data_highpass_label\
                 in df_skyfall_data.columns:
-            if use_parquet is True and use_datawindow is False and use_pickle is False:
+            if use_parquet_tdr is True and use_datawindow_tdr is False and use_pickle_tdr is False:
                 # Reshape wf columns
                 rpd_prep.df_column_unflatten(df=df_skyfall_data,
                                              col_wf_label=magnetometer_data_raw_label,
@@ -410,4 +411,74 @@ if __name__ == "__main__":
                                             wf_color='midnightblue',
                                             sensor_yticks_label_list=sensor_ticklabels_list)
 
-        plt.show()
+        # plt.show()
+
+    acc_x_energy = sum(df_skyfall_data[accelerometer_data_highpass_label][0][0] ** 2)
+    acc_y_energy = sum(df_skyfall_data[accelerometer_data_highpass_label][0][1] ** 2)
+    acc_z_energy = sum(df_skyfall_data[accelerometer_data_highpass_label][0][2] ** 2)
+    magnitude_acc = np.sqrt(acc_x_energy + acc_y_energy + acc_z_energy)  # euclidean sum
+    print(f'magitude acc vector: {magnitude_acc}',
+          f'power: {(acc_x_energy + acc_y_energy + acc_z_energy) / len(df_skyfall_data[accelerometer_epoch_s_label][0])}',
+          f'rms: {np.sqrt((acc_x_energy + acc_y_energy + acc_z_energy) / len(df_skyfall_data[accelerometer_epoch_s_label][0]))}')
+
+    # Power spectrum density using welch
+    f_x, Pxx_x = welch(x=df_skyfall_data[accelerometer_data_highpass_label][0][0],
+                        fs=df_skyfall_data[accelerometer_fs_label][0])
+    f_y, Pxx_y = welch(x=df_skyfall_data[accelerometer_data_highpass_label][0][1],
+                       fs=df_skyfall_data[accelerometer_fs_label][0])
+    f_z, Pxx_z = welch(x=df_skyfall_data[accelerometer_data_highpass_label][0][2],
+                       fs=df_skyfall_data[accelerometer_fs_label][0])
+
+    fig = plt.figure()
+    plt.suptitle('PSD Acc')
+    ax0 = fig.add_subplot(411)
+    ax0.plot(f_x, Pxx_x, color='midnightblue')
+    ax0.set_yscale('log')
+    ax1 = fig.add_subplot(412, sharex=ax0)
+    ax1.plot(f_y, Pxx_y, color='midnightblue')
+    ax1.set_yscale('log')
+    ax2 = fig.add_subplot(413, sharex=ax0)
+    ax2.plot(f_z, Pxx_z, color='midnightblue')
+    ax2.set_yscale('log')
+    ax2.set_xlabel('Frequency [Hz]')
+    ax3 = plt.subplot(414)
+    ax3.plot(df_skyfall_data[accelerometer_epoch_s_label][0]-df_skyfall_data[accelerometer_epoch_s_label][0][0],
+             df_skyfall_data[accelerometer_data_highpass_label][0][0], label="X")
+    ax3.plot(df_skyfall_data[accelerometer_epoch_s_label][0]-df_skyfall_data[accelerometer_epoch_s_label][0][0],
+             df_skyfall_data[accelerometer_data_highpass_label][0][1], label="Y")
+    ax3.plot(df_skyfall_data[accelerometer_epoch_s_label][0]-df_skyfall_data[accelerometer_epoch_s_label][0][0],
+             df_skyfall_data[accelerometer_data_highpass_label][0][2], label="Z")
+    ax3.set_xlabel('Time (s)')
+    plt.legend()
+
+    # Power spectrum density using welch
+    f_x, Pxx_x = welch(x=df_skyfall_data[gyroscope_data_highpass_label][0][0],
+                       fs=df_skyfall_data[gyroscope_fs_label][0])
+    f_y, Pxx_y = welch(x=df_skyfall_data[gyroscope_data_highpass_label][0][1],
+                       fs=df_skyfall_data[gyroscope_fs_label][0])
+    f_z, Pxx_z = welch(x=df_skyfall_data[gyroscope_data_highpass_label][0][2],
+                       fs=df_skyfall_data[gyroscope_fs_label][0])
+
+    fig, ax = plt.subplots(nrows=3, sharex='col')
+    plt.suptitle('PSD Gyr')
+    ax[0].semilogy(f_x, Pxx_x, color='midnightblue')
+    ax[1].semilogy(f_y, Pxx_y, color='midnightblue')
+    ax[2].semilogy(f_z, Pxx_z, color='midnightblue')
+    ax[2].set_xlabel('Frequency [Hz]')
+
+    # Power spectrum density using welch
+    f_x, Pxx_x = welch(x=df_skyfall_data[magnetometer_data_highpass_label][0][0],
+                       fs=df_skyfall_data[magnetometer_fs_label][0])
+    f_y, Pxx_y = welch(x=df_skyfall_data[magnetometer_data_highpass_label][0][1],
+                       fs=df_skyfall_data[magnetometer_fs_label][0])
+    f_z, Pxx_z = welch(x=df_skyfall_data[magnetometer_data_highpass_label][0][2],
+                       fs=df_skyfall_data[magnetometer_fs_label][0])
+
+    fig, ax = plt.subplots(nrows=3, sharex='col')
+    plt.suptitle('PSD Mag')
+    ax[0].semilogy(f_x, Pxx_x, color='midnightblue')
+    ax[1].semilogy(f_y, Pxx_y, color='midnightblue')
+    ax[2].semilogy(f_z, Pxx_z, color='midnightblue')
+    ax[2].set_xlabel('Frequency [Hz]')
+    plt.show()
+
