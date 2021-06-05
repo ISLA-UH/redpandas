@@ -7,6 +7,7 @@ import pandas as pd
 from libquantum import atoms, entropy, scales, spectra, utils, synthetics
 import redpandas.redpd_preprocess as rpd_prep
 
+
 def frame_panda(df: pd.DataFrame,
                 sig_wf_label: str,
                 sig_epoch_s_label: str,
@@ -36,7 +37,6 @@ def frame_panda(df: pd.DataFrame,
 # INPUT ALIGNED DATA
 def tfr_bits_panda(df: pd.DataFrame,
                    sig_wf_label: str,
-                   sig_epoch_s_label: str,
                    sig_sample_rate_label: str,
                    order_number_input: float = 3,
                    tfr_type: str = 'cwt',
@@ -48,31 +48,69 @@ def tfr_bits_panda(df: pd.DataFrame,
     tfr_bits = []
     tfr_time_s = []
     tfr_frequency_hz = []
-    
+
     for n in df.index:
-        sig_wf_n = np.copy(df[sig_wf_label][n])
-        sig_wf_n *= rpd_prep.taper_tukey(sig_or_time=sig_wf_n, fraction_cosine=0.1)
-        if tfr_type == "cwt":
-            # Compute complex wavelet transform (cwt) from signal duration
-            sig_cwt, sig_cwt_bits, sig_cwt_time_s, sig_cwt_frequency_hz = \
-                atoms.cwt_chirp_from_sig(sig_wf=sig_wf_n,
-                                         frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                         band_order_Nth=order_number_input)
 
-            tfr_bits.append(sig_cwt_bits)
-            tfr_time_s.append(sig_cwt_time_s)
-            tfr_frequency_hz.append(sig_cwt_frequency_hz)
+        if df[sig_wf_label][n].ndim == 1:  # audio basically
 
-        if tfr_type == "stft":
-            # Compute complex wavelet transform (cwt) from signal duration
-            sig_stft, sig_stft_bits, sig_stft_time_s, sig_stft_frequency_hz = \
-                spectra.stft_from_sig(sig_wf=sig_wf_n,
-                                      frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                      band_order_Nth=order_number_input)
-    
-            tfr_bits.append(sig_stft_bits)
-            tfr_time_s.append(sig_stft_time_s)
-            tfr_frequency_hz.append(sig_stft_frequency_hz)
+            sig_wf_n = np.copy(df[sig_wf_label][n])
+            sig_wf_n *= rpd_prep.taper_tukey(sig_or_time=sig_wf_n, fraction_cosine=0.1)
+
+            if tfr_type == "cwt":
+                # Compute complex wavelet transform (cwt) from signal duration
+                sig_cwt, sig_cwt_bits, sig_cwt_time_s, sig_cwt_frequency_hz = \
+                    atoms.cwt_chirp_from_sig(sig_wf=sig_wf_n,
+                                             frequency_sample_rate_hz=df[sig_sample_rate_label][n],
+                                             band_order_Nth=order_number_input)
+
+                tfr_bits.append(sig_cwt_bits)
+                tfr_time_s.append(sig_cwt_time_s)
+                tfr_frequency_hz.append(sig_cwt_frequency_hz)
+
+            if tfr_type == "stft":
+                # Compute complex wavelet transform (cwt) from signal duration
+                sig_stft, sig_stft_bits, sig_stft_time_s, sig_stft_frequency_hz = \
+                    spectra.stft_from_sig(sig_wf=sig_wf_n,
+                                          frequency_sample_rate_hz=df[sig_sample_rate_label][n],
+                                          band_order_Nth=order_number_input)
+
+                tfr_bits.append(sig_stft_bits)
+                tfr_time_s.append(sig_stft_time_s)
+                tfr_frequency_hz.append(sig_stft_frequency_hz)
+
+        else:  # sensor that is acceleration/gyroscope/magnetometer/barometer
+            tfr_3c_bits = []
+            tfr_3c_time = []
+            tfr_3c_frequency = []
+            for index_dimension, _ in enumerate(df[sig_wf_label][n]):
+
+                sig_wf_n = np.copy(df[sig_wf_label][n][index_dimension])
+                sig_wf_n *= rpd_prep.taper_tukey(sig_or_time=sig_wf_n, fraction_cosine=0.1)
+
+                if tfr_type == "cwt":
+                    # Compute complex wavelet transform (cwt) from signal duration
+                    sig_cwt, sig_cwt_bits, sig_cwt_time_s, sig_cwt_frequency_hz = \
+                        atoms.cwt_chirp_from_sig(sig_wf=sig_wf_n,
+                                                 frequency_sample_rate_hz=df[sig_sample_rate_label][n],
+                                                 band_order_Nth=order_number_input)
+                    tfr_3c_bits.append(sig_cwt_bits)
+                    tfr_3c_time.append(sig_cwt_time_s)
+                    tfr_3c_frequency.append(sig_cwt_frequency_hz)
+
+                if tfr_type == "stft":
+                    # Compute complex wavelet transform (cwt) from signal duration
+                    sig_stft, sig_stft_bits, sig_stft_time_s, sig_stft_frequency_hz = \
+                        spectra.stft_from_sig(sig_wf=sig_wf_n,
+                                              frequency_sample_rate_hz=df[sig_sample_rate_label][n],
+                                              band_order_Nth=order_number_input)
+                    tfr_3c_bits.append(sig_stft_bits)
+                    tfr_3c_time.append(sig_stft_time_s)
+                    tfr_3c_frequency.append(sig_stft_frequency_hz)
+
+            # append 3c tfr into 'main' list
+            tfr_bits.append(tfr_3c_bits)
+            tfr_time_s.append(tfr_3c_time)
+            tfr_frequency_hz.append(tfr_3c_frequency)
 
     df[new_column_tfr_bits] = tfr_bits
     df[new_column_tfr_time_s] = tfr_time_s
