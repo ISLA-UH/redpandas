@@ -1,9 +1,9 @@
 """
 This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
+Last updated: 7 June 2021
 """
 # todo: add types in function definitions
-# todo: finish function documentation
 from enum import Enum
 from typing import Tuple
 
@@ -50,60 +50,60 @@ def datetime_now_epoch_micros() -> float:
     return dt.datetime_to_epoch_microseconds_utc(dt.now())
 
 
-def normalize(sig: np.ndarray, scaling: float = 1., norm_type: NormType = NormType.MAX) -> np.ndarray:
+def normalize(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType = NormType.MAX) -> np.ndarray:
     """
     Scale a 1D time series
-    :param sig: time series signature
+    :param sig_wf: signal waveform
     :param scaling: scaling parameter, division
     :param norm_type: {'max', l1, l2}, optional
     :return: The scaled series
     """
     if norm_type == NormType.MAX:
-        return sig / np.nanmax(np.abs(sig))
+        return sig_wf / np.nanmax(np.abs(sig_wf))
     elif norm_type == NormType.L1:
-        return sig / np.nansum(sig)
+        return sig_wf / np.nansum(sig_wf)
     elif norm_type == NormType.L2:
-        return sig / np.sqrt(np.nansum(sig * sig))
+        return sig_wf / np.sqrt(np.nansum(sig_wf * sig_wf))
     else:  # Must be NormType.Other
-        return sig / scaling
+        return sig_wf / scaling
 
 
-def demean_nan(sig: np.ndarray) -> np.ndarray:
+def demean_nan(sig_wf: np.ndarray) -> np.ndarray:
     """
     Detrend and normalize a 1D time series
-    :param sig: time series with (possibly) non-zero mean
+    :param sig_wf: signal waveform
     :return: Detrended and normalized time series
     """
-    return np.nan_to_num(sig - np.nanmean(sig))
+    return np.nan_to_num(sig_wf - np.nanmean(sig_wf))
 
 
-def detrend_nan(sig: np.ndarray) -> np.ndarray:
+def detrend_nan(sig_wf: np.ndarray) -> np.ndarray:
     """
     Detrend and normalize a 1D time series
-    :param sig: time series with (possibly) non-zero mean
+    :param sig_wf: signal waveform
     :return: Detrended and normalized time series
     """
-    return signal.detrend(demean_nan(sig))
+    return signal.detrend(demean_nan(sig_wf))
 
 
-def demean_nan_norm(sig: np.ndarray, scaling: float = 1., norm_type: NormType = NormType.MAX) -> np.ndarray:
+def demean_nan_norm(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType = NormType.MAX) -> np.ndarray:
     """
     Detrend and normalize a 1D time series
-    :param sig: time series with (possibly) non-zero mean
+    :param sig_wf: signal waveform
     :param scaling: scaling parameter, division
     :param norm_type: {'max', l1, l2}, overrides scikit default of 'l2' by 'max'
     :return: The detrended and denormalized series.
     """
-    return normalize(demean_nan(sig), scaling=scaling, norm_type=norm_type)
+    return normalize(demean_nan(sig_wf), scaling=scaling, norm_type=norm_type)
 
 
-def demean_nan_matrix(sig: np.ndarray) -> np.ndarray:
+def demean_nan_matrix(sig_wf: np.ndarray) -> np.ndarray:
     """
     Detrend and normalize a matrix of time series
-    :param sig: time series with (possibly) non-zero mean
+    :param sig_wf: signal waveform
     :return: The detrended and normalized signature
     """
-    return np.nan_to_num(np.subtract(sig.transpose(), np.nanmean(sig, axis=1))).transpose()
+    return np.nan_to_num(np.subtract(sig_wf.transpose(), np.nanmean(sig_wf, axis=1))).transpose()
 
 
 def taper_tukey(sig_or_time: np.ndarray, fraction_cosine: float) -> np.ndarray:
@@ -120,8 +120,8 @@ def taper_tukey(sig_or_time: np.ndarray, fraction_cosine: float) -> np.ndarray:
 def pad_reflection_symmetric(sig_wf) -> Tuple[np.ndarray, int]:
     """
     Apply reflection transformation
-    :param sig_wf:
-    :return:
+    :param sig_wf: signal waveform
+    :return: input signal with reflected edges, numbers of points folded per edge
     """
     number_points_to_flip_per_edge = int(len(sig_wf)//2)
     wf_folded = np.pad(np.copy(sig_wf),
@@ -133,15 +133,15 @@ def pad_reflection_symmetric(sig_wf) -> Tuple[np.ndarray, int]:
 
 def filter_reflection_highpass(sig_wf, filter_cutoff_hz, sample_rate_hz) -> np.ndarray:
     """
-    Apply filter
-    :param sig_wf:
-    :param filter_cutoff_hz:
-    :param sample_rate_hz:
-    :return: sig filtered
+    Apply fold filter to input signal (edges reflected) and highpass
+    :param sig_wf: signal waveform
+    :param filter_cutoff_hz: filter corner frequency in Hz
+    :param sample_rate_hz: sampling rate in Hz
+    :return: signal folded and filtered
     """
     wf_folded, number_points_to_flip_per_edge = pad_reflection_symmetric(sig_wf)
 
-    sig_folded_filtered = highpass_obspy(sensor_wf=wf_folded,
+    sig_folded_filtered = highpass_obspy(sig_wf=wf_folded,
                                          frequency_low_hz=filter_cutoff_hz,
                                          sample_rate_hz=sample_rate_hz)
 
@@ -157,7 +157,7 @@ def height_asl_from_pressure_below10km(bar_waveform: np.ndarray) -> np.ndarray:
     return -np.log(bar_waveform/rpd_scales.Slice.PREF_KPA)/MG_RT
 
 
-def model_height_from_pressure_skyfall(pressure_kPa) -> float:
+def model_height_from_pressure_skyfall(pressure_kPa) -> np.ndarray:
     """
     Returns empirical height in m from input pressure
     :param pressure_kPa: barometric pressure in kPa
@@ -171,28 +171,26 @@ def model_height_from_pressure_skyfall(pressure_kPa) -> float:
     return np.polynomial.polynomial.polyval(scaled_pressure, c, tensor=False)
 
 
-def rc_high_pass_signal(sig, sample_rate, highpass_cutoff) -> np.array:
+def rc_high_pass_signal(sig_wf, sample_rate_hz, highpass_cutoff) -> np.array:
     """
-    todo: complete me
-    :param sig:
-    :param sample_rate:
-    :param highpass_cutoff:
-    :return: highpass_signal
+    :param sig_wf: signal waveform
+    :param sample_rate_hz: sampling rate in Hz
+    :param highpass_cutoff: filter corner frequency in Hz
+    :return: highpass signal
     """
     return np.array([[high]
                      for high
-                     in rdp_iter.rc_iterator_high_pass(sig, sample_rate, highpass_cutoff)])
+                     in rdp_iter.rc_iterator_high_pass(sig_wf, sample_rate_hz, highpass_cutoff)])
 
 
 # "Traditional" solution, up to Nyquist
-def bandpass_butter_uneven(sensor_wf, filter_order, frequency_cut_low_hz, sample_rate_hz) -> np.ndarray:
+def bandpass_butter_uneven(sig_wf, filter_order, frequency_cut_low_hz, sample_rate_hz) -> np.ndarray:
     """
-    todo: complete me
-    :param sensor_wf:
-    :param filter_order:
-    :param frequency_cut_low_hz:
-    :param sample_rate_hz:
-    :return:
+    :param sig_wf: signal waveform
+    :param filter_order: filter corners / order
+    :param frequency_cut_low_hz: filter corner frequency in Hz
+    :param sample_rate_hz: sampling rate in Hz
+    :return: bandpassed signal
     """
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     # filter_order = 4,
@@ -200,19 +198,18 @@ def bandpass_butter_uneven(sensor_wf, filter_order, frequency_cut_low_hz, sample
     edge_low = frequency_cut_low_hz / nyquist
     edge_high = 0.5
     [b, a] = signal.butter(N=filter_order, Wn=[edge_low, edge_high], btype='bandpass')
-    return signal.filtfilt(b, a, np.copy(sensor_wf))
+    return signal.filtfilt(b, a, np.copy(sig_wf))
 
 
-def highpass_obspy(sensor_wf, frequency_low_hz, sample_rate_hz, filter_order=4) -> np.ndarray:
+def highpass_obspy(sig_wf, frequency_low_hz, sample_rate_hz, filter_order=4) -> np.ndarray:
     """
-    todo: complete me
-    :param sensor_wf:
-    :param frequency_low_hz:
-    :param sample_rate_hz:
-    :param filter_order:
-    :return: sensor_highpass
+    :param sig_wf: signal waveform
+    :param frequency_low_hz: filter corner frequency in Hz
+    :param sample_rate_hz: sampling rate in Hz
+    :param filter_order: filter corners / order
+    :return: sensor highpass
     """
-    return obspy.signal.filter.highpass(np.copy(sensor_wf),
+    return obspy.signal.filter.highpass(np.copy(sig_wf),
                                         frequency_low_hz,
                                         sample_rate_hz, corners=filter_order,
                                         zerophase=True)
@@ -255,9 +252,9 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray) -> Tuple[np.ndarray, np
     return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
 
 
-def highpass_from_diff(sensor_waveform: np.ndarray,
-                       sensor_epoch_s: np.ndarray,
-                       sample_rate: int or float,
+def highpass_from_diff(sig_wf: np.ndarray,
+                       sig_epoch_s: np.ndarray,
+                       sample_rate_hz: int or float,
                        highpass_type: str = 'obspy',
                        frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
                        filter_order: int = 4) -> Tuple[np.ndarray, float]:
@@ -266,25 +263,25 @@ def highpass_from_diff(sensor_waveform: np.ndarray,
     - remove nans and DC offset by getting the differential pressure in kPa
     - apply highpass filter at 100 second periods
     - reconstruct Pressure in kPa from differential pressure: P(i) = dP(i) + P(i-1)
-    :param sensor_waveform:
-    :param sensor_epoch_s:
-    :param sample_rate:
+    :param sig_wf: signal waveform
+    :param sig_epoch_s: signal time in epoch s
+    :param sample_rate_hz: sampling rate in Hz
     :param highpass_type: 'obspy', 'butter', 'rc'
     :param frequency_filter_low: 100s default
-    :param filter_order: Default is 4.
+    :param filter_order: filter corners / order. Default is 4.
     :zero phase filters are acausal
-    :return:
+    :return: filtered signal waveform, frequency_filter_low value used
     """
 
     # Apply diff to remove DC offset; difference of nans is a nan
     # Replace nans with zeros, otherwise most things don't run
     # Using gradient instead of diff seems to fix off by zero issue!
-    sensor_waveform_grad_dm = demean_nan(np.gradient(sensor_waveform))
+    sensor_waveform_grad_dm = demean_nan(np.gradient(sig_wf))
 
     # Override default high pass at 100 seconds if signal is too short
     # May be able to zero pad ... with ringing. Or fold as needed.
-    if sensor_epoch_s[-1] - sensor_epoch_s[0] < 2/frequency_filter_low:
-        frequency_filter_low = 2/(sensor_epoch_s[-1] - sensor_epoch_s[0])
+    if sig_epoch_s[-1] - sig_epoch_s[0] < 2/frequency_filter_low:
+        frequency_filter_low = 2/(sig_epoch_s[-1] - sig_epoch_s[0])
         print('Default 100s highpass override. New highpass period = ', 1/frequency_filter_low)
 
     # Fold edges of wf
@@ -296,13 +293,13 @@ def highpass_from_diff(sensor_waveform: np.ndarray,
             obspy.signal.filter.highpass(corners=filter_order,
                                          data=np.copy(sensor_waveform_fold),
                                          freq=frequency_filter_low,
-                                         df=sample_rate,
+                                         df=sample_rate_hz,
                                          zerophase=True)
 
     elif highpass_type == "butter":
         [b, a] = signal.butter(N=filter_order,
                                Wn=frequency_filter_low,
-                               fs=sample_rate,
+                               fs=sample_rate_hz,
                                btype='highpass',
                                output='ba')
         # Zero phase, acausal
@@ -311,8 +308,8 @@ def highpass_from_diff(sensor_waveform: np.ndarray,
     elif highpass_type == "rc":
         # RC is slow and not zero-phase, does not need a taper to work (but it doesn't hurt)
         sensor_waveform_dp_filtered = \
-            rc_high_pass_signal(sig=np.copy(sensor_waveform_fold),
-                                sample_rate=sample_rate,
+            rc_high_pass_signal(sig_wf=np.copy(sensor_waveform_fold),
+                                sample_rate_hz=sample_rate_hz,
                                 highpass_cutoff=frequency_filter_low)
 
     else:

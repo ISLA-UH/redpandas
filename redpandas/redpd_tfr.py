@@ -1,5 +1,6 @@
 """
 This module contains panda versions of libquantum.
+Last updated: 4 June 2021
 """
 
 import numpy as np

@@ -120,9 +120,9 @@ def build_station(station: Station,
         list_sensor_highpass = []
         if sensor_sample_rate_hz:
             for index_dimension, _ in enumerate(sensor_raw):
-                sensor_waveform_highpass, _ = rpd_prep.highpass_from_diff(sensor_waveform=sensor_raw[index_dimension],
-                                                                          sensor_epoch_s=sensor_epoch_s,
-                                                                          sample_rate=sensor_sample_rate_hz,
+                sensor_waveform_highpass, _ = rpd_prep.highpass_from_diff(sig_wf=sensor_raw[index_dimension],
+                                                                          sig_epoch_s=sensor_epoch_s,
+                                                                          sample_rate_hz=sensor_sample_rate_hz,
                                                                           highpass_type=highpass_type,
                                                                           frequency_filter_low=frequency_filter_low,
                                                                           filter_order=filter_order)
