@@ -74,8 +74,8 @@ def bounder_data(path_bounder_csv, file_bounder_csv: str, file_bounder_parquet: 
 def bounder_model_height_from_pressure(pressure_kPa):
     """
     Returns empirical height in m from input pressure
-    :param pressure_kPa:
-    :return:
+    :param pressure_kPa: Atmospheric pressure in kPa
+    :return: Height in m above WGS84 Geoid
     """
     pressure_ref_kPa = PRESSURE_SEA_LEVEL_KPA
     scaled_pressure = -np.log(pressure_kPa/pressure_ref_kPa)
