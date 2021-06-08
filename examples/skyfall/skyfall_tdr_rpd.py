@@ -22,8 +22,6 @@ from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, E
     EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow_tdr, use_pickle_tdr, use_parquet_tdr, PD_PQT_FILE, SENSOR_LABEL, \
     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
 
-# TODO MC: plot 3c hp in same panel, sqrt(add squares) for power in another panel, top panel TBD
-
 if __name__ == "__main__":
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.

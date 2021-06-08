@@ -1,6 +1,7 @@
 """
 This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
+
 Last updated: 7 June 2021
 """
 # todo: add types in function definitions
