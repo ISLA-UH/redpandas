@@ -75,6 +75,7 @@ def complimentary_filtering(accelerometers: List, gyroscope: List, new_rate: flo
     :return: roll_angle, pitch_angle
     """
 
+
 if __name__ == "__main__":
 
     # Label columns in dataframe
