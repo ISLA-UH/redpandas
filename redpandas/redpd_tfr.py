@@ -109,9 +109,9 @@ def tfr_bits_panda(df: pd.DataFrame,
                     tfr_3c_frequency.append(sig_stft_frequency_hz)
 
             # append 3c tfr into 'main' list
-            tfr_bits.append(tfr_3c_bits)
-            tfr_time_s.append(tfr_3c_time)
-            tfr_frequency_hz.append(tfr_3c_frequency)
+            tfr_bits.append(np.array(tfr_3c_bits))
+            tfr_time_s.append(np.array(tfr_3c_time))
+            tfr_frequency_hz.append(np.array(tfr_3c_frequency))
 
     df[new_column_tfr_bits] = tfr_bits
     df[new_column_tfr_time_s] = tfr_time_s
