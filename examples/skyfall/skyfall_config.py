@@ -68,7 +68,6 @@ class SkyfallConfig:
     # Settings for skyfall_tfr_rpd.py
     tfr_load_method: DataLoadMethod
     band_order_Nth: int
-    axes: List[str]
     verbosity: int = 1          # verbosity > 1, plots extra raw and highpass plots
 
     # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
@@ -147,7 +146,6 @@ skyfall_config = SkyfallConfig(
     tdr_load_method=DataLoadMethod.PARQUET,
     tfr_load_method=DataLoadMethod.PARQUET,
     band_order_Nth=12,
-    axes=["X", "Y", "Z"],
     verbosity=1,
     is_rerun_bounder=True
 )
