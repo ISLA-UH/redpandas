@@ -11,8 +11,10 @@ import redpandas.redpd_geospatial as rpd_geo
 from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 
 # Configuration file
-from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, PD_PQT_FILE, \
-    OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, is_rerun_bounder
+# from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, PD_PQT_FILE, \
+#     OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, is_rerun_bounder
+
+from examples.skyfall.skyfall_config import skyfall_config
 
 
 def bounder_specs_to_csv(df, csv_export_file):
@@ -47,7 +49,7 @@ if __name__ == '__main__':
     :return:
     """
     # Use configuration file to load rdvx parquet for the data window
-    rdvx_path_pickle_df = os.path.join(OUTPUT_DIR, PD_PQT_FILE)
+    rdvx_path_pickle_df = os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file)
     # Concentrate on single station
     phone_id = "1637610021"
 
@@ -64,18 +66,19 @@ if __name__ == '__main__':
     print(f'Verify that balloon station selected matches # of columns: {phone_loc.shape}')
 
     # Bounder data is a standard rectangular matrix
-    if not os.path.exists(OTHER_INPUT_PATH):
+    if not os.path.exists(skyfall_config.bounder_input_path):
         print("Other input directory does not exist, check path:")
-        print(OTHER_INPUT_PATH)
+        print(skyfall_config.bounder_input_path)
         exit()
 
-    if is_rerun_bounder:
-        rpd_geo.bounder_data(OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE)
+    if skyfall_config.is_rerun_bounder:
+        rpd_geo.bounder_data(skyfall_config.bounder_input_path, skyfall_config.bounder_input_file,
+                             skyfall_config.bounder_pd_pqt_file)
         print('Constructing bounder parquet')
 
     # Load parquet with bounder data fields
     print('Load Bounder parquet:')
-    bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
+    bounder_loc = pd.read_parquet(os.path.join(skyfall_config.bounder_input_path, skyfall_config.bounder_pd_pqt_file))
     print(f'Dimensions (# of rows, # of columns): {bounder_loc.shape}')
     print(f'Available columns: {bounder_loc.columns}')
 
@@ -99,8 +102,9 @@ if __name__ == '__main__':
 
     # Export Initial and Final states to CSV
     print(f"Export Bounder initial and final states to CSV. Path: "
-          f"{os.path.join(OTHER_INPUT_PATH, EVENT_NAME + '_bounder_start_end.csv')}")
-    file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, EVENT_NAME + '_bounder_start_end.csv')
+          f"{os.path.join(skyfall_config.bounder_input_path, skyfall_config.event_name + '_bounder_start_end.csv')}")
+    file_bounder_start_end_csv = os.path.join(skyfall_config.bounder_input_path, skyfall_config.event_name
+                                              + '_bounder_start_end.csv')
     bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
 
     # Use the bounder terminus values in the configuration file

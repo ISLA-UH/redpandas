@@ -12,34 +12,36 @@ import redpandas.redpd_dq as rpd_dq
 import redpandas.redpd_build_station as rpd_build_sta
 
 # Configuration file
-from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, EPISODE_START_EPOCH_S, \
-    EPISODE_END_EPOCH_S, STATIONS, PD_PQT_FILE, OUTPUT_DIR, DW_FILE, build_dw_pickle, build_df_parquet, \
-    plot_mic_waveforms, print_datawindow_dq, SENSOR_LABEL
+# from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, EPISODE_START_EPOCH_S, \
+#     EPISODE_END_EPOCH_S, STATIONS, PD_PQT_FILE, OUTPUT_DIR, DW_FILE, build_dw_pickle, build_df_parquet, \
+#     plot_mic_waveforms, print_datawindow_dq, SENSOR_LABEL
+
+from examples.skyfall.skyfall_config import skyfall_config
 
 
 if __name__ == "__main__":
     """
     Beta workflow for API M pipeline
-    Last updated: 1 June 2021
+    Last updated: 8 June 2021
     """
     print('Let the sky fall')
     print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
 
     settings.set_parallelism_enabled(True)
 
-    if not os.path.exists(OUTPUT_DIR):
-        os.mkdir(OUTPUT_DIR)
+    if not os.path.exists(skyfall_config.output_dir):
+        os.mkdir(skyfall_config.output_dir)
 
-    if build_dw_pickle:
-        # RECOMMENDED USE
+    if skyfall_config.compress_dw:
+
         # Load signals, create a RedVox DataWindow structure, export to pickle.
-        rpd_dw.build(api_input_directory=INPUT_DIR,
-                     start_epoch_s=EPISODE_START_EPOCH_S,
-                     end_epoch_s=EPISODE_END_EPOCH_S,
-                     redvox_station_ids=STATIONS,
-                     event_name=EVENT_NAME,
-                     output_directory=OUTPUT_DIR,
-                     output_filename=DW_FILE,
+        rpd_dw.build(api_input_directory=skyfall_config.input_dir,
+                     start_epoch_s=skyfall_config.episode_start_epoch_s,
+                     end_epoch_s=skyfall_config.episode_end_epoch_s,
+                     redvox_station_ids=skyfall_config.stations,
+                     event_name=skyfall_config.event_name,
+                     output_directory=skyfall_config.output_dir,
+                     output_filename=skyfall_config.dw_file,
                      start_buffer_minutes=3.,
                      end_buffer_minutes=3.,
                      debug=True)
@@ -47,11 +49,12 @@ if __name__ == "__main__":
     # Import DataWindow
     else:
         print("Unpickling existing compressed RedVox DataWindow with JSON...")
-    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
+    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
+                                                      file_name=skyfall_config.dw_file)
     print(f"RedVox SDK version: {rdvx_data.sdk_version}")
 
     # Print out basic stats
-    if print_datawindow_dq:
+    if skyfall_config.print_dw_quality:
         print("\nDQ/DA LAYER: STATION")
         rpd_dq.station_metadata(rdvx_data)
         print("DQ/DA LAYER: MIC & SYNCH")
@@ -60,7 +63,7 @@ if __name__ == "__main__":
         rpd_dq.station_channel_timing(rdvx_data)
 
     # Plot data window waveforms
-    if plot_mic_waveforms:
+    if skyfall_config.plot_mic_waveforms:
         rpd_dw.plot_dw_mic(data_window=rdvx_data)
         rpd_dw.plot_dw_baro(data_window=rdvx_data)
         plt.show()
@@ -69,13 +72,13 @@ if __name__ == "__main__":
     print("\nInitiating RedVox Redpandas:")
     df_all_sensors_all_stations = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
                                                                                       sdk_version=rdvx_data.sdk_version,
-                                                                                      sensor_labels=SENSOR_LABEL)
+                                                                                      sensor_labels=skyfall_config.sensor_labels)
                                                 for station in rdvx_data.stations])
     df_all_sensors_all_stations.sort_values(by="station_id", ignore_index=True, inplace=True)
 
-    if build_df_parquet:
+    if skyfall_config.build_df_parquet:
         # Need to flatten to save to parquet
-        for label in SENSOR_LABEL:
+        for label in skyfall_config.sensor_labels:
             if label in ['barometer', 'accelerometer', 'gyroscope', 'magnetometer']:
 
                 # Create new columns with shape tuple for future unflattening/reshaping
@@ -103,15 +106,17 @@ if __name__ == "__main__":
                                                  f'{label}_nans']].applymap(np.ravel)
 
         # Export pandas data frame to parquet
-        df_all_sensors_all_stations.to_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
-        print("\nExported Parquet RedPandas DataFrame to " + os.path.join(OUTPUT_DIR, PD_PQT_FILE))
+        df_all_sensors_all_stations.to_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
+        print("\nExported Parquet RedPandas DataFrame to " + os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
 
         # Check that parquet file saves and opens correctly
-        df_open = pd.read_parquet(os.path.join(OUTPUT_DIR, PD_PQT_FILE))
+        df_open = pd.read_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
         print("Total stations in DataFrame:", len(df_open['station_id']))
         print("Available stations:", df_open['station_id'])
         print("Total columns in DataFrame:", len(df_open.columns))
         print("Available columns:", df_open.columns)
+
+
 
     else:
         print("\nDid not export pandas data frame, must set build_df_parquet = True")
