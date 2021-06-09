@@ -71,23 +71,30 @@ def decimate_individual_station(downsampling_factor: int,
 
 # Main filter modules
 def signal_zero_mean_pandas(df: pd.DataFrame,
-                            sig_label: str,
-                            new_column_label_append: str = 'zero_mean'):
+                            sig_wf_label: str,
+                            new_column_label: str = 'zero_mean'):
     """
     Eliminate DC offset from all signals in df
 
     :param df: input pandas data frame
-    :param sig_label: string for column name with the waveform data in df
-    :param new_column_label_append: sig_label + string for new column containing zero mean signal data
+    :param sig_wf_label: string for column name with the waveform data in df
+    :param new_column_label: sig_label + string for new column containing zero mean signal data
 
     :return: original data frame with extra column containing zero mean signals (df['signal_zero_mean'])
     """
     # label new column in df
-    new_column_label_sig_data = sig_label + "_" + new_column_label_append
+    new_column_label_sig_data = new_column_label
 
     list_zero_mean_data = []  # list that will be converted to a column
-    for row in range(len(df)):
-        list_zero_mean_data.append(df[sig_label][row] - np.nanmean(df[sig_label][row]))
+    for n in df.index:
+        if df[sig_wf_label][n].ndim == 1:
+            list_zero_mean_data.append(df[sig_wf_label][n] - np.nanmean(df[sig_wf_label][n]))
+        else:
+            list_zero_mean_3c_data = []
+            for index_dimension, _ in enumerate(df[sig_wf_label][n]):
+                list_zero_mean_3c_data.append(df[sig_wf_label][n][index_dimension] - np.nanmean(df[sig_wf_label][n][index_dimension]))
+
+            list_zero_mean_data.append(np.array(list_zero_mean_3c_data))   # append 3 channels sensor into 'main' list
 
     df[new_column_label_sig_data] = list_zero_mean_data
 
@@ -152,9 +159,19 @@ def normalize_pandas(df: pd.DataFrame,
 
     list_normalized_signals = []  # list that will be converted to a column
     for row in range(len(df)):
-        # use libquantum utils normalize module
-        list_normalized_signals.append(utils.normalize(sig=df[sig_wf_label][row], scaling=scaling,
-                                                       norm_type=norm_type_utils))
+
+        if df[sig_wf_label][row].ndim == 1:
+            # use libquantum utils normalize module
+            list_normalized_signals.append(utils.normalize(sig=df[sig_wf_label][row], scaling=scaling,
+                                                           norm_type=norm_type_utils))
+        else:
+            list_3c_normalized_signals = []
+            for index_dimension, _ in enumerate(df[sig_wf_label][row]):
+                list_3c_normalized_signals.append(utils.normalize(sig=df[sig_wf_label][row][index_dimension],
+                                                                  scaling=scaling,
+                                                                  norm_type=norm_type_utils))
+
+            list_normalized_signals.append(np.array(list_3c_normalized_signals))
 
     df[new_column_label] = list_normalized_signals
 
@@ -459,9 +476,9 @@ def bandpass_butter_pandas(df: pd.DataFrame,
     :param frequency_cut_high_hz: high cutoff
     :param filter_order: filter order is doubled with filtfilt, nominal 4 -> 8
     :param tukey_alpha: 0 = no taper, 1 = Hann taper. 0.25 is flat over 3/4 of sig, good for 75% overlap
-    :param new_column_label_sig_bandpass: sig_label + string for new column with bandpassed signal data
-    :param new_column_label_frequency_low: sig_label + string for new column
-    :param new_column_label_frequency_high: sig_label + string for new column
+    :param new_column_label_sig_bandpass: string for new column with bandpassed signal data
+    :param new_column_label_frequency_low: string for new column
+    :param new_column_label_frequency_high: string for new column
 
     :return: original df with added columns for band passed tapered signal, frequency high and low values
     """
@@ -474,22 +491,45 @@ def bandpass_butter_pandas(df: pd.DataFrame,
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
         # TODO: check for j out of sorts
-        nyquist = 0.5 * df[sig_sample_rate_label][j]
-        edge_low = frequency_cut_low_hz / nyquist
-        edge_high = frequency_cut_high_hz / nyquist
-        if edge_high >= 1:
-            edge_high = 0.5  # Half of nyquist
-        [b, a] = signal.butter(N=filter_order,
-                               Wn=[edge_low, edge_high],
-                               btype='bandpass')
-        sig_taper = np.copy(df[sig_wf_label][j])
-        sig_taper = sig_taper * signal.windows.tukey(M=len(sig_taper), alpha=tukey_alpha)
-        sig_bandpass = signal.filtfilt(b, a, sig_taper)
+        if df[sig_wf_label][j].ndim == 1:
+            nyquist = 0.5 * df[sig_sample_rate_label][j]
+            edge_low = frequency_cut_low_hz / nyquist
+            edge_high = frequency_cut_high_hz / nyquist
+            if edge_high >= 1:
+                edge_high = 0.5  # Half of nyquist
+            [b, a] = signal.butter(N=filter_order,
+                                   Wn=[edge_low, edge_high],
+                                   btype='bandpass')
+            sig_taper = np.copy(df[sig_wf_label][j])
+            sig_taper = sig_taper * signal.windows.tukey(M=len(sig_taper), alpha=tukey_alpha)
+            sig_bandpass = signal.filtfilt(b, a, sig_taper)
 
-        # Append to list
-        list_all_signal_bandpass_data.append(sig_bandpass)
-        list_all_frequency_low_hz.append(frequency_cut_low_hz)
-        list_all_frequency_high_hz.append(frequency_cut_high_hz)
+            # Append to list
+            list_all_signal_bandpass_data.append(sig_bandpass)
+            list_all_frequency_low_hz.append(frequency_cut_low_hz)
+            list_all_frequency_high_hz.append(frequency_cut_high_hz)
+
+        else:
+            list_3c_signal_bandpass_data = []
+            for index_dimension, _ in enumerate(df[sig_wf_label][j]):
+                nyquist = 0.5 * df[sig_sample_rate_label][j]
+                edge_low = frequency_cut_low_hz / nyquist
+                edge_high = frequency_cut_high_hz / nyquist
+                if edge_high >= 1:
+                    edge_high = 0.5  # Half of nyquist
+                [b, a] = signal.butter(N=filter_order,
+                                       Wn=[edge_low, edge_high],
+                                       btype='bandpass')
+                sig_taper = np.copy(df[sig_wf_label][j][index_dimension])
+                sig_taper = sig_taper * signal.windows.tukey(M=len(sig_taper), alpha=tukey_alpha)
+                sig_bandpass = signal.filtfilt(b, a, sig_taper)
+
+                list_3c_signal_bandpass_data.append(sig_bandpass)
+
+            # Append to list
+            list_all_signal_bandpass_data.append(np.array(list_3c_signal_bandpass_data))
+            list_all_frequency_low_hz.append(frequency_cut_low_hz)
+            list_all_frequency_high_hz.append(frequency_cut_high_hz)
 
     # Convert to columns and add it to df
     df[new_column_label_sig_bandpass] = list_all_signal_bandpass_data
@@ -533,23 +573,42 @@ def highpass_butter_pandas(df: pd.DataFrame,
 
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
-        nyquist = 0.5 * df[sig_sample_rate_label][j]
-        edge_low = frequency_cut_low_hz / nyquist
-        [b, a] = signal.butter(N=filter_order,
-                               Wn=edge_low,
-                               btype='high')
-        sig_taper = np.copy(df[sig_wf_label][j])
-        sig_taper = sig_taper * signal.windows.tukey(M=len(sig_taper), alpha=tukey_alpha)
-        sig_highpass = signal.filtfilt(b, a, sig_taper)
+        if df[sig_wf_label][j].ndim == 1:
+            nyquist = 0.5 * df[sig_sample_rate_label][j]
+            edge_low = frequency_cut_low_hz / nyquist
+            [b, a] = signal.butter(N=filter_order,
+                                   Wn=edge_low,
+                                   btype='high')
+            sig_taper = np.copy(df[sig_wf_label][j])
+            sig_taper = sig_taper * signal.windows.tukey(M=len(sig_taper), alpha=tukey_alpha)
+            sig_highpass = signal.filtfilt(b, a, sig_taper)
 
-        # Append to list
-        list_all_signal_highpass_data.append(sig_highpass)
-        list_all_frequency_low_hz.append(frequency_cut_low_hz)
-        list_all_frequency_high_hz.append(frequency_cut_high_hz)
+            # Append to list
+            list_all_signal_highpass_data.append(sig_highpass)
+            list_all_frequency_low_hz.append(frequency_cut_low_hz)
+            list_all_frequency_high_hz.append(frequency_cut_high_hz)
+
+        else:
+            list_3c_signal_highpass_data = []
+            for index_dimension, _ in enumerate(df[sig_wf_label][j]):
+
+                nyquist = 0.5 * df[sig_sample_rate_label][j]
+                edge_low = frequency_cut_low_hz / nyquist
+                [b, a] = signal.butter(N=filter_order,
+                                       Wn=edge_low,
+                                       btype='high')
+                sig_taper = np.copy(df[sig_wf_label][j][index_dimension])
+                sig_taper = sig_taper * signal.windows.tukey(M=len(sig_taper), alpha=tukey_alpha)
+                sig_highpass = signal.filtfilt(b, a, sig_taper)
+
+                list_3c_signal_highpass_data.append(sig_highpass)
+
+            # Append to list
+            list_all_signal_highpass_data.append(np.array(list_3c_signal_highpass_data))
+            list_all_frequency_low_hz.append(frequency_cut_low_hz)
+            list_all_frequency_high_hz.append(frequency_cut_high_hz)
 
     # Convert to columns and add it to df
     df[new_column_label_sig_highpass] = list_all_signal_highpass_data
     df[new_column_label_frequency_low] = list_all_frequency_low_hz
     df[new_column_label_frequency_high] = list_all_frequency_high_hz
-
-    return df

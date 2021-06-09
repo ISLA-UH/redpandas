@@ -116,7 +116,5 @@ if __name__ == "__main__":
         print("Total columns in DataFrame:", len(df_open.columns))
         print("Available columns:", df_open.columns)
 
-
-
     else:
         print("\nDid not export pandas data frame, must set build_df_parquet = True")
