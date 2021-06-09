@@ -72,7 +72,7 @@ if __name__ == '__main__':
         exit()
 
     if skyfall_config.is_rerun_bounder:
-        rpd_geo.bounder_data(skyfall_config.bounder_input_path, skyfall_config.bounder_input_file,
+        rpd_geo.bounder_data(skyfall_config.bounder_input_path, skyfall_config.bounder_input_csv_file,
                              skyfall_config.bounder_pd_pqt_file)
         print('Constructing bounder parquet')
 
