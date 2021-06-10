@@ -85,8 +85,8 @@ def build_station(station: Station,
     :param sensor_label: one of: ['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer',
     'health', 'location', 'image']
     :param highpass_type: 'obspy', 'butter', 'rc', default 'obspy'
-    :param frequency_filter_low: TODO MC: what is this 100s default
-    :param filter_order: TODO MC: what is this Default = 4
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param filter_order: the order of the filter integer. Default is 4
     :return: dictionary with sensor name, sample rate, timestamps, data (raw and highpassed)
     """
     if sensor_label == 'mic' or sensor_label == 'microphone' or sensor_label == 'audio':

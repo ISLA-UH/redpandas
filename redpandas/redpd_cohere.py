@@ -1,3 +1,9 @@
+"""
+This module contains function to calculate coherence
+
+Last updated: 10 June 2021
+"""
+
 import numpy as np
 
 import pandas as pd
@@ -7,19 +13,19 @@ from libquantum import utils
 import redpandas.redpd_plot as rpd_plt
 
 
-# TODO MAG: function variables description
-def coherence_numpy(sig_in,
-                    sig_in_ref,
-                    sig_sample_rate_hz,
-                    sig_ref_sample_rate_hz,
+def coherence_numpy(sig_in: np.ndarray,
+                    sig_in_ref: np.ndarray,
+                    sig_sample_rate_hz: int,
+                    sig_ref_sample_rate_hz: int,
                     window_seconds: float = 2.,
                     window_overlap_fractional: float = 0.5,
                     frequency_ref_hz: float = 40.,
                     frequency_min_hz: float = 1,
                     frequency_max_hz: float = 320.,
                     sig_calib: float = 1.,
-                    sig_ref_calib:float = 1.):
+                    sig_ref_calib: float = 1.):
     """
+    TODO MAG: complete me
 
     :param sig_in:
     :param sig_in_ref:
@@ -32,7 +38,7 @@ def coherence_numpy(sig_in,
     :param frequency_max_hz:
     :param sig_calib:
     :param sig_ref_calib:
-    :return:
+    :return: plots
     """
 
     # Stated with WACT IMS ref code, increased consistency.
@@ -136,9 +142,9 @@ def coherence_numpy(sig_in,
 
 def coherence_re_ref_pandas(df: pd.DataFrame,
                             ref_id: str,
-                            sig_id_name: str,
-                            sig_name: str,
-                            sig_sample_rate_name: str,
+                            sig_id_label: str,
+                            sig_wf_label: str,
+                            sig_sample_rate_label: str,
                             fs_fractional_tolerance: float = 0.02,
                             window_seconds: float = 2.,
                             window_overlap_fractional: float = 0.5,
@@ -152,14 +158,15 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                             new_column_label_cohere_frequency: str = 'coherence_frequency',
                             new_column_label_cohere_value: str = 'coherence_value',
                             new_column_label_cohere_response_magnitude_bits: str = 'coherence_response_magnitude_bits',
-                            new_column_label_cohere_response_phase_degrees: str = 'coherence_response_phase_degrees'):
+                            new_column_label_cohere_response_phase_degrees: str = 'coherence_response_phase_degrees'
+                            ) -> pd.DataFrame:
     """
-
-    :param df:
+    TODO MAG: complete my description
+    :param df: input pandas DataFrame
     :param ref_id:
-    :param sig_id_name:
-    :param sig_name:
-    :param sig_sample_rate_name:
+    :param sig_id_label: string for column name with station ids in df
+    :param sig_wf_label: string for column name with waveform data in df
+    :param sig_sample_rate_label: string for column name with sample rate in Hz information in df
     :param fs_fractional_tolerance:
     :param window_seconds:
     :param window_overlap_fractional:
@@ -174,7 +181,7 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
     :param new_column_label_cohere_value:
     :param new_column_label_cohere_response_magnitude_bits:
     :param new_column_label_cohere_response_phase_degrees:
-    :return:
+    :return: input pandas dataframe with new columns
     """
 
     number_sig = len(df.index)
@@ -183,7 +190,7 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
     # exit()
 
     # Is there a better way?
-    m_list = df.index[df[sig_id_name] == ref_id]
+    m_list = df.index[df[sig_id_label] == ref_id]
     m = m_list[0]
     # print("m", m)
     if len(m_list) > 1:
@@ -196,8 +203,8 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
     coherence_response_phase_degrees = []
 
     if m is not None:
-        print("Coherence Reference station ", df[sig_id_name][m])
-        sig_m = np.copy(df[sig_name][m]) * sig_ref_calib
+        print("Coherence Reference station ", df[sig_id_label][m])
+        sig_m = np.copy(df[sig_wf_label][m]) * sig_ref_calib
         m_points = len(sig_m)
 
         for n in df.index:
@@ -205,37 +212,36 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             #     # Skip itself
             #     continue
 
-            sample_rate_condition = np.abs(df[sig_sample_rate_name][m] - df[sig_sample_rate_name][n]) \
-                                    > fs_fractional_tolerance*df[sig_sample_rate_name][m]
+            sample_rate_condition = np.abs(df[sig_sample_rate_label][m] - df[sig_sample_rate_label][n]) \
+                                    > fs_fractional_tolerance*df[sig_sample_rate_label][m]
             if sample_rate_condition:
                 print("Sample rates out of tolerance")
                 return
             else:
                 # Generalized sensor cross correlations, including unequal lengths
-                sig_n = np.copy(df[sig_name][n]) * sig_calib
+                sig_n = np.copy(df[sig_wf_label][n]) * sig_calib
                 n_points = len(sig_n)
 
             # TODO MAG: Can incorrectly feed in different length windows.
             #  Inherit length/sample rate checks from xcorr and spectcorr.
             # Compute PSDs for each and coherence between the two
-            window_points = int(window_seconds*df[sig_sample_rate_name][m])
+            window_points = int(window_seconds * df[sig_sample_rate_label][m])
             window_overlap_points = int(window_overlap_fractional*window_points)
 
             frequency_auto, auto_spectrum_sig = signal.welch(x=sig_n,
-                                                             fs=df[sig_sample_rate_name][n],
+                                                             fs=df[sig_sample_rate_label][n],
                                                              nperseg=window_points,
                                                              noverlap=window_overlap_points)
             _, auto_spectrum_ref = signal.welch(x=sig_m,
-                                                fs=df[sig_sample_rate_name][m],
+                                                fs=df[sig_sample_rate_label][m],
                                                 nperseg=window_points,
                                                 noverlap=window_overlap_points)
-
 
             # Compute cross-power spectral density with ref sample rate
             # Original code had no overlap - fixed
             frequency_cross, cross_spectrum = signal.csd(x=sig_n,
                                                          y=sig_m,
-                                                         fs=df[sig_sample_rate_name][m],
+                                                         fs=df[sig_sample_rate_label][m],
                                                          nperseg=window_points,
                                                          noverlap=window_overlap_points)
 
@@ -247,7 +253,7 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             # Cxy_psd = np.abs(cross_spectrum)**2/(pxx_ref*auto_spectrum_sig)
             frequency_coherence, coherence_welch = signal.coherence(x=sig_n,
                                                                     y=sig_m,
-                                                                    fs=df[sig_sample_rate_name][m],
+                                                                    fs=df[sig_sample_rate_label][m],
                                                                     nperseg=window_points,
                                                                     noverlap=window_overlap_points)
 

@@ -20,7 +20,7 @@ def build(api_input_directory: str,
           output_filename: str,
           start_buffer_minutes: float = 3,
           end_buffer_minutes: float = 3,
-          debug: bool = False):
+          debug: bool = False) -> None:
     """
     Load data, construct data window, export as pickle
 
@@ -58,7 +58,7 @@ def build(api_input_directory: str,
 
 
 def build_ez(api_input_directory, pickle_filename: str = "DataWindow.pickle",
-             is_serialized: bool = True):
+             is_serialized: bool = True) -> None:
     """
     Load data, construct data window, export as pickle with minimal inputs
     :param api_input_directory: directory where data is located

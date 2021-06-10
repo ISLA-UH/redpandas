@@ -1,7 +1,8 @@
 """
 This module constains main utils for plotting RedPandas DataFrames
+
 Created: 23 March 2021
-Last updated: 25 May 2021
+Last updated: 10 June 2021
 """
 import datetime as dt
 from typing import List
@@ -172,15 +173,15 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     From milton/hellborne/hell_gt_entropy_inv_clean
     Updated to plot data with different sample rates and number of points
     :param df: input pandas data frame
-    :param sig_wf_label: string for the waveform name in df
-    :param sig_sample_rate_label: string for the sample rate name in df
+    :param sig_wf_label: string for the waveform column name in df
+    :param sig_sample_rate_label: string for the sample rate in Hz column name in df
+    :param sig_id_label: string for the station id column name in df
     :param x_label: x label
     :param y_label: y label
-    :param fig_title_show: Include a title in the figure. Default is True
+    :param fig_title_show: include a title in the figure. Default is True
     :param fig_title: 'Normalized ' + title label
     :param wf_color: waveform color. Default is midnightblue
     :param sig_timestamps_label: name for the epoch time in df, default = None
-    :param sig_id_label: usually the index converted to a str, default = None
     :return: plot
     """
 
@@ -251,10 +252,10 @@ def plot_sensor_wiggles_pandas(df: pd.DataFrame,
     Plots sensor waveforms for one station
 
     :param df: input pandas data frame
-    :param station_id_str:  string for the station name in df
-    :param sensor_wf_label_list: list of strings with sensor waveform names in df
-    :param sensor_timestamps_label_list: list of strings with sensor timestamps names in df
-    :param sig_id_label: string for the waveform name in df
+    :param station_id_str:  string for the station column name in df
+    :param sensor_wf_label_list: list of strings with sensor waveform column names in df
+    :param sensor_timestamps_label_list: list of strings with sensor timestamps column names in df
+    :param sig_id_label: string for the waveform column name in df
     :param x_label: x label
     :param y_label: y label
     :param fig_title_show: Include a title in the figure. Default is True
@@ -365,7 +366,7 @@ def plot_psd_coh(psd_sig,
                  f_label: str = 'Frequency (Hz)',
                  fig_title: str = 'Power spectral density and coherence'):
     """
-
+    TODO MAG: Complete me
     :param psd_sig:
     :param psd_ref:
     :param coherence_sig_ref:
@@ -378,8 +379,8 @@ def plot_psd_coh(psd_sig,
     :param psd_label:
     :param coh_label:
     :param f_label:
-    :param fig_title:
-    :return:
+    :param fig_title: title of figure
+    :return: plot
     """
     # Plot PSDs
     fig1 = plt.figure()
@@ -415,7 +416,7 @@ def plot_response_scatter(h_magnitude,
                           f_scale: str = 'log',
                           fig_title: str = 'Response only valid at high coherence'):
     """
-
+    TODO MAG: Complete me
     :param h_magnitude:
     :param h_phase_deg:
     :param color_guide:
@@ -423,8 +424,8 @@ def plot_response_scatter(h_magnitude,
     :param f_min_hz:
     :param f_max_hz:
     :param f_scale:
-    :param fig_title:
-    :return:
+    :param fig_title: title of figure
+    :return: plot
     """
     # plot magnitude and coherence
     fig = plt.figure()

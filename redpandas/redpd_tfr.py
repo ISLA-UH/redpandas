@@ -1,6 +1,7 @@
 """
 This module contains panda versions of libquantum.
-Last updated: 4 June 2021
+
+Last updated: 10 June 2021
 """
 
 import numpy as np
@@ -17,6 +18,18 @@ def frame_panda(df: pd.DataFrame,
                 offset_seconds_label: str = "xcorr_offset_seconds",
                 new_column_aligned_wf: str = 'sig_aligned_wf',
                 new_column_aligned_epoch: str = 'sig_aligned_epoch_s'):
+    """
+    TODO MAG: Complete my description
+    :param df: input pandas data frame
+    :param sig_wf_label: string for the waveform column name in df
+    :param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df
+    :param sig_epoch_s_start: first timestamp in epoch s
+    :param sig_epoch_s_end: last timestamp in epoch s
+    :param offset_seconds_label: TODO MAG: Complete me
+    :param new_column_aligned_wf: label for new column containing aligned waveform
+    :param new_column_aligned_epoch: label for new column containing aligned timestamps in epoch s
+    :return: input df with new columns
+    """
 
     aligned_wf = []
     aligned_epoch_s = []
@@ -43,9 +56,21 @@ def tfr_bits_panda(df: pd.DataFrame,
                    tfr_type: str = 'cwt',
                    new_column_tfr_bits: str = 'tfr_bits',
                    new_column_tfr_time_s: str = 'tfr_time_s',
-                   new_column_tfr_frequency_hz: str = 'tfr_frequency_hz'):
+                   new_column_tfr_frequency_hz: str = 'tfr_frequency_hz') -> pd.DataFrame:
+    """
+    Calculate Time Frequency Representation for a signal
 
-    # TODO: Export epoch?
+    :param df: input pandas data frame
+    :param sig_wf_label: string for the waveform column name in df
+    :param sig_sample_rate_label: string for column name with sample rate in Hz information in df
+    :param order_number_input: band order Nth
+    :param tfr_type: 'cwt' or 'stft'
+    :param new_column_tfr_bits: label for new column containing tfr in bits
+    :param new_column_tfr_time_s: label for new column containing tfr timestamps in epoch s
+    :param new_column_tfr_frequency_hz: label for new column containing tfr frequency in Hz
+    :return: input dataframe with new columns
+    """
+
     tfr_bits = []
     tfr_time_s = []
     tfr_frequency_hz = []
@@ -55,7 +80,7 @@ def tfr_bits_panda(df: pd.DataFrame,
         if df[sig_wf_label][n].ndim == 1:  # audio basically
 
             sig_wf_n = np.copy(df[sig_wf_label][n])
-            sig_wf_n *= rpd_prep.taper_tukey(sig_or_time=sig_wf_n, fraction_cosine=0.1)
+            sig_wf_n *= rpd_prep.taper_tukey(sig_wf_or_time=sig_wf_n, fraction_cosine=0.1)
 
             if tfr_type == "cwt":
                 # Compute complex wavelet transform (cwt) from signal duration
@@ -86,7 +111,7 @@ def tfr_bits_panda(df: pd.DataFrame,
             for index_dimension, _ in enumerate(df[sig_wf_label][n]):
 
                 sig_wf_n = np.copy(df[sig_wf_label][n][index_dimension])
-                sig_wf_n *= rpd_prep.taper_tukey(sig_or_time=sig_wf_n, fraction_cosine=0.1)
+                sig_wf_n *= rpd_prep.taper_tukey(sig_wf_or_time=sig_wf_n, fraction_cosine=0.1)
 
                 if tfr_type == "cwt":
                     # Compute complex wavelet transform (cwt) from signal duration

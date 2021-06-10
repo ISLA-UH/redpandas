@@ -28,7 +28,7 @@ def redvox_loc(path_redvox: str, stations: List[str], redvox_loc_filename: str):
     phone_loc_times_dt = [dt.datetime_from_epoch_microseconds_utc(time) for time in phone_loc_times]
 
     # Some of the fields are empty or wrong:
-    # TODO: Check on 'horizontal_accuracy', 'location_provider',
+    # TOD: Check on 'horizontal_accuracy', 'location_provider',
     #  'bearing', 'vertical_accuracy', 'speed_accuracy', 'bearing_accuracy'
     skyfall_phone_loc = pd.DataFrame(data={'Unixtime_micros': phone_loc_times,
                                            'Datetime': phone_loc_times_dt,
@@ -74,7 +74,7 @@ def extract_location(data_window, phone_id):
     print("Mean RedVox location sample rate:")
     print(np.mean(np.diff([dt.datetime_from_epoch_microseconds_utc(i)
                            for i in station.location_sensor().data_timestamps()])))
-    # TODO: Print episode start and stop
+    # TOD: Print episode start and stop
     print("RedVox location start time:")
     print(dt.datetime_from_epoch_microseconds_utc(station.location_sensor().first_data_timestamp()))
     print("RedVox location stop time:")
@@ -142,7 +142,7 @@ def main(rerun_redvox: bool, rerun_bounder: bool):
     EVENT_ORIGIN_EPOCH_S = 1603806313.132  # 2020-10-27T13:45:13.132 start time of first data packet
     minutes_duration = 30
 
-    # TODO: Reorganize project structure
+    # TOD: Reorganize project structure
     stations_rdvx = ["1637610021"]
     path_rdvx = \
         "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027/api900"
@@ -166,7 +166,7 @@ def main(rerun_redvox: bool, rerun_bounder: bool):
     bounder_loc = pd.read_parquet(parquet_bounder)
 
     # Remove repeated values and NaNs
-    # TODO: FIND WHY REPEATED VALUES
+    # TOD: FIND WHY REPEATED VALUES
     phone_loc = phone_loc[~phone_loc[['Unixtime_micros']].duplicated(keep='first')].dropna()
     # print("Phone Panda head:", phone_loc.head)
     bounder_loc = bounder_loc[~bounder_loc['Unixtime_micros'].duplicated(keep='first')].dropna()
@@ -202,7 +202,7 @@ def main(rerun_redvox: bool, rerun_bounder: bool):
                           bounder_loc['Lat_deg'],
                           bounder_loc['Alt_m'])
 
-    # # TODO 20210120: VERIFY TIME AND LOCATION TERMINUS for BOUNDER
+    # # TOD 20210120: VERIFY TIME AND LOCATION TERMINUS for BOUNDER
 
     # Bounder temperature is coarse, 1C steps
     plt.figure()

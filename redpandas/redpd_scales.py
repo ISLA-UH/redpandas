@@ -1,3 +1,9 @@
+"""
+This module contains scale conversions
+
+Last updated: 10 June 2021
+"""
+
 import numpy as np
 
 # copied from scales in libquantum, decide if we want to use libquantum.scales or have a redpd scales
@@ -13,6 +19,9 @@ DEGREES_TO_METERS = 111000.
 METERS_TO_KM = 1E-3
 PRESSURE_SEA_LEVEL_KPA = 101.325
 KPA_TO_PA = 1E3
+MG_RT = 0.00012  # Molar mass of air x gravity / (gas constant x standard temperature)
+PRESSURE_REF_kPa = 101.325
+
 
 class Slice:
     """

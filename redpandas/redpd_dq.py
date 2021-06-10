@@ -1,7 +1,9 @@
 """
 DQ/DA/UQ statistics/metrics
+
+Last updated: 10 June 2021
 """
-# TODO: finish class definitions and descriptions
+# TODO: finish class definitions
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
@@ -34,7 +36,7 @@ class StationDq:
     # etc
 
 
-def mic_sync(data_window: DataWindow):
+def mic_sync(data_window: DataWindow) -> None:
     """
     Print Audio Sensor information
     :param data_window: RedVox DataWindow object
@@ -108,7 +110,7 @@ def mic_sync(data_window: DataWindow):
             continue
 
 
-def station_channel_timing(data_window: DataWindow):
+def station_channel_timing(data_window: DataWindow) -> None:
     """
     Print RedVox DataWindow Station channel time information for Audio, Barometer, Accelerometer, Gyroscope and
     Magnetometer sensors.
@@ -184,7 +186,7 @@ def station_channel_timing(data_window: DataWindow):
                   f"{gyroscope_last_timestamp_delta}\n")
 
 
-def station_metadata(data_window: DataWindow):
+def station_metadata(data_window: DataWindow) -> None:
     """
     Print RedVox DataWindow Station metadata
     :param data_window: RedVox DataWindow object

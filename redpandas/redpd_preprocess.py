@@ -2,9 +2,9 @@
 This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
 
-Last updated: 7 June 2021
+Last updated: 10 June 2021
 """
-# todo: add types in function definitions
+
 from enum import Enum
 from typing import Tuple
 
@@ -17,10 +17,6 @@ import pandas as pd
 from redvox.common import date_time_utils as dt
 import redpandas.redpd_iterator as rdp_iter
 import redpandas.redpd_scales as rpd_scales
-
-
-MG_RT = 0.00012  # Molar mass of air x gravity / (gas constant x standard temperature)
-PRESSURE_REF_kPa = 101.325
 
 
 # Define classes
@@ -107,18 +103,19 @@ def demean_nan_matrix(sig_wf: np.ndarray) -> np.ndarray:
     return np.nan_to_num(np.subtract(sig_wf.transpose(), np.nanmean(sig_wf, axis=1))).transpose()
 
 
-def taper_tukey(sig_or_time: np.ndarray, fraction_cosine: float) -> np.ndarray:
+def taper_tukey(sig_wf_or_time: np.ndarray,
+                fraction_cosine: float) -> np.ndarray:
     """
     Constructs a symmetric Tukey window with the same dimensions as a time or signal numpy array.
     fraction_cosine = 0 is a rectangular window, 1 is a Hann window
-    :param sig_or_time: input signal or time
+    :param sig_wf_or_time: input signal or time
     :param fraction_cosine: fraction of the window inside the cosine tapered window, shared between the head and tail
     :return: tukey taper window amplitude
     """
-    return signal.windows.tukey(M=np.size(sig_or_time), alpha=fraction_cosine, sym=True)
+    return signal.windows.tukey(M=np.size(sig_wf_or_time), alpha=fraction_cosine, sym=True)
 
 
-def pad_reflection_symmetric(sig_wf) -> Tuple[np.ndarray, int]:
+def pad_reflection_symmetric(sig_wf: np.ndarray) -> Tuple[np.ndarray, int]:
     """
     Apply reflection transformation
     :param sig_wf: signal waveform
@@ -132,7 +129,9 @@ def pad_reflection_symmetric(sig_wf) -> Tuple[np.ndarray, int]:
     return wf_folded, number_points_to_flip_per_edge
 
 
-def filter_reflection_highpass(sig_wf, filter_cutoff_hz, sample_rate_hz) -> np.ndarray:
+def filter_reflection_highpass(sig_wf: np.ndarray,
+                               sample_rate_hz: int,
+                               filter_cutoff_hz: float) -> np.ndarray:
     """
     Apply fold filter to input signal (edges reflected) and highpass
     :param sig_wf: signal waveform
@@ -155,16 +154,16 @@ def height_asl_from_pressure_below10km(bar_waveform: np.ndarray) -> np.ndarray:
     :param bar_waveform: barometric pressure in kPa
     :return: height ASL in m
     """
-    return -np.log(bar_waveform/rpd_scales.Slice.PREF_KPA)/MG_RT
+    return -np.log(bar_waveform/rpd_scales.Slice.PREF_KPA)/rpd_scales.MG_RT
 
 
-def model_height_from_pressure_skyfall(pressure_kPa) -> np.ndarray:
+def model_height_from_pressure_skyfall(pressure_kpa: np.ndarray) -> np.ndarray:
     """
     Returns empirical height in m from input pressure
-    :param pressure_kPa: barometric pressure in kPa
+    :param pressure_kpa: barometric pressure in kPa
     :return: height in m
     """
-    scaled_pressure = -np.log(pressure_kPa/PRESSURE_REF_kPa)
+    scaled_pressure = -np.log(pressure_kpa / rpd_scales.PRESSURE_REF_kPa)
     # Empirical model constructed from
     # c, stats = np.polynomial.polynomial.polyfit(poly_x, bounder_loc['Alt_m'], 8, full=True)
     c = [1.52981286e+02, 7.39552295e+03, 2.44663285e+03, -3.57402081e+03, 2.02653051e+03,
@@ -172,7 +171,9 @@ def model_height_from_pressure_skyfall(pressure_kPa) -> np.ndarray:
     return np.polynomial.polynomial.polyval(scaled_pressure, c, tensor=False)
 
 
-def rc_high_pass_signal(sig_wf, sample_rate_hz, highpass_cutoff) -> np.array:
+def rc_high_pass_signal(sig_wf: np.ndarray,
+                        sample_rate_hz: int,
+                        highpass_cutoff: float) -> np.ndarray:
     """
     :param sig_wf: signal waveform
     :param sample_rate_hz: sampling rate in Hz
@@ -185,12 +186,15 @@ def rc_high_pass_signal(sig_wf, sample_rate_hz, highpass_cutoff) -> np.array:
 
 
 # "Traditional" solution, up to Nyquist
-def bandpass_butter_uneven(sig_wf, filter_order, frequency_cut_low_hz, sample_rate_hz) -> np.ndarray:
+def bandpass_butter_uneven(sig_wf: np.ndarray,
+                           sample_rate_hz: int,
+                           frequency_cut_low_hz: float,
+                           filter_order: int) -> np.ndarray:
     """
     :param sig_wf: signal waveform
-    :param filter_order: filter corners / order
-    :param frequency_cut_low_hz: filter corner frequency in Hz
     :param sample_rate_hz: sampling rate in Hz
+    :param frequency_cut_low_hz: filter corner frequency in Hz
+    :param filter_order: filter corners / order
     :return: bandpassed signal
     """
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
@@ -202,12 +206,15 @@ def bandpass_butter_uneven(sig_wf, filter_order, frequency_cut_low_hz, sample_ra
     return signal.filtfilt(b, a, np.copy(sig_wf))
 
 
-def highpass_obspy(sig_wf, frequency_low_hz, sample_rate_hz, filter_order=4) -> np.ndarray:
+def highpass_obspy(sig_wf: np.ndarray,
+                   sample_rate_hz: int,
+                   frequency_low_hz: float,
+                   filter_order=4) -> np.ndarray:
     """
     :param sig_wf: signal waveform
     :param frequency_low_hz: filter corner frequency in Hz
     :param sample_rate_hz: sampling rate in Hz
-    :param filter_order: filter corners / order
+    :param filter_order: filter corners / order. Default is 4.
     :return: sensor highpass
     """
     return obspy.signal.filter.highpass(np.copy(sig_wf),
@@ -268,7 +275,7 @@ def highpass_from_diff(sig_wf: np.ndarray,
     :param sig_epoch_s: signal time in epoch s
     :param sample_rate_hz: sampling rate in Hz
     :param highpass_type: 'obspy', 'butter', 'rc'
-    :param frequency_filter_low: 100s default
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
     :param filter_order: filter corners / order. Default is 4.
     :zero phase filters are acausal
     :return: filtered signal waveform, frequency_filter_low value used
@@ -347,4 +354,5 @@ def df_column_unflatten(df: pd.DataFrame,
     for index_array in df.index:
         col_values[index_array].shape = (df[col_ndim_label][index_array][0],
                                          df[col_ndim_label][index_array][1])
+
 

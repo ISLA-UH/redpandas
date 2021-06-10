@@ -1,13 +1,22 @@
+"""
+This module contains functions to extrct and process geospatial data
+
+Last updated: 10 June 2021
+"""
+
 import os
 import numpy as np
 import pandas as pd
 import pymap3d as pm
+from typing import Any
+
 from redpandas.redpd_scales import EPSILON, NANOS_TO_S, DEGREES_TO_METERS, PRESSURE_SEA_LEVEL_KPA
 
 
 def redvox_loc(df_pqt_path: str) -> pd.DataFrame:
     """
     Extract the location, temperature, and DC pressure payload from the microphones
+
     :param df_pqt_path: path/to/parquet file with data stored in a pd.DataFrame
     :return: pd. DataFrame with columns {'station_id', 'location_epoch_s', 'location_latitude', 'location_longitude',
     'location_altitude', 'location_speed', 'location_horizontal_accuracy', 'barometer_epoch_s', 'barometer_wf_raw'}
@@ -42,7 +51,7 @@ def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parq
     :param path_bounder_csv: path/to/bounder csv and parquet files
     :param file_bounder_csv: name bounder csv file
     :param file_bounder_parquet: name bounder parquet file
-    :return:
+    :return: save as parquet
     """
 
     # Event-specific start date and curated file
@@ -70,7 +79,7 @@ def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parq
     skyfall_bounder_loc.to_parquet(output_path)
 
 
-def bounder_model_height_from_pressure(pressure_kPa):
+def bounder_model_height_from_pressure(pressure_kPa: np.ndarray) -> np.ndarray:
     """
     Returns empirical height in m from input pressure
     :param pressure_kPa: Atmospheric pressure in kPa
@@ -86,21 +95,27 @@ def bounder_model_height_from_pressure(pressure_kPa):
     return elevation_m
 
 
-def compute_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m,
-                      ref_unix_s, ref_lat_deg, ref_lon_deg, ref_alt_m,
-                      geodetic_type: str = 'enu'):
+def compute_t_xyz_uvw(unix_s: Any,
+                      lat_deg: Any,
+                      lon_deg: Any,
+                      alt_m: Any,
+                      ref_unix_s: Any,
+                      ref_lat_deg: Any,
+                      ref_lon_deg: Any,
+                      ref_alt_m: Any,
+                      geodetic_type: str = 'enu') -> pd.DataFrame:
     """
     Compute time and location relative to a reference value; compute speed.
-    :param unix_s:
-    :param lat_deg:
-    :param lon_deg:
-    :param alt_m:
-    :param ref_unix_s:
-    :param ref_lat_deg:
-    :param ref_lon_deg:
-    :param ref_alt_m:
-    :param geodetic_type:
-    :return:
+    :param unix_s: target timestamp
+    :param lat_deg: target geodetic latitude
+    :param lon_deg: target geodetic longitude
+    :param alt_m: target altitude above ellipsoid (meters)
+    :param ref_unix_s: observer timestamp
+    :param ref_lat_deg: observer geodetic latitude
+    :param ref_lon_deg: observer geodetic longitude
+    :param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
+    :param geodetic_type: 'enu' or 'ned'
+    :return: pandas DataFrame with columns: {'T_s', 'X_m', 'Y_m', 'Z_m', 'U_mps', 'V_mps', 'W_mps', 'Speed_mps'}
     """
 
     if geodetic_type == 'enu':
@@ -135,21 +150,27 @@ def compute_t_xyz_uvw(unix_s, lat_deg, lon_deg, alt_m,
     return t_xyzuvw_s_m
 
 
-def compute_t_r_z_speed(unix_s, lat_deg, lon_deg, alt_m,
-                        ref_unix_s, ref_lat_deg, ref_lon_deg, ref_alt_m,
-                        geodetic_type: str = 'enu'):
+def compute_t_r_z_speed(unix_s: Any,
+                        lat_deg: Any,
+                        lon_deg: Any,
+                        alt_m: Any,
+                        ref_unix_s: Any,
+                        ref_lat_deg: Any,
+                        ref_lon_deg: Any,
+                        ref_alt_m: Any,
+                        geodetic_type: str = 'enu') -> pd.DataFrame:
     """
     Compute time and location relative to a reference value; compute speed.
-    :param unix_s:
-    :param lat_deg:
-    :param lon_deg:
-    :param alt_m:
-    :param ref_unix_s:
-    :param ref_lat_deg:
-    :param ref_lon_deg:
-    :param ref_alt_m:
-    :param geodetic_type:
-    :return:
+    :param unix_s: target timestamp
+    :param lat_deg: target geodetic latitude
+    :param lon_deg: target geodetic longitude
+    :param alt_m: target altitude above ellipsoid (meters)
+    :param ref_unix_s: observer timestamp
+    :param ref_lat_deg: observer geodetic latitude
+    :param ref_lon_deg: observer geodetic longitude
+    :param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
+    :param geodetic_type: 'enu' or 'ned'
+    :return: pandas DataFrame with columns: {'Elapsed_s', 'Range_m', 'Z_m', 'LatLon_speed_mps'}
     """
 
     if geodetic_type == 'enu':
