@@ -7,7 +7,7 @@ from libquantum import utils
 import redpandas.redpd_plot as rpd_plt
 
 
-# TODO: function variables description
+# TODO MAG: function variables description
 def coherence_numpy(sig_in,
                     sig_in_ref,
                     sig_sample_rate_hz,
@@ -19,6 +19,21 @@ def coherence_numpy(sig_in,
                     frequency_max_hz: float = 320.,
                     sig_calib: float = 1.,
                     sig_ref_calib:float = 1.):
+    """
+
+    :param sig_in:
+    :param sig_in_ref:
+    :param sig_sample_rate_hz:
+    :param sig_ref_sample_rate_hz:
+    :param window_seconds:
+    :param window_overlap_fractional:
+    :param frequency_ref_hz:
+    :param frequency_min_hz:
+    :param frequency_max_hz:
+    :param sig_calib:
+    :param sig_ref_calib:
+    :return:
+    """
 
     # Stated with WACT IMS ref code, increased consistency.
     # Core computation is standard scipy.signal.
@@ -58,7 +73,7 @@ def coherence_numpy(sig_in,
     # Original code had no overlap - fixed
     # Same as coherence from PSD
     # Cxy_psd = np.abs(Pxy)**2/(pxx_ref*pxx_sig)
-    # TODO: Compute coherence from spectral products with other representations
+    # TODO MAG: Compute coherence from spectral products with other representations
     f, Cxy = signal.coherence(x=sig,
                               y=sig_ref,
                               fs=sig_ref_sample_rate_hz,
@@ -138,6 +153,29 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                             new_column_label_cohere_value: str = 'coherence_value',
                             new_column_label_cohere_response_magnitude_bits: str = 'coherence_response_magnitude_bits',
                             new_column_label_cohere_response_phase_degrees: str = 'coherence_response_phase_degrees'):
+    """
+
+    :param df:
+    :param ref_id:
+    :param sig_id_name:
+    :param sig_name:
+    :param sig_sample_rate_name:
+    :param fs_fractional_tolerance:
+    :param window_seconds:
+    :param window_overlap_fractional:
+    :param frequency_ref_hz:
+    :param frequency_min_hz:
+    :param frequency_max_hz:
+    :param sig_calib:
+    :param sig_ref_calib:
+    :param export_option:
+    :param plot_response:
+    :param new_column_label_cohere_frequency:
+    :param new_column_label_cohere_value:
+    :param new_column_label_cohere_response_magnitude_bits:
+    :param new_column_label_cohere_response_phase_degrees:
+    :return:
+    """
 
     number_sig = len(df.index)
     print("Coherence, number of signals excluding reference:", number_sig-1)
@@ -177,7 +215,7 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                 sig_n = np.copy(df[sig_name][n]) * sig_calib
                 n_points = len(sig_n)
 
-            # TODO: Can incorrectly feed in different length windows.
+            # TODO MAG: Can incorrectly feed in different length windows.
             #  Inherit length/sample rate checks from xcorr and spectcorr.
             # Compute PSDs for each and coherence between the two
             window_points = int(window_seconds*df[sig_sample_rate_name][m])
@@ -221,7 +259,7 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             phase_degrees = np.unwrap(180 / np.pi * np.angle(h_complex_response_sig))
 
             # Assumes all the frequencies are the same - must verify
-            # TODO: use function for closest
+            # TODO MAG: use function for closest
             frequency_ref_index = np.argmin(np.abs(frequency_coherence - frequency_ref_hz))
             frequency_coherence_max_index = np.argmax(coherence_welch)
 

@@ -5,21 +5,20 @@ import pymap3d as pm
 from redpandas.redpd_scales import EPSILON, NANOS_TO_S, DEGREES_TO_METERS, PRESSURE_SEA_LEVEL_KPA
 
 
-def redvox_loc(DF_PICKLE_PATH):
+def redvox_loc(df_pqt_path: str) -> pd.DataFrame:
     """
     Extract the location, temperature, and DC pressure payload from the microphones
-    :param path_redvox:
-    :param stations: List of strings [' ', ' ']
-    :param redvox_loc_filename:
-    :return: save to parquet
+    :param df_pqt_path: path/to/parquet file with data stored in a pd.DataFrame
+    :return: pd. DataFrame with columns {'station_id', 'location_epoch_s', 'location_latitude', 'location_longitude',
+    'location_altitude', 'location_speed', 'location_horizontal_accuracy', 'barometer_epoch_s', 'barometer_wf_raw'}
     """
     # Check
-    if not os.path.exists(DF_PICKLE_PATH):
+    if not os.path.exists(df_pqt_path):
         print("Input file does not exist, check path:")
-        print(DF_PICKLE_PATH)
+        print(df_pqt_path)
         exit()
 
-    df = pd.read_parquet(DF_PICKLE_PATH)
+    df = pd.read_parquet(df_pqt_path)
     print('Read parquet with pandas DataFrame')
 
     # Extract selected fields
@@ -37,12 +36,12 @@ def redvox_loc(DF_PICKLE_PATH):
     return df_loc
 
 
-def bounder_data(path_bounder_csv, file_bounder_csv: str, file_bounder_parquet: str):
+def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parquet: str):
     """
     Load data from balloon-based Bounder platform
-    :param path_bounder_csv:
-    :param file_bounder_csv:
-    :param bounder_filename:
+    :param path_bounder_csv: path/to/bounder csv and parquet files
+    :param file_bounder_csv: name bounder csv file
+    :param file_bounder_parquet: name bounder parquet file
     :return:
     """
 

@@ -1,9 +1,8 @@
 # Python libraries
-import os.path
 import pickle
-
 import numpy as np
 import matplotlib.pyplot as plt
+
 # RedVox modules
 from redvox.common.data_window import DataWindow
 from redvox.common.io import serialize_data_window
@@ -84,7 +83,7 @@ def build_ez(api_input_directory, pickle_filename: str = "DataWindow.pickle",
         print("Exported data window as pickle")
 
 
-def plot_dw_mic(data_window):
+def plot_dw_mic(data_window: DataWindow):
     """
     Plot audio data for all stations in RedVox DataWindow
     :param data_window: RedVox DataWindow object
@@ -105,7 +104,7 @@ def plot_dw_mic(data_window):
             ax1.set_xlabel("Time from record start, s")
 
 
-def plot_dw_baro(data_window):
+def plot_dw_baro(data_window: DataWindow):
     """
     Plot barometer data for all stations in RedVox DataWindow
     :param data_window: RedVox DataWindow object

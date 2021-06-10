@@ -85,8 +85,8 @@ def build_station(station: Station,
     :param sensor_label: one of: ['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer',
     'health', 'location', 'image']
     :param highpass_type: 'obspy', 'butter', 'rc', default 'obspy'
-    :param frequency_filter_low: todo what is this 100s default
-    :param filter_order: todo what is this Default = 4
+    :param frequency_filter_low: TODO MC: what is this 100s default
+    :param filter_order: TODO MC: what is this Default = 4
     :return: dictionary with sensor name, sample rate, timestamps, data (raw and highpassed)
     """
     if sensor_label == 'mic' or sensor_label == 'microphone' or sensor_label == 'audio':
@@ -147,7 +147,7 @@ def audio_wf_time_build_station(station: Station,
     """
     Builds mic waveform and times if it exists
     :param station: RDVX Station object
-    :param mean_type: todo: under development
+    :param mean_type: TODO MC: under development
     :param raw: if false (default), boolean or nan mean removed
     :return: dictionary with sensor name, sample rate, timestamps, audio data
     """
@@ -219,7 +219,7 @@ def best_location_build_station(station: Station) -> dict:
                 'best_location_sample_rate_hz': station.best_location_sensor().sample_rate_hz,
                 'best_location_epoch_s': station.best_location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
                 'best_location_gps_epoch_s': station.best_location_sensor().get_data_channel('gps_timestamps')
-                                        * rpd_scales.MICROS_TO_S,
+                                             * rpd_scales.MICROS_TO_S,
                 'best_location_latitude': station.best_location_sensor().get_data_channel("latitude"),
                 'best_location_longitude': station.best_location_sensor().get_data_channel("longitude"),
                 'best_location_altitude': station.best_location_sensor().get_data_channel("altitude"),
@@ -294,7 +294,7 @@ def synchronization_build_station(station: Station) -> dict:
                 'synchronization_offset_ms': synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_best_offset_ms': synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_offset_delta_ms': synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS -
-                                                    synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
+                                                   synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_number_exchanges': synchronization.timesync_data[0].num_tri_messages()}
     else:
         print(f'Station {station.id} has no time sync data.')

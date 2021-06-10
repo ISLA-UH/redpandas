@@ -1,11 +1,14 @@
 """
 DQ/DA/UQ statistics/metrics
 """
-# todo: finish class and function definitions and descriptions
+# TODO: finish class definitions and descriptions
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
 import numpy as np
+
+# RedVox modules
+from redvox.common.data_window import DataWindow
 from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
 import redvox.common.date_time_utils as dt
 from redvox.common.station import Station
@@ -31,7 +34,12 @@ class StationDq:
     # etc
 
 
-def mic_sync(data_window):
+def mic_sync(data_window: DataWindow):
+    """
+    Print Audio Sensor information
+    :param data_window: RedVox DataWindow object
+    :return: print statements with Mic and Clock specs
+    """
     station: Station
     for station in data_window.stations:
         if station.has_audio_data():
@@ -100,7 +108,13 @@ def mic_sync(data_window):
             continue
 
 
-def station_channel_timing(data_window):
+def station_channel_timing(data_window: DataWindow):
+    """
+    Print RedVox DataWindow Station channel time information for Audio, Barometer, Accelerometer, Gyroscope and
+    Magnetometer sensors.
+    :param data_window: RedVox DataWindow object
+    :return: print statement with Station timing and sensors specs
+    """
     station: Station
     for station in data_window.stations:
         print("STATION CHANNEL TIMING FOR ID", station.id)
@@ -111,10 +125,8 @@ def station_channel_timing(data_window):
             print('App start time not available')
         print('Station first time stamp:',
               dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp))
-        # TODO: FIX ERROR IN DOC
         print('Station last time stamp:',
               dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp))
-        # TODO: GET STATION/SENSOR INFO, MAKE/MODEL/SAMPLE RATE/ETC
 
         if station.has_audio_data():
             print(f"\naudio Sensor:\n"
@@ -134,7 +146,7 @@ def station_channel_timing(data_window):
                                               station.audio_sensor().last_data_timestamp())
             print(f"barometer Sensor:\n"
                   f"barometer first data timestamp diff from mic: "
-                  '{0:.17}'.format(barometer_first_timestamp_delta),"\n"
+                  f"{barometer_first_timestamp_delta}\n"
                   f"barometer last data timestamp diff from mic: "
                   f"{barometer_last_timestamp_delta}\n")
 
@@ -172,7 +184,12 @@ def station_channel_timing(data_window):
                   f"{gyroscope_last_timestamp_delta}\n")
 
 
-def station_metadata(data_window):
+def station_metadata(data_window: DataWindow):
+    """
+    Print RedVox DataWindow Station metadata
+    :param data_window: RedVox DataWindow object
+    :return: print statements with Station specs
+    """
     station: Station
     for station in data_window.stations:
         if station.start_timestamp > 0:

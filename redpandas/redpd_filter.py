@@ -10,8 +10,6 @@ from libquantum import utils
 
 
 # TODO: to add lowpass and highpass filters
-# TODO: standardize language
-
 
 # Utils for filter modules
 def prime_factors(n: int):  # from https://stackoverflow.com/questions/15347174/python-finding-prime-factors

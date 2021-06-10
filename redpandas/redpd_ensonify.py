@@ -47,7 +47,7 @@ def resample_factor_str(sig_sample_rate_hz: float,
     Compute file string for oversample and downsample options
     :param sig_sample_rate_hz: input signal sample rate
     :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
-    :return:
+    :return: string with resample factor
     """
     resample_factor = wav_sample_rate_hz / sig_sample_rate_hz
     # If resample factor is unity, no change
