@@ -102,30 +102,41 @@ def signal_zero_mean_pandas(df: pd.DataFrame,
 
 
 def taper_tukey_pandas(df: pd.DataFrame,
-                       sig_label: str,
+                       sig_wf_label: str,
                        fraction_cosine: float,
                        new_column_label_append: str = 'taper'):
     """
     Apply taper to all signals in df
 
     :param df: input pandas data frame
-    :param sig_label: string for column name with the waveform data in df
+    :param sig_wf_label: string for column name with the waveform data in df
     :param fraction_cosine: fraction of the window inside the cosine tapered window, shared between the head and tail
     :param new_column_label_append: sig_label + string for new column containing signal tapered data
 
     :return: original data frame with added column for signal values with taper window
     """
     # label new column in df
-    new_column_label_taper_data = sig_label + "_" + new_column_label_append
+    new_column_label_taper_data = sig_wf_label + "_" + new_column_label_append
 
     list_taper = []
 
-    for row in range(len(df)):
-        sig_data_window = (df[sig_label][row] * signal.windows.tukey(M=len(df[sig_label][row]),
-                                                                     alpha=fraction_cosine,
-                                                                     sym=True))
+    for row in df.index:
+        if df[sig_wf_label][row].ndim == 1:
+            sig_data_window = (df[sig_wf_label][row] * signal.windows.tukey(M=len(df[sig_wf_label][row]),
+                                                                            alpha=fraction_cosine,
+                                                                            sym=True))
+            list_taper.append(sig_data_window)
 
-        list_taper.append(sig_data_window)
+        else:
+            list_taper_3c_data = []
+            for index_dimension, _ in enumerate(df[sig_wf_label][row]):
+                sig_data_window = (df[sig_wf_label][row][index_dimension]
+                                   * signal.windows.tukey(M=len(df[sig_wf_label][row][index_dimension]),
+                                                          alpha=fraction_cosine,
+                                                          sym=True))
+                list_taper_3c_data.append(sig_data_window)
+
+            list_taper.append(np.array(list_taper_3c_data)) # append 3 channels sensor into 'main' list
 
     df[new_column_label_taper_data] = list_taper
 
