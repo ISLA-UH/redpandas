@@ -48,9 +48,9 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param sig_id_label: string for column name with station ids in df
      :param fig_title_show: include a title in the figure. Default is True
      :param fig_title: figure title label
+     :param frequency_scaling: "log" or "lin". Default is "log"
      :param frequency_hz_ymin: y axis min lim
      :param frequency_hz_ymax: y axis max lim
-     :param frequency_scaling: "log" or "lin". Default is "log"
 
      :return: plot
      """

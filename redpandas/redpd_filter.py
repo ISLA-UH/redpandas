@@ -11,7 +11,7 @@ from libquantum import utils
 from typing import List, Tuple
 
 
-# TODO: to add lowpass and highpass filters
+# TODO: to add lowpass filter
 
 # Utils for filter modules
 def prime_factors(n: int) -> List[int]:
@@ -185,10 +185,11 @@ def normalize_pandas(df: pd.DataFrame,
 
     return df
 
+
 # TODO MC: this
 def selected_decimate_signal_pandas(df: pd.DataFrame,
-                                    list_stations: list,
-                                    sig_id_label,
+                                    list_stations: List[str],
+                                    sig_id_label: str,
                                     sig_wf_label: str,
                                     sig_timestamps_label: str,
                                     sample_rate_hz_label: str,
