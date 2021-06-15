@@ -5,7 +5,7 @@ Last updated: 10 June 2021
 """
 
 import numpy as np
-from typing import Tuple, Generator
+from typing import Tuple, Generator, Iterator
 
 # RC filter response: mag first contribution to stack overflow as slipstream
 # https://stackoverflow.com/questions/62448904/how-to-implement-continuous-time-high-low-pass-filter-in-python
@@ -54,7 +54,7 @@ def rc_low_pass(x_new,  # TODO MAG: add type and -> return
 def rc_iterator_highlow(sig_wf: np.ndarray,
                         sample_rate_hz: int,
                         frequency_cut_low_hz: float,
-                        frequency_cut_high_hz: float) -> Generator[Tuple[float, float]]:
+                        frequency_cut_high_hz: float) -> Iterator[Tuple[float, float]]:
     """
     TODO MAG: complete my description
 
@@ -80,7 +80,7 @@ def rc_iterator_highlow(sig_wf: np.ndarray,
 
 def rc_iterator_high_pass(sig_wf: np.ndarray,
                           sample_rate_hz: int,
-                          frequency_cut_low_hz: float) -> Generator[Tuple[float, float]]:
+                          frequency_cut_low_hz: float) -> Iterator[Tuple[float, float]]:
     """
     TODO MAG: complete my description
     :param sig_wf: signal waveform
@@ -102,7 +102,7 @@ def rc_iterator_high_pass(sig_wf: np.ndarray,
 
 def rc_iterator_lowpass(sig_wf: np.ndarray,
                         sample_rate_hz: int,
-                        frequency_cut_high_hz: float) -> Generator[float]:
+                        frequency_cut_high_hz: float) -> Iterator[float]:
     """
     TODO MAG: complete my description
     :param sig_wf: signal waveform

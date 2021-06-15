@@ -4,8 +4,6 @@ The RedVox RedPandas repository contains routines to streamline preprocessing of
 and [API 1000](https://github.com/RedVoxInc/redvox-api-1000) (API M) data.
 The RedPandas pipeline is designed for integrability with other legacy and heterogeneous data sources.
 
-In this library you will find
-
 ----
 ## Table of Contents
 
@@ -60,6 +58,69 @@ Return to _[Table of Contents](#table-of-contents)_
 
 This section covers the basics on how to use the RedVox RedPandas library.
 
+#### Downloading RedVox data
+
+You can collect data with the [RedVox Infrasound Recorder app](https://www.redvoxsound.com/).
+
+There are three methods to download your RedVox collected data and/or RedPandas example dataset 
+(such as [Skyfall](#example-skyfall)):
+
+1) Using the [RedVox Python SDK cloud-download](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#cloud-download-command-details) 
+(recommended). Note that you will need to install the [GUI RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/installation.md#installing-optional-dependencies) 
+dependecies to use the cloud-download.
+2) Using the [RedVox Python SDK Command Line Interface (CLI)](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#data-req-command-details) 
+(recommended if your computer cannot install the GUI dependecies).
+3) Using Redvox.io (link)
+
+#### Opening RedVox data with RedPandas
+
+An easy method to open RedVox data is using the function ``build``:
+
+```
+import redpandas.redpd_datawin as rpd_dw
+
+rpd_dw.build(api_input_directory= ,
+             start_epoch_s= ,
+             end_epoch_s= ,
+             redvox_station_ids= ,
+             event_name= ,
+             output_directory= ,
+             output_filename= ,
+             start_buffer_minutes= ,
+             end_buffer_minutes= ,
+             debug=True)
+```
+Using ``build`` you can extract the RedVox data from the .rdvxz (API 900 files) and .rdvxm 
+(API 1000, also known as API M, files) formats to pickle.plz4
+
+Note that ``build`` will create an output directory ``path/to/file/rpd_files`` based on the path/to/file given in
+ the ``api_input_directory`` variable. In the ``rpd_files`` folder, a folder named ``dw`` 
+(short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
+will also be created
+
+##### Extracting sensor information with RedPandas
+
+
+
+```
+# RedPandas and RedVox Pyhton SDK 
+import redpandas.redpd_build_station as rpd_sta
+from redvox.common.data_window import DataWindow
+
+# Open saved RedVox DataWindow pickle
+rdvx_data: DataWindow = DataWindow.from_json_file(base_dir= ,
+                                                  file_name= )
+
+# Extract sensor infromation from stations
+station_dictionary= rpd_sta.build_station(station: Station,
+                                          sensor_label: str,
+                                          highpass_type: str = 'obspy',
+                                          frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+                                          filter_order: int = 4) 
+```
+
+
+
 #### Example: Skyfall
 
 A balloon hoisted a commercial, off-the-shelf, smartphone to a height of 36 km (around 119,000 feet) and purposely burst
@@ -72,12 +133,7 @@ The Skyfall data is a great dataset to showcase the RedPandas library for proces
 
 ##### Downloading the RedVox Skyfall data
 
-You will need to download the necessary data to run the Skyfall example. There are three methods to accomplish this:
-1) Using the [RedVox Python SDK cloud-download](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#cloud-download-command-details) 
-(recommended). Note that you will need to install the [GUI RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/installation.md#installing-optional-dependencies) 
-dependecies to use the cloud-download.
-2) Using the [RedVox Python SDK Command Line Interface (CLI)](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#data-req-command-details).
-3) Using Redvox.io (link)
+You will need to download the necessary data to run the Skyfall example. 
 
 ##### Running the Skyfall example
 
@@ -91,7 +147,6 @@ The configuration file is
 ###### Preprocessing RedVox data
 
 ###### Plotting RedVox data
-
 
 Return to _[Table of Contents](#table-of-contents)_
 
