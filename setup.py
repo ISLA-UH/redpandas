@@ -10,7 +10,7 @@ setup(name="redvox-pandas",
       license='Apache',
       author='RedVox',
       author_email='dev@redvoxsound.com',
-      description='change me',
+      description='Library to streamline preprocessing of RedVox API 900 and API 1000 data',
       packages=find_packages(include=[
           "redpandas",
       ],
