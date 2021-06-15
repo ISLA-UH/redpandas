@@ -12,8 +12,8 @@ In this library you will find
 <!-- toc -->
 
 
-- [RedVox RedPandas Installation](#RedVox-RedPandas-Installation)
-    - [Requirements for installing RedVox RedPandas](#Requirements-for-installing-RedVox-RedPandas)
+- [RedVox RedPandas Installation](#redvox-redpandas-installation)
+    - [Requirements for installing RedVox RedPandas](#requirements-for-installing-redvox-redpandas)
     - [Installing and/or upgrading RedVox RedPandas with pip](#installing-and/or-upgrading-RedVox-RedPandas-with-pip)
     - [Verifying the installation](#verifying-the-installation)
 - [Using RedVox RedPandas](#using-redvox-redpandas)
@@ -67,7 +67,7 @@ to let the smartphone freefall (hence the name _Skyfall_). As the smartphone fel
 descent using the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. You can find more information about this project at 
 (a link to the paper will be added once it is published).
 
-The Skyfall data is a great dataset to showcase the RedPandas library.
+The Skyfall data is a great dataset to showcase the RedPandas library for processing smartphone data.
 
 
 ##### Downloading the RedVox Skyfall data
