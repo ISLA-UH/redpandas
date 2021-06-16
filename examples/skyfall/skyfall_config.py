@@ -123,9 +123,14 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 
 RPD_DIR = "rpd_files"
 
+# TODO: Minimum reqs are event_name, input_dir, sensor_label = ['audio']
+# Next step: start time, duration, stations, clock, location
+
 skyfall_config = SkyfallConfig(
     event_name="Skyfall",
     input_dir=INPUT_DIR,
+    sensor_labels=['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
+                   'health', 'location', 'clock', 'synchronization'],
     rpd_dir="rpd_files",
     output_dir=os.path.join(INPUT_DIR, RPD_DIR),
     stations=["1637610021"],
@@ -135,8 +140,6 @@ skyfall_config = SkyfallConfig(
     ref_longitude_deg=-115.57234,
     ref_altitude_m=1028.2,
     ref_epoch_s=1603808160,
-    sensor_labels=['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
-                   'health', 'location', 'clock', 'synchronization'],
     compress_dw=True,
     print_dw_quality=False,
     plot_mic_waveforms=False,
@@ -154,7 +157,7 @@ EVENT_NAME = "Skyfall"
 OUTPUT_DIR = os.path.join(INPUT_DIR, RPD_DIR)
 
 # Data Window Pickle
-DW_FILE = EVENT_NAME + ".pickle"
+DW_FILE = EVENT_NAME  # + ".pickle"
 
 # RedPandas Parquets
 PD_PQT_FILE = EVENT_NAME + "_df.parquet"
