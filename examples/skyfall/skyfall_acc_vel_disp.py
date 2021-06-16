@@ -5,12 +5,14 @@ import pickle
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from scipy.integrate import cumtrapz
+from scipy.integrate import cumtrapz, cumulative_trapezoid
+from obspy.signal.filter import highpass, lowpass
 from scipy.spatial.distance import euclidean
 from typing import List, Tuple
 
 # RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindow
+from redvox import settings
 import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
@@ -22,58 +24,138 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, EPISODE_START_EPOCH_S, \
     EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, use_parquet, PD_PQT_FILE, SENSOR_LABEL
 
+# enable parallel
+settings.set_parallelism_enabled(True)
 
-def get_xy_rotation(accel_x: float, accel_y: float, accel_z: float) -> Tuple[float, float]:
+
+def get_pitch_and_roll(accel_x: float, accel_y: float, accel_z: float) -> Tuple[float, float]:
     """
-    Returns the x rotation (roll angle) and y rotation (pitch angle) from accelerometer data
+    Returns the pitch (rotation around y axis) and roll (rotation around x axis) from accelerometer data
     :param accel_x: x-axis acceleration value
     :param accel_y: y-axis acceleration value
     :param accel_z: z-axis acceleration value
-    :return: x_rotation, y_rotation
+    :return: pitch, roll
     """
     # get angle in radians
-    x_radians = np.arctan2(accel_x, euclidean(accel_y, accel_z))
-    y_radians = np.arctan2(accel_y, euclidean(accel_x, accel_z))
+    pitch = np.arctan2(-accel_x, np.sqrt(accel_y * accel_y + accel_z * accel_z))
+    roll = np.arctan2(accel_y, np.sqrt(accel_x * accel_x + accel_z * accel_z))
 
     # convert to degrees
-    return np.rad2deg((x_radians + np.pi) % (2 * np.pi) - np.pi), np.rad2deg((y_radians + np.pi) % (2 * np.pi) - np.pi)
+    return np.rad2deg(pitch), np.rad2deg(roll)
 
 
-def get_xy_rotation_array(accelerometers: List) -> Tuple[np.ndarray, np.ndarray]:
+def get_pitch_and_roll_array(accelerometers: List) -> Tuple[np.ndarray, np.ndarray]:
     """
-    Returns the x rotation (roll angle) and y rotation (pitch angle) array from accelerometer data
-    Loops through the get_xy_rotation function
+    Returns the pitch (rotation around y axis) and roll (rotation around x axis) array from accelerometer data
+    Loops through the get_pitch_and_roll function
     :param accelerometers: List of the xyz components of accelerometer data
-    :return: x_rotation_array, y_rotation_array
+    :return: pitch_array, roll_array
     """
     # Loop through get_xy_rotation
-    x_rotation_array = []
-    y_rotation_array = []
+    pitch_array = []
+    roll_array = []
 
     for i in range(len(accelerometers[0])):
-        x_rot, y_rot = get_xy_rotation(accel_x=accelerometers[0][i],
-                                       accel_y=accelerometers[1][i],
-                                       accel_z=accelerometers[2][i])
+        pitch, roll = get_pitch_and_roll(accel_x=accelerometers[0][i],
+                                         accel_y=accelerometers[1][i],
+                                         accel_z=accelerometers[2][i])
 
-        x_rotation_array.append(x_rot)
-        y_rotation_array.append(y_rot)
+        pitch_array.append(pitch)
+        roll_array.append(roll)
 
-    return np.array(x_rotation_array), np.array(y_rotation_array)
+    return np.array(pitch_array), np.array(roll_array)
 
 
-def complimentary_filtering(accelerometers: List, gyroscope: List, new_rate: float, update_time: np.ndarray) \
-        -> Tuple[np.ndarray, np.ndarray]:
+def complimentary_filtering(accelerometer_angle: np.ndarray, gyroscope_angle: np.ndarray, alpha: float) -> np.ndarray:
     """
     Complimentary Filter for Accelereometer and Gyroscope.
-    Returns roll angle (rotation around X-axis) and pitch angle (rotation around Y-axis).
+    Returns filtered angle
     Based on the works from https://stackoverflow.com/questions/1586658/combine-gyroscope-and-accelerometer-data and
     http://blog.bitify.co.uk/2013/11/using-complementary-filter-to-combine.html
-    :param accelerometers: List of the xyz components of accelerometer data
-    :param gyroscope: List of the xyz components of the gyroscope data
-    :param new_rate: new sample rate that determines the sensitivity to the accelerometer.
-    :param update_time: Time between accelerometer / gyroscope samples
+    :param accelerometer_angle: the calculated angle from the accelerometer (roll, pitch, yaw)
+    :param gyroscope_angle: the calculated angle from the gyroscope (roll, pitch, yaw)
+    :param alpha: determines the sensitivity of the accelerometer
     :return: roll_angle, pitch_angle
     """
+    # Get the change in gyroscope angle initiate with zero
+    gyroscope_angle_change = np.diff(gyroscope_angle)
+
+    # Loop through the data to apply complimentary filter
+    filtered_angle = gyroscope_angle
+    for i in range(len(accelerometer_angle) - 1):
+        filtered_angle[i + 1] = alpha * (filtered_angle[i] + gyroscope_angle_change[i]) \
+                                + (1 - alpha) * accelerometer_angle[i + 1]
+
+    return filtered_angle
+
+
+def remove_DC_offset(sensor_wf: np.ndarray, start_loc: int, end_loc: int) -> np.ndarray:
+    """
+    removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.
+    :param sensor_wf: data to remove the "DC offset"
+    :param start_loc: location of the start of the DC offset subset
+    :param end_loc: location of the end of the DC offset subset
+    :return: data with DC offset removed
+    """
+    return sensor_wf - np.mean(sensor_wf[start_loc:end_loc])
+
+
+def integrate_cumtrapz(timestamps_s: np.ndarray, sensor_wf: np.ndarray, initial_value: float = 0) -> np.ndarray:
+    """
+    cumulative trapazoid integration using scipy.integrate.cumulative_trapezoid
+    :param timestamps_s: timestamps corresponding to the data in seconds
+    :param sensor_wf: data to integrate using cumulative trapezoid
+    :param initial_value: the value to add in the initial of the integrated data to match length of input (default is 0)
+    :return: integrated data with the same length as the input
+    """
+
+    integrated_data = cumulative_trapezoid(x=timestamps_s,
+                                           y=sensor_wf,
+                                           initial=initial_value)
+
+    return integrated_data
+
+
+def highpass_obspy(sensor_wf: np.ndarray, sample_rate_hz: float, frequency_low_hz: float, filter_order: int = 4) \
+        -> np.ndarray:
+    """
+    applies a high pass filter using obspy.signal.filter.highpass with the specified low frequency
+    :param sensor_wf: data to apply a high pass filter
+    :param sample_rate_hz: sample rate of the data
+    :param frequency_low_hz: cut off frequency for the high pass filter
+    :param filter_order: the order of the filter (default = 4)
+    :return: high passed data
+    """
+    return highpass(np.copy(sensor_wf),
+                    frequency_low_hz,
+                    sample_rate_hz, corners=filter_order,
+                    zerophase=True)
+
+
+def standardized_cumtrapz(timestamps_s: np.ndarray, sensor_wf: np.ndarray, dc_range: List,
+                          cutoff_low_frequency: float = 1 / 100.) -> np.ndarray:
+    """
+    standard procedure to integrate accelerometer to velocity
+    removes the DC offset, integrates, and applies a highpass filter
+    :param timestamps_s: timestamps corresponding to the data in seconds
+    :param sensor_wf: data to standardized integration
+    :param dc_range: range of data to use for removing the dc offset
+    :param cutoff_low_frequency:  cut off frequency for the high pass filter
+    :return: standardized integrated and high passed data
+    """
+    # get pseudo sample rate
+    pseudo_sample_rate = 1 / np.median(np.diff(timestamps_s))
+
+    # remove the DC offset
+    dc_removed_wf = remove_DC_offset(sensor_wf=sensor_wf, start_loc=dc_range[0], end_loc=dc_range[1])
+
+    # integrate the waveform (initial value is the default (0)
+    integrated_wf = integrate_cumtrapz(timestamps_s=timestamps_s, sensor_wf=dc_removed_wf)
+
+    # apply the high pass filter
+    return highpass_obspy(sensor_wf=integrated_wf,
+                          sample_rate_hz=pseudo_sample_rate,
+                          frequency_low_hz=cutoff_low_frequency)
 
 
 if __name__ == "__main__":
@@ -108,8 +190,8 @@ if __name__ == "__main__":
     location_provider_label: str = 'location_provider'
 
     # stop time (until stop or full)
-    end_ind = -1        # full
-    #end_ind = -43500    # landfall
+    #stop = -1
+    stop = -43700  # landfall
 
     # Load data options
     if use_datawindow is True or use_pickle is True:
@@ -176,73 +258,101 @@ if __name__ == "__main__":
 
             # Plot aligned raw waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=df_skyfall_data[accelerometer_data_raw_label][station][2],
-                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[accelerometer_data_raw_label][station][1],
-                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_0_sig=df_skyfall_data[accelerometer_data_raw_label][station][0],
-                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                   wf_panel_2_sig=df_skyfall_data[accelerometer_data_raw_label][station][2][:stop],
+                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station][:stop],
+                                   wf_panel_1_sig=df_skyfall_data[accelerometer_data_raw_label][station][1][:stop],
+                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station][:stop],
+                                   wf_panel_0_sig=df_skyfall_data[accelerometer_data_raw_label][station][0][:stop],
+                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station][:stop],
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Z, m/$s^2$",
                                    wf_panel_1_units="Y, m/$s^2$",
                                    wf_panel_0_units="X, m/$s^2$",
                                    figure_title=EVENT_NAME + ": Accelerometer raw")
 
-            # Plot aligned highpassed waveforms
+            # remove DC offset
+            accelerometer_time_s = df_skyfall_data[accelerometer_epoch_s_label][station][:stop]
+
+            #accel_z = df_skyfall_data[accelerometer_data_raw_label][station][2][:stop]
+            #accel_z = df_skyfall_data[accelerometer_data_highpass_label][station][2][:stop]
+            accel_z = remove_DC_offset(sensor_wf=df_skyfall_data[accelerometer_data_raw_label][station][2][:stop],
+                                       start_loc=0, end_loc=100)
+            accel_y = remove_DC_offset(sensor_wf=df_skyfall_data[accelerometer_data_raw_label][station][1][:stop],
+                                       start_loc=0, end_loc=100)
+            accel_x = remove_DC_offset(sensor_wf=df_skyfall_data[accelerometer_data_raw_label][station][0][:stop],
+                                       start_loc=0, end_loc=100)
+
+            # high pass separately (to get rid of landfall effects) (don't high pass for z -> dragggg)
+            pseudo_sample_rate = 1 / np.median(np.diff(accelerometer_time_s))
+
+            # accel_z = lowpass(accel_z, 100, pseudo_sample_rate)
+            # accel_z, _ = rpd_prep.highpass_from_diff(sig_wf=accel_z,
+            #                                          sig_epoch_s=accelerometer_time_s,
+            #                                          sample_rate_hz=pseudo_sample_rate)
+            # accel_z = highpass_obspy(sensor_wf=accel_z, sample_rate_hz=pseudo_sample_rate, frequency_low_hz=1 / 100.)
+            accel_y = highpass_obspy(sensor_wf=accel_y, sample_rate_hz=pseudo_sample_rate, frequency_low_hz=1 / 100.)
+            accel_x = highpass_obspy(sensor_wf=accel_x, sample_rate_hz=pseudo_sample_rate, frequency_low_hz=1 / 100.)
+
+            # Plot aligned high passed waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=df_skyfall_data[accelerometer_data_highpass_label][station][2],
-                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[accelerometer_data_highpass_label][station][1],
-                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_0_sig=df_skyfall_data[accelerometer_data_highpass_label][station][0],
-                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                   wf_panel_2_sig=df_skyfall_data[accelerometer_data_highpass_label][station][2][:stop]
+                                   - accel_z,
+                                   wf_panel_2_time=accelerometer_time_s,
+                                   wf_panel_1_sig=df_skyfall_data[accelerometer_data_highpass_label][station][2][:stop],
+                                   wf_panel_1_time=accelerometer_time_s,
+                                   wf_panel_0_sig=accel_z,
+                                   wf_panel_0_time=accelerometer_time_s,
+                                   start_time_epoch=event_reference_time_epoch_s,
+                                   wf_panel_2_units="HP - KHP Z, m/$s^2$",
+                                   wf_panel_1_units="HP Z, m/$s^2$",
+                                   wf_panel_0_units="KHP Z, m/$s^2$",
+                                   figure_title=EVENT_NAME + ": Accelerometer Z comparison")
+
+
+            # Plot aligned high passed waveforms
+            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+                                   wf_panel_2_sig=accel_z,
+                                   wf_panel_2_time=accelerometer_time_s,
+                                   wf_panel_1_sig=accel_y,
+                                   wf_panel_1_time=accelerometer_time_s,
+                                   wf_panel_0_sig=accel_x,
+                                   wf_panel_0_time=accelerometer_time_s,
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Z, m/$s^2$",
                                    wf_panel_1_units="Y, m/$s^2$",
                                    wf_panel_0_units="X, m/$s^2$",
-                                   figure_title=EVENT_NAME + ": Accelerometer highpass")
+                                   figure_title=EVENT_NAME + ": Accelerometer high passed")
 
-            # Now let's try doing some integrals
-            vel_z = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind],
-                             y=df_skyfall_data[accelerometer_data_highpass_label][station][2][:end_ind] -
-                               np.mean(df_skyfall_data[accelerometer_data_highpass_label][station][2][:40000]))
-            # vel_y = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:end_id],
-            #                  y=df_skyfall_data[accelerometer_data_raw_label][station][1][:end_ind] -
-            #                    np.mean(df_skyfall_data[accelerometer_data_raw_label][station][1][:40000]))
-            # vel_x = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind],
-            #                  y=df_skyfall_data[accelerometer_data_raw_label][station][0][:end_ind] -
-            #                    np.mean(df_skyfall_data[accelerometer_data_raw_label][station][0][:40000]))
+            # Convert to Velocity
+            velocity_z = integrate_cumtrapz(timestamps_s=accelerometer_time_s,
+                                            sensor_wf=accel_z)
+            velocity_y = integrate_cumtrapz(timestamps_s=accelerometer_time_s,
+                                            sensor_wf=accel_y)
+            velocity_x = integrate_cumtrapz(timestamps_s=accelerometer_time_s,
+                                            sensor_wf=accel_x)
 
-            # vel_z = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:-43500],
-            #                  y=df_skyfall_data[accelerometer_data_raw_label][station][2][:-43500])
-            vel_y = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind],
-                             y=df_skyfall_data[accelerometer_data_highpass_label][station][1][:end_ind])
-            vel_x = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind],
-                             y=df_skyfall_data[accelerometer_data_highpass_label][station][0][:end_ind])
+            speed_xyz = np.sqrt(velocity_z ** 2 + velocity_y ** 2 + velocity_x ** 2)
+            speed_z = np.abs(velocity_z)
 
-            speed_xyz = np.sqrt(vel_x ** 2 + vel_y ** 2 + vel_x ** 2)
-            speed_z = np.abs(vel_z)
-
-            # Now let's try doing some integrals
-            disp_z = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-1],
-                              y=vel_z)
-            disp_y = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-1],
-                              y=vel_y)
-            disp_x = cumtrapz(x=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-1],
-                              y=vel_x)
+            # integrate the velocity to get displacement
+            disp_z = integrate_cumtrapz(timestamps_s=accelerometer_time_s,
+                                        sensor_wf=velocity_z)
+            disp_y = integrate_cumtrapz(timestamps_s=accelerometer_time_s,
+                                        sensor_wf=velocity_y)
+            disp_x = integrate_cumtrapz(timestamps_s=accelerometer_time_s,
+                                        sensor_wf=velocity_x)
 
             disp_xyz = np.sqrt(disp_x ** 2 + disp_y ** 2 + disp_z ** 2)
 
             # print(pd.to_datetime(df_skyfall_data[accelerometer_epoch_s_label][station][40000], unit='s'))
-
             # Plot vel
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=vel_z,
-                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-1],
-                                   wf_panel_1_sig=vel_y,
-                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-1],
-                                   wf_panel_0_sig=vel_x,
-                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-1],
+                                   wf_panel_2_sig=velocity_z,
+                                   wf_panel_2_time=accelerometer_time_s,
+                                   wf_panel_1_sig=velocity_y,
+                                   wf_panel_1_time=accelerometer_time_s,
+                                   wf_panel_0_sig=velocity_x,
+                                   wf_panel_0_time=accelerometer_time_s,
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Z, m/s",
                                    wf_panel_1_units="Y, m/s",
@@ -252,11 +362,11 @@ if __name__ == "__main__":
             # Plot disp
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=disp_z,
-                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-2],
+                                   wf_panel_2_time=accelerometer_time_s,
                                    wf_panel_1_sig=disp_y,
-                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-2],
+                                   wf_panel_1_time=accelerometer_time_s,
                                    wf_panel_0_sig=disp_x,
-                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-2],
+                                   wf_panel_0_time=accelerometer_time_s,
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Z, m",
                                    wf_panel_1_units="Y, m",
@@ -281,49 +391,64 @@ if __name__ == "__main__":
                   df_skyfall_data[gyroscope_epoch_s_label][station][-1])
             # Plot raw aligned waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=df_skyfall_data[gyroscope_data_raw_label][station][2],
-                                   wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[gyroscope_data_raw_label][station][1],
-                                   wf_panel_1_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-                                   wf_panel_0_sig=df_skyfall_data[gyroscope_data_raw_label][station][0],
-                                   wf_panel_0_time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                   wf_panel_2_sig=df_skyfall_data[gyroscope_data_raw_label][station][2][:stop],
+                                   wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station][:stop],
+                                   wf_panel_1_sig=df_skyfall_data[gyroscope_data_raw_label][station][1][:stop],
+                                   wf_panel_1_time=df_skyfall_data[gyroscope_epoch_s_label][station][:stop],
+                                   wf_panel_0_sig=df_skyfall_data[gyroscope_data_raw_label][station][0][:stop],
+                                   wf_panel_0_time=df_skyfall_data[gyroscope_epoch_s_label][station][:stop],
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Z, rad/s",
                                    wf_panel_1_units="Y, rad/s",
                                    wf_panel_0_units="X, rad/s",
                                    figure_title=EVENT_NAME + ": Gyroscope raw")
 
+
+            # clean gyro
+            gyro_time_s = df_skyfall_data[gyroscope_epoch_s_label][station][:stop]
+            gyro_sample_rate = 1 / np.median(np.diff(gyro_time_s))
+
+            gyro_z = remove_DC_offset(sensor_wf=df_skyfall_data[gyroscope_data_raw_label][station][2][:stop],
+                                      start_loc=0,
+                                      end_loc=100)
+            gyro_y = remove_DC_offset(sensor_wf=df_skyfall_data[gyroscope_data_raw_label][station][1][:stop],
+                                      start_loc=0,
+                                      end_loc=100)
+            gyro_x = remove_DC_offset(sensor_wf=df_skyfall_data[gyroscope_data_raw_label][station][0][:stop],
+                                      start_loc=0,
+                                      end_loc=100)
+
+            gyro_z = highpass_obspy(sensor_wf=gyro_z, sample_rate_hz=gyro_sample_rate, frequency_low_hz=1/100)
+            gyro_y = highpass_obspy(sensor_wf=gyro_y, sample_rate_hz=gyro_sample_rate, frequency_low_hz=1/100)
+            gyro_x = highpass_obspy(sensor_wf=gyro_x, sample_rate_hz=gyro_sample_rate, frequency_low_hz=1/100)
+
             # Plot highpass aligned waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=df_skyfall_data[gyroscope_data_highpass_label][station][2],
-                                   wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[gyroscope_data_highpass_label][station][1],
-                                   wf_panel_1_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-                                   wf_panel_0_sig=df_skyfall_data[gyroscope_data_highpass_label][station][0],
-                                   wf_panel_0_time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                   wf_panel_2_sig=gyro_z,
+                                   wf_panel_2_time=gyro_time_s,
+                                   wf_panel_1_sig=gyro_y,
+                                   wf_panel_1_time=gyro_time_s,
+                                   wf_panel_0_sig=gyro_x,
+                                   wf_panel_0_time=gyro_time_s,
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Z, rad/s",
                                    wf_panel_1_units="Y, rad/s",
                                    wf_panel_0_units="X, rad/s",
                                    figure_title=EVENT_NAME + ": Gyroscope highpass")
 
-            gyro_rad_z = cumtrapz(df_skyfall_data[gyroscope_data_highpass_label][station][2],
-                                  df_skyfall_data[gyroscope_epoch_s_label][station])
+            gyro_rad_z = integrate_cumtrapz(timestamps_s=gyro_time_s, sensor_wf=gyro_z)
+            gyro_rad_y = integrate_cumtrapz(timestamps_s=gyro_time_s, sensor_wf=gyro_y)
+            gyro_rad_x = integrate_cumtrapz(timestamps_s=gyro_time_s, sensor_wf=gyro_x)
 
-            gyro_rad_y = cumtrapz(df_skyfall_data[gyroscope_data_highpass_label][station][1],
-                                  df_skyfall_data[gyroscope_epoch_s_label][station])
-
-            gyro_rad_x = cumtrapz(df_skyfall_data[gyroscope_data_highpass_label][station][0],
-                                  df_skyfall_data[gyroscope_epoch_s_label][station])
 
             # Plot raw aligned waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=gyro_rad_z,
-                                   wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station][:-1],
+                                   wf_panel_2_time=gyro_time_s,
                                    wf_panel_1_sig=gyro_rad_y,
-                                   wf_panel_1_time=df_skyfall_data[gyroscope_epoch_s_label][station][:-1],
+                                   wf_panel_1_time=gyro_time_s,
                                    wf_panel_0_sig=gyro_rad_x,
-                                   wf_panel_0_time=df_skyfall_data[gyroscope_epoch_s_label][station][:-1],
+                                   wf_panel_0_time=gyro_time_s,
                                    start_time_epoch=event_reference_time_epoch_s,
                                    wf_panel_2_units="Z, rad",
                                    wf_panel_1_units="Y, rad",
@@ -383,17 +508,34 @@ if __name__ == "__main__":
                                  df_skyfall_data[accelerometer_data_highpass_label][station][1],
                                  df_skyfall_data[accelerometer_data_highpass_label][station][2]]
 
-            raw_x_rot, raw_y_rot = get_xy_rotation_array(accelerometers=acceleration_list)
+            acceleration_list = [accel_x,
+                                 accel_y,
+                                 accel_z]
+
+            # acceleration_list = [acc_adj_x, acc_adj_y, acc_adj_z]
+
+            raw_pitch, raw_roll = get_pitch_and_roll_array(accelerometers=acceleration_list)
+
+            # Complimentary filter
+            comp_pitch = complimentary_filtering(accelerometer_angle=raw_pitch,
+                                                 gyroscope_angle=np.rad2deg(gyro_rad_y),
+                                                 alpha=0.95)
+
+            comp_roll = complimentary_filtering(accelerometer_angle=raw_roll,
+                                                gyroscope_angle=np.rad2deg(gyro_rad_x),
+                                                alpha=0.95)
 
             # (gyro_rad_x + np.pi) % (2 * np.pi) - np.pi
             f, ax = plt.subplots(nrows=2)
-            ax[0].plot(df_skyfall_data[accelerometer_epoch_s_label][station], raw_x_rot)
-            ax[0].plot(df_skyfall_data[gyroscope_epoch_s_label][station][:-1],
-                       np.rad2deg(gyro_rad_x), alpha=0.6)
+            ax[0].plot(accelerometer_time_s, raw_roll)
+            ax[0].plot(gyro_time_s, np.rad2deg(gyro_rad_x), alpha=0.6)
+            ax[0].plot(gyro_time_s, comp_roll, alpha=0.6)
+            ax[0].set_title("roll (deg)")
 
-            ax[1].plot(df_skyfall_data[accelerometer_epoch_s_label][station], raw_y_rot)
-            ax[1].plot(df_skyfall_data[gyroscope_epoch_s_label][station][:-1],
-                       np.rad2deg(gyro_rad_y), alpha=0.6)
+            ax[1].plot(accelerometer_time_s, raw_pitch)
+            ax[1].plot(gyro_time_s, np.rad2deg(gyro_rad_y), alpha=0.6)
+            ax[1].plot(gyro_time_s, comp_pitch, alpha=0.6)
+            ax[1].set_title("pitch (deg)")
 
             # Check Speed
             # plt.figure()
@@ -402,11 +544,11 @@ if __name__ == "__main__":
             # plt.vlines(x=df_skyfall_data[accelerometer_epoch_s_label][station][end_ind], ymin=-1e2, ymax=1e2)
 
             f, ax = plt.subplots(nrows=2, sharex=True)
-            ax[0].plot(df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-1], speed_z)
+            ax[0].plot(accelerometer_time_s, speed_z)
             ax[1].plot(df_skyfall_data[location_epoch_s_label][station], mask_speed)
 
             f, ax = plt.subplots(nrows=2, sharex=True)
-            ax[0].plot(df_skyfall_data[accelerometer_epoch_s_label][station][:end_ind-2], np.abs(disp_z - disp_z[-1]))
+            ax[0].plot(accelerometer_time_s, np.abs(disp_z - disp_z[-1]))
             ax[1].plot(df_skyfall_data[location_epoch_s_label][station], mask_alt)
 
             plt.show()
