@@ -47,6 +47,9 @@ You can install/upgrade RedPandas using the following command in your terminal:
 ```
 pip install redvox-pandas --upgrade
 ```
+
+Return to _[Table of Contents](#table-of-contents)_
+
 #### Verifying the installation
 
 You can run the following command to check if the RedPandas library has been installed correctly:
@@ -63,7 +66,7 @@ This section covers the basics on how to use the RedVox RedPandas library.
 
 #### Basic definitions
 
-Common terms used throughout the RedVox RedPandas Documentation.
+The following terms are common terminology used throughout the RedVox RedPandas Documentation.
 
 _RedVox related terms:_
 
@@ -77,17 +80,20 @@ To learn more about the app, click [here](https://www.redvoxsound.com).
  files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files).
 For more details, click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk)
 
-
 _RedPandas related terms:_
 
 - _Station_: a device used to record data, e.g., a smartphone recording infrasound waves using 
-[RedVox Infrasound Recorder](https://www.redvoxsound.com/) app.
+[RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. Also a Python class designed in the RedVox Python SDK to
+store station and sensor data. For more information on the Station Python class, 
+click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station).
 
 - _Sensor_: a device that responds to a physical stimulus, e.g., pressure, accelerometer. The units for each available sensor can
 be found in [RedVox SDK Sensor Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access).
 
 - _Epoch_ or _epoch time_: unix time (also referred to as the epoch time), the number of seconds since 1 January 1970. 
 The RedPandas' native unit of time is epoch in seconds.
+
+Return to _[Table of Contents](#table-of-contents)_
 
 #### Downloading RedVox data
 
@@ -105,6 +111,8 @@ dependecies to use the cloud-download.
 
 The downloaded RedVox data will have the formats .rdvxz for [RedVox API 900](https://bitbucket.org/redvoxhi/redvox-protobuf-api/src/master/) 
 files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files (also known as API M).
+
+Return to _[Table of Contents](#table-of-contents)_
 
 #### Opening RedVox data with RedPandas
 
@@ -146,6 +154,8 @@ rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="path/to/file/rpd_fil
 For more information on how to use RedVox DataWindow directly, visit 
 [Using the Data Window Results](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#using-the-data-window-results)
 and [RedVox Data Window Station](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#station).
+
+Return to _[Table of Contents](#table-of-contents)_
 
 #### Extracting sensor information with RedPandas
 
@@ -194,7 +204,7 @@ df_sensors = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station
 
 ```
 
-
+Return to _[Table of Contents](#table-of-contents)_
 
 #### Example: Skyfall
 
