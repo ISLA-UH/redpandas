@@ -31,11 +31,11 @@ class DataLoadMethod(enum.Enum):
 @dataclass_json()
 @dataclass
 class SkyfallConfig:
-    event_name: str
-
     # I/O files
     # Absolute path to the data directory
     input_dir: str
+    event_name: str
+
     # Absolute path for output directories
     rpd_dir: str
     output_dir: str

@@ -17,9 +17,14 @@ import redpandas.redpd_build_station as rpd_build_sta
 #     plot_mic_waveforms, print_datawindow_dq, SENSOR_LABEL
 
 from examples.skyfall.skyfall_config import skyfall_config
+from redpd_config import RedpdConfig
 
 
-if __name__ == "__main__":
+def redpd_dw_to_parquet_from_config(config: RedpdConfig):
+    redpd_dw_to_parquet(config.input_dir, config.dw_file)
+
+
+def redpd_dw_to_parquet(input_dir: str, output_filename: str, compress_dw: bool = True):
     """
     Beta workflow for API M pipeline
     Last updated: 8 June 2021
@@ -32,25 +37,24 @@ if __name__ == "__main__":
     # if not os.path.exists(skyfall_config.output_dir):
     #     os.mkdir(skyfall_config.output_dir)
 
-    if skyfall_config.compress_dw:
-
+    if compress_dw:
         # Load signals, create a RedVox DataWindow structure, export to pickle.
-        rpd_dw.build(api_input_directory=skyfall_config.input_dir,
-                     start_epoch_s=skyfall_config.episode_start_epoch_s,
-                     end_epoch_s=skyfall_config.episode_end_epoch_s,
-                     redvox_station_ids=skyfall_config.stations,
-                     event_name=skyfall_config.event_name,
-                     output_directory=skyfall_config.output_dir,
-                     output_filename=skyfall_config.dw_file,
-                     start_buffer_minutes=3.,
-                     end_buffer_minutes=3.,
-                     debug=True)
+        # rpd_dw.build(api_input_directory=skyfall_config.input_dir,
+        #              start_epoch_s=skyfall_config.episode_start_epoch_s,
+        #              end_epoch_s=skyfall_config.episode_end_epoch_s,
+        #              redvox_station_ids=skyfall_config.stations,
+        #              event_name=skyfall_config.event_name,
+        #              output_directory=skyfall_config.output_dir,
+        #              output_filename=skyfall_config.dw_file,
+        #              start_buffer_minutes=3.,
+        #              end_buffer_minutes=3.,
+        #              debug=True)
+        rpd_dw.build_ez(api_input_directory=input_dir, pickle_filename=output_filename)
 
     # Import DataWindow
     else:
         print("Unpickling existing compressed RedVox DataWindow with JSON...")
-    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
-                                                      file_name=skyfall_config.dw_file)
+    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=input_dir, file_name=output_filename)
     print(f"RedVox SDK version: {rdvx_data.sdk_version}")
 
     # Print out basic stats
@@ -118,3 +122,7 @@ if __name__ == "__main__":
 
     else:
         print("\nDid not export pandas data frame, must set build_df_parquet = True")
+
+
+if __name__ == "__main__":
+    redpd_dw_to_parquet()
