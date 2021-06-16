@@ -15,6 +15,9 @@ The RedPandas pipeline is designed for integrability with other legacy and heter
     - [Installing and/or upgrading RedVox RedPandas with pip](#installing-and/or-upgrading-RedVox-RedPandas-with-pip)
     - [Verifying the installation](#verifying-the-installation)
 - [Using RedVox RedPandas](#using-redvox-redpandas)
+    - [Basic definitions](#basic-definitions)
+    - [Opening RedVox data with RedPandas](#opening-redvox-data-with-redpandas)
+    - [Extracting sensor information with RedPandas](#extracting-sensor-information-with-redpandas)
     - [Example: Skyfall](#example-skyfall)
         - [Downloading the RedVox Skyfall data](#downloading-the-redvox-skyfall-data)
         - [Running the Skyfall example](#running-the-skyfall-example)
@@ -58,11 +61,39 @@ Return to _[Table of Contents](#table-of-contents)_
 
 This section covers the basics on how to use the RedVox RedPandas library.
 
+#### Basic definitions
+
+Common terms used throughout the RedVox RedPandas Documentation.
+
+_RedVox related terms:_
+
+- _RedVox_: Not the NYC based rock band.
+
+- _RedVox Infrasound Recorder_: A smartphone app that can record audio and other stimuli such as pressure. 
+To learn more about the app, click [here](https://www.redvoxsound.com).
+
+- _RedVox Python SDK_: A Software Development Kit (SDK) developed to read, create, edit, and write RedVox files 
+(files ending in .rdvxz for [RedVox API 900](https://bitbucket.org/redvoxhi/redvox-protobuf-api/src/master/) 
+ files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files).
+For more details, click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk)
+
+
+_RedPandas related terms:_
+
+- _Station_: a device used to record data, e.g., a smartphone recording infrasound waves using 
+[RedVox Infrasound Recorder](https://www.redvoxsound.com/) app.
+
+- _Sensor_: a device that responds to a physical stimulus, e.g., pressure, accelerometer. The units for each available sensor can
+be found in [RedVox SDK Sensor Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access).
+
+- _Epoch_ or _epoch time_: unix time (also referred to as the epoch time), the number of seconds since 1 January 1970. 
+The RedPandas' native unit of time is epoch in seconds.
+
 #### Downloading RedVox data
 
-You can collect data with the [RedVox Infrasound Recorder app](https://www.redvoxsound.com/).
+You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app.
 
-There are three methods to download your RedVox collected data and/or RedPandas example dataset 
+There are three methods to download the RedVox collected data and/or RedPandas example dataset 
 (such as [Skyfall](#example-skyfall)):
 
 1) Using the [RedVox Python SDK cloud-download](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#cloud-download-command-details) 
@@ -72,14 +103,21 @@ dependecies to use the cloud-download.
 (recommended if your computer cannot install the GUI dependecies).
 3) Using Redvox.io (link)
 
+The downloaded RedVox data will have the formats .rdvxz for [RedVox API 900](https://bitbucket.org/redvoxhi/redvox-protobuf-api/src/master/) 
+files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files (also known as API M).
+
 #### Opening RedVox data with RedPandas
 
-An easy method to open RedVox data is using the function ``build``:
+Once the RedVox data has been [downloaded](#downloading-redvox-data), the RedPandas function ``build`` can be used
+to extract the data into a compressed pickle (.pkl.pkl.lz4) containing a 
+[RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window).
 
-```
+_Example:_
+
+```python
 import redpandas.redpd_datawin as rpd_dw
 
-rpd_dw.build(api_input_directory= ,
+rpd_dw.build(api_input_directory="path/to/RedVox/data",
              start_epoch_s= ,
              end_epoch_s= ,
              redvox_station_ids= ,
@@ -90,33 +128,70 @@ rpd_dw.build(api_input_directory= ,
              end_buffer_minutes= ,
              debug=True)
 ```
-Using ``build`` you can extract the RedVox data from the .rdvxz (API 900 files) and .rdvxm 
-(API 1000, also known as API M, files) formats to pickle.plz4
 
 Note that ``build`` will create an output directory ``path/to/file/rpd_files`` based on the path/to/file given in
- the ``api_input_directory`` variable. In the ``rpd_files`` folder, a folder named ``dw`` 
+the ``api_input_directory`` variable. A folder named ``dw``,  
 (short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
-will also be created
+containing the compressed pickle, and a JSON file will be created inside the ``rpd_files`` folder. 
 
-##### Extracting sensor information with RedPandas
+To work with the compressed pickle with the [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window)
+data, the following code in your Python environment can be applied:
 
+```python
+from redvox.common.data_window import DataWindow
 
-
+rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="path/to/file/rpd_files",
+                                                  file_name="file_name.pkl")
 ```
+For more information on how to use RedVox DataWindow directly, visit 
+[Using the Data Window Results](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#using-the-data-window-results)
+and [RedVox Data Window Station](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#station).
+
+#### Extracting sensor information with RedPandas
+
+
+
+The available sensors in a station can vary depending on the smartphone and the options available
+in the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. For a complete list 
+of available sensors, visit [RedVox Sensor Data](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data). 
+
+``sensor_label = one of: ['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer', 'health', 'location', 'image']``
+
+_Example:_
+```python
 # RedPandas and RedVox Pyhton SDK 
 import redpandas.redpd_build_station as rpd_sta
+import redpandas.redpd_scales as rpd_scales
 from redvox.common.data_window import DataWindow
 
 # Open saved RedVox DataWindow pickle
-rdvx_data: DataWindow = DataWindow.from_json_file(base_dir= ,
-                                                  file_name= )
+rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="path/to/file/rpd_files",
+                                                  file_name="file_name.pkl")
 
-# Extract sensor infromation from stations
-station_dictionary= rpd_sta.build_station(station: Station,
-                                          sensor_label: str,
-                                          highpass_type: str = 'obspy',
-                                          frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
-                                          filter_order: int = 4) 
+# Extract sensor information from stations into a dictionary
+sensors_dictionary = rpd_sta.build_station(station= ,
+                                           sensor_label="audio",
+                                           highpass_type="obspy",
+                                           frequency_filter_low= 1./rpd_scales.Slice.T100S,
+                                           filter_order= 4) 
+```
+The ``build_station`` function will return the sensor name, sample rate in Hz, timestamps in epoch second, raw data,
+and high passed data (only for sensors: barometer, accelerometer, gyroscope, and magnetometer). 
+
+
+
+
+
+```python
+import pandas as pd
+import redpandas.redpd_build_station as rpd_build_sta  # RedPandas
+
+# Make sensor dictionary into a Pandas DataFrame
+df_sensors = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
+                                                                 sdk_version=rdvx_data.sdk_version,
+                                                                 sensor_labels="audio")
+                                                for station in rdvx_data.stations])
+
 ```
 
 
