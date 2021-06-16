@@ -40,15 +40,20 @@ def build(api_input_directory: str,
 
     print(f"Loading data and constructing RedVox DataWindow for {event_name}.", end=" ")
     # Load signals
-    rdvx_data = DataWindow(input_dir=api_input_directory,
-                           station_ids=redvox_station_ids,
-                           start_datetime=dt.datetime_from_epoch_seconds_utc(start_epoch_s),
-                           end_datetime=dt.datetime_from_epoch_seconds_utc(end_epoch_s),
-                           apply_correction=True,
-                           structured_layout=True,
-                           start_buffer_td=dt.timedelta(minutes=start_buffer_minutes),
-                           end_buffer_td=dt.timedelta(minutes=end_buffer_minutes),
-                           debug=debug)
+    import redvox.common.data_window_configuration as dwc
+    k = dwc.DataWindowConfig(api_input_directory)
+    if redvox_station_ids:
+        rdvx_data = DataWindow(input_dir=api_input_directory,
+                               station_ids=redvox_station_ids,
+                               start_datetime=dt.datetime_from_epoch_seconds_utc(start_epoch_s),
+                               end_datetime=dt.datetime_from_epoch_seconds_utc(end_epoch_s),
+                               apply_correction=True,
+                               structured_layout=True,
+                               start_buffer_td=dt.timedelta(minutes=start_buffer_minutes),
+                               end_buffer_td=dt.timedelta(minutes=end_buffer_minutes),
+                               debug=debug)
+    else:
+        rdvx_data = DataWindow(input_dir=api_input_directory)
 
     print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
     rdvx_data.to_json_file(base_dir=output_directory,
