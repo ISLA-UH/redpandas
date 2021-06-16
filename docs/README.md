@@ -18,7 +18,9 @@ The RedPandas pipeline is designed for integrability with other legacy and heter
     - [Basic definitions](#basic-definitions)
     - [Opening RedVox data with RedPandas](#opening-redvox-data-with-redpandas)
     - [Extracting sensor information with RedPandas](#extracting-sensor-information-with-redpandas)
-    - [Example: Skyfall](#example-skyfall)
+    - [Plotting with RedPandas](#plotting-with-redpandas)
+    - [Saving/opening parquet files with RedPandas](#savingopening-parquet-files-with-redpandas)
+    - [RedPandas example: Skyfall](#redpandas-example-skyfall)
         - [Downloading the RedVox Skyfall data](#downloading-the-redvox-skyfall-data)
         - [Running the Skyfall example](#running-the-skyfall-example)
 - [Development](#development)
@@ -52,7 +54,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 #### Verifying the installation
 
-You can run the following command to check if the RedPandas library has been installed correctly:
+You can run the following command in your terminal to check if the RedPandas library has been installed correctly:
 ```
 pip show redvox-redpandas
 ```
@@ -78,7 +80,7 @@ To learn more about the app, click [here](https://www.redvoxsound.com).
 - _RedVox Python SDK_: A Software Development Kit (SDK) developed to read, create, edit, and write RedVox files 
 (files ending in .rdvxz for [RedVox API 900](https://bitbucket.org/redvoxhi/redvox-protobuf-api/src/master/) 
  files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files).
-For more details, click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk)
+For more details, click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk).
 
 _RedPandas related terms:_
 
@@ -87,7 +89,7 @@ _RedPandas related terms:_
 store station and sensor data. For more information on the Station Python class, 
 click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station).
 
-- _Sensor_: a device that responds to a physical stimulus, e.g., pressure, accelerometer. The units for each available sensor can
+- _Sensor_: a device that responds to a physical stimulus, e.g., barometer, accelerometer. The units for each available sensor can
 be found in [RedVox SDK Sensor Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access).
 
 - _Epoch_ or _epoch time_: unix time (also referred to as the epoch time), the number of seconds since 1 January 1970. 
@@ -161,7 +163,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 
 
-The available sensors in a station can vary depending on the smartphone and the options available
+The available [sensors](#basic-definitions) in a station can vary depending on the smartphone and the options available
 in the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. For a complete list 
 of available sensors, visit [RedVox Sensor Data](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data). 
 
@@ -188,9 +190,9 @@ sensors_dictionary = rpd_sta.build_station(station= ,
 The ``build_station`` function will return the sensor name, sample rate in Hz, timestamps in epoch second, raw data,
 and high passed data (only for sensors: barometer, accelerometer, gyroscope, and magnetometer). 
 
-
-
-
+The extracted sensor data can be structured into a 
+[Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easier 
+manipulation:  
 
 ```python
 import pandas as pd
@@ -206,14 +208,22 @@ df_sensors = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station
 
 Return to _[Table of Contents](#table-of-contents)_
 
-#### Example: Skyfall
+#### Plotting with RedPandas
+
+
+
+#### Saving/opening parquet files with RedPandas
+
+
+
+#### RedPandas example: Skyfall
+
+The Skyfall data is a great dataset to showcase the RedPandas library for processing smartphone data.
 
 A balloon hoisted a commercial, off-the-shelf, smartphone to a height of 36 km (around 119,000 feet) and purposely burst
 to let the smartphone freefall (hence the name _Skyfall_). As the smartphone fell back to Earth, it recorded its 30 minute 
 descent using the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. You can find more information about this project at 
 (a link to the paper will be added once it is published).
-
-The Skyfall data is a great dataset to showcase the RedPandas library for processing smartphone data.
 
 
 ##### Downloading the RedVox Skyfall data
@@ -245,7 +255,7 @@ Please feel free to submit issues on the [issue tracker](https://github.com/RedV
 
 #### Version History
 
-See [CHANGELOG.md](https://github.com/RedVoxInc/redpandas/tree/master/docs/CHANGELOG.md)
+See [CHANGELOG.md](https://github.com/RedVoxInc/redpandas/tree/master/docs/CHANGELOG.md).
 
 #### License
 
