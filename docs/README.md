@@ -19,7 +19,7 @@ The RedPandas pipeline is designed for integrability with other legacy and heter
     - [Opening RedVox data with RedPandas](#opening-redvox-data-with-redpandas)
     - [Extracting sensor information with RedPandas](#extracting-sensor-information-with-redpandas)
     - [Plotting with RedPandas](#plotting-with-redpandas)
-    - [Saving/opening parquet files with RedPandas](#savingopening-parquet-files-with-redpandas)
+    - [Saving and opening RedPandas parquet files](#saving-and-opening-redpandas-parquet-files)
     - [RedPandas example: Skyfall](#redpandas-example-skyfall)
         - [Downloading the RedVox Skyfall data](#downloading-the-redvox-skyfall-data)
         - [Running the Skyfall example](#running-the-skyfall-example)
@@ -188,7 +188,7 @@ sensors_dictionary = rpd_sta.build_station(station= ,
                                            filter_order= 4) 
 ```
 The ``build_station`` function will return the sensor name, sample rate in Hz, timestamps in epoch second, raw data,
-and high passed data (only for sensors: barometer, accelerometer, gyroscope, and magnetometer). 
+and high passed data (only for barometer, accelerometer, gyroscope, and magnetometer sensors). 
 
 The extracted sensor data can be structured into a 
 [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easier 
@@ -212,9 +212,65 @@ Return to _[Table of Contents](#table-of-contents)_
 
 
 
-#### Saving/opening parquet files with RedPandas
+#### Saving and opening RedPandas parquet files
+
+Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
+nested arrays in the [RedPandas DataFrame](#extracting-sensor-information-with-redpandas). To save the RedPandas 
+DataFrame to a parquet file for later use, you can implement the following approach in your Python environment:
+
+```python
+import numpy as np
+
+# Example for barometer sensor
+# Create new columns with shape tuple for future unflattening/reshaping
+df_sensors[["barometer_wf_raw_ndim",
+            "barometer_wf_highpass_ndim",
+            "barometer_nans_ndim"]] = \
+df_sensors[["barometer_wf_raw",
+            "barometer_wf_highpass",
+            "barometer_nans"]].applymap(np.shape)
+
+# Change tuples to 1D np.array to save it to parquet (parquet does not save tuples)
+df_sensors[["barometer_wf_raw_ndim",
+            "barometer_wf_highpass_ndim",
+            "barometer_nans_ndim"]] = \
+df_sensors[["barometer_wf_raw_ndim",
+            "barometer_wf_highpass_ndim",
+            "barometer_nans_ndim"]].applymap(np.asarray)
+
+# Flatten each row in waveform (wf) columns
+df_sensors[["barometer_wf_raw",
+            "barometer_wf_highpass",
+            "barometer_nans"]] = \
+df_sensors[["barometer_wf_raw",
+            "barometer_wf_highpass",
+            "barometer_nans"]].applymap(np.ravel)
+
+df_sensors.to_parquet("path/to/output/directory/parquet_file_name.parquet")
+```
+Note that this approach only applies to the ``"{sensor}_wf_raw"``, ``"{sensor}_wf_highpass"``, ``"{sensor}_wf_nans"`` columns. 
+The rest of the columns in the DataFrame [extracted with ``build_station`` function](#extracting-sensor-information-with-redpandas) 
+will have a 1d array.
 
 
+Opening a RedPandas parquet will take an extra step due to the array flattening described above. 
+The function ``df_column_unflatten`` recovers the original nested arrays of the sensors.
+
+_Example:_
+```python
+import pandas as pd
+import redpandas.redpd_preprocess as rpd_prep
+
+# Open RedPandas parquet file
+df_sensors = pd.read_parquet("path/to/output/directory/parquet_file_name.parquet")
+
+# Unflatten barometer raw data column
+rpd_prep.df_column_unflatten(df=df_sensors,
+                             col_wf_label="barometer_wf_raw",
+                             col_ndim_label="barometer_wf_raw_ndim")
+
+```
+Return to _[Table of Contents](#table-of-contents)_
 
 #### RedPandas example: Skyfall
 
