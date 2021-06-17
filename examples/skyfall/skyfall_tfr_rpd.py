@@ -567,12 +567,21 @@ if __name__ == "__main__":
 
             df_skyfall_data_mesh_hack["tick_labels"] = sensor_ticklabels_list
 
-            rpd_plot.plot_mesh_pandas(df=df_skyfall_data_mesh_hack,
-                                      mesh_time_label="tfr_time_s",
-                                      mesh_tfr_label="tfr_bits",
-                                      mesh_frequency_label="tfr_freq_hz",
-                                      t0_sig_epoch_s=event_reference_time_epoch_s,
-                                      sig_id_label="tick_labels",
-                                      fig_title=tfr_type.upper())
+            # rpd_plot.plot_mesh_pandas(df=df_skyfall_data_mesh_hack,
+            #                           mesh_time_label="tfr_time_s",
+            #                           mesh_tfr_label="tfr_bits",
+            #                           mesh_frequency_label="tfr_freq_hz",
+            #                           t0_sig_epoch_s=event_reference_time_epoch_s,
+            #                           sig_id_label="tick_labels",
+            #                           fig_title=tfr_type.upper())
+
+            rpd_plot.plot_mesh_sensors_pandas(df=df_skyfall_data_mesh_hack,
+                                              mesh_time_label="tfr_time_s",
+                                              mesh_tfr_label="tfr_bits",
+                                              mesh_frequency_label="tfr_freq_hz",
+                                              t0_sig_epoch_s=event_reference_time_epoch_s,
+                                              sig_id_label="tick_labels",
+                                              fig_title=tfr_type.upper())
 
         plt.show()
+
