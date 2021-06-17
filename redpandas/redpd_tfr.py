@@ -10,6 +10,41 @@ from libquantum import atoms, entropy, scales, spectra, utils, synthetics
 import redpandas.redpd_preprocess as rpd_prep
 
 
+def frame_panda_no_offset(df: pd.DataFrame,
+                          sig_wf_label: str,
+                          sig_epoch_s_label: str,
+                          sig_epoch_s_start: float,
+                          sig_epoch_s_end: float,
+                          new_column_aligned_wf: str = 'sig_aligned_wf',
+                          new_column_aligned_epoch: str = 'sig_aligned_epoch_s'):
+    """
+    :param df: input pandas data frame
+    :param sig_wf_label: string for the waveform column name in df
+    :param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df
+    :param sig_epoch_s_start: first timestamp in epoch s
+    :param sig_epoch_s_end: last timestamp in epoch s
+    :param new_column_aligned_wf: label for new column containing aligned waveform
+    :param new_column_aligned_epoch: label for new column containing aligned timestamps in epoch s
+    :return: input df with new columns
+    """
+
+    aligned_wf = []
+    aligned_epoch_s = []
+    for n in df.index:
+        sig_wf, sig_epoch_s = \
+            utils.sig_frame(sig=df[sig_wf_label][n],
+                            time_epoch_s=df[sig_epoch_s_label][n],
+                            epoch_s_start=sig_epoch_s_start,
+                            epoch_s_stop=sig_epoch_s_end)
+        aligned_wf.append(sig_wf)
+        aligned_epoch_s.append(sig_epoch_s)
+
+    df[new_column_aligned_wf] = aligned_wf
+    df[new_column_aligned_epoch] = aligned_epoch_s
+
+    return df
+
+
 def frame_panda(df: pd.DataFrame,
                 sig_wf_label: str,
                 sig_epoch_s_label: str,
@@ -19,13 +54,12 @@ def frame_panda(df: pd.DataFrame,
                 new_column_aligned_wf: str = 'sig_aligned_wf',
                 new_column_aligned_epoch: str = 'sig_aligned_epoch_s'):
     """
-    TODO MAG: Complete my description
     :param df: input pandas data frame
     :param sig_wf_label: string for the waveform column name in df
     :param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df
     :param sig_epoch_s_start: first timestamp in epoch s
     :param sig_epoch_s_end: last timestamp in epoch s
-    :param offset_seconds_label: TODO MAG: Complete me
+    :param offset_seconds_label: time offset correction in seconds
     :param new_column_aligned_wf: label for new column containing aligned waveform
     :param new_column_aligned_epoch: label for new column containing aligned timestamps in epoch s
     :return: input df with new columns
