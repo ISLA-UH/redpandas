@@ -530,6 +530,9 @@ if __name__ == "__main__":
             df_skyfall_data_mesh_hack = pd.DataFrame(index=sensor_ticklabels_list,
                                                      columns=["tfr_bits", "tfr_freq_hz", "tfr_time_s"])
 
+            mesh_color_scaling = []
+            mesh_color_range = []
+
             n_sensors = len(sensor_names_list)
             n_channels = len(sensor_ticklabels_list)
             i, j = 0, 0
@@ -546,6 +549,8 @@ if __name__ == "__main__":
                         df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
                             df_skyfall_data[sensor_tfr_time_s_label][station][k]
                         j += 1
+                        mesh_color_scaling.append('auto')
+                        mesh_color_range.append(15.)
                     i += 1
                 else:
                     if df_skyfall_data[sensor_column_label_list[i]][station].ndim == 1:
@@ -555,6 +560,8 @@ if __name__ == "__main__":
                             df_skyfall_data[sensor_tfr_freq_hz_label][station]
                         df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
                             df_skyfall_data[sensor_tfr_time_s_label][station]
+                        mesh_color_scaling.append('range')
+                        mesh_color_range.append(21.)
                     else:
                         df_skyfall_data_mesh_hack["tfr_bits"][sensor_ticklabels_list[j]] = \
                             df_skyfall_data[sensor_tfr_bits_label][station][0]
@@ -562,6 +569,8 @@ if __name__ == "__main__":
                             df_skyfall_data[sensor_tfr_freq_hz_label][station][0]
                         df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
                             df_skyfall_data[sensor_tfr_time_s_label][station][0]
+                        mesh_color_scaling.append('auto')
+                        mesh_color_range.append(15.)
                     j += 1
                     i += 1
 
@@ -581,7 +590,9 @@ if __name__ == "__main__":
                                               mesh_frequency_label="tfr_freq_hz",
                                               t0_sig_epoch_s=event_reference_time_epoch_s,
                                               sig_id_label="tick_labels",
-                                              fig_title=tfr_type.upper())
+                                              fig_title=tfr_type.upper(),
+                                              mesh_color_scaling=mesh_color_scaling,
+                                              mesh_color_range=mesh_color_range)
 
         plt.show()
 

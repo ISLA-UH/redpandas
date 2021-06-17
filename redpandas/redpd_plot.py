@@ -5,7 +5,7 @@ Created: 23 March 2021
 Last updated: 10 June 2021
 """
 import datetime as dt
-from typing import List
+from typing import List, Union
 
 import matplotlib.pyplot as plt
 from matplotlib.colorbar import Colorbar
@@ -167,7 +167,9 @@ def plot_mesh_sensors_pandas(df: pd.DataFrame,
                              fig_title: str = " ",
                              frequency_scaling: str = "log",
                              frequency_hz_ymin: float = rpd_scales.Slice.FU,
-                             frequency_hz_ymax: float = rpd_scales.Slice.F0):
+                             frequency_hz_ymax: float = rpd_scales.Slice.F0,
+                             mesh_color_scaling: Union[List[str], str] = 'auto',
+                             mesh_color_range: Union[List[float], float] = 15):
 
     """
      Plots spectrogram for all signals in df
@@ -220,13 +222,24 @@ def plot_mesh_sensors_pandas(df: pd.DataFrame,
     # This can be optimized/automated
     gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
 
+    panel_n = len(df.index)
     for panel_order, index_signal in enumerate(reversed(df.index)):
+        panel_n -= 1
+        if type(mesh_color_scaling) == str:
+            mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label][index_signal],
+                                                                      mesh_color_scaling,
+                                                                      mesh_color_range)
+        else:
+            mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label][index_signal],
+                                                                      mesh_color_scaling[panel_n],
+                                                                      mesh_color_range[panel_n])
+
         ax = fig.add_subplot(gs[panel_order])
         plotted = ax.pcolormesh(df[mesh_time_label][index_signal],
                                 df[mesh_frequency_label][index_signal],
                                 df[mesh_tfr_label][index_signal],
-                                # vmin=tfr_min_total,
-                                # vmax=tfr_max_total,
+                                vmin=mesh_color_min,
+                                vmax=mesh_color_max,
                                 cmap=color_map,
                                 edgecolor='face',
                                 shading="auto",
