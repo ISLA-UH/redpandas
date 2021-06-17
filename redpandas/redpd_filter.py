@@ -71,7 +71,7 @@ def decimate_individual_station(sig_wf: np.array,
 # Main filter modules
 def signal_zero_mean_pandas(df: pd.DataFrame,
                             sig_wf_label: str,
-                            new_column_label: str = 'zero_mean') -> pd.Dataframe:
+                            new_column_label: str = 'zero_mean') -> pd.DataFrame:
     """
     Eliminate DC offset from all signals in df
 
@@ -102,7 +102,7 @@ def signal_zero_mean_pandas(df: pd.DataFrame,
 def taper_tukey_pandas(df: pd.DataFrame,
                        sig_wf_label: str,
                        fraction_cosine: float,
-                       new_column_label_append: str = 'taper') -> pd.Dataframe:
+                       new_column_label_append: str = 'taper') -> pd.DataFrame:
     """
     Apply taper to all signals in df
 
@@ -144,7 +144,7 @@ def normalize_pandas(df: pd.DataFrame,
                      sig_wf_label: str,
                      scaling: float = 1.0,
                      norm_type: str = 'max',
-                     new_column_label: str = 'normalized') -> pd.Dataframe:
+                     new_column_label: str = 'normalized') -> pd.DataFrame:
     """
     Normalize all signals in df
     # TODO: Issue with norm class in libquantum, please review (Tyler/Anthony)
