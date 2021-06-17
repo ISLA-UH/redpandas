@@ -2,8 +2,9 @@
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Union, List
+from typing import Union, List, Optional
 from datetime import datetime
+import os
 
 # RedVox modules
 from redvox.common.data_window import DataWindow
@@ -15,33 +16,34 @@ import redvox.common.data_window_configuration as dwc
 
 
 def build(api_input_directory: str,
-          event_name: str,
-          output_directory: str,
-          output_filename: str,
-          redvox_station_ids: Union[List[str], type(None)] = None,
-          start_epoch_s: Union[int, type(None)] = None,
-          end_epoch_s: Union[int, type(None)] = None,
-          start_buffer_minutes: float = 3,
-          end_buffer_minutes: float = 3,
+          event_name: Optional[str] = "redvox",
+          output_directory: Optional[str] = None,
+          output_filename: Optional[str] = None,
+          redvox_station_ids: Optional[List[str]] = None,
+          start_epoch_s: Optional[int] = None,
+          end_epoch_s: Optional[int] = None,
+          start_buffer_minutes: Optional[int] = 3,
+          end_buffer_minutes: Optional[int] = 3,
           debug: bool = False) -> None:
+
     """
     Load data, construct data window, export as pickle
 
     :param api_input_directory: directory where data is located
+    :param event_name: name of event
+    :param output_directory: directory where pickle and JSON files are saved. Default is api_input_directory
+    :param output_filename: name for pickle and JSON files. Default is event_name + .pkl
+    :param redvox_station_ids: ID of RedVox stations
     :param start_epoch_s: start time in epoch time in seconds
     :param end_epoch_s: end time in epoch time in seconds
-    :param redvox_station_ids: ID of RedVox stations
-    :param event_name: name of event
-    :param output_filename: name for pickle and JSON files
-    :param output_directory: directory where pickle and JSON files are saved
     :param start_buffer_minutes: the amount of time to include before the start_epoch_s when filtering data.
-     Default is 3.
+    Default is 3.
     :param end_buffer_minutes: the amount of time to include after the end_epoch_s when filtering data. Default is 3.
     :param debug: Toggle DataWindow debug on/off. Default is False.
     :return: RedVox DataWindow saved in pickle file and corresponding JSON file
     """
 
-    print(f"Loading data and constructing RedVox DataWindow for {event_name}.", end=" ")
+    print(f"Loading data and constructing RedVox DataWindow for {event_name}...", end=" ")
 
     # DataWindow Config Time defaults
     start_year_dw_config = None
@@ -59,9 +61,8 @@ def build(api_input_directory: str,
     end_second_dw_config = None
 
     # Convert epoch time to year/month/day/hour/minute/second for DataWindowConfig
-    if start_epoch_s is not None and end_epoch_s is not None:
+    if start_epoch_s is not None:
         start_datetime_object = datetime.fromtimestamp(start_epoch_s)
-        end_datetime_object = datetime.fromtimestamp(end_epoch_s)
 
         start_year_dw_config = start_datetime_object.year
         start_month_dw_config = start_datetime_object.month
@@ -69,6 +70,9 @@ def build(api_input_directory: str,
         start_hour_dw_config = start_datetime_object.hour
         start_minute_dw_config = start_datetime_object.minute
         start_second_dw_config = start_datetime_object.second
+
+    if end_epoch_s is not None:
+        end_datetime_object = datetime.fromtimestamp(end_epoch_s)
 
         end_year_dw_config = end_datetime_object.year
         end_month_dw_config = end_datetime_object.month
@@ -92,56 +96,29 @@ def build(api_input_directory: str,
                                      end_day=end_day_dw_config,
                                      end_hour=end_hour_dw_config,
                                      end_minute=end_minute_dw_config,
-                                     end_second=end_second_dw_config)
-
-
+                                     end_second=end_second_dw_config,
+                                     start_padding_seconds=start_buffer_minutes * 60,
+                                     end_padding_seconds=end_buffer_minutes * 60,
+                                     debug=debug)
 
     # Load signals
     rdvx_data = DataWindow.from_config(dw_config)
-    # if redvox_station_ids:
-    #     rdvx_data = DataWindow(input_dir=api_input_directory,
-    #                            station_ids=redvox_station_ids,
-    #                            start_datetime=dt.datetime_from_epoch_seconds_utc(start_epoch_s),
-    #                            end_datetime=dt.datetime_from_epoch_seconds_utc(end_epoch_s),
-    #                            apply_correction=True,
-    #                            structured_layout=True,
-    #                            start_buffer_td=dt.timedelta(minutes=start_buffer_minutes),
-    #                            end_buffer_td=dt.timedelta(minutes=end_buffer_minutes),
-    #                            debug=debug)
-    # else:
-    #     rdvx_data = DataWindow(input_dir=api_input_directory)
+    print("Done.")
+
+    if output_directory is None:  # set output directory
+        output_directory = os.path.join(api_input_directory, "rpd_files")
+        if not os.path.exists(output_directory):  # make output directory if first time running build function
+            print(f"Creating output directory: {output_directory}...")
+            os.mkdir(output_directory)
+
+    if output_filename is None:  # set output filename
+        output_filename = event_name
 
     print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
     rdvx_data.to_json_file(base_dir=output_directory,
                            file_name=output_filename)
 
     print("Done.")
-
-
-def build_ez(api_input_directory, pickle_filename: str = "DataWindow.pickle",
-             is_serialized: bool = True) -> None:
-    """
-    Load data, construct data window, export as pickle with minimal inputs
-    :param api_input_directory: directory where data is located
-    :param pickle_filename: name for pickle file
-    :param is_serialized: is pickle file serialized. Default is True.
-    :return: RedVox DataWindow saved in pickle file
-    """
-
-    print("Load data and construct DataWindow for data in ", api_input_directory)
-    # Load signals
-    rdvx_data = DataWindow(input_dir=api_input_directory)
-
-    if is_serialized:
-        # Save serialized lz4 data window
-        serialize_data_window(data_window=rdvx_data,
-                              base_dir=api_input_directory,
-                              file_name=pickle_filename)
-        print("Exported serialized data window as pickle")
-    else:
-        with open(api_input_directory + pickle_filename, 'wb') as f:
-            pickle.dump(rdvx_data, f)
-        print("Exported data window as pickle")
 
 
 def plot_dw_mic(data_window: DataWindow):
