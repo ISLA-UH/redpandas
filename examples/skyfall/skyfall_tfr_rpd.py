@@ -158,7 +158,9 @@ if __name__ == "__main__":
                                       mesh_frequency=df_skyfall_data[audio_tfr_frequency_hz_label][station],
                                       mesh_panel_0_tfr=df_skyfall_data[audio_tfr_bits_label][station],
                                       figure_title=EVENT_NAME + f": Audio, {tfr_type.upper()} and waveform",
-                                      start_time_epoch=event_reference_time_epoch_s)
+                                      start_time_epoch=event_reference_time_epoch_s,
+                                      mesh_panel_0_color_range=21,
+                                      mesh_panel_0_colormap_scaling='range')
 
         if barometer_data_raw_label and barometer_data_highpass_label and barometer_fs_label in df_skyfall_data.columns:
             if use_parquet is True and use_datawindow is False and use_pickle is False:
