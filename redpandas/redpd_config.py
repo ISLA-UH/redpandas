@@ -23,6 +23,7 @@ class DataLoadMethod(enum.Enum):
             return DataLoadMethod.UNKNOWN
 
 
+# todo: finish defining required and optional/not required fields with defaults
 # Minimum reqs are event_name, input_dir, sensor_label = ['audio']
 class RedpdConfig:
 
@@ -104,4 +105,34 @@ class RedpdConfig:
 
     def pretty(self) -> str:
         # noinspection Mypy
-        return pprint.pformat(self.to_dict())
+        return pprint.pformat(vars(self))
+
+
+# TODO: Minimum reqs are event_name, input_dir, sensor_label = ['audio']
+# TODO: Do not instantiate an object here; put it in an example or demo file
+# Next step: start time, duration, stations, clock, location
+
+example_config = RedpdConfig(
+    event_name="Skyfall",
+    input_dir=INPUT_DIR,
+    sensor_labels=['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
+                   'health', 'location', 'clock', 'synchronization'],
+    rpd_dir="rpd_files",
+    output_dir=os.path.join(INPUT_DIR, RPD_DIR),
+    stations=["1637610021"],
+    episode_start_epoch_s=1603806314,  # 2020-10-27T13:45:14
+    duration_s=30*60,                  # 30 minutes
+    ref_latitude_deg=35.83728,
+    ref_longitude_deg=-115.57234,
+    ref_altitude_m=1028.2,
+    ref_epoch_s=1603808160,
+    compress_dw=True,
+    print_dw_quality=False,
+    plot_mic_waveforms=False,
+    build_df_parquet=True,
+    tdr_load_method=DataLoadMethod.PARQUET,
+    tfr_load_method=DataLoadMethod.PARQUET,
+    band_order_Nth=12,
+    verbosity=1,
+    is_rerun_bounder=True
+)
