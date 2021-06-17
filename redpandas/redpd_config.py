@@ -136,3 +136,6 @@ example_config = RedpdConfig(
     verbosity=1,
     is_rerun_bounder=True
 )
+
+
+# TODO MC: think about what can be added in the future projects

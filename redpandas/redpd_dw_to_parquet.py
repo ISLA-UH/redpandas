@@ -7,6 +7,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 # RedVox and Red Pandas modules
 from redvox.common.data_window import DataWindow
+from redvox.common.data_window_configuration import DataWindowConfig
 import redvox.settings as settings
 
 import redpandas.redpd_datawin as rpd_dw
@@ -18,7 +19,7 @@ import redpandas.redpd_build_station as rpd_build_sta
 #     EPISODE_END_EPOCH_S, STATIONS, PD_PQT_FILE, OUTPUT_DIR, DW_FILE, build_dw_pickle, build_df_parquet, \
 #     plot_mic_waveforms, print_datawindow_dq, SENSOR_LABEL
 
-from redpd_config import RedpdConfig
+from redpandas.redpd_config import RedpdConfig
 
 
 def redpd_dw_to_parquet_from_config(config: RedpdConfig):
@@ -45,6 +46,7 @@ def redpd_dw_to_parquet(input_dir: str, output_filename_base: str, compress_dw: 
     pd_pqt_output: str = output_filename_base + "_df.parquet"
 
     if compress_dw:
+        # TODO MC: update this once DatawindowConfig is done
         # Load signals, create a RedVox DataWindow structure, export to pickle.
         # rpd_dw.build(api_input_directory=skyfall_config.input_dir,
         #              start_epoch_s=skyfall_config.episode_start_epoch_s,
@@ -64,6 +66,7 @@ def redpd_dw_to_parquet(input_dir: str, output_filename_base: str, compress_dw: 
     rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=input_dir, file_name=output_filename_base)
     print(f"RedVox SDK version: {rdvx_data.sdk_version}")
 
+    # TODO MC: think if we want it and if so how
     # Print out basic stats
     # if print_dw_quality:
     #     print("\nDQ/DA LAYER: STATION")

@@ -83,6 +83,8 @@ is_rerun_bounder: bool = True  # If true, rerun and save as parquet
 
 PIPELINE_LABEL = ['TBD']
 
+# TODO MC: keep going what Tyler set up
+# TODO MC: INPUT_DIR, EVENT_NAME it's own thing, rest in RedpdConfig
 skyfall_config = RedpdConfig(input_dir=INPUT_DIR,
                              event_name=EVENT_NAME,
                              sensor_labels=SENSOR_LABEL,

@@ -2,6 +2,8 @@
 import pickle
 import numpy as np
 import matplotlib.pyplot as plt
+from typing import Union, List
+from datetime import datetime
 
 # RedVox modules
 from redvox.common.data_window import DataWindow
@@ -9,15 +11,16 @@ from redvox.common.io import serialize_data_window
 from redvox.common.station import Station
 import redvox.common.date_time_utils as dt
 from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
+import redvox.common.data_window_configuration as dwc
 
 
 def build(api_input_directory: str,
-          start_epoch_s: float,
-          end_epoch_s: float,
-          redvox_station_ids,
           event_name: str,
           output_directory: str,
           output_filename: str,
+          redvox_station_ids: Union[List[str], type(None)] = None,
+          start_epoch_s: Union[int, type(None)] = None,
+          end_epoch_s: Union[int, type(None)] = None,
           start_buffer_minutes: float = 3,
           end_buffer_minutes: float = 3,
           debug: bool = False) -> None:
@@ -39,21 +42,74 @@ def build(api_input_directory: str,
     """
 
     print(f"Loading data and constructing RedVox DataWindow for {event_name}.", end=" ")
+
+    # DataWindow Config Time defaults
+    start_year_dw_config = None
+    start_month_dw_config = None
+    start_day_dw_config = None
+    start_hour_dw_config = None
+    start_minute_dw_config = None
+    start_second_dw_config = None
+
+    end_year_dw_config = None
+    end_month_dw_config = None
+    end_day_dw_config = None
+    end_hour_dw_config = None
+    end_minute_dw_config = None
+    end_second_dw_config = None
+
+    # Convert epoch time to year/month/day/hour/minute/second for DataWindowConfig
+    if start_epoch_s is not None and end_epoch_s is not None:
+        start_datetime_object = datetime.fromtimestamp(start_epoch_s)
+        end_datetime_object = datetime.fromtimestamp(end_epoch_s)
+
+        start_year_dw_config = start_datetime_object.year
+        start_month_dw_config = start_datetime_object.month
+        start_day_dw_config = start_datetime_object.day
+        start_hour_dw_config = start_datetime_object.hour
+        start_minute_dw_config = start_datetime_object.minute
+        start_second_dw_config = start_datetime_object.second
+
+        end_year_dw_config = end_datetime_object.year
+        end_month_dw_config = end_datetime_object.month
+        end_day_dw_config = end_datetime_object.day
+        end_hour_dw_config = end_datetime_object.hour
+        end_minute_dw_config = end_datetime_object.minute
+        end_second_dw_config = end_datetime_object.second
+
+    dw_config = dwc.DataWindowConfig(input_directory=api_input_directory,
+                                     structured_layout=True,
+                                     apply_correction=True,
+                                     station_ids=redvox_station_ids,
+                                     start_year=start_year_dw_config,
+                                     start_month=start_month_dw_config,
+                                     start_day=start_day_dw_config,
+                                     start_hour=start_hour_dw_config,
+                                     start_minute=start_minute_dw_config,
+                                     start_second=start_second_dw_config,
+                                     end_year=end_year_dw_config,
+                                     end_month=end_month_dw_config,
+                                     end_day=end_day_dw_config,
+                                     end_hour=end_hour_dw_config,
+                                     end_minute=end_minute_dw_config,
+                                     end_second=end_second_dw_config)
+
+
+
     # Load signals
-    import redvox.common.data_window_configuration as dwc
-    k = dwc.DataWindowConfig(api_input_directory)
-    if redvox_station_ids:
-        rdvx_data = DataWindow(input_dir=api_input_directory,
-                               station_ids=redvox_station_ids,
-                               start_datetime=dt.datetime_from_epoch_seconds_utc(start_epoch_s),
-                               end_datetime=dt.datetime_from_epoch_seconds_utc(end_epoch_s),
-                               apply_correction=True,
-                               structured_layout=True,
-                               start_buffer_td=dt.timedelta(minutes=start_buffer_minutes),
-                               end_buffer_td=dt.timedelta(minutes=end_buffer_minutes),
-                               debug=debug)
-    else:
-        rdvx_data = DataWindow(input_dir=api_input_directory)
+    rdvx_data = DataWindow.from_config(dw_config)
+    # if redvox_station_ids:
+    #     rdvx_data = DataWindow(input_dir=api_input_directory,
+    #                            station_ids=redvox_station_ids,
+    #                            start_datetime=dt.datetime_from_epoch_seconds_utc(start_epoch_s),
+    #                            end_datetime=dt.datetime_from_epoch_seconds_utc(end_epoch_s),
+    #                            apply_correction=True,
+    #                            structured_layout=True,
+    #                            start_buffer_td=dt.timedelta(minutes=start_buffer_minutes),
+    #                            end_buffer_td=dt.timedelta(minutes=end_buffer_minutes),
+    #                            debug=debug)
+    # else:
+    #     rdvx_data = DataWindow(input_dir=api_input_directory)
 
     print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
     rdvx_data.to_json_file(base_dir=output_directory,

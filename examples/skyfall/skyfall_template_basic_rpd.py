@@ -18,6 +18,7 @@ import redpandas.redpd_build_station as rpd_build_sta
 
 from examples.skyfall.skyfall_config import skyfall_config
 
+# TODO MC: import config, dw_to_parquet basically
 
 if __name__ == "__main__":
     """
