@@ -1,9 +1,7 @@
 # Python libraries
 import os.path
 import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-import datetime as dtime
 
 # RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindow
@@ -19,8 +17,7 @@ from libquantum.spectra import stft_from_sig
 
 # Configuration file
 from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, EPISODE_START_EPOCH_S, \
-    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, use_parquet, PD_PQT_FILE, SENSOR_LABEL, \
-    ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
+    EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow, use_pickle, use_parquet, PD_PQT_FILE, SENSOR_LABEL
 
 band_order_Nth = 12
 axes = ["X", "Y", "Z"]
