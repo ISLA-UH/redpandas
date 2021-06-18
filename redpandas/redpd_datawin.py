@@ -16,12 +16,12 @@ import redvox.common.data_window_configuration as dwc
 
 
 def build(api_input_directory: str,
-          event_name: Optional[str] = "redvox",
+          event_name: Optional[str] = "Redvox",
           output_directory: Optional[str] = None,
           output_filename: Optional[str] = None,
           redvox_station_ids: Optional[List[str]] = None,
-          start_epoch_s: Optional[int] = None,
-          end_epoch_s: Optional[int] = None,
+          start_epoch_s: Optional[float] = None,
+          end_epoch_s: Optional[float] = None,
           start_buffer_minutes: Optional[int] = 3,
           end_buffer_minutes: Optional[int] = 3,
           debug: bool = False) -> None:
@@ -39,11 +39,11 @@ def build(api_input_directory: str,
     :param start_buffer_minutes: the amount of time to include before the start_epoch_s when filtering data.
     Default is 3.
     :param end_buffer_minutes: the amount of time to include after the end_epoch_s when filtering data. Default is 3.
-    :param debug: Toggle DataWindow debug on/off. Default is False.
+    :param debug: Toggle DataWindow debug_dw on/off. Default is False.
     :return: RedVox DataWindow saved in pickle file and corresponding JSON file
     """
 
-    print(f"Loading data and constructing RedVox DataWindow for {event_name}...", end=" ")
+    print(f"Loading data and constructing RedVox DataWindow for: {event_name}...", end=" ")
 
     # DataWindow Config Time defaults
     start_year_dw_config = None
@@ -103,11 +103,17 @@ def build(api_input_directory: str,
 
     # Load signals
     rdvx_data = DataWindow.from_config(dw_config)
-    print("Done.")
+    print(f"Done.")
+    print(f"RedVox SDK version: {rdvx_data.sdk_version}")
 
     if output_directory is None:  # set output directory
         output_directory = os.path.join(api_input_directory, "rpd_files")
         if not os.path.exists(output_directory):  # make output directory if first time running build function
+            print(f"Creating output directory: {output_directory}...")
+            os.mkdir(output_directory)
+
+    else:  # check output directory exists
+        if not os.path.exists(output_directory):  # make output directory if it doesn't exist
             print(f"Creating output directory: {output_directory}...")
             os.mkdir(output_directory)
 
@@ -118,7 +124,7 @@ def build(api_input_directory: str,
     rdvx_data.to_json_file(base_dir=output_directory,
                            file_name=output_filename)
 
-    print("Done.")
+    print(f"Done. Path:{os.path.join(output_directory,output_filename)}")
 
 
 def plot_dw_mic(data_window: DataWindow):
@@ -161,3 +167,4 @@ def plot_dw_baro(data_window: DataWindow):
             ax1.legend(loc='upper right')
             ax1.set_title("Pressure raw normalized waveforms")
             ax1.set_xlabel("Time from record start, s")
+

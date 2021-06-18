@@ -23,64 +23,85 @@ from redpandas.redpd_config import RedpdConfig
 
 
 def redpd_dw_to_parquet_from_config(config: RedpdConfig):
-    redpd_dw_to_parquet(config.input_dir, config.dw_file)
+    redpd_dw_to_parquet(input_dir=config.input_dir,
+                        event_name=config.event_name,
+                        create_dw=True,
+                        print_dq=True,
+                        show_raw_waveform_plots=True,
+                        output_dir=config.output_dir,
+                        output_filename_pkl=config.dw_file,
+                        output_filename_pqt=config.pd_pqt_file,
+                        station_ids=config.station_ids,
+                        sensor_labels=config.sensor_labels,
+                        start_epoch_s=config.event_start_epoch_s,
+                        end_epoch_s=config.event_end_epoch_s)
 
 
-def redpd_dw_to_parquet(input_dir: str, output_filename_base: str, compress_dw: bool = True,
-                        output_dir: Optional[str] = None, sensor_labels: Optional[List[str]] = None):
+def redpd_dw_to_parquet(input_dir: str,
+                        event_name: Optional[str] = "Redvox",
+                        create_dw: bool = True,
+                        print_dq: bool = True,
+                        show_raw_waveform_plots: bool = True,
+                        output_dir: Optional[str] = None,
+                        output_filename_pkl: Optional[str] = None,
+                        output_filename_pqt: Optional[str] = None,
+                        station_ids: Optional[List[str]] = None,
+                        sensor_labels: Optional[List[str]] = None,
+                        start_epoch_s: Optional[float] = None,
+                        end_epoch_s: Optional[float] = None,
+                        start_buffer_minutes: Optional[int] = 3,
+                        end_buffer_minutes: Optional[int] = 3,
+                        debug: bool = False):
     """
     Beta workflow for API M pipeline
-    Last updated: 8 June 2021
+    Last updated: 17 June 2021
     """
-    print("Initiating Conversion from RedVox DataWindow to RedPandas:")
+    print("Initiating conversion from RedVox DataWindow to RedPandas:")
 
     settings.set_parallelism_enabled(True)
-
-    if not output_dir:
-        output_dir = input_dir
 
     if not sensor_labels:
         sensor_labels = ["audio"]
 
-    pkl_output: str = output_filename_base + ".pkl"
-    pd_pqt_output: str = output_filename_base + "_df.parquet"
+    if output_filename_pkl is None:
+        output_filename_pkl: str = event_name
+    else:
+        # make sure the .pkl does not repeat when we save the DataWindow
+        output_filename_pkl = output_filename_pkl.replace(".pkl", "")
 
-    if compress_dw:
-        # TODO MC: update this once DatawindowConfig is done
+    if create_dw:
+
         # Load signals, create a RedVox DataWindow structure, export to pickle.
-        # rpd_dw.build(api_input_directory=skyfall_config.input_dir,
-        #              start_epoch_s=skyfall_config.episode_start_epoch_s,
-        #              end_epoch_s=skyfall_config.episode_end_epoch_s,
-        #              redvox_station_ids=skyfall_config.stations,
-        #              event_name=skyfall_config.event_name,
-        #              output_directory=skyfall_config.output_dir,
-        #              output_filename=skyfall_config.dw_file,
-        #              start_buffer_minutes=3.,
-        #              end_buffer_minutes=3.,
-        #              debug=True)
-        rpd_dw.build_ez(api_input_directory=input_dir, pickle_filename=pkl_output)
+        rpd_dw.build(api_input_directory=input_dir,
+                     event_name=event_name,
+                     output_directory=output_dir,
+                     output_filename=output_filename_pkl,
+                     redvox_station_ids=station_ids,
+                     start_epoch_s=start_epoch_s,
+                     end_epoch_s=end_epoch_s,
+                     start_buffer_minutes=start_buffer_minutes,
+                     end_buffer_minutes=end_buffer_minutes,
+                     debug=debug)
 
     # Import DataWindow
     else:
         print("Unpickling existing compressed RedVox DataWindow with JSON...")
-    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=input_dir, file_name=output_filename_base)
-    print(f"RedVox SDK version: {rdvx_data.sdk_version}")
 
-    # TODO MC: think if we want it and if so how
+    if output_dir is None:  # set output dir for DataWindow pickle/JSON and parquet
+        output_dw_pqt_dir = os.path.join(input_dir, "rpd_files")
+    else:
+        output_dw_pqt_dir = output_dir
+
+    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=output_dw_pqt_dir, file_name=output_filename_pkl)
+
     # Print out basic stats
-    # if print_dw_quality:
-    #     print("\nDQ/DA LAYER: STATION")
-    #     rpd_dq.station_metadata(rdvx_data)
-    #     print("DQ/DA LAYER: MIC & SYNCH")
-    #     rpd_dq.mic_sync(rdvx_data)
-    #     print("DQ/DA LAYER: SENSOR TIMING")
-    #     rpd_dq.station_channel_timing(rdvx_data)
-
-    # Plot data window waveforms
-    # if plot_mic_waveforms:
-    #     rpd_dw.plot_dw_mic(data_window=rdvx_data)
-    #     rpd_dw.plot_dw_baro(data_window=rdvx_data)
-    #     plt.show()
+    if print_dq:
+        print("\nDQ/DA LAYER: STATION")
+        rpd_dq.station_metadata(rdvx_data)
+        print("DQ/DA LAYER: MIC & SYNCH")
+        rpd_dq.mic_sync(rdvx_data)
+        print("DQ/DA LAYER: SENSOR TIMING")
+        rpd_dq.station_channel_timing(rdvx_data)
 
     # BEGIN RED PANDAS
     print("\nInitiating RedVox Redpandas:")
@@ -119,12 +140,26 @@ def redpd_dw_to_parquet(input_dir: str, output_filename_base: str, compress_dw: 
                                              f'{label}_nans']].applymap(np.ravel)
 
     # Export pandas data frame to parquet
-    df_all_sensors_all_stations.to_parquet(os.path.join(input_dir, pd_pqt_output))
-    print("\nExported Parquet RedPandas DataFrame to " + os.path.join(input_dir, pd_pqt_output))
+    if output_filename_pqt is None:
+        output_filename_pqt: str = event_name + "_df.parquet"
+
+    df_all_sensors_all_stations.to_parquet(os.path.join(output_dw_pqt_dir, output_filename_pqt))
+    print("\nExported Parquet RedPandas DataFrame to " + os.path.join(output_dw_pqt_dir, output_filename_pqt))
 
     # Check that parquet file saves and opens correctly
-    df_open = pd.read_parquet(os.path.join(input_dir, pd_pqt_output))
+    df_open = pd.read_parquet(os.path.join(output_dw_pqt_dir, output_filename_pqt))
     print("Total stations in DataFrame:", len(df_open['station_id']))
     print("Available stations:", df_open['station_id'])
     print("Total columns in DataFrame:", len(df_open.columns))
     print("Available columns:", df_open.columns)
+
+    # Plot data window waveforms
+    if show_raw_waveform_plots:
+        rpd_dw.plot_dw_mic(data_window=rdvx_data)
+        rpd_dw.plot_dw_baro(data_window=rdvx_data)
+        plt.show()
+
+
+if __name__ == "__main__":
+    redpd_dw_to_parquet_from_config(config=RedpdConfig(input_directory="/Users/meritxell/Desktop/skyfall_dummy_test",
+                                                       output_directory="/Users/meritxell/Desktop"))
