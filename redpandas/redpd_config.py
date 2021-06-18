@@ -1,3 +1,8 @@
+"""
+Configuration class for RedPandas
+
+Last updated: 17 June 2021
+"""
 import os
 import enum
 from typing import List, Optional
@@ -23,8 +28,8 @@ class DataLoadMethod(enum.Enum):
             return DataLoadMethod.UNKNOWN
 
 
-# todo: finish defining required and optional/not required fields with defaults
-# Minimum reqs are event_name, input_directory, sensor_label = ['audio']
+# Todo MC: finish defining required and optional/not required fields with defaults
+
 class RedpdConfig:
 
     def __init__(self, input_directory: str,
@@ -37,11 +42,10 @@ class RedpdConfig:
                  duration_s: Optional[int] = None,
                  start_buffer_minutes: Optional[int] = 3,
                  end_buffer_minutes: Optional[int] = 3,
-                 debug_dw: bool = False,
-                 tdr_load_method: Optional[str] = "datawindow" ):
+                 tdr_load_method: Optional[str] = "datawindow"):
 
         """
-        Configuration paramters for RedPandas
+        Configuration parameters for RedPandas
 
         :param input_directory: string, directory that contains the files to read data from.  REQUIRED
         :param event_name: optional string, name of event. Default is "Redvox"
@@ -55,7 +59,6 @@ class RedpdConfig:
          when filtering data. Default is 3
         :param end_buffer_minutes: float representing the amount of minutes to include before the end datetime
          when filtering data. Default is 3
-        :param debug_dw: bool, if True, output additional information when processing data window.  Default False
         :param tdr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet".
         Default is "datawindow"
         """
@@ -77,14 +80,18 @@ class RedpdConfig:
             self.output_dir = os.path.join(self.input_dir, "rpd_files")
 
         if output_filename_pkl_pqt is None:
-            self.output_filename_base = event_name
+            self.output_filename_pkl_pqt = event_name
+        else:
+            self.output_filename_pkl_pqt = output_filename_pkl_pqt
 
         self.dw_file: str = self.event_name + ".pkl"
         self.pd_pqt_file: str = self.event_name + "_df.parquet"
 
-        self.bounder_input_path = os.path.join(self.input_dir, "bounder")
-        self.bounder_input_csv_file = "skyfall_bounder.csv"
-        self.bounder_pd_pqt_file = self.event_name + "_df_bounder.parquet"
+        # TODO MC: think about TFR specific: band_order_nth, verbosity,
+        #  bounder specific: rerun_bounder
+        # self.bounder_input_path = os.path.join(self.input_dir, "bounder")
+        # self.bounder_input_csv_file = "skyfall_bounder.csv"
+        # self.bounder_pd_pqt_file = self.event_name + "_df_bounder.parquet"
 
         self.station_ids = station_ids
 
@@ -103,29 +110,15 @@ class RedpdConfig:
 
         self.start_buffer_minutes = start_buffer_minutes
         self.end_buffer_minutes = end_buffer_minutes
-        self.debug = debug_dw
 
         self.tdr_load_method = DataLoadMethod.method_from_str(tdr_load_method)
 
         # todo: what is this?
         # self.pipeline_label: List[str] = ['TBD']
 
-
-
     def pretty(self) -> str:
         # noinspection Mypy
         return pprint.pformat(vars(self))
-
-
-if __name__ == "__main__":
-
-    RedpdConfig(input_directory="/Users/meritxell/Desktop/skyfall_dummy_test",
-                 tdr_load_method="parquet")
-
-    print(DataLoadMethod.method_from_str("parquet"))
-
-# TODO: Do not instantiate an object here; put it in an example or demo file
-# Next step: start time, duration, stations, clock, location
 
 # example_config = RedpdConfig(
 #     event_name="Skyfall",
@@ -153,40 +146,7 @@ if __name__ == "__main__":
 # )
 
 
-# TODO MC: think about what can be added in the future projects
-
-# # Absolute path for output directories
-# rpd_dir: str
-#
-# # Station ID and Event time
-# # Timestamps in seconds since UTC epoch
-# stations: List[str]
-# episode_start_epoch_s: float
-# duration_s: int
-#
-# # Reference lat lon altitude and time at terminus, from Bounder
-# ref_latitude_deg: float
-# ref_longitude_deg: float
-# ref_altitude_m: float
-# ref_epoch_s: int
-#
-# # Pipeline actions
-# compress_dw: bool           # Handling of RDVX DataWindow structure
-# print_dw_quality: bool      # Print basic DQ/DA to screen
-# plot_mic_waveforms: bool    # Show raw RDVX DataWindow waveforms
-# build_df_parquet: bool      # Export pandas data frame as parquet
-#
-# # Settings for skyfall_tdr_rpd.py
-# tdr_load_method: DataLoadMethod
-#
-# # Settings for skyfall_tfr_rpd.py
-# tfr_load_method: DataLoadMethod
-# band_order_Nth: int
-# verbosity: int = 1          # verbosity > 1, plots extra raw and highpass plots
-#
-# # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
-# is_rerun_bounder: bool = True  # If true, rerun and save as parquet
-
+# TODO MC: ask Tyler if this is needed
 # @staticmethod
 # def from_path(config_path: str) -> "SkyfallConfig":
 #     try:

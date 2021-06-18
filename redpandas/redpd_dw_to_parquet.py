@@ -1,3 +1,9 @@
+"""
+Pipeline from RedVox DataWindow to pandas DataFrame parquet
+
+Last updated: 17 June 2021
+"""
+
 # Python libraries
 import os
 from typing import List, Optional
@@ -5,11 +11,10 @@ from typing import List, Optional
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+
 # RedVox and Red Pandas modules
 from redvox.common.data_window import DataWindow
-from redvox.common.data_window_configuration import DataWindowConfig
 import redvox.settings as settings
-
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
 import redpandas.redpd_build_station as rpd_build_sta
@@ -22,6 +27,7 @@ import redpandas.redpd_build_station as rpd_build_sta
 from redpandas.redpd_config import RedpdConfig
 
 
+# TODO MC: think about the variables that are not in the config file
 def redpd_dw_to_parquet_from_config(config: RedpdConfig):
     redpd_dw_to_parquet(input_dir=config.input_dir,
                         event_name=config.event_name,

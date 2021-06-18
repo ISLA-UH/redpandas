@@ -1,18 +1,37 @@
+"""
+DataWindow related modules
+
+Last updated: 17 June 2021
+"""
+
 # Python libraries
-import pickle
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Union, List, Optional
+from typing import List, Optional
 from datetime import datetime
 import os
 
 # RedVox modules
 from redvox.common.data_window import DataWindow
-from redvox.common.io import serialize_data_window
 from redvox.common.station import Station
-import redvox.common.date_time_utils as dt
 from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
 import redvox.common.data_window_configuration as dwc
+
+# RedPandas config
+from redpandas.redpd_config import RedpdConfig
+
+
+def build_from_config(config: RedpdConfig):
+    build(api_input_directory=config.input_dir,
+          event_name=config.event_name,
+          output_directory=config.output_dir,
+          output_filename=config.output_filename_pkl_pqt,
+          redvox_station_ids=config.station_ids,
+          start_epoch_s=config.event_start_epoch_s,
+          end_epoch_s=config.event_end_epoch_s,
+          start_buffer_minutes=config.start_buffer_minutes,
+          end_buffer_minutes=config.end_buffer_minutes,
+          debug=False)
 
 
 def build(api_input_directory: str,
@@ -118,13 +137,18 @@ def build(api_input_directory: str,
             os.mkdir(output_directory)
 
     if output_filename is None:  # set output filename
-        output_filename = event_name
+        output_filename: str = event_name
+    else:
+        output_filename = output_filename.replace(".pkl", "")
 
     print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
     rdvx_data.to_json_file(base_dir=output_directory,
                            file_name=output_filename)
 
-    print(f"Done. Path:{os.path.join(output_directory,output_filename)}")
+    if output_filename.find(".pkl") == -1:
+        print(f"Done. Path:{os.path.join(output_directory,output_filename)}")
+    else:
+        print(f"Done. Path:{os.path.join(output_directory,output_filename+'.pkl')}")
 
 
 def plot_dw_mic(data_window: DataWindow):
