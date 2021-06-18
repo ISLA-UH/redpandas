@@ -15,22 +15,19 @@ import redpandas.redpd_geospatial as rpd_geo
 from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
-# Configuration files
+# Configuration file
+# from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, OUTPUT_DIR, EPISODE_START_EPOCH_S, \
+#     EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow_tdr, use_pickle_tdr, use_parquet_tdr, PD_PQT_FILE, SENSOR_LABEL, \
+#     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
+
+from examples.skyfall.skyfall_config import skyfall_config
 from redpandas.redpd_config import DataLoadMethod
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
 
 if __name__ == "__main__":
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
-    Last updated: 17 June 2021
+    Last updated: 8 June 2021
     """
-
-    # Skyfall example exclusive variables (for now)
-    ref_latitude_deg = 35.83728
-    ref_longitude_deg = -115.57234
-    ref_altitude_m = 1028.2
-    ref_epoch_s = 1603808160
-
     print('Let the sky fall')
 
     # Label columns in dataframe
@@ -89,7 +86,7 @@ if __name__ == "__main__":
     synchronization_number_exchanges_label: str = 'synchronization_number_exchanges'
 
     # Load parquet with bounder data fields
-    bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
+    bounder_loc = pd.read_parquet(os.path.join(skyfall_config.bounder_input_path, skyfall_config.bounder_pd_pqt_file))
 
     # Load data options
     # if use_datawindow_tdr is True or use_pickle_tdr is True:
@@ -99,19 +96,17 @@ if __name__ == "__main__":
         if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow ...", end=" ")
             rdvx_data = DataWindow(input_dir=skyfall_config.input_dir,
-                                   station_ids=skyfall_config.station_ids,
-                                   start_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.event_start_epoch_s),
-                                   end_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.event_end_epoch_s),
+                                   station_ids=skyfall_config.stations,
+                                   start_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.episode_start_epoch_s),
+                                   end_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.episode_end_epoch_s),
                                    apply_correction=True,
                                    structured_layout=True)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
-
-            # output_filename_json = skyfall_config.dw_file  output_filename_pkl.replace(".pkl", "")
-
+            # rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=OUTPUT_DIR, file_name=DW_FILE)
             rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
-                                                              file_name=skyfall_config.output_filename_pkl_pqt)
+                                                              file_name=skyfall_config.dw_file)
         print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         # For option A or B, begin RedPandas
@@ -128,7 +123,8 @@ if __name__ == "__main__":
         print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
     else:
-        print('\nNo data loading method selected.')
+        print('\nNo data loading method selected. '
+              'Check that use_datawindow_tdr, use_pickle_tdr, or use_parquet_tdr in the Skyfall configuration file are set to True.')
         exit()
 
     # Start of building plots
@@ -163,7 +159,7 @@ if __name__ == "__main__":
             baro_height_from_bounder_km = barometer_height_m*METERS_TO_KM
 
         # Repeat here
-        if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label \
+        if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label\
                 in df_skyfall_data.columns:
             if skyfall_config.tdr_load_method == DataLoadMethod.PARQUET:
                 # Reshape wf columns
@@ -229,7 +225,7 @@ if __name__ == "__main__":
                                    label_panel_show=True,  # for press
                                    labels_fontweight='bold')
 
-        if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label \
+        if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label\
                 in df_skyfall_data.columns:
 
             if skyfall_config.tdr_load_method == DataLoadMethod.PARQUET:
@@ -262,7 +258,7 @@ if __name__ == "__main__":
                                    label_panel_show=True,  # for press
                                    labels_fontweight='bold')
 
-        if magnetometer_data_raw_label and magnetometer_fs_label and magnetometer_data_highpass_label \
+        if magnetometer_data_raw_label and magnetometer_fs_label and magnetometer_data_highpass_label\
                 in df_skyfall_data.columns:
             if skyfall_config.tdr_load_method == DataLoadMethod.PARQUET:
                 # Reshape wf columns
@@ -296,8 +292,9 @@ if __name__ == "__main__":
         if location_latitude_label and location_longitude_label and location_altitude_label and location_speed_label \
                 in df_skyfall_data.columns:
 
-            print("Bounder End EPOCH:", ref_epoch_s)
-            print("Bounder End LAT LON ALT:", ref_latitude_deg, ref_longitude_deg, ref_altitude_m)
+            print("Bounder End EPOCH:", skyfall_config.ref_epoch_s)
+            print("Bounder End LAT LON ALT:", skyfall_config.ref_latitude_deg, skyfall_config.ref_longitude_deg,
+                  skyfall_config.ref_altitude_m)
 
             # Compute ENU projections
             df_range_z_speed = \
@@ -305,10 +302,10 @@ if __name__ == "__main__":
                                             lat_deg=df_skyfall_data[location_latitude_label][station],
                                             lon_deg=df_skyfall_data[location_longitude_label][station],
                                             alt_m=df_skyfall_data[location_altitude_label][station],
-                                            ref_unix_s=ref_epoch_s,
-                                            ref_lat_deg=ref_latitude_deg,
-                                            ref_lon_deg=ref_longitude_deg,
-                                            ref_alt_m=ref_altitude_m)
+                                            ref_unix_s=skyfall_config.ref_epoch_s,
+                                            ref_lat_deg=skyfall_config.ref_latitude_deg,
+                                            ref_lon_deg=skyfall_config.ref_longitude_deg,
+                                            ref_alt_m=skyfall_config.ref_altitude_m)
 
             # Plot location framework
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
@@ -328,12 +325,12 @@ if __name__ == "__main__":
                                    labels_fontweight='bold')
 
             if location_epoch_s_label and location_altitude_label and barometer_epoch_s_label and \
-                    barometer_data_raw_label in df_skyfall_data.columns:
+                barometer_data_raw_label in df_skyfall_data.columns:
 
                 plt.figure()
-                time_bar = df_skyfall_data[barometer_epoch_s_label][station] - skyfall_config.event_start_epoch_s
-                time_bounder = bounder_loc['Epoch_s'] - skyfall_config.event_start_epoch_s
-                time_loc = df_skyfall_data[location_epoch_s_label][station] - skyfall_config.event_start_epoch_s
+                time_bar = df_skyfall_data[barometer_epoch_s_label][station] - skyfall_config.episode_start_epoch_s
+                time_bounder = bounder_loc['Epoch_s'] - skyfall_config.episode_start_epoch_s
+                time_loc = df_skyfall_data[location_epoch_s_label][station] - skyfall_config.episode_start_epoch_s
 
                 ax1 = plt.subplot(211)
                 plt.semilogy(time_bar, df_skyfall_data[barometer_data_raw_label][station][0], 'midnightblue',
@@ -353,7 +350,7 @@ if __name__ == "__main__":
                 plt.plot(time_bounder, bounder_loc['Alt_m'] * METERS_TO_KM, 'g', label='Bounder Z')
                 plt.ylabel('Height, km')
                 plt.xlabel(f"Time (s) from UTC "
-                           f"{dtime.datetime.utcfromtimestamp(skyfall_config.event_start_epoch_s).strftime('%Y-%m-%d %H:%M:%S')}")
+                           f"{dtime.datetime.utcfromtimestamp(skyfall_config.episode_start_epoch_s).strftime('%Y-%m-%d %H:%M:%S')}")
                 plt.legend(loc='upper right')
                 plt.xlim([0, 1800])
                 plt.text(0.01, 0.05, "(a)", transform=ax2.transAxes,  fontweight='bold')

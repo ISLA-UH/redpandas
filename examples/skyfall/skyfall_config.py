@@ -37,7 +37,7 @@ OTHER_PD_PQT_FILE = EVENT_NAME + "_df_bounder.parquet"
 
 # Step 1: Station ID and Event time
 STATIONS = ["1637610021"]
-Timestamps in seconds since UTC epoch
+# Timestamps in seconds since UTC epoch
 EVENT_ORIGIN_EPOCH_S = 1603806314  # 2020-10-27T13:45:14
 duration_s = 30*60  # 30 minutes
 

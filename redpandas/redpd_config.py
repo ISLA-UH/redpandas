@@ -84,8 +84,8 @@ class RedpdConfig:
         else:
             self.output_filename_pkl_pqt = output_filename_pkl_pqt
 
-        self.dw_file: str = self.event_name + ".pkl"
-        self.pd_pqt_file: str = self.event_name + "_df.parquet"
+        self.dw_file: str = self.output_filename_pkl_pqt + ".pkl"
+        self.pd_pqt_file: str = self.output_filename_pkl_pqt + "_df.parquet"
 
         # TODO MC: think about TFR specific: band_order_nth, verbosity,
         #  bounder specific: rerun_bounder

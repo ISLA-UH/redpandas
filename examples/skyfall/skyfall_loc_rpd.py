@@ -14,7 +14,7 @@ from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 # from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, PD_PQT_FILE, \
 #     OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, is_rerun_bounder
 
-from examples.skyfall.skyfall_config import skyfall_config
+from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
 
 
 def bounder_specs_to_csv(df, csv_export_file):
@@ -36,6 +36,8 @@ def bounder_specs_to_csv(df, csv_export_file):
 
 
 if __name__ == '__main__':
+    # TODO MC: probs broken
+
     """
     Paths from phone and bounder for NNSS Skyfall data set
     If true, rerun and save as parquet
@@ -66,19 +68,18 @@ if __name__ == '__main__':
     print(f'Verify that balloon station selected matches # of columns: {phone_loc.shape}')
 
     # Bounder data is a standard rectangular matrix
-    if not os.path.exists(skyfall_config.bounder_input_path):
+    if not os.path.exists(OTHER_INPUT_PATH):
         print("Other input directory does not exist, check path:")
-        print(skyfall_config.bounder_input_path)
+        print(OTHER_INPUT_PATH)
         exit()
 
     if skyfall_config.is_rerun_bounder:
-        rpd_geo.bounder_data(skyfall_config.bounder_input_path, skyfall_config.bounder_input_csv_file,
-                             skyfall_config.bounder_pd_pqt_file)
+        rpd_geo.bounder_data(OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE)
         print('Constructing bounder parquet')
 
     # Load parquet with bounder data fields
     print('Load Bounder parquet:')
-    bounder_loc = pd.read_parquet(os.path.join(skyfall_config.bounder_input_path, skyfall_config.bounder_pd_pqt_file))
+    bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
     print(f'Dimensions (# of rows, # of columns): {bounder_loc.shape}')
     print(f'Available columns: {bounder_loc.columns}')
 
@@ -102,8 +103,8 @@ if __name__ == '__main__':
 
     # Export Initial and Final states to CSV
     print(f"Export Bounder initial and final states to CSV. Path: "
-          f"{os.path.join(skyfall_config.bounder_input_path, skyfall_config.event_name + '_bounder_start_end.csv')}")
-    file_bounder_start_end_csv = os.path.join(skyfall_config.bounder_input_path, skyfall_config.event_name
+          f"{os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name + '_bounder_start_end.csv')}")
+    file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name
                                               + '_bounder_start_end.csv')
     bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
 
