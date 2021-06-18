@@ -11,9 +11,9 @@ from redpandas.redpd_config import RedpdConfig
 # INPUT_DIR = "/Users/spopen/redvox/data/skyfall_data"
 # INPUT_DIR = "/Users/tyler/Documents/skyfall_pipeline"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
-INPUT_DIR = "/Users/meritxell/Documents/skyfall"
+INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
 
-
+# Redpd Configuration
 skyfall_config = RedpdConfig(input_directory=INPUT_DIR,
                              event_name="Skyfall",
                              output_directory=os.path.join(INPUT_DIR, "rpd_files"),
@@ -21,11 +21,10 @@ skyfall_config = RedpdConfig(input_directory=INPUT_DIR,
                              sensor_labels=['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
                                             'health', 'location', 'clock', 'synchronization'],
                              event_start_epoch_s=1603806314,
-                             duration_s=1603806314 + 30 * 60,
+                             duration_s=30 * 60,
                              start_buffer_minutes=3,
                              end_buffer_minutes=3,
                              tdr_load_method="datawindow")
-
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
 is_rerun_bounder: bool = True  # If true, rerun and save as parquet
