@@ -15,7 +15,7 @@ from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 #     OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, is_rerun_bounder
 
 from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
-
+skyfall_config.is_rerun_bounder = True
 
 def bounder_specs_to_csv(df, csv_export_file):
 
@@ -108,7 +108,8 @@ if __name__ == '__main__':
                                               + '_bounder_start_end.csv')
     bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
 
-    # Use the bounder terminus values in the configuration file
+    # TODO: Use the bounder terminus values in the configuration file
+    # Propagated to tdr
     ref_latitude_deg = 35.83728
     ref_longitude_deg = -115.57234
     ref_altitude_m = 1028.2

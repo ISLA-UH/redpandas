@@ -25,7 +25,8 @@ if __name__ == "__main__":
     Last updated: 18 June 2021
     """
 
-    # Skyfall example exclusive variables (for now)
+    # TODO: same as loc_rpd
+    # Skyfall example exclusive variables (from Bounder)
     ref_latitude_deg = 35.83728
     ref_longitude_deg = -115.57234
     ref_altitude_m = 1028.2
@@ -89,6 +90,7 @@ if __name__ == "__main__":
     synchronization_number_exchanges_label: str = 'synchronization_number_exchanges'
 
     # Load parquet with bounder data fields
+    # TODO: clean up
     bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
 
     # Load data options
