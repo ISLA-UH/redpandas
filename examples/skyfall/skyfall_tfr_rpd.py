@@ -30,13 +30,13 @@ tfr_type = 'stft'
 # tfr_type = 'cwt' # very slow
 plot_raw_data = False  # raw plots currently run but are not updated
 
-# TODO: optimize color dynamic range
 # TODO: cleaner code for TFR wiggle plot
+# TODO: implement skyfall_config_file
 
 if __name__ == "__main__":
     """
     RedVox RedPandas time-frequency representation of API900 data. Example: Skyfall.
-    Last updated: 4 June 2021
+    Last updated: 18 June 2021
     """
 
     print('Let the sky fall')
@@ -546,8 +546,8 @@ if __name__ == "__main__":
                         df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
                             df_skyfall_data[sensor_tfr_time_s_label][station][k]
                         j += 1
-                        mesh_color_scaling.append('auto')
-                        mesh_color_range.append(15.)
+                        mesh_color_scaling.append('range')
+                        mesh_color_range.append(18.)
                     i += 1
                 else:
                     if df_skyfall_data[sensor_column_label_list[i]][station].ndim == 1:
@@ -566,8 +566,8 @@ if __name__ == "__main__":
                             df_skyfall_data[sensor_tfr_freq_hz_label][station][0]
                         df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
                             df_skyfall_data[sensor_tfr_time_s_label][station][0]
-                        mesh_color_scaling.append('auto')
-                        mesh_color_range.append(15.)
+                        mesh_color_scaling.append('range')
+                        mesh_color_range.append(18.)
                     j += 1
                     i += 1
 
@@ -580,14 +580,15 @@ if __name__ == "__main__":
             #                           t0_sig_epoch_s=event_reference_time_epoch_s,
             #                           sig_id_label="tick_labels",
             #                           fig_title=tfr_type.upper())
-
+            # TODO: MC check three component sensors for plot_mesh, also same for plot_mesh_sensors, white space in
+            #  plot_mesh_sensors, combine plot_mesh with plot_mesh_sensors (?)
             rpd_plot.plot_mesh_sensors_pandas(df=df_skyfall_data_mesh_hack,
                                               mesh_time_label="tfr_time_s",
                                               mesh_tfr_label="tfr_bits",
                                               mesh_frequency_label="tfr_freq_hz",
                                               t0_sig_epoch_s=event_reference_time_epoch_s,
                                               sig_id_label="tick_labels",
-                                              fig_title=tfr_type.upper(),
+                                              fig_title=None,
                                               mesh_color_scaling=mesh_color_scaling,
                                               mesh_color_range=mesh_color_range)
 
