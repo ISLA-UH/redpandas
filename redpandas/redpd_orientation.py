@@ -77,7 +77,7 @@ def integrate_cumtrapz(timestamps_s: np.ndarray, sensor_wf: np.ndarray, initial_
     return integrated_data
 
 
-def get_roll_pitch_yaw(accel_x: float, accel_y: float, accel_z: float) -> Tuple[float, float, float]:
+def get_roll_pitch(accel_x: float, accel_y: float, accel_z: float) -> Tuple[float, float]:
     """
     Returns the pitch (rotation around y axis) and roll (rotation around x axis) from accelerometer data
     http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/
@@ -89,13 +89,28 @@ def get_roll_pitch_yaw(accel_x: float, accel_y: float, accel_z: float) -> Tuple[
     # get angle in radians
     roll = np.arctan2(accel_y, np.sqrt(accel_x * accel_x + accel_z * accel_z))
     pitch = np.arctan2(-accel_x, np.sqrt(accel_y * accel_y + accel_z * accel_z))
-    yaw = np.arctan2(np.sqrt(accel_x * accel_x + accel_y * accel_y), accel_z)
 
     # convert to degrees
-    return np.rad2deg(roll), np.rad2deg(pitch), np.rad2deg(yaw)
+    return roll, pitch
+
+def get_yaw(roll: float, pitch: float, mag_x: float, mag_y: float, mag_z: float):
+    """
+    Returns yaw based on roll / pitch data and the magnetometer data
+    https://roboticsclubiitk.github.io/2017/12/21/Beginners-Guide-to-IMU.html
+    :param roll: rotation around the x-axis
+    :param pitch: rotation around the y-axis
+    :param mag_x: x-axis magnetometer value
+    :param mag_y: y-axis magnetometer value
+    :param mag_z: z-axis magnetometer value
+    :return: yaw
+    """
+    mag_x_adj = mag_x*np.cos(pitch) + mag_y*np.sin(roll)*np.sin(pitch) + mag_z*np.cos(roll)*np.sin(pitch)
+    mag_y_adj = mag_y * np.cos(roll) - mag_z*np.sin(roll)
+
+    return np.arctan2(-mag_y_adj, mag_x_adj)
 
 
-def get_roll_pitch_yaw_array(accelerometers: List) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
+def get_roll_pitch_array(accelerometers: List) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the pitch (rotation around y axis) and roll (rotation around x axis) array from accelerometer data
     Loops through the get_pitch_and_roll function
@@ -105,39 +120,63 @@ def get_roll_pitch_yaw_array(accelerometers: List) -> Tuple[np.ndarray, np.ndarr
     # Loop through get_xy_rotation
     roll_array = []
     pitch_array = []
-    yaw_array = []
 
     for i in range(len(accelerometers[0])):
-        pitch, roll, yaw = get_roll_pitch_yaw(accel_x=accelerometers[0][i],
-                                              accel_y=accelerometers[1][i],
-                                              accel_z=accelerometers[2][i])
+        pitch, roll = get_roll_pitch(accel_x=accelerometers[0][i],
+                                     accel_y=accelerometers[1][i],
+                                     accel_z=accelerometers[2][i])
 
         roll_array.append(roll)
         pitch_array.append(pitch)
+
+    return np.array(roll_array), np.array(pitch_array)
+
+
+def get_yaw_array(roll_array: np.ndarray, pitch_array: np.ndarray, magnetometers: List) -> np.ndarray:
+    """
+    Returns the yaw array from roll (rotation around x axis), pitch (rotation around y axis), and gyroscope data
+    :param roll_array: roll (rotation around x axis) calculated from sensors
+    :param pitch_array: pitch (rotation around y axis) calculated from sensors
+    :param magnetometers: List of xyz components of magnetometer data
+    :return: yaw_array
+    """
+    # Loop through get_xy_rotation
+    yaw_array = []
+
+    for i in range(len(magnetometers[0])):
+        yaw = get_yaw(roll=roll_array[i],
+                      pitch=pitch_array[i],
+                      mag_x=magnetometers[0][i],
+                      mag_y=magnetometers[1][i],
+                      mag_z=magnetometers[2][i])
+
         yaw_array.append(yaw)
 
-    return np.array(roll_array), np.array(pitch_array), np.array(yaw_array)
+    return np.array(yaw_array)
 
 
-def complimentary_filtering(accelerometer_angle: np.ndarray, gyroscope_angle: np.ndarray,
-                            smoothing_factor: float) -> np.ndarray:
+def complimentary_filtering(gyroscope_time_s: np.ndarray, gyroscope_angle: np.ndarray,
+                            accelerometer_angle: np.ndarray, smoothing_factor: float) -> np.ndarray:
     """
     Complimentary Filter for Accelereometer and Gyroscope.
     Returns filtered angle
     Based on the works from https://stackoverflow.com/questions/1586658/combine-gyroscope-and-accelerometer-data and
     http://blog.bitify.co.uk/2013/11/using-complementary-filter-to-combine.html
-    :param accelerometer_angle: the calculated angle from the accelerometer (roll, pitch, yaw)
+    :param gyroscope_time_s: timestamps corresponding to the gyroscope data in seconds
     :param gyroscope_angle: the calculated angle from the gyroscope (roll, pitch, yaw)
+    :param accelerometer_angle: the calculated angle from the accelerometer (roll, pitch, yaw)
     :param smoothing_factor: determines the sensitivity of the accelerometer
     :return: filtered angle
     """
     # Get the change in gyroscope angle initiate with zero
     gyroscope_angle_change = np.diff(gyroscope_angle)
+    gyroscope_time_delta = np.diff(gyroscope_time_s)
 
     # Loop through the data to apply complimentary filter
     filtered_angle = gyroscope_angle
     for i in range(len(accelerometer_angle) - 1):
-        filtered_angle[i + 1] = smoothing_factor * (filtered_angle[i] + gyroscope_angle_change[i]) \
-                                + smoothing_factor * accelerometer_angle[i + 1]
+        filtered_angle[i + 1] = \
+            smoothing_factor * (filtered_angle[i] + gyroscope_angle_change[i] * gyroscope_time_delta[i]) \
+            + smoothing_factor * accelerometer_angle[i + 1]
 
     return filtered_angle
