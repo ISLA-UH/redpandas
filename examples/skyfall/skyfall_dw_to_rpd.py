@@ -8,7 +8,7 @@ from examples.skyfall.skyfall_config_file import skyfall_config
 if __name__ == "__main__":
     """
     Beta workflow for API M pipeline
-    Last updated: 17 June 2021
+    Last updated: 18 June 2021
     """
     print('Let the sky fall')
     redpd_dw_to_parquet(input_dir=skyfall_config.input_dir,
@@ -26,7 +26,3 @@ if __name__ == "__main__":
                         start_buffer_minutes=skyfall_config.start_buffer_minutes,
                         end_buffer_minutes=skyfall_config.end_buffer_minutes,
                         debug=False)
-
-    # redpd_dw_to_parquet_from_config(config=skyfall_config)
-
-    # redpd_dw_to_parquet(input_dir=skyfall_config.input_dir)
