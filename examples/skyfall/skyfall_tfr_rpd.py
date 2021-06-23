@@ -582,15 +582,28 @@ if __name__ == "__main__":
             #                           fig_title=tfr_type.upper())
             # TODO: MC check three component sensors for plot_mesh, also same for plot_mesh_sensors, white space in
             #  plot_mesh_sensors, combine plot_mesh with plot_mesh_sensors (?)
-            rpd_plot.plot_mesh_sensors_pandas(df=df_skyfall_data_mesh_hack,
-                                              mesh_time_label="tfr_time_s",
-                                              mesh_tfr_label="tfr_bits",
-                                              mesh_frequency_label="tfr_freq_hz",
-                                              t0_sig_epoch_s=event_reference_time_epoch_s,
-                                              sig_id_label="tick_labels",
-                                              fig_title=None,
-                                              mesh_color_scaling=mesh_color_scaling,
-                                              mesh_color_range=mesh_color_range)
+            # rpd_plot.plot_mesh_sensors_pandas(df=df_skyfall_data_mesh_hack,
+            #                                   mesh_time_label="tfr_time_s",
+            #                                   mesh_tfr_label="tfr_bits",
+            #                                   mesh_frequency_label="tfr_freq_hz",
+            #                                   t0_sig_epoch_s=event_reference_time_epoch_s,
+            #                                   sig_id_label="tick_labels",
+            #                                   fig_title=None,
+            #                                   mesh_color_scaling=mesh_color_scaling,
+            #                                   mesh_color_range=mesh_color_range)
+
+            rpd_plot.plot_mesh_pandas(df=df_skyfall_data,
+                                      mesh_time_label=[audio_tfr_time_s_label, accelerometer_tfr_time_s_label],
+                                      mesh_frequency_label=[audio_tfr_frequency_hz_label, accelerometer_tfr_frequency_hz_label],
+                                      mesh_tfr_label=[audio_tfr_bits_label, accelerometer_tfr_bits_label],
+                                      t0_sig_epoch_s=df_skyfall_data[audio_epoch_s_label][0][0],
+                                      sig_id_label=["audio", "acc_x", "acc_y", "acc_z"],
+                                      fig_title_show=False,
+                                      fig_title="",
+                                      frequency_scaling='log',
+                                      common_colorbar=False,
+                                      mesh_color_scaling=['range', 'range', 'range', 'range'],
+                                      mesh_color_range=[21., 18., 18., 18.])
 
         plt.show()
 

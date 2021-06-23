@@ -26,16 +26,19 @@ color_map = "inferno"  # 'hot_r'  # 'afmhot_r' #colormap for plotting
 
 
 def plot_mesh_pandas(df: pd.DataFrame,
-                     mesh_time_label: str,
-                     mesh_frequency_label: str,
-                     mesh_tfr_label: str,
+                     mesh_time_label: Union[str, list],
+                     mesh_frequency_label: Union[str, list],
+                     mesh_tfr_label: Union[str, list],
                      t0_sig_epoch_s: float,
-                     sig_id_label: str,
+                     sig_id_label: Union[str, list],
                      fig_title_show: bool = True,
                      fig_title: str = " ",
                      frequency_scaling: str = "log",
                      frequency_hz_ymin: float = rpd_scales.Slice.FU,
-                     frequency_hz_ymax: float = rpd_scales.Slice.F0):
+                     frequency_hz_ymax: float = rpd_scales.Slice.F0,
+                     common_colorbar: bool = True,
+                     mesh_color_scaling: Union[List[str], str] = 'auto',
+                     mesh_color_range: Union[List[float], float] = 15):
 
     """
      Plots spectrogram for all signals in df
@@ -51,85 +54,266 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param frequency_scaling: "log" or "lin". Default is "log"
      :param frequency_hz_ymin: y axis min lim
      :param frequency_hz_ymax: y axis max lim
-
+     :param common_colorbar: Default is True #TODO MC: Complete me
+     :param mesh_color_scaling: Default is 'auto' #TODO MC: Complete me
+     :param mesh_color_range: Default is 15 #TODO MC: Complete me
      :return: plot
      """
 
-    wiggle_num = len(df.index)  # total number of signal that will be displayed
+    if type(mesh_tfr_label) == str:
+        mesh_tfr_label = [mesh_tfr_label]
+    if type(mesh_time_label) == str:
+        mesh_time_label = [mesh_time_label]
+    if type(mesh_frequency_label) == str:
+        mesh_frequency_label = [mesh_frequency_label]
 
-    if sig_id_label == "index":
-        wiggle_yticklabel = df.index
-    else:
-        wiggle_yticklabel = df[sig_id_label]
+    # Chekc mesh, time and frequency are the same length:
+    if len(mesh_tfr_label) != len(mesh_time_label) or len(mesh_tfr_label) != len(mesh_frequency_label) or \
+            len(mesh_time_label) != len(mesh_frequency_label):
+        print("mesh_time_label, mesh_tfr_label, or mesh_frequency_label do not have the same length. Please check.")
+        exit()
+
+    # Overall number of mesh panels in fig
+    wiggle_num_list = []
+    wiggle_yticklabel = []
+    for mesh_n in range(len(mesh_tfr_label)):
+        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]
+
+        for n in df.index:
+            if df[mesh_tfr_label_individual][n].ndim == 2:
+                wiggle_num_list.append(1)
+
+                if type(sig_id_label) == str:
+                    if sig_id_label == "index":
+                        wiggle_yticklabel.append(df.index[n])
+                    else:
+                        wiggle_yticklabel.append(df[sig_id_label][n])
+
+            else:
+                wiggle_num_list.append(3)
+                for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][n]):
+
+                    if type(sig_id_label) == str:
+                        if sig_id_label == "index":
+                            wiggle_yticklabel.append(df.index[n])
+                        else:
+                            wiggle_yticklabel.append(df[sig_id_label][n])
+
+    if len(wiggle_yticklabel) == 0:
+        wiggle_yticklabel = sig_id_label
+
+    wiggle_num = sum(wiggle_num_list)  # total number of signal that will be displayed
 
     # loop to find xlim and tfr global max/min
     x_lim_min = np.empty(wiggle_num)
     x_lim_max = np.empty(wiggle_num)
-    tfr_min = np.empty(wiggle_num)
-    tfr_max = np.empty(wiggle_num)
 
-    for index_element in range(wiggle_num):
-        x_lim_min[index_element] = np.min(df[mesh_time_label][index_element])
-        x_lim_max[index_element] = np.max(df[mesh_time_label][index_element])
-        tfr_min[index_element] = np.min(df[mesh_tfr_label][index_element])
-        tfr_max[index_element] = np.max(df[mesh_tfr_label][index_element])
+    if common_colorbar:
+        tfr_min = np.empty(wiggle_num)
+        tfr_max = np.empty(wiggle_num)
+
+    index_wiggle_num_total = 0
+    for mesh_n in range(len(mesh_tfr_label)):
+
+        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]
+        mesh_time_label_individual = mesh_time_label[mesh_n]
+
+        for index_element in df.index:
+            if df[mesh_tfr_label_individual][index_element].ndim == 2:
+                x_lim_min[index_wiggle_num_total] = np.min(df[mesh_time_label_individual][index_element])
+                x_lim_max[index_wiggle_num_total] = np.max(df[mesh_time_label_individual][index_element])
+
+                if common_colorbar:
+                    tfr_min[index_wiggle_num_total] = np.min(df[mesh_tfr_label_individual][index_element])
+                    tfr_max[index_wiggle_num_total] = np.max(df[mesh_tfr_label_individual][index_element])
+
+                index_wiggle_num_total += 1
+
+            else:
+                index_wiggle_num_total = index_element
+
+                for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][index_element]):
+
+                    x_lim_min[index_wiggle_num_total] = np.min(df[mesh_time_label_individual][index_element][index_dimension])
+                    x_lim_max[index_wiggle_num_total] = np.max(df[mesh_time_label_individual][index_element][index_dimension])
+
+                    if common_colorbar:
+                        tfr_min[index_wiggle_num_total] = np.min(df[mesh_tfr_label_individual][index_element][index_dimension])
+                        tfr_max[index_wiggle_num_total] = np.max(df[mesh_tfr_label_individual][index_element][index_dimension])
+
+                    index_wiggle_num_total += 1
 
     # global min/max limits xlim
     x_lim_min_total = np.min(x_lim_min)
     x_lim_max_total = np.max(x_lim_max)
 
-    # global min/max limits tfr
-    # tfr_min_total = np.min(tfr_min)
-    tfr_max_total = np.max(tfr_max) - 3
-    tfr_min_total = tfr_max_total - 18
+    if common_colorbar:
+        # global min/max limits tfr
+        # tfr_min_total = np.min(tfr_min)
+        tfr_max_total = np.max(tfr_max) - 3
+        tfr_min_total = tfr_max_total - 18
 
     # start of figure
     fig = plt.figure(figsize=(figure_size_x, figure_size_y))
     # This can be optimized/automated
-    gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
+    if common_colorbar:
+        gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
+    else:
+        gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
 
-    for panel_order, index_signal in enumerate(reversed(df.index)):
-        ax = fig.add_subplot(gs[panel_order, 0])
-        plotted = ax.pcolormesh(df[mesh_time_label][index_signal],
-                                df[mesh_frequency_label][index_signal],
-                                df[mesh_tfr_label][index_signal],
-                                vmin=tfr_min_total,
-                                vmax=tfr_max_total,
-                                cmap=color_map,
-                                edgecolor='face',
-                                shading="auto",
-                                snap=True)
+    # Start plotting each sensor
+    index_wiggle_yticklabels = 0
+    panel_order = 0
+    for mesh_n in range(len(mesh_tfr_label)):
 
-        # set ax limits
-        plt.xlim(x_lim_min_total, x_lim_max_total)
+        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]
+        mesh_time_label_individual = mesh_time_label[mesh_n]
+        mesh_frequency_label_individual = mesh_frequency_label[mesh_n]
 
-        # This is a very useful bit of code
-        _, _, frequency_fix_ymin, frequency_fix_ymax = \
-            pnl.mesh_time_frequency_edges(frequency=df[mesh_frequency_label][index_signal],
-                                          time=df[mesh_time_label][index_signal],
-                                          frequency_ymin=frequency_hz_ymin,
-                                          frequency_ymax=frequency_hz_ymax,
-                                          frequency_scaling=frequency_scaling)
+        panel_n = wiggle_num
+        for _, index_signal in enumerate(reversed(df.index)):
 
-        plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+            if df[mesh_tfr_label_individual][index_signal].ndim == 2:
 
-        # set ytick labels and y scale
-        if frequency_scaling == "log":
-            ax.set_yscale("log", subs=None)
-            middle_point_diff = np.sqrt(frequency_fix_ymax*frequency_fix_ymin)
-            ax.minorticks_off()
+                if common_colorbar:
+                    ax = fig.add_subplot(gs[panel_order, 0])
+                    plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal],
+                                            df[mesh_frequency_label_individual][index_signal],
+                                            df[mesh_tfr_label_individual][index_signal],
+                                            vmin=tfr_min_total,
+                                            vmax=tfr_max_total,
+                                            cmap=color_map,
+                                            edgecolor='face',
+                                            shading="auto",
+                                            snap=True)
+                else:
+                    # Color scaling
+                    panel_n -= 1
+                    if type(mesh_color_scaling) == str:
+                        mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
+                                                                                  mesh_color_scaling,
+                                                                                  mesh_color_range)
+                    else:
+                        mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
+                                                                                  mesh_color_scaling[panel_n],
+                                                                                  mesh_color_range[panel_n])
 
-        else:
-            middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
+                    ax = fig.add_subplot(gs[panel_order])
+                    plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal],
+                                            df[mesh_frequency_label_individual][index_signal],
+                                            df[mesh_tfr_label_individual][index_signal],
+                                            vmin=mesh_color_min,
+                                            vmax=mesh_color_max,
+                                            cmap=color_map,
+                                            edgecolor='face',
+                                            shading="auto",
+                                            snap=True)
 
-        # Station Labels
-        ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-        ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=text_size)
+                # set ax limits
+                plt.xlim(x_lim_min_total, x_lim_max_total)
 
-        if panel_order < (wiggle_num-1):  # plot x ticks for only last subplot
-            ax.set_xticks([])
+                # This is a very useful bit of code
+                _, _, frequency_fix_ymin, frequency_fix_ymax = \
+                    pnl.mesh_time_frequency_edges(frequency=df[mesh_frequency_label_individual][index_signal],
+                                                  time=df[mesh_time_label_individual][index_signal],
+                                                  frequency_ymin=frequency_hz_ymin,
+                                                  frequency_ymax=frequency_hz_ymax,
+                                                  frequency_scaling=frequency_scaling)
 
-        ax.tick_params(axis='both', which='major', labelsize=text_size)
+                plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+
+                # set ytick labels and y scale
+                if frequency_scaling == "log":
+                    ax.set_yscale("log", subs=None)
+                    middle_point_diff = np.sqrt(frequency_fix_ymax*frequency_fix_ymin)
+                    ax.minorticks_off()
+
+                else:
+                    middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
+
+                # Station Labels
+                ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=text_size)
+
+                if panel_order < (wiggle_num-1):  # plot x ticks for only last subplot
+                    ax.set_xticks([])
+
+                ax.tick_params(axis='both', which='major', labelsize=text_size)
+
+                index_wiggle_yticklabels += 1
+                panel_order += 1
+
+            else:
+
+                for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][index_signal]):
+
+                    if common_colorbar:
+                        ax = fig.add_subplot(gs[panel_order, 0])
+                        plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal][index_dimension],
+                                                df[mesh_frequency_label_individual][index_signal][index_dimension],
+                                                df[mesh_tfr_label_individual][index_signal][index_dimension],
+                                                vmin=tfr_min_total,
+                                                vmax=tfr_max_total,
+                                                cmap=color_map,
+                                                edgecolor='face',
+                                                shading="auto",
+                                                snap=True)
+                    else:
+
+                        panel_n -= 1
+                        if type(mesh_color_scaling) == str:
+                            mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal][index_dimension],
+                                                                                      mesh_color_scaling,
+                                                                                      mesh_color_range)
+                        else:
+                            mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal][index_dimension],
+                                                                                      mesh_color_scaling[panel_n],
+                                                                                      mesh_color_range[panel_n])
+
+                        ax = fig.add_subplot(gs[panel_order])
+                        plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal][index_dimension],
+                                                df[mesh_frequency_label_individual][index_signal][index_dimension],
+                                                df[mesh_tfr_label_individual][index_signal][index_dimension],
+                                                vmin=mesh_color_min,
+                                                vmax=mesh_color_max,
+                                                cmap=color_map,
+                                                edgecolor='face',
+                                                shading="auto",
+                                                snap=True)
+
+                    # set ax limits
+                    plt.xlim(x_lim_min_total, x_lim_max_total)
+
+                    # This is a very useful bit of code
+                    _, _, frequency_fix_ymin, frequency_fix_ymax = \
+                        pnl.mesh_time_frequency_edges(frequency=df[mesh_frequency_label_individual][index_signal][index_dimension],
+                                                      time=df[mesh_time_label_individual][index_signal][index_dimension],
+                                                      frequency_ymin=frequency_hz_ymin,
+                                                      frequency_ymax=frequency_hz_ymax,
+                                                      frequency_scaling=frequency_scaling)
+
+                    plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+
+                    # set ytick labels and y scale
+                    if frequency_scaling == "log":
+                        ax.set_yscale("log", subs=None)
+                        middle_point_diff = np.sqrt(frequency_fix_ymax*frequency_fix_ymin)
+                        ax.minorticks_off()
+
+                    else:
+                        middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
+
+                    # Station Labels
+                    ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                    ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=text_size)
+
+                    if panel_order < (wiggle_num-1):  # plot x ticks for only last subplot
+                        ax.set_xticks([])
+
+                    ax.tick_params(axis='both', which='major', labelsize=text_size)
+
+                    panel_order += 1
+                    index_wiggle_yticklabels += 1
 
     # Find limits of axes subplot to create macro axes
     x0 = min([ax.get_position().x0 for ax in fig.axes])
@@ -148,159 +332,294 @@ def plot_mesh_pandas(df: pd.DataFrame,
         plt.title(fig_title, size=text_size + 2, y=1.05)
 
     # Format colorbar
-    cax = fig.add_subplot(gs[:, 1])
-    mesh_panel_cbar: Colorbar = fig.colorbar(mappable=plotted, cax=cax)
-    mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
-    mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
+    if common_colorbar:
+        cax = fig.add_subplot(gs[:, 1])
+        mesh_panel_cbar: Colorbar = fig.colorbar(mappable=plotted, cax=cax)
+        mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
+        mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
 
     # Adjust overall plot to maximize figure space for press
     # plt.subplots_adjust(left=0.2, top=0.9)
     # plt.subplots_adjust(left=0.1, top=0.9)
 
-def plot_mesh_sensors_pandas(df: pd.DataFrame,
-                             mesh_time_label: str,
-                             mesh_frequency_label: str,
-                             mesh_tfr_label: str,
-                             t0_sig_epoch_s: float,
-                             sig_id_label: str,
-                             fig_title_show: bool = True,
-                             fig_title: str = " ",
-                             frequency_scaling: str = "log",
-                             frequency_hz_ymin: float = rpd_scales.Slice.FU,
-                             frequency_hz_ymax: float = rpd_scales.Slice.F0,
-                             mesh_color_scaling: Union[List[str], str] = 'auto',
-                             mesh_color_range: Union[List[float], float] = 15):
 
-    """
-     Plots spectrogram for all signals in df
-
-     :param df: input pandas data frame
-     :param mesh_time_label: string for the mesh time column name in df
-     :param mesh_frequency_label: string for the mesh frequency column name in df
-     :param mesh_tfr_label: string for the mesh tfr column name in df
-     :param t0_sig_epoch_s: epoch time in seconds of first timestamp
-     :param sig_id_label: string for column name with station ids in df
-     :param fig_title_show: include a title in the figure. Default is True
-     :param fig_title: figure title label
-     :param frequency_scaling: "log" or "lin". Default is "log"
-     :param frequency_hz_ymin: y axis min lim
-     :param frequency_hz_ymax: y axis max lim
-
-     :return: plot
-     """
-
-    wiggle_num = len(df.index)  # total number of signal that will be displayed
-
-    if sig_id_label == "index":
-        wiggle_yticklabel = df.index
-    else:
-        wiggle_yticklabel = df[sig_id_label]
-
-    # loop to find xlim and tfr global max/min
-    x_lim_min = np.empty(wiggle_num)
-    x_lim_max = np.empty(wiggle_num)
-    # tfr_min = np.empty(wiggle_num)
-    # tfr_max = np.empty(wiggle_num)
-
-    for index_element in range(wiggle_num):
-        x_lim_min[index_element] = np.min(df[mesh_time_label][index_element])
-        x_lim_max[index_element] = np.max(df[mesh_time_label][index_element])
-        # tfr_min[index_element] = np.min(df[mesh_tfr_label][index_element])
-        # tfr_max[index_element] = np.max(df[mesh_tfr_label][index_element])
-
-    # global min/max limits xlim
-    x_lim_min_total = np.min(x_lim_min)
-    x_lim_max_total = np.max(x_lim_max)
-
-    # global min/max limits tfr
-    # tfr_min_total = np.min(tfr_min)
-    # tfr_max_total = np.max(tfr_max) - 3
-    # tfr_min_total = tfr_max_total - 18
-
-    # start of figure
-    fig = plt.figure(figsize=(figure_size_x, figure_size_y))
-    # This can be optimized/automated
-    gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
-
-    panel_n = len(df.index)
-    for panel_order, index_signal in enumerate(reversed(df.index)):
-        panel_n -= 1
-        if type(mesh_color_scaling) == str:
-            mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label][index_signal],
-                                                                      mesh_color_scaling,
-                                                                      mesh_color_range)
-        else:
-            mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label][index_signal],
-                                                                      mesh_color_scaling[panel_n],
-                                                                      mesh_color_range[panel_n])
-
-        ax = fig.add_subplot(gs[panel_order])
-        plotted = ax.pcolormesh(df[mesh_time_label][index_signal],
-                                df[mesh_frequency_label][index_signal],
-                                df[mesh_tfr_label][index_signal],
-                                vmin=mesh_color_min,
-                                vmax=mesh_color_max,
-                                cmap=color_map,
-                                edgecolor='face',
-                                shading="auto",
-                                snap=True)
-
-        # set ax limits
-        plt.xlim(x_lim_min_total, x_lim_max_total)
-
-        # This is a very useful bit of code
-        _, _, frequency_fix_ymin, frequency_fix_ymax = \
-            pnl.mesh_time_frequency_edges(frequency=df[mesh_frequency_label][index_signal],
-                                          time=df[mesh_time_label][index_signal],
-                                          frequency_ymin=frequency_hz_ymin,
-                                          frequency_ymax=frequency_hz_ymax,
-                                          frequency_scaling=frequency_scaling)
-
-        plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
-
-        # set ytick labels and y scale
-        if frequency_scaling == "log":
-            ax.set_yscale("log", subs=None)
-            middle_point_diff = np.sqrt(frequency_fix_ymax*frequency_fix_ymin)
-            ax.minorticks_off()
-
-        else:
-            middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
-
-        # Station Labels
-        ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-        ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=text_size)
-
-        if panel_order < (wiggle_num-1):  # plot x ticks for only last subplot
-            ax.set_xticks([])
-
-        ax.tick_params(axis='both', which='major', labelsize=text_size)
-
-    # Find limits of axes subplot to create macro axes
-    x0 = min([ax.get_position().x0 for ax in fig.axes])
-    y0 = min([ax.get_position().y0 for ax in fig.axes])
-    x1 = max([ax.get_position().x1 for ax in fig.axes])
-    y1 = max([ax.get_position().y1 for ax in fig.axes])
-
-    # Hide axes for common x and y labels
-    plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
-    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-
-    # Common x and y labels
-    plt.xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
-               size=text_size, labelpad=10)
-    if fig_title_show:
-        plt.title(fig_title, size=text_size + 2, y=1.05)
-
-    # Format colorbar
-    # cax = fig.add_subplot(gs[:, 1])
-    # mesh_panel_cbar: Colorbar = fig.colorbar(mappable=plotted, cax=cax)
-    # mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
-    # mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
-
-    # Adjust overall plot to maximize figure space for press
-    # plt.subplots_adjust(left=0.2, top=0.9)
-    # plt.subplots_adjust(left=0.1, top=0.9)
+# def plot_mesh_pandas(df: pd.DataFrame,
+#                      mesh_time_label: str,
+#                      mesh_frequency_label: str,
+#                      mesh_tfr_label: str,
+#                      t0_sig_epoch_s: float,
+#                      sig_id_label: str,
+#                      fig_title_show: bool = True,
+#                      fig_title: str = " ",
+#                      frequency_scaling: str = "log",
+#                      frequency_hz_ymin: float = rpd_scales.Slice.FU,
+#                      frequency_hz_ymax: float = rpd_scales.Slice.F0):
+#
+#     """
+#      Plots spectrogram for all signals in df
+#
+#      :param df: input pandas data frame
+#      :param mesh_time_label: string for the mesh time column name in df
+#      :param mesh_frequency_label: string for the mesh frequency column name in df
+#      :param mesh_tfr_label: string for the mesh tfr column name in df
+#      :param t0_sig_epoch_s: epoch time in seconds of first timestamp
+#      :param sig_id_label: string for column name with station ids in df
+#      :param fig_title_show: include a title in the figure. Default is True
+#      :param fig_title: figure title label
+#      :param frequency_scaling: "log" or "lin". Default is "log"
+#      :param frequency_hz_ymin: y axis min lim
+#      :param frequency_hz_ymax: y axis max lim
+#
+#      :return: plot
+#      """
+#
+#     wiggle_num = len(df.index)  # total number of signal that will be displayed
+#
+#     if sig_id_label == "index":
+#         wiggle_yticklabel = df.index
+#     else:
+#         wiggle_yticklabel = df[sig_id_label]
+#
+#     # loop to find xlim and tfr global max/min
+#     x_lim_min = np.empty(wiggle_num)
+#     x_lim_max = np.empty(wiggle_num)
+#     tfr_min = np.empty(wiggle_num)
+#     tfr_max = np.empty(wiggle_num)
+#
+#     for index_element in range(wiggle_num):
+#         x_lim_min[index_element] = np.min(df[mesh_time_label][index_element])
+#         x_lim_max[index_element] = np.max(df[mesh_time_label][index_element])
+#         tfr_min[index_element] = np.min(df[mesh_tfr_label][index_element])
+#         tfr_max[index_element] = np.max(df[mesh_tfr_label][index_element])
+#
+#     # global min/max limits xlim
+#     x_lim_min_total = np.min(x_lim_min)
+#     x_lim_max_total = np.max(x_lim_max)
+#
+#     # global min/max limits tfr
+#     # tfr_min_total = np.min(tfr_min)
+#     tfr_max_total = np.max(tfr_max) - 3
+#     tfr_min_total = tfr_max_total - 18
+#
+#     # start of figure
+#     fig = plt.figure(figsize=(figure_size_x, figure_size_y))
+#     # This can be optimized/automated
+#     gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
+#
+#     for panel_order, index_signal in enumerate(reversed(df.index)):
+#         ax = fig.add_subplot(gs[panel_order, 0])
+#         plotted = ax.pcolormesh(df[mesh_time_label][index_signal],
+#                                 df[mesh_frequency_label][index_signal],
+#                                 df[mesh_tfr_label][index_signal],
+#                                 vmin=tfr_min_total,
+#                                 vmax=tfr_max_total,
+#                                 cmap=color_map,
+#                                 edgecolor='face',
+#                                 shading="auto",
+#                                 snap=True)
+#
+#         # set ax limits
+#         plt.xlim(x_lim_min_total, x_lim_max_total)
+#
+#         # This is a very useful bit of code
+#         _, _, frequency_fix_ymin, frequency_fix_ymax = \
+#             pnl.mesh_time_frequency_edges(frequency=df[mesh_frequency_label][index_signal],
+#                                           time=df[mesh_time_label][index_signal],
+#                                           frequency_ymin=frequency_hz_ymin,
+#                                           frequency_ymax=frequency_hz_ymax,
+#                                           frequency_scaling=frequency_scaling)
+#
+#         plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+#
+#         # set ytick labels and y scale
+#         if frequency_scaling == "log":
+#             ax.set_yscale("log", subs=None)
+#             middle_point_diff = np.sqrt(frequency_fix_ymax*frequency_fix_ymin)
+#             ax.minorticks_off()
+#
+#         else:
+#             middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
+#
+#         # Station Labels
+#         ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+#         ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=text_size)
+#
+#         if panel_order < (wiggle_num-1):  # plot x ticks for only last subplot
+#             ax.set_xticks([])
+#
+#         ax.tick_params(axis='both', which='major', labelsize=text_size)
+#
+#     # Find limits of axes subplot to create macro axes
+#     x0 = min([ax.get_position().x0 for ax in fig.axes])
+#     y0 = min([ax.get_position().y0 for ax in fig.axes])
+#     x1 = max([ax.get_position().x1 for ax in fig.axes])
+#     y1 = max([ax.get_position().y1 for ax in fig.axes])
+#
+#     # Hide axes for common x and y labels
+#     plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
+#     plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+#
+#     # Common x and y labels
+#     plt.xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
+#                size=text_size, labelpad=10)
+#     if fig_title_show:
+#         plt.title(fig_title, size=text_size + 2, y=1.05)
+#
+#     # Format colorbar
+#     cax = fig.add_subplot(gs[:, 1])
+#     mesh_panel_cbar: Colorbar = fig.colorbar(mappable=plotted, cax=cax)
+#     mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
+#     mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
+#
+#     # Adjust overall plot to maximize figure space for press
+#     # plt.subplots_adjust(left=0.2, top=0.9)
+#     # plt.subplots_adjust(left=0.1, top=0.9)
+#
+#
+# def plot_mesh_sensors_pandas(df: pd.DataFrame,
+#                              mesh_time_label: str,
+#                              mesh_frequency_label: str,
+#                              mesh_tfr_label: str,
+#                              t0_sig_epoch_s: float,
+#                              sig_id_label: str,
+#                              fig_title_show: bool = True,
+#                              fig_title: str = " ",
+#                              frequency_scaling: str = "log",
+#                              frequency_hz_ymin: float = rpd_scales.Slice.FU,
+#                              frequency_hz_ymax: float = rpd_scales.Slice.F0,
+#                              mesh_color_scaling: Union[List[str], str] = 'auto',
+#                              mesh_color_range: Union[List[float], float] = 15):
+#
+#     """
+#      Plots spectrogram for all signals in df
+#
+#      :param df: input pandas data frame
+#      :param mesh_time_label: string for the mesh time column name in df
+#      :param mesh_frequency_label: string for the mesh frequency column name in df
+#      :param mesh_tfr_label: string for the mesh tfr column name in df
+#      :param t0_sig_epoch_s: epoch time in seconds of first timestamp
+#      :param sig_id_label: string for column name with station ids in df
+#      :param fig_title_show: include a title in the figure. Default is True
+#      :param fig_title: figure title label
+#      :param frequency_scaling: "log" or "lin". Default is "log"
+#      :param frequency_hz_ymin: y axis min lim
+#      :param frequency_hz_ymax: y axis max lim
+#
+#      :return: plot
+#      """
+#
+#     wiggle_num = len(df.index)  # total number of signal that will be displayed
+#
+#     if sig_id_label == "index":
+#         wiggle_yticklabel = df.index
+#     else:
+#         wiggle_yticklabel = df[sig_id_label]
+#
+#     # loop to find xlim and tfr global max/min
+#     x_lim_min = np.empty(wiggle_num)
+#     x_lim_max = np.empty(wiggle_num)
+#     # tfr_min = np.empty(wiggle_num)
+#     # tfr_max = np.empty(wiggle_num)
+#
+#     for index_element in range(wiggle_num):
+#         x_lim_min[index_element] = np.min(df[mesh_time_label][index_element])
+#         x_lim_max[index_element] = np.max(df[mesh_time_label][index_element])
+#         # tfr_min[index_element] = np.min(df[mesh_tfr_label][index_element])
+#         # tfr_max[index_element] = np.max(df[mesh_tfr_label][index_element])
+#
+#     # global min/max limits xlim
+#     x_lim_min_total = np.min(x_lim_min)
+#     x_lim_max_total = np.max(x_lim_max)
+#
+#     # global min/max limits tfr
+#     # tfr_min_total = np.min(tfr_min)
+#     # tfr_max_total = np.max(tfr_max) - 3
+#     # tfr_min_total = tfr_max_total - 18
+#
+#     # start of figure
+#     fig = plt.figure(figsize=(figure_size_x, figure_size_y))
+#     # This can be optimized/automated
+#     gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
+#
+#     panel_n = len(df.index)
+#     for panel_order, index_signal in enumerate(reversed(df.index)):
+#         panel_n -= 1
+#         if type(mesh_color_scaling) == str:
+#             mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label][index_signal],
+#                                                                       mesh_color_scaling,
+#                                                                       mesh_color_range)
+#         else:
+#             mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label][index_signal],
+#                                                                       mesh_color_scaling[panel_n],
+#                                                                       mesh_color_range[panel_n])
+#
+#         ax = fig.add_subplot(gs[panel_order])
+#         plotted = ax.pcolormesh(df[mesh_time_label][index_signal],
+#                                 df[mesh_frequency_label][index_signal],
+#                                 df[mesh_tfr_label][index_signal],
+#                                 vmin=mesh_color_min,
+#                                 vmax=mesh_color_max,
+#                                 cmap=color_map,
+#                                 edgecolor='face',
+#                                 shading="auto",
+#                                 snap=True)
+#
+#         # set ax limits
+#         plt.xlim(x_lim_min_total, x_lim_max_total)
+#
+#         # This is a very useful bit of code
+#         _, _, frequency_fix_ymin, frequency_fix_ymax = \
+#             pnl.mesh_time_frequency_edges(frequency=df[mesh_frequency_label][index_signal],
+#                                           time=df[mesh_time_label][index_signal],
+#                                           frequency_ymin=frequency_hz_ymin,
+#                                           frequency_ymax=frequency_hz_ymax,
+#                                           frequency_scaling=frequency_scaling)
+#
+#         plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+#
+#         # set ytick labels and y scale
+#         if frequency_scaling == "log":
+#             ax.set_yscale("log", subs=None)
+#             middle_point_diff = np.sqrt(frequency_fix_ymax*frequency_fix_ymin)
+#             ax.minorticks_off()
+#
+#         else:
+#             middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
+#
+#         # Station Labels
+#         ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+#         ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=text_size)
+#
+#         if panel_order < (wiggle_num-1):  # plot x ticks for only last subplot
+#             ax.set_xticks([])
+#
+#         ax.tick_params(axis='both', which='major', labelsize=text_size)
+#
+#     # Find limits of axes subplot to create macro axes
+#     x0 = min([ax.get_position().x0 for ax in fig.axes])
+#     y0 = min([ax.get_position().y0 for ax in fig.axes])
+#     x1 = max([ax.get_position().x1 for ax in fig.axes])
+#     y1 = max([ax.get_position().y1 for ax in fig.axes])
+#
+#     # Hide axes for common x and y labels
+#     plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
+#     plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+#
+#     # Common x and y labels
+#     plt.xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
+#                size=text_size, labelpad=10)
+#     if fig_title_show:
+#         plt.title(fig_title, size=text_size + 2, y=1.05)
+#
+#     # Format colorbar
+#     # cax = fig.add_subplot(gs[:, 1])
+#     # mesh_panel_cbar: Colorbar = fig.colorbar(mappable=plotted, cax=cax)
+#     # mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
+#     # mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
+#
+#     # Adjust overall plot to maximize figure space for press
+#     # plt.subplots_adjust(left=0.2, top=0.9)
+#     # plt.subplots_adjust(left=0.1, top=0.9)
 
 
 def plot_wiggles_pandas(df: pd.DataFrame,
@@ -380,8 +699,6 @@ def plot_wiggles_pandas(df: pd.DataFrame,
         x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
     ax1.set_xlabel(x_label, size=text_size)
     fig.tight_layout()
-
-
 
 
 def plot_sensor_wiggles_pandas(df: pd.DataFrame,
