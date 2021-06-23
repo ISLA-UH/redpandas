@@ -1,7 +1,7 @@
 """
 This module contains functions to integrate, and apply complimentary filters for phone orientation
 
-Last updated: 10 June 2021
+Last updated: 22 June 2021
 """
 
 import numpy as np
@@ -9,15 +9,56 @@ from scipy.integrate import cumulative_trapezoid
 from typing import List, Tuple
 
 
-def remove_dc_offset(sensor_wf: np.ndarray, start_loc: int, end_loc: int) -> np.ndarray:
+def remove_dc_offset(sensor_wf: np.ndarray, start_loc: int = None, end_loc: int = None) -> np.ndarray:
     """
     removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.
+    If start and end location is None, it uses the whole array, if one is given it will take the other to the max.
     :param sensor_wf: data to remove the "DC offset"
     :param start_loc: location of the start of the DC offset subset
     :param end_loc: location of the end of the DC offset subset
     :return: data with DC offset removed
     """
-    return sensor_wf - np.nanmean(sensor_wf[start_loc:end_loc])
+    if start_loc and end_loc is None:
+        removed = sensor_wf - np.nanmean(sensor_wf)
+    elif start_loc is None:
+        removed = sensor_wf - np.nanmean(sensor_wf[:end_loc])
+    elif end_loc is None:
+        removed = sensor_wf - np.nanmean(sensor_wf[start_loc:])
+    else:
+        removed = sensor_wf - np.nanmean(sensor_wf[start_loc:end_loc])
+    return removed
+
+
+def remove_dc_offset_s(timestamps_s: np.ndarray, sensor_wf: np.ndarray,
+                       start_s: int = None, end_s: int = None) -> np.ndarray:
+    """
+    removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.
+    If start and end time is None, it uses the whole array, if one is given it will take the other to the max.
+    :param timestamps_s: timestamps corresponding to the data in seconds
+    :param sensor_wf: data to remove the "DC offset"
+    :param start_s: seconds from the first timestamp to use as the start of the range for the DC offset subset
+    :param end_s: seconds from the first timestamp to use as the end of the range for the DC offset subset
+    :return: data with DC offset removed
+    """
+    # adjust timestamps to be relative from the start
+    timestamps_s_adj = timestamps_s - timestamps_s[0]
+
+    # find location closest to the given start and end
+    if start_s and end_s is None:
+        start_loc = None
+        end_loc = None
+    elif start_s is None:
+        start_loc = None
+        end_loc = np.abs(timestamps_s_adj - end_s).argmin()
+    elif end_s is None:
+        start_loc = np.abs(timestamps_s_adj - start_s).argmin()
+        end_loc = None
+    else:
+        start_loc = np.abs(timestamps_s_adj - start_s).argmin()
+        end_loc = np.abs(timestamps_s_adj - end_s).argmin()
+
+    # use remove_dc_offset to find the offset
+    return remove_dc_offset(sensor_wf=sensor_wf, start_loc=start_loc, end_loc=end_loc)
 
 
 def integrate_cumtrapz(timestamps_s: np.ndarray, sensor_wf: np.ndarray, initial_value: float = 0) -> np.ndarray:
@@ -78,7 +119,8 @@ def get_roll_pitch_yaw_array(accelerometers: List) -> Tuple[np.ndarray, np.ndarr
     return np.array(roll_array), np.array(pitch_array), np.array(yaw_array)
 
 
-def complimentary_filtering(accelerometer_angle: np.ndarray, gyroscope_angle: np.ndarray, alpha: float) -> np.ndarray:
+def complimentary_filtering(accelerometer_angle: np.ndarray, gyroscope_angle: np.ndarray,
+                            smoothing_factor: float) -> np.ndarray:
     """
     Complimentary Filter for Accelereometer and Gyroscope.
     Returns filtered angle
@@ -86,8 +128,8 @@ def complimentary_filtering(accelerometer_angle: np.ndarray, gyroscope_angle: np
     http://blog.bitify.co.uk/2013/11/using-complementary-filter-to-combine.html
     :param accelerometer_angle: the calculated angle from the accelerometer (roll, pitch, yaw)
     :param gyroscope_angle: the calculated angle from the gyroscope (roll, pitch, yaw)
-    :param alpha: determines the sensitivity of the accelerometer
-    :return: roll_angle, pitch_angle
+    :param smoothing_factor: determines the sensitivity of the accelerometer
+    :return: filtered angle
     """
     # Get the change in gyroscope angle initiate with zero
     gyroscope_angle_change = np.diff(gyroscope_angle)
@@ -95,7 +137,7 @@ def complimentary_filtering(accelerometer_angle: np.ndarray, gyroscope_angle: np
     # Loop through the data to apply complimentary filter
     filtered_angle = gyroscope_angle
     for i in range(len(accelerometer_angle) - 1):
-        filtered_angle[i + 1] = alpha * (filtered_angle[i] + gyroscope_angle_change[i]) \
-                                + (1 - alpha) * accelerometer_angle[i + 1]
+        filtered_angle[i + 1] = smoothing_factor * (filtered_angle[i] + gyroscope_angle_change[i]) \
+                                + smoothing_factor * accelerometer_angle[i + 1]
 
     return filtered_angle
