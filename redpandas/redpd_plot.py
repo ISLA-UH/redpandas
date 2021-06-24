@@ -95,6 +95,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                     wiggle_num_list.append(1)
                 else:
                     wiggle_num_list.append(3)
+
                 for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][n]):
 
                     if type(sig_id_label) == str:
@@ -112,7 +113,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
     x_lim_min = np.empty(wiggle_num)
     x_lim_max = np.empty(wiggle_num)
 
-    if common_colorbar:
+    if common_colorbar is True:
         tfr_min = np.empty(wiggle_num)
         tfr_max = np.empty(wiggle_num)
 
@@ -127,21 +128,20 @@ def plot_mesh_pandas(df: pd.DataFrame,
                 x_lim_min[index_wiggle_num_total] = np.min(df[mesh_time_label_individual][index_element])
                 x_lim_max[index_wiggle_num_total] = np.max(df[mesh_time_label_individual][index_element])
 
-                if common_colorbar:
+                if common_colorbar is True:
                     tfr_min[index_wiggle_num_total] = np.min(df[mesh_tfr_label_individual][index_element])
                     tfr_max[index_wiggle_num_total] = np.max(df[mesh_tfr_label_individual][index_element])
 
                 index_wiggle_num_total += 1
 
             else:
-                index_wiggle_num_total = index_element
 
                 for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][index_element]):
 
                     x_lim_min[index_wiggle_num_total] = np.min(df[mesh_time_label_individual][index_element][index_dimension])
                     x_lim_max[index_wiggle_num_total] = np.max(df[mesh_time_label_individual][index_element][index_dimension])
 
-                    if common_colorbar:
+                    if common_colorbar is True:
                         tfr_min[index_wiggle_num_total] = np.min(df[mesh_tfr_label_individual][index_element][index_dimension])
                         tfr_max[index_wiggle_num_total] = np.max(df[mesh_tfr_label_individual][index_element][index_dimension])
 
@@ -151,7 +151,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
     x_lim_min_total = np.min(x_lim_min)
     x_lim_max_total = np.max(x_lim_max)
 
-    if common_colorbar:
+    if common_colorbar is True:
         # global min/max limits tfr
         # tfr_min_total = np.min(tfr_min)
         tfr_max_total = np.max(tfr_max) - 3
@@ -160,7 +160,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
     # start of figure
     fig = plt.figure(figsize=(figure_size_x, figure_size_y))
     # This can be optimized/automated
-    if common_colorbar:
+    if common_colorbar is True:
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
     else:
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
@@ -179,7 +179,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
             if df[mesh_tfr_label_individual][index_signal].ndim == 2:
 
-                if common_colorbar:
+                if common_colorbar is True:
                     ax = fig.add_subplot(gs[index_panel_order, 0])
                     plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal],
                                             df[mesh_frequency_label_individual][index_signal],
@@ -251,7 +251,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                 for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][index_signal]):
 
-                    if common_colorbar:
+                    if common_colorbar is True:
                         ax = fig.add_subplot(gs[index_panel_order, 0])
                         plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal][index_dimension],
                                                 df[mesh_frequency_label_individual][index_signal][index_dimension],
@@ -349,7 +349,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
             plt.subplots_adjust(top=0.95)
 
     # Format colorbar
-    if common_colorbar:
+    if common_colorbar is True:
         cax = fig.add_subplot(gs[:, 1])
         mesh_panel_cbar: Colorbar = fig.colorbar(mappable=plotted, cax=cax)
         mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
