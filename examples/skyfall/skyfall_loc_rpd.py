@@ -130,7 +130,7 @@ if __name__ == '__main__':
     plt.legend()
     plt.ylabel('Height, km')
     plt.xlabel('Pressure, kPa')
-    plt.title('Bounder Pressure vs Height')
+    # plt.title('Bounder Pressure vs Height')
 
     # Compute ENU projections
     txyzuvw_phone = \
@@ -165,11 +165,13 @@ if __name__ == '__main__':
 
     # Phone plots
     # 3D scatter plot, LAT LON
+    # title_str = "Skyfall Path, Phone"
+    title_str = ""
     geo_scatter.location_3d(x=phone_loc['location_longitude'],
                             y=phone_loc['location_latitude'],
                             z=phone_loc['location_altitude']*METERS_TO_KM,
                             color_guide=txyzuvw_phone['T_s']*SECONDS_TO_MINUTES,
-                            fig_title="Skyfall Path, Phone",
+                            fig_title=title_str,
                             x_label='Lat', y_label='Lon', z_label='Z, km',
                             color_label='Elapsed time, minutes',
                             dot_size=scatter_dot_size, color_map=scatter_colormap,
@@ -183,7 +185,7 @@ if __name__ == '__main__':
                               v=txyzuvw_phone['V_mps'],
                               w=txyzuvw_phone['W_mps'],
                               color_guide=txyzuvw_phone['T_s']*SECONDS_TO_MINUTES,
-                              fig_title="Skyfall Path, Phone",
+                              fig_title=title_str,
                               x_label='X, km', y_label='Y, km', z_label='Z, km',
                               color_label='Elapsed time, minutes',
                               dot_size=scatter_dot_size, color_map=scatter_colormap,
@@ -195,18 +197,20 @@ if __name__ == '__main__':
                             y=txyzuvw_bounder['Y_m']*METERS_TO_KM,
                             z=txyzuvw_bounder['Z_m']*METERS_TO_KM,
                             color_guide=txyzuvw_bounder['T_s']*SECONDS_TO_MINUTES,
-                            fig_title="Skyfall, Bounder",
+                            fig_title=title_str,
                             x_label='X, km', y_label='Y, km', z_label='Z, km',
                             color_label='Elapsed time, minutes',
                             dot_size=scatter_dot_size, color_map=scatter_colormap,
                             azimuth_degrees=-80, elevation_degrees=25)
     #
     # XYZ-P
+    # title_str = "Skyfall, Bounder"
+    title_str = ""
     geo_scatter.location_3d(x=txyzuvw_bounder['X_m']*METERS_TO_KM,
                             y=txyzuvw_bounder['Y_m']*METERS_TO_KM,
                             z=txyzuvw_bounder['Z_m']*METERS_TO_KM,
                             color_guide=bounder_loc['Pres_kPa'],
-                            fig_title="Skyfall, Bounder",
+                            fig_title=title_str,
                             x_label='X, km', y_label='Y, km', z_label='Z, km',
                             color_label='Pressure, kPa',
                             dot_size=scatter_dot_size, color_map=scatter_colormap,
@@ -217,7 +221,7 @@ if __name__ == '__main__':
                             y=txyzuvw_bounder['Y_m']*METERS_TO_KM,
                             z=txyzuvw_bounder['Z_m']*METERS_TO_KM,
                             color_guide=txyzuvw_bounder['Speed_mps'],
-                            fig_title="Skyfall, Bounder",
+                            fig_title=title_str,
                             x_label='X, km', y_label='Y, km', z_label='Z, km',
                             color_label='Speed, m/s',
                             dot_size=scatter_dot_size, color_map=scatter_colormap,
@@ -225,6 +229,8 @@ if __name__ == '__main__':
 
 
     # Overlay
+    # title_str = "Skyfall Path, Phone and Bounder"
+    title_str = ""
     geo_scatter.loc_overlay_3d(x1=bounder_loc['Lon_deg'],
                                y1=bounder_loc['Lat_deg'],
                                z1=bounder_loc['Alt_m']*METERS_TO_KM,
@@ -239,7 +245,7 @@ if __name__ == '__main__':
                                color2='b',
                                legend2='Phone',
                                alpha2=0.6,
-                               fig_title="Skyfall Path, Phone and Bounder",
+                               fig_title=title_str,
                                x_label='Lat', y_label='Lon', z_label='Z, km',
                                azimuth_degrees=-134, elevation_degrees=30)
 
