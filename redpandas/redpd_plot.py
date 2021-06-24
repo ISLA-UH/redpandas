@@ -2,7 +2,7 @@
 This module constains main utils for plotting RedPandas DataFrames
 
 Created: 23 March 2021
-Last updated: 10 June 2021
+Last updated: 24 June 2021
 """
 import datetime as dt
 from typing import List, Union
@@ -25,7 +25,6 @@ text_size = int(2.9*1080/scale)
 color_map = "inferno"  # 'hot_r'  # 'afmhot_r' #colormap for plotting
 
 
-# TODO MC: labels, annotate what each thing does
 def plot_mesh_pandas(df: pd.DataFrame,
                      mesh_time_label: Union[str, list],
                      mesh_frequency_label: Union[str, list],
@@ -61,6 +60,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :return: plot
      """
 
+    # Create List of mesh tfr to loop through later
+    # If given only one, aka a sting, make it a list of length 1
     if type(mesh_tfr_label) == str:
         mesh_tfr_label = [mesh_tfr_label]
     if type(mesh_time_label) == str:
@@ -74,37 +75,40 @@ def plot_mesh_pandas(df: pd.DataFrame,
         print("mesh_time_label, mesh_tfr_label, or mesh_frequency_label do not have the same length. Please check.")
         exit()
 
-    # Overall number of mesh panels in fig
-    wiggle_num_list = []
-    wiggle_yticklabel = []
+    # Determine overall number of mesh panels in fig
+    wiggle_num_list = []  # number of wiggles
+    wiggle_yticklabel = []  # name/y label of wiggles
     for mesh_n in range(len(mesh_tfr_label)):
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]
+        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
 
         for n in df.index:
-            if df[mesh_tfr_label_individual][n].ndim == 2:
-                wiggle_num_list.append(1)
+            if df[mesh_tfr_label_individual][n].ndim == 2:  # aka audio
+                wiggle_num_list.append(1)  # append 1 wiggle cause it will only be one tfr panel
 
+                # Establish ylabel for wiggle
                 if type(sig_id_label) == str:
-                    if sig_id_label == "index":
+                    if sig_id_label == "index":  # if ylabel for wiggle is index station
                         wiggle_yticklabel.append(df.index[n])
                     else:
-                        wiggle_yticklabel.append(df[sig_id_label][n])
+                        wiggle_yticklabel.append(df[sig_id_label][n])  # if ylabel for wiggles is custom list
 
             else:
-                # Check if barometer, cause then only 1 mesh panel
+                # Check if barometer, cause then only 1 wiggle
                 if mesh_tfr_label_individual.find("pressure") == 0 or mesh_tfr_label_individual.find("bar") == 0:
                     wiggle_num_list.append(1)
-                else:
+                else:  # if not barometer, its is a 3c sensors aka gyroscope/accelerometer/magnetometer
                     wiggle_num_list.append(3)
 
                 for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][n]):
 
+                    # Establish ylabel for wiggle
                     if type(sig_id_label) == str:
-                        if sig_id_label == "index":
+                        if sig_id_label == "index":  # if ylabel for wiggle is index station
                             wiggle_yticklabel.append(df.index[n])
                         else:
-                            wiggle_yticklabel.append(df[sig_id_label][n])
+                            wiggle_yticklabel.append(df[sig_id_label][n])  # if ylabel for wiggles is custom list
 
+    # if wiggle_yticklabel is not index or a custom list of names, just take the column label name provided
     if len(wiggle_yticklabel) == 0:
         wiggle_yticklabel = sig_id_label
 
@@ -118,18 +122,21 @@ def plot_mesh_pandas(df: pd.DataFrame,
         tfr_min = np.empty(wiggle_num)
         tfr_max = np.empty(wiggle_num)
 
-    index_wiggle_num_total = 0
+    index_wiggle_num_total = 0  # index to keep track of which wiggle
     for mesh_n in range(len(mesh_tfr_label)):
 
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]
-        mesh_time_label_individual = mesh_time_label[mesh_n]
+        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
+        mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
 
         for index_element in df.index:
-            if df[mesh_tfr_label_individual][index_element].ndim == 2:
+
+            if df[mesh_tfr_label_individual][index_element].ndim == 2:  # aka audio
+                # Extract max/min x limit for each wiggle that will be plotted
                 x_lim_min[index_wiggle_num_total] = np.min(df[mesh_time_label_individual][index_element])
                 x_lim_max[index_wiggle_num_total] = np.max(df[mesh_time_label_individual][index_element])
 
                 if common_colorbar is True:
+                    # Extract max/min mesh tfr value for each wiggle that will be plotted
                     tfr_min[index_wiggle_num_total] = np.min(df[mesh_tfr_label_individual][index_element])
                     tfr_max[index_wiggle_num_total] = np.max(df[mesh_tfr_label_individual][index_element])
 
@@ -138,21 +145,22 @@ def plot_mesh_pandas(df: pd.DataFrame,
             else:
 
                 for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][index_element]):
-
+                    # Extract max/min x limit for each wiggle that will be plotted
                     x_lim_min[index_wiggle_num_total] = np.min(df[mesh_time_label_individual][index_element][index_dimension])
                     x_lim_max[index_wiggle_num_total] = np.max(df[mesh_time_label_individual][index_element][index_dimension])
 
                     if common_colorbar is True:
+                        # Extract max/min mesh tfr value for each wiggle that will be plotted
                         tfr_min[index_wiggle_num_total] = np.min(df[mesh_tfr_label_individual][index_element][index_dimension])
                         tfr_max[index_wiggle_num_total] = np.max(df[mesh_tfr_label_individual][index_element][index_dimension])
 
                     index_wiggle_num_total += 1
 
-    # global min/max limits xlim
+    # Determine global min/max x limits
     x_lim_min_total = np.min(x_lim_min)
     x_lim_max_total = np.max(x_lim_max)
 
-    if common_colorbar is True:
+    if common_colorbar is True:  # Determine global min/max mesh tfr limits
         # global min/max limits tfr
         # tfr_min_total = np.min(tfr_min)
         tfr_max_total = np.max(tfr_max) - 3
@@ -160,25 +168,26 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
     # start of figure
     fig = plt.figure(figsize=(figure_size_x, figure_size_y))
-    # This can be optimized/automated
-    if common_colorbar is True:
+    if common_colorbar is True:  # for colorbar, two columns in fig
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
     else:
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
 
-    # Start plotting each sensor
-    index_wiggle_yticklabels = 0
-    index_panel_order = wiggle_num - 1
-    index_mesh_color_scale_panel = 0
-    for mesh_n in range(len(mesh_tfr_label)):
+    # Start plotting each sensor/station
+    index_wiggle_yticklabels = 0  # index to keep track of which wiggle y label to apply
+    index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted
+    index_mesh_color_scale_panel = 0  # index to keep track of which mesh tfr color scale to apply if provided
 
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]
-        mesh_time_label_individual = mesh_time_label[mesh_n]
-        mesh_frequency_label_individual = mesh_frequency_label[mesh_n]
+    for mesh_n in range(len(mesh_tfr_label)):  # for each column label provided
 
+        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
+        mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
+        mesh_frequency_label_individual = mesh_frequency_label[mesh_n]  # individual mesh label from list
+
+        # loop to plot column label provided per station, reversed to match plot_wiggles
         for _, index_signal in enumerate(reversed(df.index)):
 
-            if df[mesh_tfr_label_individual][index_signal].ndim == 2:
+            if df[mesh_tfr_label_individual][index_signal].ndim == 2:  # aka audio wiggle
 
                 if common_colorbar is True:
                     ax = fig.add_subplot(gs[index_panel_order, 0])
@@ -192,7 +201,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                             shading="auto",
                                             snap=True)
                 else:
-                    # Color scaling
+                    # Color scaling calculation if colorbar False
                     if type(mesh_color_scaling) == str:
                         mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
                                                                                   mesh_color_scaling,
@@ -249,7 +258,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                 index_mesh_color_scale_panel += 1
 
             else:
-
+                # plot 3c sensors
                 for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][index_signal]):
 
                     if common_colorbar is True:
@@ -264,8 +273,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                 shading="auto",
                                                 snap=True)
                     else:
-
-                        # Color scaling
+                        # Color scaling calculation if colorbar False
                         if type(mesh_color_scaling) == str:
                             mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal][index_dimension],
                                                                                       mesh_color_scaling,
@@ -336,14 +344,14 @@ def plot_mesh_pandas(df: pd.DataFrame,
                size=text_size, labelpad=10)
     if fig_title_show:
         plt.title(fig_title, size=text_size + 2, y=1.05)
-        # Adjust overall plot to maximize figure space for press
+        # Adjust overall plot to maximize figure space for press if title on
         if common_colorbar is False:
             plt.subplots_adjust(left=0.1, right=0.97)
         else:
             plt.subplots_adjust(top=0.92)
 
     else:
-        # Adjust overall plot to maximize figure space for press
+        # Adjust overall plot to maximize figure space for press if title off
         if common_colorbar is False:
             plt.subplots_adjust(left=0.1, top=0.95, right=0.97)
         else:

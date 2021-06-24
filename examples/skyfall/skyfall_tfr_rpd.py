@@ -520,9 +520,8 @@ if __name__ == "__main__":
                                                 wf_color='midnightblue',
                                                 sensor_yticks_label_list=sensor_ticklabels_list)
 
-            # Plot TFR sensor wiggles
-            # TODO: find better method for TFR wiggle plot, current method is very hacky mashup of
-            #  plot_sensor_wiggles_pandas and plot_mesh_pandas
+
+
             # sensor_names_list = ["audio", "barometer", "accelerometer", "gyroscope", "magnetometer"]
             # df_skyfall_data_mesh_hack = pd.DataFrame(index=sensor_ticklabels_list,
             #                                          columns=["tfr_bits", "tfr_freq_hz", "tfr_time_s"])
@@ -593,6 +592,7 @@ if __name__ == "__main__":
             # TODO: To Sarah: this is the new plot_mesh_pandas that plots both sensors and one sensor/all stations.
             #  Feel free to clean commented code above/ adapt as you need, I was not sure what you wanted to keep -Meri
 
+            # Plot TFR sensor wiggles
             rpd_plot.plot_mesh_pandas(df=df_skyfall_data,
 
                                       mesh_time_label=[audio_tfr_time_s_label,
