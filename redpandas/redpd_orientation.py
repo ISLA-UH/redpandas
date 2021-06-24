@@ -93,6 +93,7 @@ def get_roll_pitch(accel_x: float, accel_y: float, accel_z: float) -> Tuple[floa
     # convert to degrees
     return roll, pitch
 
+
 def get_yaw(roll: float, pitch: float, mag_x: float, mag_y: float, mag_z: float):
     """
     Returns yaw based on roll / pitch data and the magnetometer data

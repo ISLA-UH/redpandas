@@ -23,7 +23,6 @@ if __name__ == "__main__":
     Last updated: 23 June 2021
     """
 
-    # TODO: same as loc_rpd
     # Skyfall example exclusive variables (from Bounder)
     ref_latitude_deg = 35.83728
     ref_longitude_deg = -115.57234
@@ -165,17 +164,17 @@ if __name__ == "__main__":
             gravity_x, linear_x = rpd_grav.get_gravity_and_linear_acceleration(
                 accelerometer=df_skyfall_data[accelerometer_data_raw_label][station][0],
                 sensor_sample_rate_hz=accelerometer_sample_rate,
-                low_pass_sample_rate_hz=4)
+                low_pass_sample_rate_hz=2)
 
             gravity_y, linear_y = rpd_grav.get_gravity_and_linear_acceleration(
                 accelerometer=df_skyfall_data[accelerometer_data_raw_label][station][1],
                 sensor_sample_rate_hz=accelerometer_sample_rate,
-                low_pass_sample_rate_hz=4)
+                low_pass_sample_rate_hz=2)
 
             gravity_z, linear_z = rpd_grav.get_gravity_and_linear_acceleration(
                 accelerometer=df_skyfall_data[accelerometer_data_raw_label][station][2],
                 sensor_sample_rate_hz=accelerometer_sample_rate,
-                low_pass_sample_rate_hz=4)
+                low_pass_sample_rate_hz=2)
 
             # Plot 3c acceleration gravity waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
