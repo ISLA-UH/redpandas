@@ -32,7 +32,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      t0_sig_epoch_s: float,
                      sig_id_label: Union[str, list],
                      fig_title_show: bool = True,
-                     fig_title: str = " ",
+                     fig_title: str = "STFT",
                      frequency_scaling: str = "log",
                      frequency_hz_ymin: float = rpd_scales.Slice.FU,
                      frequency_hz_ymax: float = rpd_scales.Slice.F0,
@@ -44,9 +44,9 @@ def plot_mesh_pandas(df: pd.DataFrame,
      Plots spectrogram for all signals in df
 
      :param df: input pandas data frame
-     :param mesh_time_label: string for the mesh time column name in df
-     :param mesh_frequency_label: string for the mesh frequency column name in df
-     :param mesh_tfr_label: string for the mesh tfr column name in df
+     :param mesh_time_label: string for the mesh time column name in df. List of strings for multiple
+     :param mesh_frequency_label: string for the mesh frequency column name in df. List of strings for multiple
+     :param mesh_tfr_label: string for the mesh tfr column name in df. List of strings for multiple
      :param t0_sig_epoch_s: epoch time in seconds of first timestamp
      :param sig_id_label: string for column name with station ids in df
      :param fig_title_show: include a title in the figure. Default is True
@@ -54,9 +54,9 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param frequency_scaling: "log" or "lin". Default is "log"
      :param frequency_hz_ymin: y axis min lim
      :param frequency_hz_ymax: y axis max lim
-     :param common_colorbar: Default is True #TODO MC: Complete me
-     :param mesh_color_scaling: Default is 'auto' #TODO MC: Complete me
-     :param mesh_color_range: Default is 15 #TODO MC: Complete me
+     :param common_colorbar: display a colorbar for all mesh panels. Default is True
+     :param mesh_color_scaling: colorbar scaling, "auto" or "range". Default is 'auto'
+     :param mesh_color_range: Default is 15
      :return: plot
      """
 
@@ -67,7 +67,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
     if type(mesh_frequency_label) == str:
         mesh_frequency_label = [mesh_frequency_label]
 
-    # Chekc mesh, time and frequency are the same length:
+    # Check mesh, time and frequency are the same length:
     if len(mesh_tfr_label) != len(mesh_time_label) or len(mesh_tfr_label) != len(mesh_frequency_label) or \
             len(mesh_time_label) != len(mesh_frequency_label):
         print("mesh_time_label, mesh_tfr_label, or mesh_frequency_label do not have the same length. Please check.")
@@ -90,7 +90,11 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         wiggle_yticklabel.append(df[sig_id_label][n])
 
             else:
-                wiggle_num_list.append(3)
+                # Check if barometer, cause then only 1 mesh panel
+                if mesh_tfr_label_individual.find("pressure") == 0 or mesh_tfr_label_individual.find("bar") == 0:
+                    wiggle_num_list.append(1)
+                else:
+                    wiggle_num_list.append(3)
                 for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][n]):
 
                     if type(sig_id_label) == str:
@@ -163,20 +167,20 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
     # Start plotting each sensor
     index_wiggle_yticklabels = 0
-    panel_order = 0
+    index_panel_order = wiggle_num - 1
+    index_mesh_color_scale_panel = 0
     for mesh_n in range(len(mesh_tfr_label)):
 
         mesh_tfr_label_individual = mesh_tfr_label[mesh_n]
         mesh_time_label_individual = mesh_time_label[mesh_n]
         mesh_frequency_label_individual = mesh_frequency_label[mesh_n]
 
-        panel_n = wiggle_num
         for _, index_signal in enumerate(reversed(df.index)):
 
             if df[mesh_tfr_label_individual][index_signal].ndim == 2:
 
                 if common_colorbar:
-                    ax = fig.add_subplot(gs[panel_order, 0])
+                    ax = fig.add_subplot(gs[index_panel_order, 0])
                     plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal],
                                             df[mesh_frequency_label_individual][index_signal],
                                             df[mesh_tfr_label_individual][index_signal],
@@ -188,17 +192,16 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                             snap=True)
                 else:
                     # Color scaling
-                    panel_n -= 1
                     if type(mesh_color_scaling) == str:
                         mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
                                                                                   mesh_color_scaling,
                                                                                   mesh_color_range)
                     else:
                         mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
-                                                                                  mesh_color_scaling[panel_n],
-                                                                                  mesh_color_range[panel_n])
+                                                                                  mesh_color_scaling[index_mesh_color_scale_panel],
+                                                                                  mesh_color_range[index_mesh_color_scale_panel])
 
-                    ax = fig.add_subplot(gs[panel_order])
+                    ax = fig.add_subplot(gs[index_panel_order])
                     plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal],
                                             df[mesh_frequency_label_individual][index_signal],
                                             df[mesh_tfr_label_individual][index_signal],
@@ -235,20 +238,21 @@ def plot_mesh_pandas(df: pd.DataFrame,
                 ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                 ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=text_size)
 
-                if panel_order < (wiggle_num-1):  # plot x ticks for only last subplot
+                if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                     ax.set_xticks([])
 
                 ax.tick_params(axis='both', which='major', labelsize=text_size)
 
                 index_wiggle_yticklabels += 1
-                panel_order += 1
+                index_panel_order -= 1
+                index_mesh_color_scale_panel += 1
 
             else:
 
                 for index_dimension, _ in enumerate(df[mesh_tfr_label_individual][index_signal]):
 
                     if common_colorbar:
-                        ax = fig.add_subplot(gs[panel_order, 0])
+                        ax = fig.add_subplot(gs[index_panel_order, 0])
                         plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal][index_dimension],
                                                 df[mesh_frequency_label_individual][index_signal][index_dimension],
                                                 df[mesh_tfr_label_individual][index_signal][index_dimension],
@@ -260,17 +264,17 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                 snap=True)
                     else:
 
-                        panel_n -= 1
+                        # Color scaling
                         if type(mesh_color_scaling) == str:
                             mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal][index_dimension],
                                                                                       mesh_color_scaling,
                                                                                       mesh_color_range)
                         else:
                             mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal][index_dimension],
-                                                                                      mesh_color_scaling[panel_n],
-                                                                                      mesh_color_range[panel_n])
+                                                                                      mesh_color_scaling[index_mesh_color_scale_panel],
+                                                                                      mesh_color_range[index_mesh_color_scale_panel])
 
-                        ax = fig.add_subplot(gs[panel_order])
+                        ax = fig.add_subplot(gs[index_panel_order])
                         plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal][index_dimension],
                                                 df[mesh_frequency_label_individual][index_signal][index_dimension],
                                                 df[mesh_tfr_label_individual][index_signal][index_dimension],
@@ -307,12 +311,13 @@ def plot_mesh_pandas(df: pd.DataFrame,
                     ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                     ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=text_size)
 
-                    if panel_order < (wiggle_num-1):  # plot x ticks for only last subplot
+                    if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                         ax.set_xticks([])
 
                     ax.tick_params(axis='both', which='major', labelsize=text_size)
 
-                    panel_order += 1
+                    index_panel_order -= 1
+                    index_mesh_color_scale_panel += 1
                     index_wiggle_yticklabels += 1
 
     # Find limits of axes subplot to create macro axes
@@ -330,6 +335,18 @@ def plot_mesh_pandas(df: pd.DataFrame,
                size=text_size, labelpad=10)
     if fig_title_show:
         plt.title(fig_title, size=text_size + 2, y=1.05)
+        # Adjust overall plot to maximize figure space for press
+        if common_colorbar is False:
+            plt.subplots_adjust(left=0.1, right=0.97)
+        else:
+            plt.subplots_adjust(top=0.92)
+
+    else:
+        # Adjust overall plot to maximize figure space for press
+        if common_colorbar is False:
+            plt.subplots_adjust(left=0.1, top=0.95, right=0.97)
+        else:
+            plt.subplots_adjust(top=0.95)
 
     # Format colorbar
     if common_colorbar:
@@ -337,11 +354,6 @@ def plot_mesh_pandas(df: pd.DataFrame,
         mesh_panel_cbar: Colorbar = fig.colorbar(mappable=plotted, cax=cax)
         mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
         mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
-
-    # Adjust overall plot to maximize figure space for press
-    # plt.subplots_adjust(left=0.2, top=0.9)
-    # plt.subplots_adjust(left=0.1, top=0.9)
-
 
 # def plot_mesh_pandas(df: pd.DataFrame,
 #                      mesh_time_label: str,

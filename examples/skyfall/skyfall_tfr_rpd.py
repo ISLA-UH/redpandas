@@ -523,55 +523,55 @@ if __name__ == "__main__":
             # Plot TFR sensor wiggles
             # TODO: find better method for TFR wiggle plot, current method is very hacky mashup of
             #  plot_sensor_wiggles_pandas and plot_mesh_pandas
-            sensor_names_list = ["audio", "barometer", "accelerometer", "gyroscope", "magnetometer"]
-            df_skyfall_data_mesh_hack = pd.DataFrame(index=sensor_ticklabels_list,
-                                                     columns=["tfr_bits", "tfr_freq_hz", "tfr_time_s"])
+            # sensor_names_list = ["audio", "barometer", "accelerometer", "gyroscope", "magnetometer"]
+            # df_skyfall_data_mesh_hack = pd.DataFrame(index=sensor_ticklabels_list,
+            #                                          columns=["tfr_bits", "tfr_freq_hz", "tfr_time_s"])
 
-            mesh_color_scaling = []
-            mesh_color_range = []
-
-            n_sensors = len(sensor_names_list)
-            n_channels = len(sensor_ticklabels_list)
-            i, j = 0, 0
-            while i < n_sensors:
-                sensor_tfr_bits_label = f"{sensor_names_list[i]}_tfr_bits"
-                sensor_tfr_freq_hz_label = f"{sensor_names_list[i]}_tfr_frequency_hz"
-                sensor_tfr_time_s_label = f"{sensor_names_list[i]}_tfr_time_s"
-                if sensor_names_list[i] not in ["audio", "barometer"]:
-                    for k in range(3):
-                        df_skyfall_data_mesh_hack["tfr_bits"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_bits_label][station][k]
-                        df_skyfall_data_mesh_hack["tfr_freq_hz"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_freq_hz_label][station][k]
-                        df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_time_s_label][station][k]
-                        j += 1
-                        mesh_color_scaling.append('range')
-                        mesh_color_range.append(18.)
-                    i += 1
-                else:
-                    if df_skyfall_data[sensor_column_label_list[i]][station].ndim == 1:
-                        df_skyfall_data_mesh_hack["tfr_bits"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_bits_label][station]
-                        df_skyfall_data_mesh_hack["tfr_freq_hz"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_freq_hz_label][station]
-                        df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_time_s_label][station]
-                        mesh_color_scaling.append('range')
-                        mesh_color_range.append(21.)
-                    else:
-                        df_skyfall_data_mesh_hack["tfr_bits"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_bits_label][station][0]
-                        df_skyfall_data_mesh_hack["tfr_freq_hz"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_freq_hz_label][station][0]
-                        df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
-                            df_skyfall_data[sensor_tfr_time_s_label][station][0]
-                        mesh_color_scaling.append('range')
-                        mesh_color_range.append(18.)
-                    j += 1
-                    i += 1
-
-            df_skyfall_data_mesh_hack["tick_labels"] = sensor_ticklabels_list
+            # mesh_color_scaling = []
+            # mesh_color_range = []
+            #
+            # n_sensors = len(sensor_names_list)
+            # n_channels = len(sensor_ticklabels_list)
+            # i, j = 0, 0
+            # while i < n_sensors:
+            #     sensor_tfr_bits_label = f"{sensor_names_list[i]}_tfr_bits"
+            #     sensor_tfr_freq_hz_label = f"{sensor_names_list[i]}_tfr_frequency_hz"
+            #     sensor_tfr_time_s_label = f"{sensor_names_list[i]}_tfr_time_s"
+            #     if sensor_names_list[i] not in ["audio", "barometer"]:
+            #         for k in range(3):
+            #             df_skyfall_data_mesh_hack["tfr_bits"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_bits_label][station][k]
+            #             df_skyfall_data_mesh_hack["tfr_freq_hz"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_freq_hz_label][station][k]
+            #             df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_time_s_label][station][k]
+            #             j += 1
+            #             mesh_color_scaling.append('range')
+            #             mesh_color_range.append(18.)
+            #         i += 1
+            #     else:
+            #         if df_skyfall_data[sensor_column_label_list[i]][station].ndim == 1:
+            #             df_skyfall_data_mesh_hack["tfr_bits"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_bits_label][station]
+            #             df_skyfall_data_mesh_hack["tfr_freq_hz"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_freq_hz_label][station]
+            #             df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_time_s_label][station]
+            #             mesh_color_scaling.append('range')
+            #             mesh_color_range.append(21.)
+            #         else:
+            #             df_skyfall_data_mesh_hack["tfr_bits"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_bits_label][station][0]
+            #             df_skyfall_data_mesh_hack["tfr_freq_hz"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_freq_hz_label][station][0]
+            #             df_skyfall_data_mesh_hack["tfr_time_s"][sensor_ticklabels_list[j]] = \
+            #                 df_skyfall_data[sensor_tfr_time_s_label][station][0]
+            #             mesh_color_scaling.append('range')
+            #             mesh_color_range.append(18.)
+            #         j += 1
+            #         i += 1
+            #
+            # df_skyfall_data_mesh_hack["tick_labels"] = sensor_ticklabels_list
 
             # rpd_plot.plot_mesh_pandas(df=df_skyfall_data_mesh_hack,
             #                           mesh_time_label="tfr_time_s",
@@ -580,8 +580,6 @@ if __name__ == "__main__":
             #                           t0_sig_epoch_s=event_reference_time_epoch_s,
             #                           sig_id_label="tick_labels",
             #                           fig_title=tfr_type.upper())
-            # TODO: MC check three component sensors for plot_mesh, also same for plot_mesh_sensors, white space in
-            #  plot_mesh_sensors, combine plot_mesh with plot_mesh_sensors (?)
             # rpd_plot.plot_mesh_sensors_pandas(df=df_skyfall_data_mesh_hack,
             #                                   mesh_time_label="tfr_time_s",
             #                                   mesh_tfr_label="tfr_bits",
@@ -592,18 +590,48 @@ if __name__ == "__main__":
             #                                   mesh_color_scaling=mesh_color_scaling,
             #                                   mesh_color_range=mesh_color_range)
 
+            # TODO: To Sarah: this is the new plot_mesh_pandas that plots both sensors and one sensor/all stations.
+            #  Feel free to clean commented code above/ adapt as you need, I was not sure what you wanted to keep -Meri
+
             rpd_plot.plot_mesh_pandas(df=df_skyfall_data,
-                                      mesh_time_label=[audio_tfr_time_s_label, accelerometer_tfr_time_s_label],
-                                      mesh_frequency_label=[audio_tfr_frequency_hz_label, accelerometer_tfr_frequency_hz_label],
-                                      mesh_tfr_label=[audio_tfr_bits_label, accelerometer_tfr_bits_label],
+
+                                      mesh_time_label=[audio_tfr_time_s_label,
+                                                       barometer_tfr_time_s_label,
+                                                       accelerometer_tfr_time_s_label,
+                                                       gyroscope_tfr_time_s_label,
+                                                       magnetometer_tfr_time_s_label],
+
+                                      mesh_frequency_label=[audio_tfr_frequency_hz_label,
+                                                            barometer_tfr_frequency_hz_label,
+                                                            accelerometer_tfr_frequency_hz_label,
+                                                            gyroscope_tfr_frequency_hz_label,
+                                                            magnetometer_tfr_frequency_hz_label],
+
+                                      mesh_tfr_label=[audio_tfr_bits_label,
+                                                      barometer_tfr_bits_label,
+                                                      accelerometer_tfr_bits_label,
+                                                      gyroscope_tfr_bits_label,
+                                                      magnetometer_tfr_bits_label],
+
                                       t0_sig_epoch_s=df_skyfall_data[audio_epoch_s_label][0][0],
-                                      sig_id_label=["audio", "acc_x", "acc_y", "acc_z"],
+                                      sig_id_label=["Audio", "Bar",
+                                                    "Acc X", "Acc Y", "Acc Z",
+                                                    'Gyr X', 'Gyr Y', 'Gyr Z',
+                                                    'Mag X', 'Mag Y', 'Mag Z'],
                                       fig_title_show=False,
                                       fig_title="",
                                       frequency_scaling='log',
                                       common_colorbar=False,
-                                      mesh_color_scaling=['range', 'range', 'range', 'range'],
-                                      mesh_color_range=[21., 18., 18., 18.])
+
+                                      mesh_color_scaling=['range', 'range',
+                                                          'range', 'range', 'range',
+                                                          'range', 'range', 'range',
+                                                          'range', 'range', 'range'],
+
+                                      mesh_color_range=[21., 21.,
+                                                        18., 18., 18.,
+                                                        18., 18., 18.,
+                                                        18., 18., 18.])
 
         plt.show()
 
