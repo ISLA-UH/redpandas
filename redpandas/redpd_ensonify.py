@@ -14,8 +14,8 @@ import matplotlib.pyplot as plt
 
 
 # Supported wav sample rates
-permitted_wav_fs_values = 8000., 16000., 48000., 96000.
-exception_str = "Wav sample rate must be 8000, 16000, or 48000 Hz"
+permitted_wav_fs_values = 8000., 16000., 48000., 96000., 192000
+exception_str = "Wav sample rate must be 8000, 16000, 48000, 96000, or 192000  Hz"
 lowest_wav_fs_value = 8000.
 # TODO: Roll out lowest_fs
 # TODO: Build tests in doc string
