@@ -1,4 +1,4 @@
-# todo: address possible invalid values in building plots section
+
 # Python libraries
 import os.path
 import matplotlib.pyplot as plt

@@ -223,9 +223,7 @@ def highpass_obspy(sig_wf: np.ndarray,
                                         zerophase=True)
 
 
-def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray) -> Tuple[Union[np.ndarray, Iterable, int, float],
-                                                                  np.ndarray, Union[None, float], np.ndarray[int],
-                                                                  Union[None, np.ndarray]]:
+def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
     """
     Variation of cross-correlation function cross_stas.xcorr_all for unevenly sampled data
     with identical sampling and duration.
