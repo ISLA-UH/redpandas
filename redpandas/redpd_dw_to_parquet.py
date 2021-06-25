@@ -18,17 +18,17 @@ import redvox.settings as settings
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
 import redpandas.redpd_build_station as rpd_build_sta
-
-# Configuration file
-# from examples.skyfall.skyfall_config import EVENT_NAME, INPUT_DIR, EPISODE_START_EPOCH_S, \
-#     EPISODE_END_EPOCH_S, STATIONS, PD_PQT_FILE, OUTPUT_DIR, DW_FILE, build_dw_pickle, build_df_parquet, \
-#     plot_mic_waveforms, print_datawindow_dq, SENSOR_LABEL
-
 from redpandas.redpd_config import RedpdConfig
 
 
 # TODO MC: think about the variables that are not in the config file
-def redpd_dw_to_parquet_from_config(config: RedpdConfig):
+def redpd_dw_to_parquet_from_config(config: RedpdConfig) -> None:
+    """
+    Extract RedVox data, convert to pandas dataframe and save in parquet
+
+    :param config:
+    :return: print data quality statements, build parquet for RedVox data, plot waveforms
+    """
     redpd_dw_to_parquet(input_dir=config.input_dir,
                         event_name=config.event_name,
                         create_dw=True,
@@ -57,10 +57,28 @@ def redpd_dw_to_parquet(input_dir: str,
                         end_epoch_s: Optional[float] = None,
                         start_buffer_minutes: Optional[int] = 3,
                         end_buffer_minutes: Optional[int] = 3,
-                        debug: bool = False):
+                        debug: bool = False) -> None:
     """
-    Beta workflow for API M pipeline
-    Last updated: 17 June 2021
+    Extract RedVox data, convert to pandas dataframe and save in parquet
+
+    :param input_dir: string, directory that contains the files to read data from.  REQUIRED
+    :param event_name: optional string, name of event. Default is "Redvox"
+    :param create_dw: create RedVox DataWindow to load data. Default if True. If false, open existing pickle file
+    :param print_dq: print data quality statements. Default is True
+    :param show_raw_waveform_plots: plot and show raw waveforms. Default is True
+    :param output_dir: optional string, directory to created save pickle/JSON/parquet
+    :param output_filename_pkl: optional string, name of created parquet and pickle files
+    :param output_filename_pqt: optional list of strings, list of station ids to filter on
+    :param station_ids: optional list of strings, list of station ids to filter on
+    :param sensor_labels: optional list of strings, list of sensors. Default is "audio"
+    :param start_epoch_s: optional float, start time in epoch s. Default is None
+    :param end_epoch_s: optional float, end time in epoch s. Default is None
+    :param start_buffer_minutes: float representing the amount of minutes to include before the start datetime
+        when filtering data. Default is 3
+    :param end_buffer_minutes: float representing the amount of minutes to include before the end datetime
+        when filtering data. Default is 3
+    :param debug:
+    :return: print data quality statements, build parquet for RedVox data, plot waveforms
     """
     print("Initiating conversion from RedVox DataWindow to RedPandas:")
 
@@ -164,8 +182,3 @@ def redpd_dw_to_parquet(input_dir: str,
         rpd_dw.plot_dw_mic(data_window=rdvx_data)
         rpd_dw.plot_dw_baro(data_window=rdvx_data)
         plt.show()
-
-
-if __name__ == "__main__":
-    redpd_dw_to_parquet_from_config(config=RedpdConfig(input_directory="/Users/meritxell/Desktop/skyfall_dummy_test",
-                                                       output_directory="/Users/meritxell/Desktop"))

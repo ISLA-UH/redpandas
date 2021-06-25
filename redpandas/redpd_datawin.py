@@ -1,7 +1,7 @@
 """
 DataWindow related modules
 
-Last updated: 18 June 2021
+Last updated: 24 June 2021
 """
 
 # Python libraries
@@ -96,7 +96,7 @@ def dw_from_config_epoch(config: RedpdConfig) -> DataWindow:
     return rdvx_data
 
 
-def build_from_config(config: RedpdConfig):
+def build_from_config(config: RedpdConfig) -> None:
     """
     Load data, construct data window, export as pickle using a configuration file
 
@@ -232,7 +232,7 @@ def build(api_input_directory: str,
         print(f"Done. Path:{os.path.join(output_directory,output_filename)}")
 
 
-def plot_dw_mic(data_window: DataWindow):
+def plot_dw_mic(data_window: DataWindow) -> None:
     """
     Plot audio data for all stations in RedVox DataWindow
     :param data_window: RedVox DataWindow object
@@ -253,7 +253,7 @@ def plot_dw_mic(data_window: DataWindow):
             ax1.set_xlabel("Time from record start, s")
 
 
-def plot_dw_baro(data_window: DataWindow):
+def plot_dw_baro(data_window: DataWindow) -> None:
     """
     Plot barometer data for all stations in RedVox DataWindow
     :param data_window: RedVox DataWindow object

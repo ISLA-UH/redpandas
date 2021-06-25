@@ -19,6 +19,7 @@ def prime_factors(n: int) -> List[int]:
     """
     Brute force code to find prime factors. Adapted from
     https://stackoverflow.com/questions/15347174/python-finding-prime-factors
+
     :param n: number
     :return: list of prime factors
     """
@@ -186,7 +187,7 @@ def normalize_pandas(df: pd.DataFrame,
     return df
 
 
-# TODO MC: this
+# TODO MC: this for 3c
 def selected_decimate_signal_pandas(df: pd.DataFrame,
                                     list_stations: List[str],
                                     sig_id_label: str,

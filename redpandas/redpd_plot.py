@@ -38,7 +38,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      frequency_hz_ymax: float = rpd_scales.Slice.F0,
                      common_colorbar: bool = True,
                      mesh_color_scaling: Union[List[str], str] = 'auto',
-                     mesh_color_range: Union[List[float], float] = 15):
+                     mesh_color_range: Union[List[float], float] = 15) -> None:
 
     """
      Plots spectrogram for all signals in df
@@ -374,7 +374,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         fig_title_show: bool = True,
                         fig_title: str = 'Signals',
                         wf_color: str = 'midnightblue',
-                        sig_timestamps_label: str = None):
+                        sig_timestamps_label: str = None) -> None:
     """
     More nuanced plots with minimal distraction. Optimized for pandas input.
     From milton/hellborne/hell_gt_entropy_inv_clean
@@ -454,7 +454,7 @@ def plot_sensor_wiggles_pandas(df: pd.DataFrame,
                                fig_title_show: bool = True,
                                fig_title: str = 'Signals',
                                wf_color: str = 'midnightblue',
-                               sensor_yticks_label_list: List[str] = None):
+                               sensor_yticks_label_list: List[str] = None) -> None:
     """
     Plots sensor waveforms for one station
 
@@ -571,7 +571,7 @@ def plot_psd_coh(psd_sig,
                  psd_label: str = 'PSD (bits)',
                  coh_label: str = 'Coherence',
                  f_label: str = 'Frequency (Hz)',
-                 fig_title: str = 'Power spectral density and coherence'):
+                 fig_title: str = 'Power spectral density and coherence') -> None:
     """
     TODO MAG: Complete me
     :param psd_sig:
@@ -621,7 +621,7 @@ def plot_response_scatter(h_magnitude,
                           f_min_hz,
                           f_max_hz,
                           f_scale: str = 'log',
-                          fig_title: str = 'Response only valid at high coherence'):
+                          fig_title: str = 'Response only valid at high coherence') -> None:
     """
     TODO MAG: Complete me
     :param h_magnitude:

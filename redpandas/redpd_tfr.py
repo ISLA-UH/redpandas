@@ -1,7 +1,7 @@
 """
 This module contains panda versions of libquantum.
 
-Last updated: 10 June 2021
+Last updated: 24 June 2021
 """
 
 import numpy as np
@@ -16,8 +16,10 @@ def frame_panda_no_offset(df: pd.DataFrame,
                           sig_epoch_s_start: float,
                           sig_epoch_s_end: float,
                           new_column_aligned_wf: str = 'sig_aligned_wf',
-                          new_column_aligned_epoch: str = 'sig_aligned_epoch_s'):
+                          new_column_aligned_epoch: str = 'sig_aligned_epoch_s') -> pd.DataFrame:
     """
+    #TODO MAG: complete me
+
     :param df: input pandas data frame
     :param sig_wf_label: string for the waveform column name in df
     :param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df
@@ -52,8 +54,10 @@ def frame_panda(df: pd.DataFrame,
                 sig_epoch_s_end: float,
                 offset_seconds_label: str = "xcorr_offset_seconds",
                 new_column_aligned_wf: str = 'sig_aligned_wf',
-                new_column_aligned_epoch: str = 'sig_aligned_epoch_s'):
+                new_column_aligned_epoch: str = 'sig_aligned_epoch_s') -> pd.DataFrame:
     """
+    #TODO MAG: complete me
+
     :param df: input pandas data frame
     :param sig_wf_label: string for the waveform column name in df
     :param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df

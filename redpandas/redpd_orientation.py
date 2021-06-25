@@ -1,7 +1,7 @@
 """
 This module contains functions to integrate, and apply complimentary filters for phone orientation
 
-Last updated: 22 June 2021
+Last updated: 24 June 2021
 """
 
 import numpy as np
@@ -13,6 +13,7 @@ def remove_dc_offset(sensor_wf: np.ndarray, start_loc: int = None, end_loc: int 
     """
     removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.
     If start and end location is None, it uses the whole array, if one is given it will take the other to the max.
+
     :param sensor_wf: data to remove the "DC offset"
     :param start_loc: location of the start of the DC offset subset
     :param end_loc: location of the end of the DC offset subset
@@ -34,6 +35,7 @@ def remove_dc_offset_s(timestamps_s: np.ndarray, sensor_wf: np.ndarray,
     """
     removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.
     If start and end time is None, it uses the whole array, if one is given it will take the other to the max.
+
     :param timestamps_s: timestamps corresponding to the data in seconds
     :param sensor_wf: data to remove the "DC offset"
     :param start_s: seconds from the first timestamp to use as the start of the range for the DC offset subset
@@ -64,6 +66,7 @@ def remove_dc_offset_s(timestamps_s: np.ndarray, sensor_wf: np.ndarray,
 def integrate_cumtrapz(timestamps_s: np.ndarray, sensor_wf: np.ndarray, initial_value: float = 0) -> np.ndarray:
     """
     cumulative trapazoid integration using scipy.integrate.cumulative_trapezoid
+
     :param timestamps_s: timestamps corresponding to the data in seconds
     :param sensor_wf: data to integrate using cumulative trapezoid
     :param initial_value: the value to add in the initial of the integrated data to match length of input (default is 0)
@@ -81,6 +84,7 @@ def get_roll_pitch(accel_x: float, accel_y: float, accel_z: float) -> Tuple[floa
     """
     Returns the pitch (rotation around y axis) and roll (rotation around x axis) from accelerometer data
     http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/
+
     :param accel_x: x-axis acceleration value
     :param accel_y: y-axis acceleration value
     :param accel_z: z-axis acceleration value
@@ -94,10 +98,11 @@ def get_roll_pitch(accel_x: float, accel_y: float, accel_z: float) -> Tuple[floa
     return roll, pitch
 
 
-def get_yaw(roll: float, pitch: float, mag_x: float, mag_y: float, mag_z: float):
+def get_yaw(roll: float, pitch: float, mag_x: float, mag_y: float, mag_z: float) -> np.ndarray:
     """
     Returns yaw based on roll / pitch data and the magnetometer data
     https://roboticsclubiitk.github.io/2017/12/21/Beginners-Guide-to-IMU.html
+
     :param roll: rotation around the x-axis
     :param pitch: rotation around the y-axis
     :param mag_x: x-axis magnetometer value
@@ -115,6 +120,7 @@ def get_roll_pitch_array(accelerometers: List) -> Tuple[np.ndarray, np.ndarray]:
     """
     Returns the pitch (rotation around y axis) and roll (rotation around x axis) array from accelerometer data
     Loops through the get_pitch_and_roll function
+
     :param accelerometers: List of the xyz components of accelerometer data
     :return: pitch_array, roll_array
     """
@@ -136,6 +142,7 @@ def get_roll_pitch_array(accelerometers: List) -> Tuple[np.ndarray, np.ndarray]:
 def get_yaw_array(roll_array: np.ndarray, pitch_array: np.ndarray, magnetometers: List) -> np.ndarray:
     """
     Returns the yaw array from roll (rotation around x axis), pitch (rotation around y axis), and gyroscope data
+
     :param roll_array: roll (rotation around x axis) calculated from sensors
     :param pitch_array: pitch (rotation around y axis) calculated from sensors
     :param magnetometers: List of xyz components of magnetometer data
@@ -163,6 +170,7 @@ def complimentary_filtering(gyroscope_time_s: np.ndarray, gyroscope_angle: np.nd
     Returns filtered angle
     Based on the works from https://stackoverflow.com/questions/1586658/combine-gyroscope-and-accelerometer-data and
     http://blog.bitify.co.uk/2013/11/using-complementary-filter-to-combine.html
+
     :param gyroscope_time_s: timestamps corresponding to the gyroscope data in seconds
     :param gyroscope_angle: the calculated angle from the gyroscope (roll, pitch, yaw)
     :param accelerometer_angle: the calculated angle from the accelerometer (roll, pitch, yaw)

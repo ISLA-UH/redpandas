@@ -2,11 +2,11 @@
 This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
 
-Last updated: 10 June 2021
+Last updated: 24 June 2021
 """
 
 from enum import Enum
-from typing import Tuple
+from typing import Tuple, Union, Iterable
 
 import numpy as np
 from scipy import signal
@@ -223,7 +223,9 @@ def highpass_obspy(sig_wf: np.ndarray,
                                         zerophase=True)
 
 
-def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float, int, np.ndarray]:
+def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray) -> Tuple[Union[np.ndarray, Iterable, int, float],
+                                                                  np.ndarray, Union[None, float], np.ndarray[int],
+                                                                  Union[None, np.ndarray]]:
     """
     Variation of cross-correlation function cross_stas.xcorr_all for unevenly sampled data
     with identical sampling and duration.
@@ -340,7 +342,7 @@ def highpass_from_diff(sig_wf: np.ndarray,
 # Auxiliary function to open parquets
 def df_column_unflatten(df: pd.DataFrame,
                         col_wf_label: str,
-                        col_ndim_label: str):
+                        col_ndim_label: str) -> None:
     """
     Restores original shape of elements in column. Used for loading columns in dataframe from parquet.
 

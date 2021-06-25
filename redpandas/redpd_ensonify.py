@@ -25,6 +25,7 @@ def stretch_factor_str(sig_sample_rate_hz: float,
                        wav_sample_rate_hz: float) -> str:
     """
     Compute file string for speedup and slowdown options
+
     :param sig_sample_rate_hz: input signal sample rate
     :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
     :return:
@@ -45,6 +46,7 @@ def resample_factor_str(sig_sample_rate_hz: float,
                         wav_sample_rate_hz: float) -> str:
     """
     Compute file string for oversample and downsample options
+
     :param sig_sample_rate_hz: input signal sample rate
     :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
     :return: string with resample factor
@@ -64,6 +66,7 @@ def resample_factor_str(sig_sample_rate_hz: float,
 def sample_rate_str(wav_sample_rate_hz: float) -> str:
     """
     Generate the sample rate string for the exported sound file
+
     :param wav_sample_rate_hz: target wav sample rate
     :return: string with sample rate in kHz
     """
@@ -76,6 +79,7 @@ def resample_fourier(sig_wf: np.ndarray,
                      new_sample_rate_hz: float = 8000.) -> np.ndarray:
     """
     Resample the Fourier way; can upsample or downsample. Downsample will be aliased, so use decimate in that case.
+
     :param sig_wf: input signal waveform, reasonably well preprocessed
     :param sig_sample_rate_hz: signal sample rate
     :param new_sample_rate_hz: resampling sample rate
@@ -92,6 +96,7 @@ def decimate_to_aud(sig_wf: np.ndarray,
                     new_sample_rate_hz: float = 8000.) -> np.ndarray:
     """
     Decimate with AA, min of 8 kHz. Assumed preprocessed for gaps, DC offset, slope, etc.
+
     :param sig_wf: input signal waveform, reasonably well preprocessed
     :param sig_sample_rate_hz: signal sample rate
     :param new_sample_rate_hz: target wav sample rate
@@ -111,8 +116,10 @@ def decimate_to_aud(sig_wf: np.ndarray,
 def save_to_elastic_wav(sig_wf: np.ndarray,
                         sig_sample_rate_hz: float,
                         wav_filename: str,
-                        wav_sample_rate_hz: float = 8000.):
+                        wav_sample_rate_hz: float = 8000.) -> None:
     """
+    Save input signal to wav file
+
     :param sig_wf: input signal waveform, reasonably well preprocessed
     :param sig_sample_rate_hz: input signal sample rate
     :param wav_filename: wav file name, with directory path
@@ -134,8 +141,10 @@ def save_to_elastic_wav(sig_wf: np.ndarray,
 def save_to_resampled_wav(sig_wf: np.ndarray,
                           sig_sample_rate_hz: float,
                           wav_filename: str,
-                          wav_sample_rate_hz: float = 8000.):
+                          wav_sample_rate_hz: float = 8000.) -> None:
     """
+    Save input signal to wav file
+
     :param sig_wf: input signal waveform, reasonably well preprocessed
     :param sig_sample_rate_hz: input signal sample rate
     :param wav_filename: wav file name, with directory path
@@ -161,9 +170,10 @@ def pandas_to_resampled_wav(df: pd.DataFrame,
                             sig_id_label: str = "index",
                             wav_dir_prefix: str = "aud_",
                             wav_sample_rate_hz: float = 8000.,
-                            sample_rate_tolerance_percent: float = 1.):
+                            sample_rate_tolerance_percent: float = 1.) -> None:
     """
     Ensonify a pandas data frame
+
     :param df: data frame
     :param sig_wf_label: label of signal to be ensonified
     :param sig_sample_rate_hz_label: label of sample rate
@@ -219,9 +229,10 @@ def pandas_to_elastic_wav(df: pd.DataFrame,
                           sig_sample_rate_hz_label: str,
                           sig_id_label: str = "index",
                           wav_dir_prefix: str = "aud_",
-                          wav_sample_rate_hz: float = 8000.):
+                          wav_sample_rate_hz: float = 8000.) -> None:
     """
     Ensonify a pandas data frame
+
     :param df: data frame
     :param sig_wf_label: label of signal to be ensonified
     :param sig_sample_rate_hz_label: label of sample rate

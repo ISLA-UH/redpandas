@@ -11,11 +11,11 @@ from typing import Tuple, Generator, Iterator
 # https://stackoverflow.com/questions/62448904/how-to-implement-continuous-time-high-low-pass-filter-in-python
 
 
-def rc_high_pass(x_new,  # TODO MAG: add type and -> return
+def rc_high_pass(x_new,  # TODO MAG: add type
                  x_old,
                  y_old,
                  sample_rate_hz: int,
-                 frequency_cut_low_hz: float):
+                 frequency_cut_low_hz: float) -> float:
     """
     High pass RC filter
     :param x_new: TODO MAG: complete me
@@ -32,10 +32,10 @@ def rc_high_pass(x_new,  # TODO MAG: add type and -> return
     return y_new
 
 
-def rc_low_pass(x_new,  # TODO MAG: add type and -> return
+def rc_low_pass(x_new,  # TODO MAG: add type
                 y_old,
                 sample_rate_hz: int,
-                frequency_cut_high_hz: float):
+                frequency_cut_high_hz: float) -> float:
     """
     Low pass RC filter
     :param x_new: TODO MAG: complete me

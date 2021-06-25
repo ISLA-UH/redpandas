@@ -60,7 +60,7 @@ class RedpdConfig:
         :param end_buffer_minutes: float representing the amount of minutes to include before the end datetime
          when filtering data. Default is 3
         :param tdr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet".
-        Default is "datawindow"
+         Default is "datawindow"
         """
 
         self.input_dir = input_directory

@@ -1,8 +1,10 @@
 """
 This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
 to RedPandas DataFrames.
+
+Last updated: 24 June 2021
 """
-from typing import List
+from typing import List, Dict, Union, Tuple
 
 import numpy as np
 from redvox.common.station import Station
@@ -19,7 +21,7 @@ import redpandas.redpd_scales as rpd_scales
 def station_to_dict_from_dw(
         station: Station,
         sdk_version: str,
-        sensor_labels: List[str]):
+        sensor_labels: List[str]) -> Dict[str, Union[str, None, float]]:
     """
     converts information from a station object created by a data window into a dictionary easily converted into
     a dataframe
@@ -45,7 +47,8 @@ def station_to_dict_from_dw(
     return sensors
 
 
-def sensor_uneven(station: Station, sensor_label: str):
+def sensor_uneven(station: Station, sensor_label: str) -> Tuple[Union[None, float], Union[None, np.ndarray],
+                                                                Union[None, np.ndarray], Union[None, np.ndarray]]:
     """
     ID nans, sample rate, epoch, raw of uneven sensor
 

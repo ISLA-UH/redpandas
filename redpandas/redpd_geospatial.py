@@ -1,7 +1,7 @@
 """
 This module contains functions to extrct and process geospatial data
 
-Last updated: 10 June 2021
+Last updated: 24 June 2021
 """
 
 import os
@@ -45,9 +45,10 @@ def redvox_loc(df_pqt_path: str) -> pd.DataFrame:
     return df_loc
 
 
-def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parquet: str):
+def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parquet: str) -> None:
     """
     Load data from balloon-based Bounder platform
+
     :param path_bounder_csv: path/to/bounder csv and parquet files
     :param file_bounder_csv: name bounder csv file
     :param file_bounder_parquet: name bounder parquet file
@@ -82,6 +83,7 @@ def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parq
 def bounder_model_height_from_pressure(pressure_kPa: np.ndarray) -> np.ndarray:
     """
     Returns empirical height in m from input pressure
+
     :param pressure_kPa: Atmospheric pressure in kPa
     :return: Height in m above WGS84 Geoid
     """
@@ -106,6 +108,7 @@ def compute_t_xyz_uvw(unix_s: Any,
                       geodetic_type: str = 'enu') -> pd.DataFrame:
     """
     Compute time and location relative to a reference value; compute speed.
+
     :param unix_s: target timestamp
     :param lat_deg: target geodetic latitude
     :param lon_deg: target geodetic longitude
@@ -161,6 +164,7 @@ def compute_t_r_z_speed(unix_s: Any,
                         geodetic_type: str = 'enu') -> pd.DataFrame:
     """
     Compute time and location relative to a reference value; compute speed.
+
     :param unix_s: target timestamp
     :param lat_deg: target geodetic latitude
     :param lon_deg: target geodetic longitude
