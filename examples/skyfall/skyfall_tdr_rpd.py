@@ -100,21 +100,15 @@ if __name__ == "__main__":
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
         if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow ...", end=" ")
-            # rdvx_data = DataWindow(input_dir=skyfall_config.input_dir,
-            #                        station_ids=skyfall_config.station_ids,
-            #                        start_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.event_start_epoch_s),
-            #                        end_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.event_end_epoch_s),
-            #                        apply_correction=True,
-            #                        structured_layout=True)
+
             rdvx_data = rpd_dw.dw_from_config_epoch(config=skyfall_config)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
 
-            # output_filename_json = skyfall_config.dw_file  output_filename_pkl.replace(".pkl", "")
-
             rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
                                                               file_name=skyfall_config.output_filename_pkl_pqt)
+
         print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         # For option A or B, begin RedPandas

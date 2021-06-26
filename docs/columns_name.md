@@ -158,7 +158,7 @@ Return to _[Table of Contents](#table-of-contents)_
 - ``clock_offset_slope``: the slope of the change in offset
 - ``clock_offset_model_score``: R2 value of the model; 1.0 is best, 0.0 is worst
 
-For more information about time synchronization, visit 
+For more information about the clock offset and model, visit 
 [RedVox Timesync and Offset Model Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#timesync-and-offset-model).
 
 Return to _[Table of Contents](#table-of-contents)_

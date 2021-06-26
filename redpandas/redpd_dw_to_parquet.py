@@ -32,7 +32,7 @@ def redpd_dw_to_parquet_from_config(config: RedpdConfig) -> None:
     redpd_dw_to_parquet(input_dir=config.input_dir,
                         event_name=config.event_name,
                         create_dw=True,
-                        print_dq=True,
+                        print_dq=False,
                         show_raw_waveform_plots=True,
                         output_dir=config.output_dir,
                         output_filename_pkl=config.dw_file,
@@ -46,7 +46,7 @@ def redpd_dw_to_parquet_from_config(config: RedpdConfig) -> None:
 def redpd_dw_to_parquet(input_dir: str,
                         event_name: Optional[str] = "Redvox",
                         create_dw: bool = True,
-                        print_dq: bool = True,
+                        print_dq: bool = False,
                         show_raw_waveform_plots: bool = True,
                         output_dir: Optional[str] = None,
                         output_filename_pkl: Optional[str] = None,
@@ -70,12 +70,13 @@ def redpd_dw_to_parquet(input_dir: str,
     :param output_filename_pkl: optional string, name of created parquet and pickle files
     :param output_filename_pqt: optional list of strings, list of station ids to filter on
     :param station_ids: optional list of strings, list of station ids to filter on
-    :param sensor_labels: optional list of strings, list of sensors. Default is "audio"
+    :param sensor_labels: optional list of strings, list of sensors available ['audio', 'barometer', 'accelerometer',
+        'gyroscope', 'magnetometer', 'health', 'location', 'image']. Default is "audio"
     :param start_epoch_s: optional float, start time in epoch s. Default is None
     :param end_epoch_s: optional float, end time in epoch s. Default is None
     :param start_buffer_minutes: float representing the amount of minutes to include before the start datetime
         when filtering data. Default is 3
-    :param end_buffer_minutes: float representing the amount of minutes to include before the end datetime
+    :param end_buffer_minutes: float representing the amount of minutes to include after the end datetime
         when filtering data. Default is 3
     :param debug:
     :return: print data quality statements, build parquet for RedVox data, plot waveforms

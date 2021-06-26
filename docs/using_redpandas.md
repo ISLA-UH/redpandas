@@ -7,11 +7,14 @@ This section covers the basics on how to use the RedVox RedPandas library.
 
 <!-- toc -->
 
-
-
 - [Basic definitions](#basic-definitions)
+- [Downloading RedVox data](#downloading-redvox-data)
 - [Opening RedVox data with RedPandas](#opening-redvox-data-with-redpandas)
-- [Extracting sensor information with RedPandas](#extracting-sensor-information-with-redpandas)
+    - [Easy method](#easy-method)
+        - [For raw RedVox data (.rdvxz, .rdvxm)](#for-raw-redvox-data-rdvxz-rdvxm)
+        - [For RedVox data in a pickle format (.pkl)](#for-redvox-data-in-a-pickle-format-pkl)
+        - [More options](#more-options)
+    - [More advanced method](#more-advanced-method)
 - [Plotting with RedPandas](#plotting-with-redpandas)
 - [Saving and opening RedPandas parquet files](#saving-and-opening-redpandas-parquet-files)
 - [RedPandas example: Skyfall](#redpandas-example-skyfall)
@@ -52,6 +55,9 @@ be found in [RedVox SDK Sensor Documentation](https://github.com/RedVoxInc/redvo
 - _Epoch_ or _epoch time_: unix time (also referred to as the epoch time), the number of seconds since 1 January 1970. 
 The RedPandas' native unit of time is UTC epoch time in seconds.
 
+- _RedPandas DataFrame_: a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+created with the RedPandas library and usually containing RedVox data.
+
 Return to _[Table of Contents](#table-of-contents)_
 
 ### Downloading RedVox data
@@ -75,97 +81,109 @@ Return to _[Table of Contents](#table-of-contents)_
 
 ### Opening RedVox data with RedPandas
 
-Once the RedVox data has been [downloaded](#downloading-redvox-data), the RedPandas function ``build`` can be used
-to extract the data into a compressed pickle (.pkl.pkl.lz4) containing a 
-[RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window).
+The following subsections explain how to convert RedVox data to a 
+[Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easy data manipulation. 
+If you want to manipulate RedVox data files directly, visit the [RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk).
+
+#### Easy method 
+
+##### For raw RedVox data (.rdvxz, .rdvxm)
+
+The easiest method to covert RedVox data to a RedPandas dataframe is by using the function ``redpd_dw_to_parquet``. 
+This approach is ideal for python newcomers, new RedVox users, and for a superficial glance at new RedVox data.
 
 _Example:_
 
 ```python
-import redpandas.redpd_datawin as rpd_dw
+from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
 
-rpd_dw.build(api_input_directory="path/to/RedVox/data",
-             start_epoch_s= ,
-             end_epoch_s= ,
-             redvox_station_ids= ,
-             event_name= ,
-             output_directory= ,
-             output_filename= ,
-             start_buffer_minutes= ,
-             end_buffer_minutes= ,
-             debug=True)
+"""
+Extract RedVox data into a Pandas DataFrame
+"""
+# Absolute path
+INPUT_DIR = "path/to/redvox/data"
+
+# Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
+redpd_dw_to_parquet(input_dir=INPUT_DIR)
 ```
+Note that ``redpd_dw_to_parquet`` will create a folder named ``rpd_files`` in the path/to/file given in the 
+``INPUT_DIR`` variable. A folder named ``dw``,  (short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
+containing a compressed pickle (.pkl.lz4), a RedPandas parquet, and a JSON file will be created inside the ``rpd_files``
+ folder. 
 
-Note that ``build`` will create an output directory ``path/to/file/rpd_files`` based on the path/to/file given in
-the ``api_input_directory`` variable. A folder named ``dw``,  
-(short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
-containing the compressed pickle, and a JSON file will be created inside the ``rpd_files`` folder. 
-
-To work with the compressed pickle with the [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window)
-data, the following code in your Python environment can be applied:
-
-```python
-from redvox.common.data_window import DataWindow
-
-rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="path/to/file/rpd_files",
-                                                  file_name="file_name.pkl")
-```
-For more information on how to use RedVox DataWindow directly, visit 
-[Using the Data Window Results](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#using-the-data-window-results)
-and [RedVox Data Window Station](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#station).
-
-Return to _[Table of Contents](#table-of-contents)_
-
-### Extracting sensor information with RedPandas
-
-The available [sensors](#basic-definitions) in a station can vary depending on the smartphone and the options available
-in the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. For a complete list 
-of available sensors, visit [RedVox Sensor Data](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access). 
-
-``sensor_label = one of: ['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer', 'health', 'location', 'image']``
-
-_Example:_
-```python
-# RedPandas and RedVox Pyhton SDK 
-import redpandas.redpd_build_station as rpd_sta
-import redpandas.redpd_scales as rpd_scales
-from redvox.common.data_window import DataWindow
-
-# Open saved RedVox DataWindow pickle
-rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="path/to/file/rpd_files",
-                                                  file_name="file_name.pkl")
-
-# Extract sensor information from stations into a dictionary
-sensors_dictionary = rpd_sta.build_station(station= ,
-                                           sensor_label="audio",
-                                           highpass_type="obspy",
-                                           frequency_filter_low= 1./rpd_scales.Slice.T100S,
-                                           filter_order= 4) 
-```
-The ``build_station`` function will return the sensor name, sample rate in Hz, timestamps in epoch second, raw data,
-and high passed data (only for barometer, accelerometer, gyroscope, and magnetometer sensors). 
-
-The extracted sensor data can be structured into a 
-[Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easier 
-manipulation:  
+Continuing the example case above, to open the parquet and start manipulating the data the following code can be applied:
 
 ```python
 import pandas as pd
-import redpandas.redpd_build_station as rpd_build_sta  # RedPandas
 
-# Make sensor dictionary into a Pandas DataFrame
-df_sensors = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
-                                                                 sdk_version=rdvx_data.sdk_version,
-                                                                 sensor_labels="audio")
-                                                for station in rdvx_data.stations])
-
-```
-You can check the available columns in ``df_sensors`` with 
-```python
-df_sensors.columns
+df_data = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
+print(df_data.columns)
 ```
 
 For more information on columns found in RedPandas, column names and their contents, visit [RedVox RedPandas DataFrame Columns](columns_name.md).
+
+Return to _[Table of Contents](#table-of-contents)_
+
+##### For RedVox data in a pickle format (.pkl)
+
+The easy approach can also be applied if the RedVox data is in a compressed pickle format (.pkl.lz4). The only 
+modification to the approach is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
+
+_Example:_
+
+```python
+from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
+import pandas as pd
+
+"""
+Extract RedVox data into a Pandas DataFrame
+"""
+# Absolute path
+INPUT_DIR = "path/to/redvox/data"
+
+# Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
+redpd_dw_to_parquet(input_dir=INPUT_DIR,
+                    create_dw = False)
+
+df_data = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
+print(df_data.columns)
+```
+
+Return to _[Table of Contents](#table-of-contents)_
+
+##### More options
+
+The function ``redpd_dw_to_parquet`` has a few optional variables to provide more flexibility when creating 
+the RedPandas parquet.
+
+_Example:_
+
+```python
+from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
+
+redpd_dw_to_parquet(input_dir="path/to/redvox/data",
+                    event_name="A cool example",
+                    create_dw=True,  # Create DataWindow, false if pickle
+                    print_dq=True,  # print data quality statements
+                    show_raw_waveform_plots=True,  # plot audio and barometer (if available) waveforms 
+                    output_dir="path/to/save/parquet",
+                    output_filename_pkl="pkl_a_cool_example",
+                    output_filename_pqt="pqt_a_cool_example",
+                    station_ids=["1234567890", "2345678901"],
+                    sensor_labels=["audio", "barometer"],
+                    start_epoch_s=1624674098,  # start time in epoch s
+                    end_epoch_s=1624678740,  # end time in epoch s
+                    start_buffer_minutes=3,  # amount of minutes to include before the start datetime when filtering data
+                    end_buffer_minutes=3,  # amount of minutes to include after the end datetime when filtering data
+                    debug=False)
+
+```
+
+Return to _[Table of Contents](#table-of-contents)_
+
+#### More advanced method
+
+
 
 Return to _[Table of Contents](#table-of-contents)_
 
