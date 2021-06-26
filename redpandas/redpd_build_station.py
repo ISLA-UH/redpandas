@@ -2,7 +2,7 @@
 This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
 to RedPandas DataFrames.
 
-Last updated: 24 June 2021
+Last updated: 25 June 2021
 """
 from typing import List, Dict, Union, Tuple
 
@@ -25,9 +25,11 @@ def station_to_dict_from_dw(
     """
     converts information from a station object created by a data window into a dictionary easily converted into
     a dataframe
+
     :param station: RDVX station object
     :param sdk_version: version of Redvox SDK used to create the Station object
-    :param sensor_labels: the names of the sensors to extract
+    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer',
+        'gyroscope', 'magnetometer', 'health', 'location', 'image']
     :return: a dictionary ready for conversion into a dataframe
     """
     sensors = {"station_id": station.id,
@@ -149,6 +151,7 @@ def audio_wf_time_build_station(station: Station,
                                 raw: bool = False) -> dict:
     """
     Builds mic waveform and times if it exists
+
     :param station: RDVX Station object
     :param mean_type: TODO MC: under development
     :param raw: if false (default), boolean or nan mean removed
@@ -184,6 +187,7 @@ def audio_wf_time_build_station(station: Station,
 def location_build_station(station: Station) -> dict:
     """
     Obtains location data from RedVox station if it exists
+
     :param station: RDVX Station object
     :return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
     horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.
@@ -212,7 +216,8 @@ def location_build_station(station: Station) -> dict:
 
 def best_location_build_station(station: Station) -> dict:
     """
-    Obtains location data from RedVox station if it exists
+    Obtains best location data from RedVox station if it exists
+
     :param station: RDVX Station object
     :return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
     horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.
@@ -242,6 +247,7 @@ def best_location_build_station(station: Station) -> dict:
 def state_of_health_build_station(station: Station) -> dict:
     """
     Obtains state of health data from RedVox station if it exists
+
     :param station: RDVX Station object
     :return: dictionary with sensor name, sample rate, timestamps, batt. charge, batt. current strength,
     internal temp., network type, network strength, power state, available ram and disk, and cell service state
@@ -269,6 +275,7 @@ def state_of_health_build_station(station: Station) -> dict:
 def image_build_station(station: Station) -> dict:
     """
     Obtains images from RedVox station if it exists
+
     :param station: RDVX Station object
     :return: dictionary with sensor name, sample rate, timestamps, image (bytes), and image codec.
     """
@@ -286,6 +293,7 @@ def image_build_station(station: Station) -> dict:
 def synchronization_build_station(station: Station) -> dict:
     """
     Obtains time sync data from RedVox station if it exists
+
     :param station: RDVX Station object
     :return: dictionary with synchronization start time (s), synchronization latency (ms), synchronization offset (ms),
     synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.
@@ -307,6 +315,7 @@ def synchronization_build_station(station: Station) -> dict:
 def clock_build_station(station: Station) -> dict:
     """
     Obtains clock model data from the station if it exists
+
     :param station: RDVX Station object
     :return: dictionary with clock start time (s), clock latency (ms), clock best latency (ms), clock offset (s),
     clock number bins, clock number samples, clock offset slope, and clock offset model score.
@@ -330,6 +339,7 @@ def clock_build_station(station: Station) -> dict:
 def light_build_station(station: Station) -> dict:
     """
     Obtains luminosity data from RedVox station if it exists
+
     :param station: RDVX Station object
     :return: dictionary with sensor name, sample rate, timestamps, light data.
     """

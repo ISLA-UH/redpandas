@@ -1,4 +1,4 @@
-# RedVox RedPandas DataFrame column names
+# RedVox RedPandas DataFrame Columns
 
 This section covers the column labels in the RedPandas DataFrame.
 
@@ -33,6 +33,8 @@ This section covers the column labels in the RedPandas DataFrame.
 - ``station_app_version``: version of the [RedVox Infrasound Recorder app](https://www.redvoxsound.com/) at time of data collection
 - ``redvox_sdk_version``: version of the 
 [RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk) used to create the DataFrame
+
+For more information about station metadata, visit [RedVox Station Metadata documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#station-metadata).
 
 Return to _[Table of Contents](#table-of-contents)_
 
@@ -141,7 +143,7 @@ Return to _[Table of Contents](#table-of-contents)_
 - ``synchronization_number_exchanges``: number of exchangs in timesync
 
 For more information about time synchronization, visit 
-[Timesync and Offset Model Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#timesync-and-offset-model).
+[RedVox Timesync and Offset Model Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#timesync-and-offset-model).
 
 Return to _[Table of Contents](#table-of-contents)_
 
@@ -157,6 +159,6 @@ Return to _[Table of Contents](#table-of-contents)_
 - ``clock_offset_model_score``: R2 value of the model; 1.0 is best, 0.0 is worst
 
 For more information about time synchronization, visit 
-[Timesync and Offset Model Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#timesync-and-offset-model).
+[RedVox Timesync and Offset Model Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#timesync-and-offset-model).
 
 Return to _[Table of Contents](#table-of-contents)_
