@@ -43,9 +43,9 @@ Home-page: https://github.com/RedVoxInc/redpandas
 Author: RedVox
 Author-email: dev@redvoxsound.com
 License: Apache
-Location: /path/where/it/module/is/installed
+Location: /path/where/module/is/installed
 Requires: matplotlib, scipy, libquantum, redvox, fastkml, obspy, librosa, pymap3d, numpy, pandas, libwwz
 Required-by: 
 ```
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas/blob/master/docs/README.md)_

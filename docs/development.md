@@ -27,4 +27,4 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 [The Apache License](https://github.com/RedVoxInc/redpandas/tree/master/docs/LICENSE.md)
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas/blob/master/docs/README.md)_

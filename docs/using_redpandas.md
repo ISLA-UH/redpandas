@@ -284,7 +284,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 ### Frequently asked questions (FAQ)
 
-**_I have a RedPandas parquet and when I try to open and plot the barometer / accelerometer / gyroscope / magentometer 
+**_I have a RedPandas parquet and when I try to open and plot the barometer / accelerometer / gyroscope / magnetometer 
 sensors, it breaks._**
 
 One common problem is that you need to unflatten the columns with the barometer, accelerometer, gyroscope, and/or 

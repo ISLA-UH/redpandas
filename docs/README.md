@@ -10,9 +10,9 @@ The RedPandas pipeline is designed for integrability with other legacy and heter
 <!-- toc -->
 
 
-- [RedVox RedPandas Installation](installation.md)  https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window
-- [Using RedVox RedPandas](using_redpandas.md)
-- [Development](development.md)
+- [RedVox RedPandas Installation](https://github.com/RedVoxInc/redpandas/blob/master/docs/installation.md)  
+- [Using RedVox RedPandas](https://github.com/RedVoxInc/redpandas/blob/master/docs/using_redpandas.md)
+- [Development](https://github.com/RedVoxInc/redpandas/blob/master/docs/development.md)
    
 <!-- tocstop -->
 
