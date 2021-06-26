@@ -10,13 +10,11 @@ This section covers the basics on how to use the RedVox RedPandas library.
 - [Basic definitions](#basic-definitions)
 - [Downloading RedVox data](#downloading-redvox-data)
 - [Opening RedVox data with RedPandas](#opening-redvox-data-with-redpandas)
-    - [Easy method](#easy-method)
-        - [For raw RedVox data (.rdvxz, .rdvxm)](#for-raw-redvox-data-rdvxz-rdvxm)
-        - [For RedVox data in a pickle format (.pkl)](#for-redvox-data-in-a-pickle-format-pkl)
-        - [More options](#more-options)
-    - [More advanced method](#more-advanced-method)
+    - [For raw RedVox data (.rdvxz, .rdvxm)](#for-raw-redvox-data-rdvxz-rdvxm)
+    - [For RedVox data in a pickle format (.pkl)](#for-redvox-data-in-a-pickle-format-pkl)
+    - [More options](#more-options)
+- [Opening RedPandas parquet files](#opening-redpandas-parquet-files)
 - [Plotting with RedPandas](#plotting-with-redpandas)
-- [Saving and opening RedPandas parquet files](#saving-and-opening-redpandas-parquet-files)
 - [RedPandas example: Skyfall](#redpandas-example-skyfall)
     - [Downloading the RedVox Skyfall data](#downloading-the-redvox-skyfall-data)
     - [Running the Skyfall example](#running-the-skyfall-example)
@@ -85,9 +83,8 @@ The following subsections explain how to convert RedVox data to a
 [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easy data manipulation. 
 If you want to manipulate RedVox data files directly, visit the [RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk).
 
-#### Easy method 
 
-##### For raw RedVox data (.rdvxz, .rdvxm)
+#### For raw RedVox data (.rdvxz, .rdvxm)
 
 The easiest method to covert RedVox data to a RedPandas dataframe is by using the function ``redpd_dw_to_parquet``. 
 This approach is ideal for python newcomers, new RedVox users, and for a superficial glance at new RedVox data.
@@ -124,7 +121,7 @@ For more information on columns found in RedPandas, column names and their conte
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### For RedVox data in a pickle format (.pkl)
+#### For RedVox data in a pickle format (.pkl)
 
 The easy approach can also be applied if the RedVox data is in a compressed pickle format (.pkl.lz4). The only 
 modification to the approach is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
@@ -151,7 +148,7 @@ print(df_data.columns)
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### More options
+#### More options
 
 The function ``redpd_dw_to_parquet`` has a few optional variables to provide more flexibility when creating 
 the RedPandas parquet.
@@ -181,60 +178,10 @@ redpd_dw_to_parquet(input_dir="path/to/redvox/data",
 
 Return to _[Table of Contents](#table-of-contents)_
 
-#### More advanced method
-
-
-
-Return to _[Table of Contents](#table-of-contents)_
-
-### Plotting with RedPandas
-
-
-
-
-### Saving and opening RedPandas parquet files
+### Opening RedPandas parquet files
 
 Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
-nested arrays in the [RedPandas DataFrame](#extracting-sensor-information-with-redpandas). To save the RedPandas 
-DataFrame to a parquet file for later use, you can implement the following approach in your Python environment:
-
-```python
-import numpy as np
-
-# Example for barometer sensor
-# Create new columns with shape tuple for future unflattening/reshaping
-df_sensors[["barometer_wf_raw_ndim",
-            "barometer_wf_highpass_ndim",
-            "barometer_nans_ndim"]] = \
-df_sensors[["barometer_wf_raw",
-            "barometer_wf_highpass",
-            "barometer_nans"]].applymap(np.shape)
-
-# Change tuples to 1D np.array to save it to parquet (parquet does not save tuples)
-df_sensors[["barometer_wf_raw_ndim",
-            "barometer_wf_highpass_ndim",
-            "barometer_nans_ndim"]] = \
-df_sensors[["barometer_wf_raw_ndim",
-            "barometer_wf_highpass_ndim",
-            "barometer_nans_ndim"]].applymap(np.asarray)
-
-# Flatten each row in waveform (wf) columns
-df_sensors[["barometer_wf_raw",
-            "barometer_wf_highpass",
-            "barometer_nans"]] = \
-df_sensors[["barometer_wf_raw",
-            "barometer_wf_highpass",
-            "barometer_nans"]].applymap(np.ravel)
-
-df_sensors.to_parquet("path/to/output/directory/parquet_file_name.parquet")
-```
-Note that this approach only applies to the ``"{sensor}_wf_raw"``, ``"{sensor}_wf_highpass"``, ``"{sensor}_wf_nans"`` columns. 
-The rest of the columns in the DataFrame [extracted with ``build_station`` function](#extracting-sensor-information-with-redpandas) 
-will have a 1d array.
-
-
-Opening a RedPandas parquet will take an extra step due to the array flattening described above. 
-The function ``df_column_unflatten`` recovers the original nested arrays of the sensors.
+nested arrays in the [RedPandas DataFrame](#extracting-sensor-information-with-redpandas). The function ``df_column_unflatten`` recovers the original nested arrays of the sensors.
 
 _Example:_
 ```python
@@ -251,6 +198,10 @@ rpd_prep.df_column_unflatten(df=df_sensors,
 
 ```
 Return to _[Table of Contents](#table-of-contents)_
+
+### Plotting with RedPandas
+
+### Other data manipulation with RedPandas
 
 ### RedPandas example: Skyfall
 
