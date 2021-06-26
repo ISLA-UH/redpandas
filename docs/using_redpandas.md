@@ -239,7 +239,7 @@ Return to _[Table of Contents](#table-of-contents)_
 sensors, it breaks._**
 
 One common problem is that you need to unflatten the columns with the barometer, accelerometer, gyroscope, and/or 
-magnetometer sensors. Check the section [Saving and opening RedPandas parquet files](#saving-and-opening-redpandas-parquet-files).
+magnetometer sensors. Check the section [Opening RedPandas parquet files](#opening-redpandas-parquet-files).
 An easy way to diagnose if you need to unflatyen the column is by checking that ``df["accelerometer_wf_raw"][0]`` 
 prints a 1d numpy array. If that is the case then you need to unflatten those data columns.
 
