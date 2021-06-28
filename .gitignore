@@ -4,3 +4,7 @@ build
 dist
 redvox_pandas.egg-info
 .mypy_cache
+.wav
+.parquet
+.pickle
+.pkl
