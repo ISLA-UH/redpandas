@@ -2,7 +2,7 @@
 
 This section covers the basics on how to use the RedVox RedPandas library.
 
-----
+
 ## Table of Contents
 
 <!-- toc -->
@@ -22,7 +22,7 @@ This section covers the basics on how to use the RedVox RedPandas library.
 
 <!-- tocstop -->
 
-----
+
 
 ### Basic definitions
 
@@ -60,9 +60,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 ### Downloading RedVox data
 
-You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app and download it.
-
-There are three methods to download the RedVox collected data and/or RedPandas example datasets 
+You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app and download it. There are three methods to download the RedVox collected data and/or RedPandas example datasets 
 (such as [Skyfall](#example-skyfall)):
 
 1) Using RedVox Cloud Platform (link) (recommended).
@@ -81,7 +79,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 The following subsections explain how to convert RedVox data to a 
 [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easy data manipulation. 
-If you want to manipulate RedVox data files directly, visit the [RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk).
+If you want to manipulate RedVox data files directly in your Python environment, visit the [RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk).
 
 
 #### For raw RedVox data (.rdvxz, .rdvxm)

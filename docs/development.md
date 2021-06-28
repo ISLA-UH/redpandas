@@ -2,7 +2,6 @@
 
 This section covers reporting issues and bugs, version history and license.
 
-----
 ## Table of Contents
 
 <!-- toc -->
@@ -13,7 +12,7 @@ This section covers reporting issues and bugs, version history and license.
 
 <!-- tocstop -->
 
-----
+
 
 #### Reporting issues
 

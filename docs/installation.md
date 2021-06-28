@@ -2,7 +2,7 @@
 
 This section covers the basics on how to install and upgrade the RedVox RedPandas library.
 
-----
+
 ## Table of Contents
 
 <!-- toc -->
@@ -12,7 +12,7 @@ This section covers the basics on how to install and upgrade the RedVox RedPanda
 
 <!-- tocstop -->
 
-----
+
 
 ### Installing and/or upgrading RedVox RedPandas with pip
 

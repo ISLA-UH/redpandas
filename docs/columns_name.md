@@ -2,7 +2,6 @@
 
 This section covers the column labels in the RedPandas DataFrame.
 
-----
 ## Table of Contents
 
 <!-- toc -->
@@ -19,13 +18,13 @@ This section covers the column labels in the RedPandas DataFrame.
     - [Columns related to image sensor](#columns-related-to-image-sensor)
     - [Columns related to time synchronization](#columns-related-to-time-synchronization)
     - [Columns related to clock offset and model](#columns-related-to-clock-offset-and-model)
+- [Columns related to parquet saving/opening](#columns-related-to-parquet-savingopening)
 
 <!-- tocstop -->
 
-----
 
-#### Columns always included in RedPandas:
-##### Columns related to station specs
+### Columns always included in RedPandas:
+#### Columns related to station specs
 - ``station_id``: name or ID number of station
 - ``station_start_date_epoch_micros``: microseconds since epoch UTC when the station started recording
 - ``station_make``: make of the station, e.g., the make would be Samsung for a Samsung S10
@@ -38,7 +37,7 @@ For more information about station metadata, visit [RedVox Station Metadata docu
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### Columns related to audio sensor
+#### Columns related to audio sensor
 
 - ``audio_sensor_name``: name of audio sensor
 - ``audio_sample_rate_nominal_hz``: nominal sample rate in Hz
@@ -50,14 +49,14 @@ Return to _[Table of Contents](#table-of-contents)_
 
 Return to _[Table of Contents](#table-of-contents)_
 
-#### Variable columns in RedPandas
+### Variable columns in RedPandas
 
 Depending on the selected sensors in ``sensor_labels`` in the functions ``build_station`` and 
 ``station_to_station_to_dict_from_dw``, and the sensors available in the data, the following columns 
 might be included in the DataFrame.
 
 
-##### Columns related to barometer, accelerometer, gyroscope, and magnetometer sensors
+#### Columns related to barometer, accelerometer, gyroscope, and magnetometer sensors
 
 - ``{sensor_label}_sensor_name``: name of barometer / accelerometer / gyroscope / magnetometer sensor
 - ``{sensor_label}_sample_rate_hz``: sensor sample rate in Hz
@@ -68,7 +67,7 @@ might be included in the DataFrame.
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### Columns related to location sensor
+#### Columns related to location sensor
 
 - ``location_sensor_name``: name of location sensor
 - ``location_sample_rate_hz``: location sensor sample rate in Hz
@@ -87,7 +86,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### Columns related to best location sensor
+#### Columns related to best location sensor
 
 - ``best_location_sensor_name``: name of location sensor
 - ``best_location_sample_rate_hz``: location sensor sample rate in Hz
@@ -106,7 +105,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### Columns related to health sensor
+#### Columns related to health sensor
 
 - ``health_sensor_name``: name of health sensor
 - ``health_sample_rate_hz``: health sensor sample rate in Hz
@@ -123,7 +122,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### Columns related to image sensor
+#### Columns related to image sensor
 
 - ``image_sensor_name``: name of image sensor
 - ``image_sample_rate_hz``: image sensor sample rate in Hz
@@ -133,7 +132,7 @@ Return to _[Table of Contents](#table-of-contents)_
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### Columns related to time synchronization
+#### Columns related to time synchronization
 
 - ``synchronization_epoch_s``: timesync timestamps in epoch UTC seconds
 - ``synchronization_latency_ms``: latency of the data in milliseconds
@@ -147,7 +146,7 @@ For more information about time synchronization, visit
 
 Return to _[Table of Contents](#table-of-contents)_
 
-##### Columns related to clock offset and model
+#### Columns related to clock offset and model
 
 - ``clock_start_time_epoch_s``: start timestamp of model in microseconds since epoch UTC
 - ``clock_best_latency_ms``: mean latency of the data in milliseconds 

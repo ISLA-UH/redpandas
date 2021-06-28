@@ -4,7 +4,7 @@ This repository contains routines to streamline preprocessing of [RedVox API 900
 and [API 1000](https://github.com/RedVoxInc/redvox-api-1000) (API M) data.
 The RedPandas pipeline is designed for integrability with other legacy and heterogeneous data sources.
 
-----
+
 ## Table of Contents
 
 <!-- toc -->
@@ -16,4 +16,4 @@ The RedPandas pipeline is designed for integrability with other legacy and heter
    
 <!-- tocstop -->
 
-----
+
