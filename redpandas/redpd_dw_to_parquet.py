@@ -23,7 +23,10 @@ from redpandas.redpd_config import RedpdConfig
 
 # TODO MC: think about the variables that are not in the config file
 # TODO MC: add highpass and filter options at redpd_dw_to_parquet level
-def redpd_dw_to_parquet_from_config(config: RedpdConfig) -> None:
+def redpd_dw_to_parquet_from_config(config: RedpdConfig,
+                                    create_dw: bool = True,
+                                    print_dq: bool = False,
+                                    show_raw_waveform_plots: bool = True) -> None:
     """
     Extract RedVox data, convert to pandas dataframe and save in parquet
 
@@ -32,9 +35,9 @@ def redpd_dw_to_parquet_from_config(config: RedpdConfig) -> None:
     """
     redpd_dw_to_parquet(input_dir=config.input_dir,
                         event_name=config.event_name,
-                        create_dw=True,
-                        print_dq=False,
-                        show_raw_waveform_plots=True,
+                        create_dw=create_dw,
+                        print_dq=print_dq,
+                        show_raw_waveform_plots=show_raw_waveform_plots,
                         output_dir=config.output_dir,
                         output_filename_pkl=config.dw_file,
                         output_filename_pqt=config.pd_pqt_file,
@@ -184,3 +187,5 @@ def redpd_dw_to_parquet(input_dir: str,
         rpd_dw.plot_dw_mic(data_window=rdvx_data)
         rpd_dw.plot_dw_baro(data_window=rdvx_data)
         plt.show()
+
+

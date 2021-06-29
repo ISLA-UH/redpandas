@@ -121,8 +121,8 @@ Return to _[Table of Contents](#table-of-contents)_
 
 #### For RedVox data in a pickle format (.pkl)
 
-The easy approach can also be applied if the RedVox data is in a compressed pickle format (.pkl.lz4). The only 
-modification to the approach is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
+A similar approach can be applied if the RedVox data is in a compressed pickle format (.pkl.lz4). The only 
+modification to the method is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
 
 _Example:_
 
@@ -156,22 +156,21 @@ _Example:_
 ```python
 from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
 
-redpd_dw_to_parquet(input_dir="path/to/redvox/data",
-                    event_name="A cool example",
-                    create_dw=True,  # Create DataWindow, false if pickle
-                    print_dq=True,  # print data quality statements
-                    show_raw_waveform_plots=True,  # plot audio and barometer (if available) waveforms 
-                    output_dir="path/to/save/parquet",
-                    output_filename_pkl="pkl_a_cool_example",
-                    output_filename_pqt="pqt_a_cool_example",
-                    station_ids=["1234567890", "2345678901"],
-                    sensor_labels=["audio", "barometer"],
-                    start_epoch_s=1624674098,  # start time in epoch s
-                    end_epoch_s=1624678740,  # end time in epoch s
+redpd_dw_to_parquet(input_dir="path/to/redvox/data",  # input directory where the data is located
+                    event_name="A cool example",  # name of dataset
+                    create_dw=True,  # create DataWindow, false if pickle
+                    print_dq=True,  # print data quality statements if True
+                    show_raw_waveform_plots=True,  # plot audio and barometer (if available) waveforms if True
+                    output_dir="path/to/save/parquet",  # change output directory where parquet is saved
+                    output_filename_pkl="pkl_a_cool_example",  # change file name for pickle
+                    output_filename_pqt="pqt_a_cool_example",  # change file name for parquet
+                    station_ids=["1234567890", "2345678901"],  # ID of stations, if None, all stations in data are laoded
+                    sensor_labels=["audio", "barometer"],  # name of sensors, if None, audio will be loaded
+                    start_epoch_s=1624674098,  # start time in epoch s, if None, first available time
+                    end_epoch_s=1624678740,  # end time in epoch s, if None, first available time
                     start_buffer_minutes=3,  # amount of minutes to include before the start datetime when filtering data
                     end_buffer_minutes=3,  # amount of minutes to include after the end datetime when filtering data
-                    debug=False)
-
+                    debug=False)  # show debug if True
 ```
 
 Return to _[Table of Contents](#table-of-contents)_
@@ -179,20 +178,20 @@ Return to _[Table of Contents](#table-of-contents)_
 ### Opening RedPandas parquet files
 
 Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
-nested arrays in the [RedPandas DataFrame](#extracting-sensor-information-with-redpandas). The function ``df_column_unflatten`` recovers the original nested arrays of the sensors.
+nested arrays in the RedPandas DataFrame. The function ``df_column_unflatten`` recovers the original nested arrays of the sensors.
 
 _Example:_
 ```python
 import pandas as pd
-import redpandas.redpd_preprocess as rpd_prep
+from redpandas.redpd_preprocess import df_column_unflatten
 
 # Open RedPandas parquet file
 df_sensors = pd.read_parquet("path/to/output/directory/parquet_file_name.parquet")
 
 # Unflatten barometer raw data column
-rpd_prep.df_column_unflatten(df=df_sensors,
-                             col_wf_label="barometer_wf_raw",
-                             col_ndim_label="barometer_wf_raw_ndim")
+df_column_unflatten(df=df_sensors,
+                    ol_wf_label="barometer_wf_raw",
+                    col_ndim_label="barometer_wf_raw_ndim")
 
 ```
 Return to _[Table of Contents](#table-of-contents)_
@@ -200,6 +199,8 @@ Return to _[Table of Contents](#table-of-contents)_
 ### Plotting with RedPandas
 
 ### Other data manipulation with RedPandas
+
+#### Ensoni
 
 ### RedPandas example: Skyfall
 
