@@ -1,7 +1,7 @@
 """
 Pipeline from RedVox DataWindow to pandas DataFrame parquet
 
-Last updated: 17 June 2021
+Last updated: 29 June 2021
 """
 
 # Python libraries
@@ -177,10 +177,9 @@ def redpd_dw_to_parquet(input_dir: str,
 
     # Check that parquet file saves and opens correctly
     df_open = pd.read_parquet(os.path.join(output_dw_pqt_dir, output_filename_pqt))
-    print("Total stations in DataFrame:", len(df_open['station_id']))
-    print("Available stations:", df_open['station_id'])
-    print("Total columns in DataFrame:", len(df_open.columns))
-    print("Available columns:", df_open.columns)
+    print(f"Total stations in DataFrame: {len(df_open['station_id'])}")
+    print(f"Available stations: {df_open['station_id'].to_string(index=False)}")
+    print(f"Total columns in DataFrame: {len(df_open.columns)}")
 
     # Plot data window waveforms
     if show_raw_waveform_plots:
