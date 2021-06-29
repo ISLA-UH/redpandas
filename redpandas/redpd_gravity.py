@@ -9,10 +9,9 @@ Last updated: 22 June 2021
 import numpy as np
 from typing import Tuple
 
+
 # This is comparable to RC filter, smoothing factor is an approximation to alpha
 # See redpd_iterator
-
-
 def get_smoothing_factor(sensor_sample_rate_hz: float, low_pass_sample_rate_hz: float = 1) -> float:
     """
 
