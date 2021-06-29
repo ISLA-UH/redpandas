@@ -9,6 +9,9 @@ Last updated: 22 June 2021
 import numpy as np
 from typing import Tuple
 
+# This is comparable to RC filter, smoothing factor is an approximation to alpha
+# See redpd_iterator
+
 
 def get_smoothing_factor(sensor_sample_rate_hz: float, low_pass_sample_rate_hz: float = 1) -> float:
     """
@@ -59,3 +62,48 @@ def get_gravity_and_linear_acceleration(accelerometer: np.ndarray, sensor_sample
     linear_acceleration = accelerometer - gravity
 
     return gravity, linear_acceleration
+
+
+"""
+Generalized to any DC offset, for comparison
+"""
+
+def get_sensor_lowpass(sensor_wf: np.ndarray,
+                       sensor_sample_rate_hz: float,
+                       lowpass_frequency_hz: float = 1):
+    """
+    based on the slack thread: https://tinyurl.com/f6t3h2fp
+    :param sensor_wf:
+    :param sensor_sample_rate_hz:
+    :param low_pass_frequency_hz:
+    :return:
+    """
+
+    smoothing_factor = lowpass_frequency_hz / sensor_sample_rate_hz
+    # initialize gravity array
+    sensor_lowpass = np.zeros(len(sensor_wf))
+
+    # loop through to update gravity information
+    for i in range(len(sensor_lowpass) - 1):
+        sensor_lowpass[i + 1] = (1 - smoothing_factor) * sensor_lowpass[i] + smoothing_factor * sensor_wf[i + 1]
+
+    return sensor_lowpass
+
+
+def get_lowpass_and_highpass(sensor_wf: np.ndarray, sensor_sample_rate_hz: float,
+                             lowpass_frequency_hz: float = 1) -> Tuple[np.ndarray, np.ndarray]:
+    """
+
+    :param sensor_wf:
+    :param sensor_sample_rate_hz:
+    :param low_pass_sample_rate_hz:
+    :return:
+    """
+
+    # extract low-frequency component via exponential filtering
+    sensor_lowpass = get_sensor_lowpass(sensor_wf, sensor_sample_rate_hz, lowpass_frequency_hz)
+
+    # subtract low-frequency component from waveform
+    sensor_highpass = sensor_wf - sensor_lowpass
+
+    return sensor_lowpass, sensor_highpass

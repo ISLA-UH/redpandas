@@ -141,9 +141,10 @@ def filter_reflection_highpass(sig_wf: np.ndarray,
     """
     wf_folded, number_points_to_flip_per_edge = pad_reflection_symmetric(sig_wf)
 
-    sig_folded_filtered = highpass_obspy(sig_wf=wf_folded,
-                                         frequency_low_hz=filter_cutoff_hz,
-                                         sample_rate_hz=sample_rate_hz)
+    sig_folded_filtered = obspy.signal.filter.highpass(np.copy(wf_folded),
+                                                       filter_cutoff_hz,
+                                                       sample_rate_hz, corners=4,
+                                                       zerophase=True)
 
     return sig_folded_filtered[number_points_to_flip_per_edge:-number_points_to_flip_per_edge]
 
@@ -204,23 +205,6 @@ def bandpass_butter_uneven(sig_wf: np.ndarray,
     edge_high = 0.5
     [b, a] = signal.butter(N=filter_order, Wn=[edge_low, edge_high], btype='bandpass')
     return signal.filtfilt(b, a, np.copy(sig_wf))
-
-
-def highpass_obspy(sig_wf: np.ndarray,
-                   sample_rate_hz: int,
-                   frequency_low_hz: float,
-                   filter_order=4) -> np.ndarray:
-    """
-    :param sig_wf: signal waveform
-    :param frequency_low_hz: filter corner frequency in Hz
-    :param sample_rate_hz: sampling rate in Hz
-    :param filter_order: filter corners / order. Default is 4.
-    :return: sensor highpass
-    """
-    return obspy.signal.filter.highpass(np.copy(sig_wf),
-                                        frequency_low_hz,
-                                        sample_rate_hz, corners=filter_order,
-                                        zerophase=True)
 
 
 def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
@@ -293,6 +277,7 @@ def highpass_from_diff(sig_wf: np.ndarray,
         print('Default 100s highpass override. New highpass period = ', 1/frequency_filter_low)
 
     # Fold edges of wf
+    # TODO: Make folding an option
     sensor_waveform_fold, number_points_folded = pad_reflection_symmetric(sensor_waveform_grad_dm)
 
     if highpass_type == "obspy":

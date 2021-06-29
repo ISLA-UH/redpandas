@@ -6,7 +6,7 @@ Last updated: 10 June 2021
 import numpy as np
 import pandas as pd
 from scipy import signal
-from libquantum import utils
+import redpandas.redpd_preprocess as rpd_prep
 
 from typing import List, Tuple
 
@@ -158,27 +158,27 @@ def normalize_pandas(df: pd.DataFrame,
     """
 
     if norm_type == 'max':
-        norm_type_utils = utils.NormType.MAX
+        norm_type_utils = rpd_prep.NormType.MAX
     elif norm_type == 'l1':
-        norm_type_utils = utils.NormType.L1
+        norm_type_utils = rpd_prep.NormType.L1
     elif norm_type == 'l2':
-        norm_type_utils = utils.NormType.L2
+        norm_type_utils = rpd_prep.NormType.L2
     else:
-        norm_type_utils = utils.NormType.OTHER
+        norm_type_utils = rpd_prep.NormType.OTHER
 
     list_normalized_signals = []  # list that will be converted to a column
     for row in range(len(df)):
 
         if df[sig_wf_label][row].ndim == 1:
             # use libquantum utils normalize module
-            list_normalized_signals.append(utils.normalize(sig=df[sig_wf_label][row], scaling=scaling,
-                                                           norm_type=norm_type_utils))
+            list_normalized_signals.append(rpd_prep.normalize(sig=df[sig_wf_label][row], scaling=scaling,
+                                                              norm_type=norm_type_utils))
         else:
             list_3c_normalized_signals = []
             for index_dimension, _ in enumerate(df[sig_wf_label][row]):
-                list_3c_normalized_signals.append(utils.normalize(sig=df[sig_wf_label][row][index_dimension],
-                                                                  scaling=scaling,
-                                                                  norm_type=norm_type_utils))
+                list_3c_normalized_signals.append(rpd_prep.normalize(sig=df[sig_wf_label][row][index_dimension],
+                                                                     scaling=scaling,
+                                                                     norm_type=norm_type_utils))
 
             list_normalized_signals.append(np.array(list_3c_normalized_signals))
 
