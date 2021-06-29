@@ -33,7 +33,8 @@ plot_raw_data = False  # raw plots currently run but are not updated
 # TODO: cleaner code for TFR wiggle plot
 # TODO: implement skyfall_config_file
 
-if __name__ == "__main__":
+
+def main():
     """
     RedVox RedPandas time-frequency representation of API900 data. Example: Skyfall.
     Last updated: 18 June 2021
@@ -635,3 +636,6 @@ if __name__ == "__main__":
 
         plt.show()
 
+
+if __name__ == "__main__":
+    main()

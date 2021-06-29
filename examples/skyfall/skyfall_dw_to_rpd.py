@@ -5,7 +5,7 @@ from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet, redpd_dw_to_parqu
 from examples.skyfall.skyfall_config_file import skyfall_config
 
 
-if __name__ == "__main__":
+def main():
     """
     Beta workflow for API M pipeline
     Last updated: 18 June 2021
@@ -26,3 +26,7 @@ if __name__ == "__main__":
                         start_buffer_minutes=skyfall_config.start_buffer_minutes,
                         end_buffer_minutes=skyfall_config.end_buffer_minutes,
                         debug=False)
+
+
+if __name__ == "__main__":
+    main()

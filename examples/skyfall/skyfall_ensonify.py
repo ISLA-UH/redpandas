@@ -11,9 +11,11 @@ import redpandas.redpd_plot as rpd_plot
 
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
-from examples.skyfall.skyfall_config_file import skyfall_config, INPUT_DIR
+from examples.skyfall.skyfall_config_file import skyfall_config
 
-if __name__ == "__main__":
+
+def main():
+
     """
     Station sonification
     Load from parquet
@@ -25,7 +27,7 @@ if __name__ == "__main__":
     print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
     # print(df_skyfall_data.columns)
 
-    output_wav_directory = os.path.join(INPUT_DIR, "wav")
+    output_wav_directory = os.path.join(skyfall_config.input_dir, "wav")
     if not os.path.exists(output_wav_directory):
         os.mkdir(output_wav_directory)
     print("Exporting wav files to " + output_wav_directory)
@@ -95,6 +97,7 @@ if __name__ == "__main__":
     print("Number of channels to ensonify = ", sensor_channels_total)
 
     # TODO: loop over number of sensors, then number of channels
+    # TODO MC: name k, change to enumerate, move to redpd_ensonify
     k = -1
     for sensor_j in range(sensor_number_total):
         sig_j = df_skyfall_data[sensor_column_label_list[sensor_j]].to_numpy()[0]
@@ -122,12 +125,11 @@ if __name__ == "__main__":
                                           sig_sample_rate_hz=fs_j,
                                           wav_filename=filename_with_path,
                                           wav_sample_rate_hz=192000.)
-
+    # TODO MC: Fix plot
     # Plot sensor wiggles, need epoch time
     sensor_epoch_column_label_list = [audio_epoch_s_label, barometer_epoch_s_label,
                                       accelerometer_epoch_s_label, gyroscope_epoch_s_label,
                                       magnetometer_epoch_s_label]
-
 
 
     # rpd_plot.plot_sensor_wiggles_pandas(df=df_skyfall_data,
@@ -142,4 +144,8 @@ if __name__ == "__main__":
     #                                     wf_color='midnightblue',
     #                                     sensor_yticks_label_list=sensor_ticklabels_list)
     #
-    # plt.show()
+    plt.show()
+
+
+if __name__ == "__main__":
+    main()
