@@ -13,20 +13,7 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
 # INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
 
-# Redpd Configuration
-skyfall_config = RedpdConfig(input_directory=INPUT_DIR,
-                             event_name="Skyfall",
-                             output_directory=os.path.join(INPUT_DIR, "rpd_files"),
-                             station_ids=["1637610021"],
-                             sensor_labels=['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
-                                            'health', 'location', 'clock', 'synchronization'],
-                             event_start_epoch_s=1603806314,
-                             duration_s=30 * 60,
-                             start_buffer_minutes=3,
-                             end_buffer_minutes=3,
-                             tdr_load_method="parquet")
-# To run data window
-# tdr_load_method="datawindow")
+# TODO MC: one slash vs two slash for windows, only edit input_dir, make sure inpur_dir is correct
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
 is_rerun_bounder: bool = True  # If true, rerun and save as parquet
@@ -40,3 +27,17 @@ ref_latitude_deg = 35.83728
 ref_longitude_deg = -115.57234
 ref_altitude_m = 1028.2
 ref_epoch_s = 1603808160
+
+
+# Redpd Configuration
+skyfall_config = RedpdConfig(input_directory=INPUT_DIR,
+                             event_name="Skyfall",
+                             output_directory=os.path.join(INPUT_DIR, "rpd_files"),
+                             station_ids=["1637610021"],
+                             sensor_labels=['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
+                                            'health', 'location', 'clock', 'synchronization'],
+                             event_start_epoch_s=1603806314,
+                             duration_s=30 * 60,
+                             start_buffer_minutes=3,
+                             end_buffer_minutes=3,
+                             tdr_load_method="parquet")

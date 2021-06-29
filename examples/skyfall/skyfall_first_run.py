@@ -6,23 +6,12 @@ from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet_from_config
 
 import os
 
-# TODO if statements checking
-
 # assume they have not looked at the config file
-
-# 1.) Config file - make sure same folder as skyfall_first_run
-# 2.) Ensonify
-# 3.) TDR
-# 4.) TFR
-
-
-# user only need to (minimal) interact with config_file and this file
-# dialog for user, check config file before you run me
-
-
 # check redpandas requirements are met
-# make sure redpandas
-# TODO: check every import library is in redpandas requirements
+
+# TODO MC: check every import library is in redpandas requirements
+# TODO MC: indicate the skyfall_config_file, surpress column and station index in redpd_dw_to_parquet
+
 
 if __name__ == "__main__":
 
