@@ -50,10 +50,11 @@ _RedPandas related terms:_
 - _Station_: a device used to record data, e.g., a smartphone recording infrasound waves using 
 [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. Also a Python class designed in the RedVox Python SDK to
 store station and sensor data. For more information on the Station Python class, 
-click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station).
+click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station). A station has sensors (see below).
 
 - _Sensor_: a device that responds to a physical stimulus, e.g., barometer, accelerometer. The units for each available sensor can
 be found in [RedVox SDK Sensor Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access).
+A station should always have audio sensor (and hence audio data).
 
 - _Epoch_ or _epoch time_: unix time (also referred to as the epoch time), the number of seconds since 1 January 1970. 
 The RedPandas' native unit of time is UTC epoch time in seconds.
@@ -66,7 +67,7 @@ Return to _[Table of Contents](#table-of-contents)_
 ### Downloading RedVox data
 
 You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app and download it. There are three methods to download the RedVox collected data and/or RedPandas example datasets 
-(such as [Skyfall](#example-skyfall)):
+(such as [Skyfall](#redpandas-example-skyfall)):
 
 1) Moving the RedVox files from your smartphone RedVox folder to your computer.
 2) Using RedVox Cloud Platform (link) (recommended).
@@ -213,6 +214,8 @@ Return to _[Table of Contents](#table-of-contents)_
 
 #### Ensonify data
 
+You can listen your RedVox dataset
+
 #### Plot data
 
 #### Filter
@@ -249,46 +252,45 @@ The configuration file is
 
 Here are some solutions to problems that might occur.
 
-**The following error appears when I try to run Skyfall: _ModuleNotFoundError: No module named 'skyfall_config_file'_**
+- The following error appears when I try to run Skyfall: _ModuleNotFoundError: No module named 'skyfall_config_file'_
 
-Make sure that skyfall_config_file.py is in the same folder as skyfall_first_run.py
+    Make sure that skyfall_config_file.py is in the same folder as skyfall_first_run.py
 
-**The following error appears when I try to run Skyfall: 
-_ERROR: Could not find a version that satisfies the requirement redvox-pandas (from versions: none)_ and
-_ERROR: No matching distribution found for redvox-pandas_**
+- The following error appears when I try to run Skyfall:  _ERROR: Could not find a version that satisfies the requirement 
+redvox-pandas (from versions: none)_ and _ERROR: No matching distribution found for redvox-pandas_
 
-Check that you have RedPandas installed in your python environment with
-```shell script
-pip show redvox-pandas
-```
-If ``WARNING: Package(s) not found: redvox-pandas`` appears, you need to install RedPandas (visit [RedPandas Installation](installation.md) 
-for more details). If you wish to install the RedPandas library locally in the same folder skyfall_config_file.py and skyfall_first_run.py 
-are located, run the following command in your terminal:
+    Check that you have RedPandas installed in your python environment with
+    ```shell script
+    pip show redvox-pandas
+    ```
+    If ``WARNING: Package(s) not found: redvox-pandas`` appears, you need to install RedPandas (visit [RedPandas Installation](installation.md) 
+    for more details). If you wish to install the RedPandas library locally in the same folder skyfall_config_file.py and skyfall_first_run.py 
+    are located, run the following command in your terminal:
+    
+    ```shell script
+    pip3 install --target=/path/to/folder/with/skyfall/scripts redvox-pandas --upgrade
+    ```
 
-```shell script
-pip3 install --target=/path/to/folder/with/skyfall/scripts redvox-pandas --upgrade
-```
+- When I run Skyfall, I get TypeErrors and similar Errors
 
-**When I run Skyfall I get TypeErrors and similar**
-
-We probably changed some modules. Make sure you are up to date with the latest RedPandas version, visit [RedPandas Installation](installation.md) 
-for more details. If you suspect it might a bug or an issue, please feel free to submit an issue on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
+    We probably changed some modules. Make sure you are up to date with the latest RedPandas version, visit [RedPandas Installation](installation.md) 
+    for more details. If you suspect it might a bug or an issue, please feel free to submit an issue on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
 
 Return to _[Table of Contents](#table-of-contents)_
 
 ### Frequently asked questions (FAQ)
 
-**_I have a RedPandas parquet and when I try to open and plot the barometer / accelerometer / gyroscope / magnetometer 
-sensors, it breaks._**
+- I have a RedPandas parquet and when I try to open and plot the barometer / accelerometer / gyroscope / magnetometer 
+        sensors, it breaks.
 
-One common problem is that you need to unflatten the columns with the barometer, accelerometer, gyroscope, and/or 
-magnetometer sensors. Check the section [Opening RedPandas parquet files](#opening-redpandas-parquet-files).
-An easy way to diagnose if you need to unflatyen the column is by checking that ``df["accelerometer_wf_raw"][0]`` 
-prints a 1d numpy array. If that is the case then you need to unflatten those data columns.
+    One common problem is that you need to unflatten the columns with the barometer, accelerometer, gyroscope, and/or 
+    magnetometer sensors. Check the section [Opening RedPandas parquet files](#opening-redpandas-parquet-files).
+    An easy way to diagnose if you need to unflatyen the column is by checking that ``df["accelerometer_wf_raw"][0]`` 
+    prints a 1d numpy array. If that is the case then you need to unflatten those data columns.
 
-**_A function is broken, what do I do?_**
+- A function is broken, what do I do?
 
-Please feel free to submit issues on the [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
+    Please feel free to submit issues on the [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
 
 
 Return to _[Table of Contents](#table-of-contents)_
