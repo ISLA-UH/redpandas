@@ -331,7 +331,6 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
 
         print(f'\nStation: {df[sig_id_label][station]}')
 
-        fig, ax = plt.subplots(figsize=(8, 6))  # new figure per station
 
         for index_sensor_label, sensor_label in enumerate(sensor_column_label_list):
 
@@ -345,11 +344,6 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
 
             if sig_j.ndim == 1:  # audio basically
                 print('Sensor signal shape:', sig_j.shape)
-                if sensor_name_list is None:
-                    ax.plot(sig_j, label=sensor_label)
-                else:
-                    ax.plot(sig_j, label=sensor_name_list[sensor_channel_index])
-
                 # Exporting .wav
                 if sensor_name_list is None:
                     full_filename = output_wav_filename + '_' + sensor_label
@@ -370,10 +364,6 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
                 names_index_channel = ['_X', '_Y', '_Z']
                 for index_channel, _ in enumerate(sig_j):
                     sig_j_ch_m = sig_j[index_channel]  # get x,y,z of sensor
-                    if sensor_name_list is None:
-                        ax.plot(sig_j_ch_m, label=sensor_label + names_index_channel[index_channel])
-                    else:
-                        ax.plot(sig_j_ch_m, label=sensor_name_list[sensor_channel_index])
 
                     # Exporting .wav
                     if sensor_name_list is None:
@@ -390,9 +380,6 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
                                         wav_sample_rate_hz=192000.)
                     sensor_channel_index += 1
 
-        ax.legend(loc='upper right')
-        ax.set_title(f'Rough draft of sensors waveform for station {df[sig_id_label][station]}')
-        ax.set_ylabel('Sensors')
 
 
 #
