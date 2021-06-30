@@ -26,7 +26,7 @@ from redpandas.redpd_config import RedpdConfig
 def redpd_dw_to_parquet_from_config(config: RedpdConfig,
                                     create_dw: bool = True,
                                     print_dq: bool = False,
-                                    show_raw_waveform_plots: bool = True) -> None:
+                                    show_raw_waveform_plots: bool = True):
     """
     Extract RedVox data, convert to pandas dataframe and save in parquet
 
@@ -61,7 +61,7 @@ def redpd_dw_to_parquet(input_dir: str,
                         end_epoch_s: Optional[float] = None,
                         start_buffer_minutes: Optional[int] = 3,
                         end_buffer_minutes: Optional[int] = 3,
-                        debug: bool = False) -> None:
+                        debug: bool = False):
     """
     Extract RedVox data, convert to pandas dataframe and save in parquet
 
@@ -87,9 +87,9 @@ def redpd_dw_to_parquet(input_dir: str,
     """
     print("Initiating conversion from RedVox DataWindow to RedPandas:")
 
-    settings.set_parallelism_enabled(True)
+    # settings.set_parallelism_enabled(True)
 
-    if not sensor_labels:
+    if sensor_labels is None:
         sensor_labels = ["audio"]
 
     if output_filename_pkl is None:

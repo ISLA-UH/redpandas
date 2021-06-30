@@ -326,11 +326,16 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
     :return: .wav files, plot
     """
 
-    sensor_channel_index = 0
+    output_wav_directory = os.path.join(output_wav_directory, "wav")
+    if not os.path.exists(output_wav_directory):
+        os.mkdir(output_wav_directory)
+    print("Exporting wav files to " + output_wav_directory)
+
+    # sensor_channel_index = 0
     for station in df.index:
 
         print(f'\nStation: {df[sig_id_label][station]}')
-
+        sensor_channel_index = 0
 
         for index_sensor_label, sensor_label in enumerate(sensor_column_label_list):
 
@@ -346,9 +351,10 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
                 print('Sensor signal shape:', sig_j.shape)
                 # Exporting .wav
                 if sensor_name_list is None:
-                    full_filename = output_wav_filename + '_' + sensor_label
+                    full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{sensor_label}"
                 else:
-                    full_filename = output_wav_filename + '_' + sensor_name_list[sensor_channel_index]
+
+                    full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{sensor_name_list[sensor_channel_index]}"
                 filename_with_path = os.path.join(output_wav_directory, full_filename)
                 print(filename_with_path)
                 # Save to 48, 96, 192 kHz
@@ -367,9 +373,9 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
 
                     # Exporting .wav
                     if sensor_name_list is None:
-                        full_filename = output_wav_filename + '_' + sensor_label + names_index_channel[index_channel]
+                        full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{sensor_label + names_index_channel[index_channel]}"
                     else:
-                        full_filename = output_wav_filename + '_' + sensor_name_list[sensor_channel_index]
+                        full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{sensor_name_list[sensor_channel_index]}"
 
                     filename_with_path = os.path.join(output_wav_directory, full_filename)
                     print(filename_with_path)
