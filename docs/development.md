@@ -16,7 +16,7 @@ This section covers reporting issues and bugs, version history and license.
 
 #### Reporting issues
 
-Please feel free to submit issues on the [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
+Please feel free to submit issues on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
 
 #### Version History
 
