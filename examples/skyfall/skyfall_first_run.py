@@ -10,7 +10,7 @@ import os
 # check redpandas requirements are met
 
 # TODO MC: check every import library is in redpandas requirements
-# TODO MC: indicate the skyfall_config_file, surpress column and station index in redpd_dw_to_parquet
+# TODO MC: indicate the skyfall_config_file,
 
 
 if __name__ == "__main__":
@@ -19,7 +19,8 @@ if __name__ == "__main__":
     print("Press enter to continue.")
     input()
     print("Before we start, please check that:"
-          "\n 1) The Skyfall configuration file (skyfall_config_file.py) is in the same folder as this file (skyfall_first_run.py)"
+          "\n 1) The Skyfall configuration file (skyfall_config_file.py) is in the same folder as this file"
+          " (skyfall_first_run.py)"
           "\n 2) The INPUT_DIR has been changed to path/to/file where the Skyfall data is located"
           "\n 3)")
     print("Press enter to continue.")
@@ -27,7 +28,8 @@ if __name__ == "__main__":
 
     # Check that Skyfall data is where it should be
     if not os.path.exists(skyfall_config.input_dir):
-        print(f"\nInput directory does not exist, check INPUT_DIR in skyfall_config_file.py: {skyfall_config.input_dir}")
+        print(f"\nInput directory does not exist, check INPUT_DIR in skyfall_config_file.py: "
+              f"{skyfall_config.input_dir}")
         exit()
 
     print("\nFirst step: load the RedVox Skyfall data (.rdvxz) and convert it into a parquet.")
@@ -37,7 +39,8 @@ if __name__ == "__main__":
                                     show_raw_waveform_plots=False)
 
     print(f"\nYou can find the RedPandas parquet at {skyfall_config.output_dir + '/' + skyfall_config.pd_pqt_file}")
-    print(f"You can also find a pickle file with the RedVox Datawindow {skyfall_config.output_dir + '/dw/' + skyfall_config.dw_file}"
+    print(f"You can also find a pickle file with the RedVox Datawindow at "
+          f"{skyfall_config.output_dir + '/dw/' + skyfall_config.dw_file}"
           f"\nand JSON file at {skyfall_config.output_dir + '/' + skyfall_config.output_filename_pkl_pqt + '.json'}")
     print("Press enter to continue.")
     input()
@@ -45,8 +48,8 @@ if __name__ == "__main__":
     print("Now that the RedPandas parquet is constructed, we can showcase some RedPandas products.")
     print("In the Skyfall example: "  
           "\n 1) Ensonify"
-          "\n 2) Plot Time-Domain Representation"
-          "\n 3) Plot Time-Frequency Representation")
+          "\n 2) Time-Domain Representation plots"
+          "\n 3) Time-Frequency Representation plots")
 
     print("Press enter to continue.")
     input()
@@ -56,8 +59,8 @@ if __name__ == "__main__":
     print("Press enter to run skyfall_ensonify.py")
     input()
     skyfall_ensonify.main()
-    print(f"\nYou can find the .wav files in {skyfall_config.input_dir + '/wav'}. You can listen to this data with the free, "
-          f"open-source app Audacity.")
+    print(f"\nYou can find the .wav files in {skyfall_config.input_dir + '/wav'}."
+          f" You can listen to this data with the free, open-source app Audacity.")
     print("Press enter to continue.")
     input()
 
@@ -74,6 +77,7 @@ if __name__ == "__main__":
     skyfall_tfr_rpd.main()
 
     print("\nThank you for running the RedPandas Skyfall example.")
-    print("Please feel free to check the RedPandas Documentation at https://github.com/RedVoxInc/redpandas to learn more about RedPandas.")
+    print("Please feel free to check the RedPandas Documentation at https://github.com/RedVoxInc/redpandas "
+          "to learn more about RedPandas.")
 
 

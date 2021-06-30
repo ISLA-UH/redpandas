@@ -4,6 +4,7 @@ I also assume the highest audio sample rate we'll use is 8 kHz.
 M. Garces, last updated 20210419
 """
 
+import os
 import numpy as np
 import pandas as pd
 import scipy.io.wavfile
@@ -11,10 +12,11 @@ import scipy.signal as signal
 from scipy.fft import rfft, fftfreq
 from libquantum import synthetics
 import matplotlib.pyplot as plt
+from typing import List, Optional
 
 
 # Supported wav sample rates
-permitted_wav_fs_values = 8000., 16000., 48000., 96000., 192000
+permitted_wav_fs_values = 8000., 16000., 48000., 96000., 192000.
 exception_str = "Wav sample rate must be 8000, 16000, 48000, 96000, or 192000  Hz"
 lowest_wav_fs_value = 8000.
 # TODO: Roll out lowest_fs
@@ -302,5 +304,84 @@ def dual_tone_test():
     plt.show()
 
 
-if __name__ == "__main__":
-    dual_tone_test()
+def ensonify_sensors_pandas(df: pd.DataFrame,
+                            sig_id_label: str,
+                            sensor_column_label_list: List[str],
+                            sig_sample_rate_label_list: List[str],
+                            wav_sample_rate_hz: float,
+                            output_wav_directory: str,
+                            output_wav_filename: str = 'redvox',
+                            sensor_name_list: Optional[List[str]] = None) -> None:
+    """
+    Channel sensor data sonification
+
+    :param df: input pandas data frame
+    :param sig_id_label: string for column name with station ids in df
+    :param sensor_column_label_list: list of strings with column name with sensor waveform data in df
+    :param sig_sample_rate_label_list: list of strings with the sensor sample rate in Hz column name in df
+    :param wav_sample_rate_hz: sample rate in Hz which to resample to. One of: 8000., 16000., 48000., 96000., 192000.
+    :param output_wav_directory: output directory where .wav files are stored
+    :param output_wav_filename: output name for .wav files
+    :param sensor_name_list: optional list of strings with channel names per sensor
+    :return: .wav files, plot
+    """
+
+    sensor_channel_index = 0
+    for station in df.index:
+
+        print(f'\nStation: {df[sig_id_label][station]}')
+
+
+        for index_sensor_label, sensor_label in enumerate(sensor_column_label_list):
+
+            sensor_fs_column_label = sig_sample_rate_label_list[index_sensor_label]
+
+            sig_j = df[sensor_label][station]
+            fs_j = df[sensor_fs_column_label][station]
+
+            print(f'\nSensor for {sensor_label}')
+            print('Sample rate:', fs_j)
+
+            if sig_j.ndim == 1:  # audio basically
+                print('Sensor signal shape:', sig_j.shape)
+                # Exporting .wav
+                if sensor_name_list is None:
+                    full_filename = output_wav_filename + '_' + sensor_label
+                else:
+                    full_filename = output_wav_filename + '_' + sensor_name_list[sensor_channel_index]
+                filename_with_path = os.path.join(output_wav_directory, full_filename)
+                print(filename_with_path)
+                # Save to 48, 96, 192 kHz
+                save_to_elastic_wav(sig_wf=sig_j,
+                                    sig_sample_rate_hz=fs_j,
+                                    wav_filename=filename_with_path,
+                                    wav_sample_rate_hz=wav_sample_rate_hz)
+                sensor_channel_index += 1
+
+            else:
+                print('Sensor signal shape:', sig_j.shape)
+
+                names_index_channel = ['_X', '_Y', '_Z']
+                for index_channel, _ in enumerate(sig_j):
+                    sig_j_ch_m = sig_j[index_channel]  # get x,y,z of sensor
+
+                    # Exporting .wav
+                    if sensor_name_list is None:
+                        full_filename = output_wav_filename + '_' + sensor_label + names_index_channel[index_channel]
+                    else:
+                        full_filename = output_wav_filename + '_' + sensor_name_list[sensor_channel_index]
+
+                    filename_with_path = os.path.join(output_wav_directory, full_filename)
+                    print(filename_with_path)
+                    # Save to 48, 96, 192 kHz
+                    save_to_elastic_wav(sig_wf=sig_j_ch_m,
+                                        sig_sample_rate_hz=fs_j,
+                                        wav_filename=filename_with_path,
+                                        wav_sample_rate_hz=192000.)
+                    sensor_channel_index += 1
+
+
+
+#
+# if __name__ == "__main__":
+#     dual_tone_test()

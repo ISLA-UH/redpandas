@@ -14,7 +14,12 @@ This section covers the basics on how to use the RedVox RedPandas library.
     - [For RedVox data in a pickle format (.pkl)](#for-redvox-data-in-a-pickle-format-pkl)
     - [More options](#more-options)
 - [Opening RedPandas parquet files](#opening-redpandas-parquet-files)
-- [Plotting with RedPandas](#plotting-with-redpandas)
+- [Other data manipulation with RedPandas](#other-data-manipulation-with-redpandas)
+    - [Ensonify data](#ensonify-data)
+    - [Plot]()
+    - [Filter]()
+    - [STFT]()
+    - [Coherence (?)]()
 - [RedPandas example: Skyfall](#redpandas-example-skyfall)
     - [Downloading the RedVox Skyfall data](#downloading-the-redvox-skyfall-data)
     - [Running the Skyfall example](#running-the-skyfall-example)
@@ -63,10 +68,11 @@ Return to _[Table of Contents](#table-of-contents)_
 You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app and download it. There are three methods to download the RedVox collected data and/or RedPandas example datasets 
 (such as [Skyfall](#example-skyfall)):
 
-1) Using RedVox Cloud Platform (link) (recommended).
-2) Using the [RedVox Python SDK cloud-download](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#cloud-download-command-details). Note that you will need to install the [GUI RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/installation.md#installing-optional-dependencies) 
+1) Moving the RedVox files from your smartphone RedVox folder to your computer.
+2) Using RedVox Cloud Platform (link) (recommended).
+3) Using the [RedVox Python SDK cloud-download](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#cloud-download-command-details). Note that you will need to install the [GUI RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/installation.md#installing-optional-dependencies) 
 dependencies to use the cloud-download.
-3) Using the [RedVox Python SDK Command Line Interface (CLI)](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#data-req-command-details) 
+4) Using the [RedVox Python SDK Command Line Interface (CLI)](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#data-req-command-details) 
 (recommended if your computer cannot install the GUI dependencies for RedVox Python SDK cloud-download).
 
 
@@ -85,7 +91,7 @@ If you want to manipulate RedVox data files directly in your Python environment,
 #### For raw RedVox data (.rdvxz, .rdvxm)
 
 The easiest method to covert RedVox data to a RedPandas dataframe is by using the function ``redpd_dw_to_parquet``. 
-This approach is ideal for python newcomers, new RedVox users, and for a superficial glance at new RedVox data.
+This approach is ideal for python newcomers, new RedVox users, and for a superficial first glance at new RedVox data.
 
 _Example:_
 
@@ -104,10 +110,10 @@ redpd_dw_to_parquet(input_dir=INPUT_DIR)
 Note that ``redpd_dw_to_parquet`` will create a folder named ``rpd_files`` in the path/to/file given in the 
 ``INPUT_DIR`` variable. A folder named ``dw``,  (short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
 containing a compressed pickle (.pkl.lz4), a RedPandas parquet, and a JSON file will be created inside the ``rpd_files``
- folder. 
+ folder. For more options, such as setting a specific output directory, visit the [More options](#more-options) section.
 
-Continuing the example case above, to open the parquet and start manipulating the data the following code can be applied:
-
+Continuing with the example case above, the following snippet of code can be applied to open the parquet and start manipulating 
+the data: 
 ```python
 import pandas as pd
 
@@ -115,14 +121,15 @@ df_data = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
 print(df_data.columns)
 ```
 
-For more information on columns found in RedPandas, column names and their contents, visit [RedVox RedPandas DataFrame Columns](columns_name.md).
+For more information on columns found in RedPandas, column names and their contents, visit [RedVox RedPandas DataFrame Columns](columns_name.md). 
+For more information on manipulation of pandas DataFrames, visit [pandas.DataFrame documentation](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
 
 Return to _[Table of Contents](#table-of-contents)_
 
 #### For RedVox data in a pickle format (.pkl)
 
 A similar approach can be applied if the RedVox data is in a compressed pickle format (.pkl.lz4). The only 
-modification to the method is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
+modification to the previously described method is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
 
 _Example:_
 
@@ -167,11 +174,16 @@ redpd_dw_to_parquet(input_dir="path/to/redvox/data",  # input directory where th
                     station_ids=["1234567890", "2345678901"],  # ID of stations, if None, all stations in data are laoded
                     sensor_labels=["audio", "barometer"],  # name of sensors, if None, audio will be loaded
                     start_epoch_s=1624674098,  # start time in epoch s, if None, first available time
-                    end_epoch_s=1624678740,  # end time in epoch s, if None, first available time
+                    end_epoch_s=1624678740,  # end time in epoch s, if None, last available time
                     start_buffer_minutes=3,  # amount of minutes to include before the start datetime when filtering data
                     end_buffer_minutes=3,  # amount of minutes to include after the end datetime when filtering data
                     debug=False)  # show debug if True
 ```
+
+The available [sensors](#basic-definitions) in a station can vary depending on the smartphone and available options
+in the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. The current available sensors RedPandas works with 
+are ``['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer', 'health', 'location', 'image']`` but note that 
+some sensors might not be present in the data. For a complete list of available sensors, visit [RedVox Sensor Data](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access). 
 
 Return to _[Table of Contents](#table-of-contents)_
 
@@ -196,11 +208,16 @@ df_column_unflatten(df=df_sensors,
 ```
 Return to _[Table of Contents](#table-of-contents)_
 
-### Plotting with RedPandas
 
 ### Other data manipulation with RedPandas
 
-#### Ensoni
+#### Ensonify data
+
+#### Plot data
+
+#### Filter
+
+#### STFT
 
 ### RedPandas example: Skyfall
 
@@ -228,7 +245,34 @@ The configuration file is
 
 ##### Preprocessing RedVox data
 
-##### Plotting RedVox data
+#### Troubleshooting and common problems
+
+Here are some solutions to problems that might occur.
+
+**The following error appears when I try to run Skyfall: _ModuleNotFoundError: No module named 'skyfall_config_file'_**
+
+Make sure that skyfall_config_file.py is in the same folder as skyfall_first_run.py
+
+**The following error appears when I try to run Skyfall: 
+_ERROR: Could not find a version that satisfies the requirement redvox-pandas (from versions: none)_ and
+_ERROR: No matching distribution found for redvox-pandas_**
+
+Check that you have RedPandas installed in your python environment with
+```shell script
+pip show redvox-pandas
+```
+If ``WARNING: Package(s) not found: redvox-pandas`` appears, you need to install RedPandas (visit [RedPandas Installation](installation.md) 
+for more details). If you wish to install the RedPandas library locally in the same folder skyfall_config_file.py and skyfall_first_run.py 
+are located, run the following command in your terminal:
+
+```shell script
+pip3 install --target=/path/to/folder/with/skyfall/scripts redvox-pandas --upgrade
+```
+
+**When I run Skyfall I get TypeErrors and similar**
+
+We probably changed some modules. Make sure you are up to date with the latest RedPandas version, visit [RedPandas Installation](installation.md) 
+for more details. If you suspect it might a bug or an issue, please feel free to submit an issue on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
 
 Return to _[Table of Contents](#table-of-contents)_
 
