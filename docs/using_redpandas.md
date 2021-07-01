@@ -1,6 +1,6 @@
-# How to use RedVox RedPandas
+# How to use RedPandas
 
-This section covers the basics on how to use the RedVox RedPandas library.
+This section covers the basics on how to use the RedVox Pandas (RedPandas) library.
 
 
 ## Table of Contents

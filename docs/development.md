@@ -1,4 +1,4 @@
-# RedVox RedPandas Development
+# RedPandas Development
 
 This section covers reporting issues and bugs, version history and license.
 
@@ -26,4 +26,4 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 [The Apache License](https://github.com/RedVoxInc/redpandas/tree/master/docs/LICENSE.md)
 
-Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas/blob/master/docs/README.md)_.
+Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas)_.

@@ -1,6 +1,6 @@
-# RedVox RedPandas Installation
+# RedPandas Installation
 
-This section covers the basics on how to install and upgrade the RedVox RedPandas library.
+This section covers the basics on how to install and upgrade the RedVox Pandas (RedPandas) library.
 
 
 ## Table of Contents

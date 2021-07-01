@@ -1,4 +1,4 @@
-# RedVox RedPandas DataFrame Columns
+# RedPandas DataFrame Columns
 
 This section covers the column labels in the RedPandas DataFrame.
 
