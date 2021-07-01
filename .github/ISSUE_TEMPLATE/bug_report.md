@@ -12,7 +12,6 @@ about: Report a bug or issue with RedPandas
 **Please describe the behavior you are expecting:**
 <!--A short description  (one or two sentences) of the expected outcome-->
 
-
 **Please provide steps to reproduce the issue or paste code for reproduction:**
 <!--A minimum code snippet required to reproduce the bug. -->
 
@@ -31,15 +30,12 @@ about: Report a bug or issue with RedPandas
 #
 ```
 
-
 **Please provide information about your setup:**
 
 - Operating System (Windows, OSX, Linux ...) and version:
 - Python version:
 - RedPandas version:
 - Other libraries:
-
-
 
 **Please feel free to explain any additional context:**
 <!-- Please include anything that is relevant that we missed in the above sections -->
