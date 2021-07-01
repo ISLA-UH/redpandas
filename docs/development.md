@@ -24,6 +24,7 @@ See [CHANGELOG.md](CHANGELOG.md).
 
 #### License
 
-[The Apache License](https://github.com/RedVoxInc/redpandas/tree/master/docs/LICENSE.md)
+[The Apache License](https://github.com/RedVoxInc/redpandas/blob/master/LICENSE)
+
 
 Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas)_.
