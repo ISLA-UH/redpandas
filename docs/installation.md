@@ -7,12 +7,13 @@ This section covers the basics on how to install and upgrade the RedVox Pandas (
 
 <!-- toc -->
 
+- [System requirements](#system-requirements)
 - [Installing and/or upgrading RedVox RedPandas with pip](#installing-and/or-upgrading-RedVox-RedPandas-with-pip)
 - [Verifying the installation](#verifying-the-installation)
 
 <!-- tocstop -->
 
-
+### System requirements
 
 ### Installing and/or upgrading RedVox RedPandas with pip
 
