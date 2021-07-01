@@ -5,7 +5,7 @@ Created: 23 March 2021
 Last updated: 24 June 2021
 """
 import datetime as dt
-from typing import List, Union
+from typing import List, Union, Optional
 
 import matplotlib.pyplot as plt
 from matplotlib.colorbar import Colorbar
@@ -26,11 +26,11 @@ color_map = "inferno"  # 'hot_r'  # 'afmhot_r' #colormap for plotting
 
 
 def plot_mesh_pandas(df: pd.DataFrame,
-                     mesh_time_label: Union[str, list],
-                     mesh_frequency_label: Union[str, list],
-                     mesh_tfr_label: Union[str, list],
+                     mesh_time_label: Union[str, List[str]],
+                     mesh_frequency_label: Union[str, List[str]],
+                     mesh_tfr_label: Union[str, List[str]],
                      t0_sig_epoch_s: float,
-                     sig_id_label: Union[str, list],
+                     sig_id_label: Union[str, List[str]],
                      fig_title_show: bool = True,
                      fig_title: str = "STFT",
                      frequency_scaling: str = "log",
@@ -48,7 +48,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param mesh_frequency_label: string for the mesh frequency column name in df. List of strings for multiple
      :param mesh_tfr_label: string for the mesh tfr column name in df. List of strings for multiple
      :param t0_sig_epoch_s: epoch time in seconds of first timestamp
-     :param sig_id_label: string for column name with station ids in df
+     :param sig_id_label: string for column name with station ids in df. You can also provide a list of custom labels
      :param fig_title_show: include a title in the figure. Default is True
      :param fig_title: figure title label
      :param frequency_scaling: "log" or "lin". Default is "log"
@@ -369,8 +369,8 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         sig_wf_label: str,
                         sig_sample_rate_label: str,
                         sig_id_label: str,
-                        x_label: str,
-                        y_label: str,
+                        x_label: str = "Time (s)",
+                        y_label: str = "Sensors",
                         fig_title_show: bool = True,
                         fig_title: str = 'Signals',
                         wf_color: str = 'midnightblue',
@@ -454,7 +454,7 @@ def plot_sensor_wiggles_pandas(df: pd.DataFrame,
                                fig_title_show: bool = True,
                                fig_title: str = 'Signals',
                                wf_color: str = 'midnightblue',
-                               sensor_yticks_label_list: List[str] = None) -> None:
+                               sensor_yticks_label_list: Optional[List[str]] = None) -> None:
     """
     Plots sensor waveforms for one station
 

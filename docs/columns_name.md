@@ -35,19 +35,19 @@ This section covers the column labels in the RedPandas DataFrame.
 
 For more information about station metadata, visit [RedVox Station Metadata documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#station-metadata).
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to audio sensor
 
 - ``audio_sensor_name``: name of audio sensor
 - ``audio_sample_rate_nominal_hz``: nominal sample rate in Hz
 - ``audio_sample_rate_corrected_hz``: corrected sample rate in Hz
-- ``'audio_epoch_s``: audio data timestamps in epoch UTC seconds
+- ``audio_epoch_s``: audio data timestamps in epoch UTC seconds
 - ``audio_wf_raw``: raw audio data
 - ``audio_wf``: demeaned audio data
 - ``audio_nans``: if there are any, index position of nans in the audio data
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 ### Variable columns in RedPandas
 
@@ -65,7 +65,7 @@ might be included in the DataFrame.
 - ``{sensor_label}_wf_highpass``: highpassed sensor data
 - ``{sensor_label}_nans``: if there are any, index position of nans in the sensor data
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to location sensor
 
@@ -84,7 +84,7 @@ Return to _[Table of Contents](#table-of-contents)_
 - ``location_speed_accuracy``: meters per second
 - ``location_provider``: 
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to best location sensor
 
@@ -103,7 +103,7 @@ Return to _[Table of Contents](#table-of-contents)_
 - ``best_location_speed_accuracy``: meters per second
 - ``best_location_provider``: 
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to health sensor
 
@@ -120,7 +120,7 @@ Return to _[Table of Contents](#table-of-contents)_
 - ``available_disk_byte``: available disk space in bytes
 - ``cell_service_state``: cell service, one of: 'UNKNOWN', 'EMERGENCY', 'NOMINAL', 'OUT_OF_SERVICE', 'POWER_OFF', 'Nan'
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to image sensor
 
@@ -130,7 +130,7 @@ Return to _[Table of Contents](#table-of-contents)_
 - ``image_bytes``: image data in bytes
 - ``image_codec``: image codec
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to time synchronization
 
@@ -144,7 +144,7 @@ Return to _[Table of Contents](#table-of-contents)_
 For more information about time synchronization, visit 
 [RedVox Timesync and Offset Model Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#timesync-and-offset-model).
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to clock offset and model
 
@@ -160,7 +160,7 @@ Return to _[Table of Contents](#table-of-contents)_
 For more information about the clock offset and model, visit 
 [RedVox Timesync and Offset Model Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#timesync-and-offset-model).
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 ### Columns related to parquet saving/opening
 
@@ -173,4 +173,4 @@ For more information on how to unflatten the barometer, accelerometer, gyroscope
 visit [Opening RedPandas parquet files](using_redpandas.md#opening-redpandas-parquet-files).
 
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas/blob/master/docs/README.md)_.

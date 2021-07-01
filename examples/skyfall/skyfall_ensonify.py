@@ -25,11 +25,6 @@ def main():
     df_skyfall_data = pd.read_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
     print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
-    output_wav_directory = os.path.join(skyfall_config.input_dir, "wav")
-    if not os.path.exists(output_wav_directory):
-        os.mkdir(output_wav_directory)
-    print("Exporting wav files to " + output_wav_directory)
-
     # Label columns in dataframe
     station_label: str = "station_id"
 
@@ -94,7 +89,7 @@ def main():
                                       sig_sample_rate_label_list=sensor_fs_label_list,
                                       sensor_column_label_list=sensor_column_label_list,
                                       wav_sample_rate_hz=192000.,
-                                      output_wav_directory=output_wav_directory,
+                                      output_wav_directory=skyfall_config.input_dir,
                                       output_wav_filename='skyfall',
                                       sensor_name_list=sensor_name_key_list)
 

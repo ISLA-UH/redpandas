@@ -24,7 +24,7 @@ The following command can be used to install and/or upgrade RedPandas:
 pip install redvox-pandas --upgrade
 ```
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### Verifying the installation
 
@@ -48,4 +48,4 @@ Requires: matplotlib, scipy, libquantum, redvox, fastkml, obspy, librosa, pymap3
 Required-by: 
 ```
 
-Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas/blob/master/docs/README.md)_
+Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas/blob/master/docs/README.md)_.

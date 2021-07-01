@@ -15,7 +15,7 @@ This section covers the basics on how to use the RedVox RedPandas library.
     - [More options](#more-options)
 - [Opening RedPandas parquet files](#opening-redpandas-parquet-files)
 - [Other data manipulation with RedPandas](#other-data-manipulation-with-redpandas)
-    - [Ensonify data](#ensonify-data)
+    - [Ensonify RedVox data](#ensonify-data)
     - [Plot]()
     - [Filter]()
     - [STFT]()
@@ -62,12 +62,12 @@ The RedPandas' native unit of time is UTC epoch time in seconds.
 - _RedPandas DataFrame_: a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
 created with the RedPandas library and usually containing RedVox data.
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 ### Downloading RedVox data
 
-You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app and download it. There are three methods to download the RedVox collected data and/or RedPandas example datasets 
-(such as [Skyfall](#redpandas-example-skyfall)):
+You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app and download it. There are 
+four methods to download the RedVox collected data and/or RedPandas example datasets (such as [Skyfall](#redpandas-example-skyfall)):
 
 1) Moving the RedVox files from your smartphone RedVox folder to your computer.
 2) Using RedVox Cloud Platform (link) (recommended).
@@ -80,7 +80,7 @@ dependencies to use the cloud-download.
 The downloaded RedVox data will have the formats .rdvxz for [RedVox API 900](https://bitbucket.org/redvoxhi/redvox-protobuf-api/src/master/) 
 files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files (also known as API M).
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 ### Opening RedVox data with RedPandas
 
@@ -125,7 +125,7 @@ print(df_data.columns)
 For more information on columns found in RedPandas, column names and their contents, visit [RedVox RedPandas DataFrame Columns](columns_name.md). 
 For more information on manipulation of pandas DataFrames, visit [pandas.DataFrame documentation](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### For RedVox data in a pickle format (.pkl)
 
@@ -152,7 +152,7 @@ df_data = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
 print(df_data.columns)
 ```
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 #### More options
 
@@ -181,12 +181,13 @@ redpd_dw_to_parquet(input_dir="path/to/redvox/data",  # input directory where th
                     debug=False)  # show debug if True
 ```
 
-The available [sensors](#basic-definitions) in a station can vary depending on the smartphone and available options
+For the ``sensor_label`` variable, the available [sensors](#basic-definitions) in a station can vary depending on the smartphone and available options
 in the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. The current available sensors RedPandas works with 
 are ``['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer', 'health', 'location', 'image']`` but note that 
-some sensors might not be present in the data. For a complete list of available sensors, visit [RedVox Sensor Data](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access). 
+some sensors might not be present in your data. For a complete list of available sensors in the RedVox Python SDK, visit 
+[RedVox Sensor Data](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access). 
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 ### Opening RedPandas parquet files
 
@@ -207,16 +208,52 @@ df_column_unflatten(df=df_sensors,
                     col_ndim_label="barometer_wf_raw_ndim")
 
 ```
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 
 ### Other data manipulation with RedPandas
 
-#### Ensonify data
+The following subsections showcase features from the RedPandas library once the [RedPandas DataFrame](#basic-definitions) 
+has been constructed and saved as a [parquet](#opening-redvox-data-with-redpandas).
 
-You can listen your RedVox dataset
+#### Ensonify RedVox data
 
-#### Plot data
+You can listen to your RedVox dataset
+
+```python
+import pandas as pd
+import redpandas.redpd_ensonify as rpd_sound
+
+INPUT_DIR = "path/to/redvox/data"
+df = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
+
+sensor_column_label_list = ["audio_wf"]  # List of column labels with sensor waveform data
+sensor_fs_label_list = ["audio_sample_rate_nominal_hz"]  # List of column labels with sensor sample rates
+sensor_name_key_list = ["aud"]  # Optional: list of labels for saving 
+
+rpd_sound.ensonify_sensors_pandas(df=df,
+                                  sig_id_label='station_id',
+                                  sensor_column_label_list=sensor_column_label_list,
+                                  sig_sample_rate_label_list=sensor_fs_label_list,
+                                  wav_sample_rate_hz=192000.,  # 8000., 16000., 48000., and 96000. also available
+                                  output_wav_directory=INPUT_DIR,
+                                  output_wav_filename='A_cool_example',
+                                  sensor_name_list=sensor_name_key_list)
+
+#The number of elements in sensor_column_label_list and sig_sample_rate_label_list should be the same.
+```
+The .wav files will be located in a folder named ``wav`` in the directory provided in ``output_wav_directory``. You can listen to the .wav files in the free and open-sourced app [Audacity](https://www.audacityteam.org/).
+
+
+Note that for 3 component sensors, e.g., accelerometer, the optional ``sensor_name_list`` parameter should take into account 
+the X, Y and Z components. For example, to ensonify the accelerometer ``sensor_column_label_list = ["accelerometer_wf_raw"]``, ``sensor_fs_label_list = accelerometer_sample_rate_hz``, 
+and ``sensor_name_key_list = ["Acc_X", "Acc_Y", "Acc_Z"]``. Do not forget to [unflatten](#opening-redpandas-parquet-files) the sensor data column. 
+
+
+#### Plot waveforms
+
+![](img/metrics.png)
+
 
 #### Filter
 
@@ -246,9 +283,11 @@ plotting the data.
 
 The configuration file is 
 
-##### Preprocessing RedVox data
+##### Running
 
-#### Troubleshooting and common problems
+##### More information
+
+#### Troubleshooting and common problems in running the Skyfall example
 
 Here are some solutions to problems that might occur.
 
@@ -276,7 +315,7 @@ redvox-pandas (from versions: none)_ and _ERROR: No matching distribution found 
     We probably changed some modules. Make sure you are up to date with the latest RedPandas version, visit [RedPandas Installation](installation.md) 
     for more details. If you suspect it might a bug or an issue, please feel free to submit an issue on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.
 
 ### Frequently asked questions (FAQ)
 
@@ -293,4 +332,4 @@ Return to _[Table of Contents](#table-of-contents)_
     Please feel free to submit issues on the [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
 
 
-Return to _[Table of Contents](#table-of-contents)_
+Return to _[Table of Contents](#table-of-contents)_.

@@ -144,29 +144,30 @@ def redpd_dw_to_parquet(input_dir: str,
     for label in sensor_labels:
         if label in ['barometer', 'accelerometer', 'gyroscope', 'magnetometer']:
 
-            # Create new columns with shape tuple for future unflattening/reshaping
-            df_all_sensors_all_stations[[f'{label}_wf_raw_ndim',
-                                         f'{label}_wf_highpass_ndim',
-                                         f'{label}_nans_ndim']] = \
-                df_all_sensors_all_stations[[f'{label}_wf_raw',
-                                             f'{label}_wf_highpass',
-                                             f'{label}_nans']].applymap(np.shape)
-
-            # Change tuples to 1D np.array to save it to parquet
-            df_all_sensors_all_stations[[f'{label}_wf_raw_ndim',
-                                         f'{label}_wf_highpass_ndim',
-                                         f'{label}_nans_ndim']] = \
+            if f'{label}_wf_raw' in df_all_sensors_all_stations.columns:  # make sure there is raw data first
+                # Create new columns with shape tuple for future unflattening/reshaping
                 df_all_sensors_all_stations[[f'{label}_wf_raw_ndim',
                                              f'{label}_wf_highpass_ndim',
-                                             f'{label}_nans_ndim']].applymap(np.asarray)
+                                             f'{label}_nans_ndim']] = \
+                    df_all_sensors_all_stations[[f'{label}_wf_raw',
+                                                 f'{label}_wf_highpass',
+                                                 f'{label}_nans']].applymap(np.shape)
 
-            # Flatten each row in wf columns
-            df_all_sensors_all_stations[[f'{label}_wf_raw',
-                                         f'{label}_wf_highpass',
-                                         f'{label}_nans']] = \
+                # Change tuples to 1D np.array to save it to parquet
+                df_all_sensors_all_stations[[f'{label}_wf_raw_ndim',
+                                             f'{label}_wf_highpass_ndim',
+                                             f'{label}_nans_ndim']] = \
+                    df_all_sensors_all_stations[[f'{label}_wf_raw_ndim',
+                                                 f'{label}_wf_highpass_ndim',
+                                                 f'{label}_nans_ndim']].applymap(np.asarray)
+
+                # Flatten each row in wf columns
                 df_all_sensors_all_stations[[f'{label}_wf_raw',
                                              f'{label}_wf_highpass',
-                                             f'{label}_nans']].applymap(np.ravel)
+                                             f'{label}_nans']] = \
+                    df_all_sensors_all_stations[[f'{label}_wf_raw',
+                                                 f'{label}_wf_highpass',
+                                                 f'{label}_nans']].applymap(np.ravel)
 
     # Export pandas data frame to parquet
     if output_filename_pqt is None:
@@ -177,7 +178,7 @@ def redpd_dw_to_parquet(input_dir: str,
 
     # Check that parquet file saves and opens correctly
     df_open = pd.read_parquet(os.path.join(output_dw_pqt_dir, output_filename_pqt))
-    print(f"Total stations in DataFrame: {len(df_open['station_id'])}")
+    print(f"Total stations in DataFrame: \n{len(df_open['station_id'])}")
     print(f"Available stations: {df_open['station_id'].to_string(index=False)}")
     print(f"Total columns in DataFrame: {len(df_open.columns)}")
 
