@@ -11,7 +11,6 @@ and [API 1000](https://github.com/RedVoxInc/redvox-api-1000) (API M) data.
 
 - [RedVox RedPandas Installation](https://github.com/RedVoxInc/redpandas/blob/master/docs/installation.md)  
 - [Using RedVox RedPandas](https://github.com/RedVoxInc/redpandas/blob/master/docs/using_redpandas.md)
-- [Development](https://github.com/RedVoxInc/redpandas/blob/master/docs/development.md)
    
 <!-- tocstop -->
 

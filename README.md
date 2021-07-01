@@ -6,3 +6,4 @@ The RedVox Pandas (also known as RedPandas) pipeline is designed for integrabili
 sources.
 
 - [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/README.md)
+- [Development](https://github.com/RedVoxInc/redpandas/blob/master/docs/development.md)
