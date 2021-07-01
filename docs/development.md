@@ -13,7 +13,6 @@ This section covers reporting issues and bugs, version history and license.
 <!-- tocstop -->
 
 
-
 #### Reporting issues
 
 Please feel free to submit issues on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
