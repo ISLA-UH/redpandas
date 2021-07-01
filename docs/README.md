@@ -10,7 +10,7 @@ and [API 1000](https://github.com/RedVoxInc/redvox-api-1000) (API M) data.
 <!-- toc -->
 
 - [RedPandas Installation](https://github.com/RedVoxInc/redpandas/blob/master/docs/installation.md)  
-- [Using RedPandas](https://github.com/RedVoxInc/redpandas/blob/master/docs/using_redpandas.md)
+- [How to use RedPandas](https://github.com/RedVoxInc/redpandas/blob/master/docs/using_redpandas.md)
    
 <!-- tocstop -->
 
