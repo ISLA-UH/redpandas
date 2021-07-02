@@ -26,18 +26,32 @@ df = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
 #                         sensor_name_list=sensor_name_key_list)
 
 
-
 rpd_plot.plot_wiggles_pandas(df=df,
                              sig_wf_label="audio_wf",
                              sig_sample_rate_label="audio_sample_rate_nominal_hz",
                              sig_id_label="station_id",
                              x_label="Time (s)",
+                             y_label="Signals",
+                             fig_title_show=True,
+                             fig_title='Audio',
+                             sig_timestamps_label='audio_epoch_s',
+                             custom_yticks=["Station 1", "Station 2", "Station 3"])
+
+
+rpd_plot.plot_wiggles_pandas(df=df,
+                             sig_wf_label=["barometer_wf_raw", "audio_wf"],
+                             sig_sample_rate_label=["barometer_sample_rate_hz", "audio_sample_rate_nominal_hz"],
+                             sig_id_label="station_id",
+                             station_id_str="1637610012",
+                             x_label="Time (s)",
                              y_label="Sensors",
-                             fig_title_show=False,
-                             sig_timestamps_label='audio_epoch_s')
+                             fig_title_show=True,
+                             fig_title='Signals for Station 2',
+                             sig_timestamps_label=['barometer_epoch_s', 'audio_epoch_s'],
+                             custom_yticks=["Bar", "Aud"])
 
 plt.show()
-
+# print(df["station_id"])
 # df: pd.DataFrame,
 # sig_wf_label: str,
 # sig_sample_rate_label: str,

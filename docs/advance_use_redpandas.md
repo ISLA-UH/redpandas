@@ -18,8 +18,9 @@ has been constructed and saved as a [parquet](using_redpandas.md#opening-redvox-
   
 ### Ensonify RedVox data
 
-You can listen to your RedVox dataset
+You can listen to your RedVox dataset using the function ``ensonify_sensors_pandas`` to resample your data.
 
+_Example:_
 ```python
 import pandas as pd
 import redpandas.redpd_ensonify as rpd_sound
@@ -53,7 +54,49 @@ the sensor data column.
 
 ### Plot waveforms
 
-![](img/metrics.png)
+
+ _Example:_
+```python
+import pandas as pd
+import redpandas.redpd_plot as rpd_plot
+import matplotlib.pyplot as plt
+
+df = pd.read_parquet("path/to/parquet/file_name.parquet")
+
+
+rpd_plot.plot_wiggles_pandas(df=df,
+                             sig_wf_label="audio_wf",
+                             sig_sample_rate_label="audio_sample_rate_nominal_hz",
+                             sig_id_label="station_id",
+                             x_label="Time (s)",  # Optional
+                             y_label="Signals",  # Optional
+                             fig_title_show=True,  # Optional
+                             fig_title='Audio',  # Optional
+                             sig_timestamps_label='audio_epoch_s',  # Optional but more accurate plots if included
+                             custom_yticks=["Station 1", "Station 2", "Station 3"])  # Optional
+
+plt.show()
+
+```
+The resulting plot is shown below:
+
+![](img/fig_audio.png)
+
+Another  ``plot_wiggles_pandas`` can also plot one station and multiple sensors as shown in the following example:
+ 
+ ```python
+rpd_plot.plot_wiggles_pandas(df=df,
+                             sig_wf_label=["barometer_wf_raw", "audio_wf"],
+                             sig_sample_rate_label=["barometer_sample_rate_hz", "audio_sample_rate_nominal_hz"],
+                             sig_id_label="station_id",
+                             station_id_str="1637610012",  # Optional: station ID to plot
+                             x_label="Time (s)",  # Optional
+                             y_label="Sensors",  # Optional
+                             fig_title_show=True,  # Optional
+                             fig_title='Signals for Station 2',  # Optional
+                             sig_timestamps_label=['barometer_epoch_s', 'audio_epoch_s'],  # Optional but more accurate plots if included
+                             custom_yticks=["Bar", "Aud"])  # Optional
+```
 
 
 ### Filter
