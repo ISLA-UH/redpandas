@@ -11,7 +11,10 @@ has been constructed and saved as a [parquet](using_redpandas.md#opening-redvox-
 - [Plot waveforms](#plot-waveforms)
     - [Plotting signal waveforms for all stations stored in the dataframe](#plotting-signal-waveforms-for-all-stations-stored-in-the-dataframe)
     - [Plotting signal waveforms for only one station](#plotting-signal-waveforms-for-only-one-station)
-- [Filter]()
+- [Filter signals](#filter-signals)
+    - [Eliminate DC offset](#eliminate-dc-offset)
+    - [Add taper](#add-taper)
+    - [Normalize signal](#normalize-signal)
 - [STFT]()
 
 <!-- tocstop -->
@@ -121,15 +124,60 @@ be plotted (visit [RedVox SensorData Documentation](https://github.com/RedVoxInc
 for more information). Do not forget to [unflatten](using_redpandas.md#opening-redpandas-parquet-files) 
 the sensor data column for barometer / acceleration / gyroscope / magnetometer data. 
 
-### Filter
+### Filter signals
 
+The RedPandas library has multiple tools for cleaning and filtering signals in the dataframe.
 
 #### Eliminate DC offset
 
-#### Taper 
+The function ``signal_zero_mean_pandas`` can be used to eliminate the DC offset in a signal for all stations.
 
-#### Normalize
+_Eliminate DC offset in audio signal example:_
+```python
+import redpandas.redpd_filter as rpd_filter
+import pandas as pd
 
+df = pd.read_parquet("path/to/parquet/file_name.parquet")
+rpd_filter.signal_zero_mean_pandas(df=df,
+                                   sig_wf_label="audio_wf")  # signal column label in df
+```
+The new signal will be stored in a new column  in the [RedPandas Dataframe](using_redpandas.md#basic-definitions)  named ``zero_mean``. The label
+can be changed by changing the name provided in the parameter ``new_column_label`` in ``signal_zero_mean_pandas``.
+
+#### Add taper 
+
+A taper can be added to a signal in the [RedPandas Dataframe](using_redpandas.md#basic-definitions) with the function ``
+taper_tukey_pandas``.
+
+_Taper edges in audio signal example:_
+```python
+import redpandas.redpd_filter as rpd_filter
+import pandas as pd
+
+df = pd.read_parquet("path/to/parquet/file_name.parquet")
+rpd_filter.taper_tukey_pandas(df=df,
+                              sig_wf_label="audio_wf",  # signal column label in df
+                              fraction_cosine=0.1)  # fraction of the window inside the cosine tapered window, shared between the head and tail
+```
+The new signal will be stored in a new column  in the [RedPandas Dataframe](using_redpandas.md#basic-definitions)  named ``taper``. The label
+can be changed by changing the name provided in the parameter ``new_column_label_append`` in ``taper_tukey_pandas``.
+
+
+#### Normalize signal
+
+A signal can be normalized using the function ``normalize_pandas``.
+
+_Normalize audio waveform example:_
+```python
+import redpandas.redpd_filter as rpd_filter
+import pandas as pd
+
+df = pd.read_parquet("path/to/parquet/file_name.parquet")
+rpd_filter.normalize_pandas(df=df,
+                            sig_wf_label="audio_wf")  # signal column label in df
+```
+The new signal will be stored in a new column  in the [RedPandas Dataframe](using_redpandas.md#basic-definitions)  named ``normalized``. 
+The label can be changed by changing the name provided in the parameter ``new_column_label`` in ``normalize_pandas``.
 
 #### Decimate
 

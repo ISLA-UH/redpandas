@@ -50,15 +50,9 @@ rpd_plot.plot_wiggles_pandas(df=df,
                              sig_timestamps_label=['barometer_epoch_s', 'audio_epoch_s'],
                              custom_yticks=["Bar", "Aud"])
 
-plt.show()
-# print(df["station_id"])
-# df: pd.DataFrame,
-# sig_wf_label: str,
-# sig_sample_rate_label: str,
-# sig_id_label: str,
-# x_label: str = "Time (s)",
-# y_label: str = "Sensors",
-# fig_title_show: bool = True,
-# fig_title: str = 'Signals',
-# wf_color: str = 'midnightblue',
-# sig_timestamps_label: str = None
+# plt.show()
+
+import redpandas.redpd_filter as rpd_filter
+
+rpd_filter.signal_zero_mean_pandas(df=df,
+                                   sig_wf_label="audio_wf")
