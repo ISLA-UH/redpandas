@@ -586,7 +586,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     :param fig_title: 'Normalized' + title label
     :param wf_color: waveform color. Default is midnightblue
     :param sig_timestamps_label: string or list of strings for column label in df with epoch time, default = None
-    :param custom_yticks: provide custom names for yticks, list of strings or "index"
+    :param custom_yticks: provide custom names for yticks, list of strings (one label per channel component) or "index"
     :return: plot
     """
 

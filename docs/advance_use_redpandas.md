@@ -7,11 +7,12 @@ has been constructed and saved as a [parquet](using_redpandas.md#opening-redvox-
 
 <!-- toc -->
 
-- [Ensonify RedVox data](#ensonify-data)
-- [Plot]()
+- [Ensonify RedVox data](#ensonify-redvox-data)
+- [Plot waveforms](#plot-waveforms)
+    - [Plotting signal waveforms for all stations stored in the dataframe](#plotting-signal-waveforms-for-all-stations-stored-in-the-dataframe)
+    - [Plotting signal waveforms for only one station](#plotting-signal-waveforms-for-only-one-station)
 - [Filter]()
 - [STFT]()
-- [Coherence (?)]()
 
 <!-- tocstop -->
   
@@ -49,13 +50,15 @@ The .wav files will be located in a folder named ``wav`` in the directory provid
 Note that for 3 component sensors, e.g., accelerometer, the optional ``sensor_name_list`` parameter should take into account 
 the X, Y and Z components. For example, to ensonify the accelerometer ``sensor_column_label_list = ["accelerometer_wf_raw"]``, ``sensor_fs_label_list = accelerometer_sample_rate_hz``, 
 and ``sensor_name_key_list = ["Acc_X", "Acc_Y", "Acc_Z"]``. Do not forget to [unflatten](using_redpandas.md#opening-redpandas-parquet-files) 
-the sensor data column. 
+the sensor data column for barometer / acceleration / gyroscope / magnetometer data. 
 
 
 ### Plot waveforms
 
+The function ``plot_wiggles_pandas`` is a useful tool to plot signal waveforms stored in the [RedPandas DataFrame](using_redpandas.md#basic-definitions).
 
- _Example:_
+#### Plotting signal waveforms for all stations stored in the dataframe
+ _Plotting audio for all stations example:_
 ```python
 import pandas as pd
 import redpandas.redpd_plot as rpd_plot
@@ -65,14 +68,14 @@ df = pd.read_parquet("path/to/parquet/file_name.parquet")
 
 
 rpd_plot.plot_wiggles_pandas(df=df,
-                             sig_wf_label="audio_wf",
-                             sig_sample_rate_label="audio_sample_rate_nominal_hz",
+                             sig_wf_label="audio_wf",  # list if multiple signals waveforms
+                             sig_sample_rate_label="audio_sample_rate_nominal_hz",  # list if multiple signals waveforms
                              sig_id_label="station_id",
                              x_label="Time (s)",  # Optional
                              y_label="Signals",  # Optional
                              fig_title_show=True,  # Optional
-                             fig_title='Audio',  # Optional
-                             sig_timestamps_label='audio_epoch_s',  # Optional but more accurate plots if included
+                             fig_title="Audio",  # Optional
+                             sig_timestamps_label="audio_epoch_s",  # Optional but more accurate plots if included
                              custom_yticks=["Station 1", "Station 2", "Station 3"])  # Optional
 
 plt.show()
@@ -82,14 +85,26 @@ The resulting plot is shown below:
 
 ![](img/fig_audio.png)
 
-Another  ``plot_wiggles_pandas`` can also plot one station and multiple sensors as shown in the following example:
+In the example shown above, the only signal waveform plotted is audio but multiple signals can also be plotted for all stations. 
+For example, the input in the following parameters in ``plot_wiggle_pandas`` 
+would change to plot the accelerometer and the audio waveforms for all stations: ``sig_wf_label=["audio_wf", "accelerometer_wf_raw"]``, ``sig_sample_rate_label = ["audio_sample_rate_nominal_hz",
+"accelerometer_sample_rate_hz"]``, and optionally, ``fig_title="Audio and Accelerometer"``, ``sig_timestamps_label=["audio_epoch_s",
+"accelerometer_epoch_s"]``, and ``custom_yticks=["Station 1 Audio", "Station 1 AccX", "Station 1 AccY", "Station 1 AccZ",
+"Station 2 Audio", "Station 2 AccX", "Station 2 AccY", "Station 2 AccZ", "Station 3 Audio", "Station 3 AccX", "Station 3 AccY", 
+"Station 3 AccZ"]`` (taking into account the X, Y, and Z components of the accelerometer). For more information on column names, 
+visit [RedPandas DataFrame Columns](columns_name.md). Do not forget to [unflatten](using_redpandas.md#opening-redpandas-parquet-files) 
+the sensor data column for barometer / acceleration / gyroscope / magnetometer data.
+
+#### Plotting signal waveforms for only one station
+Another application of ``plot_wiggles_pandas`` is plotting one station and multiple sensor channels as shown in the following example.
  
+  _Plotting audio and barometer for one station example:_
  ```python
 rpd_plot.plot_wiggles_pandas(df=df,
                              sig_wf_label=["barometer_wf_raw", "audio_wf"],
                              sig_sample_rate_label=["barometer_sample_rate_hz", "audio_sample_rate_nominal_hz"],
                              sig_id_label="station_id",
-                             station_id_str="1637610012",  # Optional: station ID to plot
+                             station_id_str="1637610012",  # Optional: station ID to plot as saved in df
                              x_label="Time (s)",  # Optional
                              y_label="Sensors",  # Optional
                              fig_title_show=True,  # Optional
@@ -97,8 +112,29 @@ rpd_plot.plot_wiggles_pandas(df=df,
                              sig_timestamps_label=['barometer_epoch_s', 'audio_epoch_s'],  # Optional but more accurate plots if included
                              custom_yticks=["Bar", "Aud"])  # Optional
 ```
+The resulting plot is shown below:
 
+![](img/aud_bar_plot.png)
+
+In this example, there is no interesting signal in the barometer. If available in the dataset, other sensor waveforms can 
+be plotted (visit [RedVox SensorData Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access)
+for more information). Do not forget to [unflatten](using_redpandas.md#opening-redpandas-parquet-files) 
+the sensor data column for barometer / acceleration / gyroscope / magnetometer data. 
 
 ### Filter
+
+
+#### Eliminate DC offset
+
+#### Taper 
+
+#### Normalize
+
+
+#### Decimate
+
+
+#### Bandpass
+aper and a butterworth bandpass filter
 
 ### STFT
