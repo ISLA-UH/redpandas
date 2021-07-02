@@ -365,47 +365,296 @@ def plot_mesh_pandas(df: pd.DataFrame,
         mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
 
 
+# def plot_wiggles_pandas(df: pd.DataFrame,
+#                         sig_wf_label: str,
+#                         sig_sample_rate_label: str,
+#                         sig_id_label: str,
+#                         x_label: str = "Time (s)",
+#                         y_label: str = "Sensors",
+#                         fig_title_show: bool = True,
+#                         fig_title: str = 'Signals',
+#                         wf_color: str = 'midnightblue',
+#                         sig_timestamps_label: str = None) -> None:
+#     """
+#     More nuanced plots with minimal distraction. Optimized for pandas input.
+#     From milton/hellborne/hell_gt_entropy_inv_clean
+#     Updated to plot data with different sample rates and number of points
+#     :param df: input pandas data frame
+#     :param sig_wf_label: string for the waveform column name in df
+#     :param sig_sample_rate_label: string for the sample rate in Hz column name in df
+#     :param sig_id_label: string for the station id column name in df
+#     :param x_label: x label
+#     :param y_label: y label
+#     :param fig_title_show: include a title in the figure. Default is True
+#     :param fig_title: 'Normalized ' + title label
+#     :param wf_color: waveform color. Default is midnightblue
+#     :param sig_timestamps_label: name for the epoch time in df, default = None
+#     :return: plot
+#     """
+#
+#     fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
+#
+#     # Number of non-consecutive pandas indexes don't always match
+#     wiggle_num = len(df.index)
+#     # print("Number of signals:", wiggle_num)
+#     offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
+#     wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
+#     wiggle_yticks = wiggle_offset
+#     if sig_id_label == "index":
+#         wiggle_yticklabel = df.index
+#     else:
+#         wiggle_yticklabel = df[sig_id_label]
+#
+#     # For next iteration, include an epoch and/or elapsed time
+#     ax1.set_yticks(wiggle_yticks)
+#     ax1.set_yticklabels(wiggle_yticklabel)
+#     ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
+#     ax1.tick_params(axis='both', which='both', labelsize=text_size)
+#
+#     xlim_min = np.empty(wiggle_num)
+#     xlim_max = np.empty(wiggle_num)
+#
+#     if sig_timestamps_label is not None:
+#         epoch_j = np.zeros(wiggle_num)
+#         for i, j in enumerate(df.index):
+#             epoch_j[i] = df[sig_timestamps_label][j].min()
+#         time_epoch_origin = np.min(epoch_j)
+#     else:
+#         time_epoch_origin = 0.
+#
+#     for i, j in enumerate(df.index):
+#         if sig_timestamps_label is None:
+#             time_s = np.arange(len(df[sig_wf_label][j])) / df[sig_sample_rate_label][j]
+#         else:
+#             time_s = df[sig_timestamps_label][j] - time_epoch_origin
+#
+#         sig_j = df[sig_wf_label][j] / np.max(df[sig_wf_label][j])
+#         ax1.plot(time_s, sig_j + wiggle_offset[i], color=wf_color)
+#         xlim_min[j] = np.min(time_s)
+#         xlim_max[j] = np.max(time_s)
+#
+#     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
+#     ax1.grid(True)
+#     if fig_title_show:
+#         ax1.set_title('Normalized ' + fig_title, size=text_size)
+#     ax1.set_ylabel(y_label, size=text_size)
+#     if time_epoch_origin > 0:
+#         x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
+#     ax1.set_xlabel(x_label, size=text_size)
+#     fig.tight_layout()
+
+
+# def plot_sensor_wiggles_pandas(df: pd.DataFrame,
+#                                station_id_str: str,
+#                                sensor_wf_label_list: List[str],
+#                                sensor_timestamps_label_list: List[str],
+#                                sig_id_label: str,
+#                                x_label: str,
+#                                y_label: str,
+#                                fig_title_show: bool = True,
+#                                fig_title: str = 'Signals',
+#                                wf_color: str = 'midnightblue',
+#                                sensor_yticks_label_list: Optional[List[str]] = None) -> None:
+#     """
+#     Plots sensor waveforms for one station
+#
+#     :param df: input pandas data frame
+#     :param station_id_str:  string for the station column name in df
+#     :param sensor_wf_label_list: list of strings with sensor waveform column names in df
+#     :param sensor_timestamps_label_list: list of strings with sensor timestamps column names in df
+#     :param sig_id_label: string for the waveform column name in df
+#     :param x_label: x label
+#     :param y_label: y label
+#     :param fig_title_show: Include a title in the figure. Default is True
+#     :param fig_title: 'Normalized ' + title label + 'for Station ' + station_id_str
+#     :param wf_color: waveform color. Default is midnightblue.
+#     :param sensor_yticks_label_list: list of strings with sensor waveform y tick names
+#     :return: plot
+#     """
+#
+#     fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
+#
+#     wiggle_num = len(sensor_wf_label_list)  # depends on number of sensors and if sensors are 3d wf
+#
+#     # Check if sensors are 3d and if so add to wiggle_num
+#     list_3d_sensor = ['accelerometer', 'gyroscope', 'magnetometer']
+#     sensor_wf_label_list_modified_for_ticklabels = sensor_wf_label_list.copy()   # Copy sensor list to modify it
+#     index_sensor_label_ticklabels_list = 0  # index for ticklabels once it includes x/y/z
+#
+#     for index_sensor_label_in_list, sensor_label_in_list in enumerate(sensor_wf_label_list):
+#
+#         if sensor_label_in_list.startswith(tuple(list_3d_sensor)):
+#
+#             wiggle_num += 2  # for the waveforms that have not been counted yet
+#
+#             # Modify the copy sensor labels list for yticks labels to include x,y,z labels
+#             sensor_wf_label_list_modified_for_ticklabels.remove(sensor_wf_label_list_modified_for_ticklabels[index_sensor_label_ticklabels_list])
+#             sensor_wf_label_list_modified_for_ticklabels.extend((sensor_wf_label_list[index_sensor_label_in_list] + '_x',
+#                                                                 sensor_wf_label_list[index_sensor_label_in_list] + '_y',
+#                                                                 sensor_wf_label_list[index_sensor_label_in_list] + '_z'))
+#
+#             index_sensor_label_ticklabels_list += 2
+#
+#         index_sensor_label_ticklabels_list += 1
+#
+#     offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
+#     wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
+#     wiggle_yticks = wiggle_offset
+#
+#     # Set ytick labels
+#     if sensor_yticks_label_list is None:
+#         wiggle_yticklabel = sensor_wf_label_list_modified_for_ticklabels
+#     else:
+#         wiggle_yticklabel = sensor_yticks_label_list
+#
+#     ax1.set_yticks(wiggle_yticks)
+#     ax1.set_yticklabels(wiggle_yticklabel)
+#     ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
+#     ax1.tick_params(axis='both', which='both', labelsize=text_size)
+#
+#     xlim_min = np.empty(wiggle_num)
+#     xlim_max = np.empty(wiggle_num)
+#
+#     station_row_index = df[sig_id_label].str.find(station_id_str)  # find index of desired station
+#     index_station = station_row_index[0]  # actually get index
+#
+#     sensor_timestamps_label = sensor_timestamps_label_list[0]  # assume sensors same start time
+#     time_epoch_origin = df[sensor_timestamps_label][index_station][0]
+#
+#     index_sensor_label_ticklabels_list = 0  # keep track of total sensor wf including x/y/z
+#     for index_sensor_in_list, label in enumerate(sensor_wf_label_list):
+#
+#         # assume same order sensor wf and timestamp in lists
+#         sensor_wf_df = df[label][index_station]
+#         sensor_timestamps_label = sensor_timestamps_label_list[index_sensor_in_list]
+#         time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin
+#
+#         if sensor_wf_df.ndim == 1:  # sensor that is NOT acceleration/gyroscope/magnetometer
+#
+#             sig_j = df[label][index_station] / np.max(df[label][index_station])
+#             ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=wf_color)
+#             xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
+#             xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+#
+#             index_sensor_label_ticklabels_list += 1
+#
+#         else:
+#             for index_dimension, sensor_array in enumerate(sensor_wf_df):
+#
+#                 sig_j = sensor_array / np.max(sensor_array)
+#                 ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=wf_color)
+#                 xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
+#                 xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+#
+#                 index_sensor_label_ticklabels_list += 1
+#
+#     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
+#     ax1.grid(True)
+#     if fig_title_show:
+#         ax1.set_title('Normalized ' + fig_title + ' for Station ' + station_id_str, size=text_size)
+#     ax1.set_ylabel(y_label, size=text_size)
+#     if time_epoch_origin > 0:
+#         x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
+#     ax1.set_xlabel(x_label, size=text_size)
+#     fig.tight_layout()
+
+
 def plot_wiggles_pandas(df: pd.DataFrame,
-                        sig_wf_label: str,
-                        sig_sample_rate_label: str,
-                        sig_id_label: str,
+                        sig_wf_label: Union[List[str], str],
+                        sig_sample_rate_label: Union[List[str], str],
+                        sig_id_label: Union[List[str], str],
+                        station_id_str: Optional[str] = None,
                         x_label: str = "Time (s)",
-                        y_label: str = "Sensors",
+                        y_label: str = "Signals",
                         fig_title_show: bool = True,
                         fig_title: str = 'Signals',
                         wf_color: str = 'midnightblue',
-                        sig_timestamps_label: str = None) -> None:
+                        sig_timestamps_label: Optional[Union[List[str], str]] = None,
+                        custom_yticks: Optional[Union[List[str], str]] = None) -> None:
     """
     More nuanced plots with minimal distraction. Optimized for pandas input.
-    From milton/hellborne/hell_gt_entropy_inv_clean
-    Updated to plot data with different sample rates and number of points
+    Add signal timestamps to sig_timestamps_label for more accurate representation.
+
     :param df: input pandas data frame
-    :param sig_wf_label: string for the waveform column name in df
-    :param sig_sample_rate_label: string for the sample rate in Hz column name in df
+    :param sig_wf_label: single string or list of strings for the waveform column name in df
+    :param sig_sample_rate_label: single string or list of strings for the sample rate in Hz column name in df
     :param sig_id_label: string for the station id column name in df
-    :param x_label: x label
-    :param y_label: y label
+    :param station_id_str: string with name of one station to plot only that station. Default is None
+    :param x_label: x label. Default is "Time (s)"
+    :param y_label: y label. Default is "Signals"
     :param fig_title_show: include a title in the figure. Default is True
-    :param fig_title: 'Normalized ' + title label
+    :param fig_title: 'Normalized' + title label
     :param wf_color: waveform color. Default is midnightblue
-    :param sig_timestamps_label: name for the epoch time in df, default = None
+    :param sig_timestamps_label: string or list of strings for column label in df with epoch time, default = None
+    :param custom_yticks: provide custom names for yticks, list of strings or "index"
     :return: plot
     """
 
-    fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
+    # Create List of signal channels to loop through later
+    # If given only one, aka a sting, make it a list of length 1
+    if type(sig_wf_label) == str:
+        sig_wf_label = [sig_wf_label]
+    if type(sig_sample_rate_label) == str:
+        sig_sample_rate_label = [sig_sample_rate_label]
+    if type(sig_timestamps_label) == str:
+        sig_timestamps_label = [sig_timestamps_label]
 
-    # Number of non-consecutive pandas indexes don't always match
-    wiggle_num = len(df.index)
-    # print("Number of signals:", wiggle_num)
+    # First, determine number of wiggles and ylabels that will be used
+    wiggle_num_list = []  # number of wiggles
+    wiggle_yticklabel = []  # name/y label of wiggles
+
+    for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):
+
+        for index_n in df.index:
+            if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
+
+                if df[sensor_in_list][index_n].ndim == 1:  # aka audio
+                    wiggle_num_list.append(1)  # append 1 wiggle cause it will only be one panel
+
+                    # Establish ylabel for wiggle
+                    if custom_yticks == "index":  # if ylabel for wiggle is index station
+                        wiggle_yticklabel.append(df.index[index_n])
+
+                    elif custom_yticks is None:
+                        wiggle_yticklabel.append(df[sig_id_label][index_n])  # if ylabel for wiggles is custom list
+
+                else:
+                    # Check if barometer, cause then only 1 wiggle
+                    if sensor_in_list.find("pressure") == 0 or sensor_in_list.find("bar") == 0:
+                        wiggle_num_list.append(1)
+                    else:  # if not barometer, its is a 3c sensors aka gyroscope/accelerometer/magnetometer
+                        wiggle_num_list.append(3)
+
+                    for index_dimension, _ in enumerate(df[sensor_in_list][index_n]):
+                        # Establish ylabel for wiggle
+                        if custom_yticks == "index":  # if ylabel for wiggle is index station
+                            wiggle_yticklabel.append(df.index[index_n])
+
+                        elif custom_yticks is None:
+                            wiggle_yticklabel.append(df[sig_id_label][index_n])  # if ylabel for wiggles is custom list
+
+    # # if custom_yticks provided, make that the yticks
+    if custom_yticks is not None and custom_yticks != "index":
+        wiggle_yticklabel = custom_yticks
+
+    wiggle_num = sum(wiggle_num_list)  # total number of signal that will be displayed
+
+    # Make sure wiggle_num and # of ylabels match to avoid problems later on
+    if len(wiggle_yticklabel) != wiggle_num:
+        print('ERROR: The number of labels provided in the custom_yticks parameter does not match the number of signal '
+              'channels provided in sig_wf_label or the number of stations in dataframe')
+        print('Do not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z components so a label is '
+              'required for each component.')
+        print('In case you provided a str in station_id_str, make sure the str actually exists in the dataframe')
+        exit()
+
+    # Wiggle scaling
     offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
     wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
     wiggle_yticks = wiggle_offset
-    if sig_id_label == "index":
-        wiggle_yticklabel = df.index
-    else:
-        wiggle_yticklabel = df[sig_id_label]
 
-    # For next iteration, include an epoch and/or elapsed time
+    # set up figure
+    fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
     ax1.set_yticks(wiggle_yticks)
     ax1.set_yticklabels(wiggle_yticklabel)
     ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
@@ -414,144 +663,73 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     xlim_min = np.empty(wiggle_num)
     xlim_max = np.empty(wiggle_num)
 
+    # Establish min xlim aka min time
     if sig_timestamps_label is not None:
-        epoch_j = np.zeros(wiggle_num)
-        for i, j in enumerate(df.index):
-            epoch_j[i] = df[sig_timestamps_label][j].min()
-        time_epoch_origin = np.min(epoch_j)
+        epoch_j = []
+        for index_station in df.index:
+
+            if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
+
+                for index_time_label, sensor_time_label in enumerate(sig_timestamps_label):
+
+                    epoch_j.append(df[sensor_time_label][index_station].min())
+
+        epoch_j = np.array(epoch_j)
+        time_epoch_origin = np.min(epoch_j[np.nonzero(epoch_j)])
+
     else:
         time_epoch_origin = 0.
 
-    for i, j in enumerate(df.index):
-        if sig_timestamps_label is None:
-            time_s = np.arange(len(df[sig_wf_label][j])) / df[sig_sample_rate_label][j]
-        else:
-            time_s = df[sig_timestamps_label][j] - time_epoch_origin
+    index_sensor_label_ticklabels_list = 0  # keep track of total sensor wf including x/y/z per station
+    for index_station in df.index:  # loop per station
+        for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
 
-        sig_j = df[sig_wf_label][j] / np.max(df[sig_wf_label][j])
-        ax1.plot(time_s, sig_j + wiggle_offset[i], color=wf_color)
-        xlim_min[j] = np.min(time_s)
-        xlim_max[j] = np.max(time_s)
+            if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
+                sensor_wf_df = df[label][index_station]
+
+                if sig_timestamps_label is not None:
+                    sensor_timestamps_label = sig_timestamps_label[index_sensor_in_list]
+                    time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin
+
+                if sensor_wf_df.ndim == 1:  # sensor that is NOT acceleration/gyroscope/magnetometer
+
+                    if sig_timestamps_label is None:
+                        channel_sample_rate = sig_sample_rate_label[index_sensor_in_list]
+                        if df[label][index_station][0] == df[label][index_station][1]:
+                            time_s = np.arange(len(df[label][index_station])) / df[channel_sample_rate][index_station]
+                        else:
+                            time_s = np.arange(len(df[label][index_station])) / df[channel_sample_rate][index_station]
+
+                    sig_j = df[label][index_station] / np.max(df[label][index_station])
+                    ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=wf_color)
+                    xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
+                    xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+
+                    index_sensor_label_ticklabels_list += 1
+
+                else:
+
+                    if sig_timestamps_label is None:
+                        channel_sample_rate = sig_sample_rate_label[index_sensor_in_list]
+                        if df[label][index_station][0][0] == df[label][index_station][0][1]:
+
+                            time_s = np.arange(len(df[label][index_station][0])) / df[channel_sample_rate][index_station]
+                        else:
+                            time_s = np.arange(len(df[label][index_station][0])) / df[channel_sample_rate][index_station]
+
+                    for index_dimension, sensor_array in enumerate(sensor_wf_df):
+
+                        sig_j = sensor_array / np.max(sensor_array)
+                        ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=wf_color)
+                        xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
+                        xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+
+                        index_sensor_label_ticklabels_list += 1
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
     ax1.grid(True)
     if fig_title_show:
         ax1.set_title('Normalized ' + fig_title, size=text_size)
-    ax1.set_ylabel(y_label, size=text_size)
-    if time_epoch_origin > 0:
-        x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
-    ax1.set_xlabel(x_label, size=text_size)
-    fig.tight_layout()
-
-
-def plot_sensor_wiggles_pandas(df: pd.DataFrame,
-                               station_id_str: str,
-                               sensor_wf_label_list: List[str],
-                               sensor_timestamps_label_list: List[str],
-                               sig_id_label: str,
-                               x_label: str,
-                               y_label: str,
-                               fig_title_show: bool = True,
-                               fig_title: str = 'Signals',
-                               wf_color: str = 'midnightblue',
-                               sensor_yticks_label_list: Optional[List[str]] = None) -> None:
-    """
-    Plots sensor waveforms for one station
-
-    :param df: input pandas data frame
-    :param station_id_str:  string for the station column name in df
-    :param sensor_wf_label_list: list of strings with sensor waveform column names in df
-    :param sensor_timestamps_label_list: list of strings with sensor timestamps column names in df
-    :param sig_id_label: string for the waveform column name in df
-    :param x_label: x label
-    :param y_label: y label
-    :param fig_title_show: Include a title in the figure. Default is True
-    :param fig_title: 'Normalized ' + title label + 'for Station ' + station_id_str
-    :param wf_color: waveform color. Default is midnightblue.
-    :param sensor_yticks_label_list: list of strings with sensor waveform y tick names
-    :return: plot
-    """
-
-    fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
-
-    wiggle_num = len(sensor_wf_label_list)  # depends on number of sensors and if sensors are 3d wf
-
-    # Check if sensors are 3d and if so add to wiggle_num
-    list_3d_sensor = ['accelerometer', 'gyroscope', 'magnetometer']
-    sensor_wf_label_list_modified_for_ticklabels = sensor_wf_label_list.copy()   # Copy sensor list to modify it
-    index_sensor_label_ticklabels_list = 0  # index for ticklabels once it includes x/y/z
-
-    for index_sensor_label_in_list, sensor_label_in_list in enumerate(sensor_wf_label_list):
-
-        if sensor_label_in_list.startswith(tuple(list_3d_sensor)):
-
-            wiggle_num += 2  # for the waveforms that have not been counted yet
-
-            # Modify the copy sensor labels list for yticks labels to include x,y,z labels
-            sensor_wf_label_list_modified_for_ticklabels.remove(sensor_wf_label_list_modified_for_ticklabels[index_sensor_label_ticklabels_list])
-            sensor_wf_label_list_modified_for_ticklabels.extend((sensor_wf_label_list[index_sensor_label_in_list] + '_x',
-                                                                sensor_wf_label_list[index_sensor_label_in_list] + '_y',
-                                                                sensor_wf_label_list[index_sensor_label_in_list] + '_z'))
-
-            index_sensor_label_ticklabels_list += 2
-
-        index_sensor_label_ticklabels_list += 1
-
-    offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
-    wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
-    wiggle_yticks = wiggle_offset
-
-    # Set ytick labels
-    if sensor_yticks_label_list is None:
-        wiggle_yticklabel = sensor_wf_label_list_modified_for_ticklabels
-    else:
-        wiggle_yticklabel = sensor_yticks_label_list
-
-    ax1.set_yticks(wiggle_yticks)
-    ax1.set_yticklabels(wiggle_yticklabel)
-    ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
-    ax1.tick_params(axis='both', which='both', labelsize=text_size)
-
-    xlim_min = np.empty(wiggle_num)
-    xlim_max = np.empty(wiggle_num)
-
-    station_row_index = df[sig_id_label].str.find(station_id_str)  # find index of desired station
-    index_station = station_row_index[0]  # actually get index
-
-    sensor_timestamps_label = sensor_timestamps_label_list[0]  # assume sensors same start time
-    time_epoch_origin = df[sensor_timestamps_label][index_station][0]
-
-    index_sensor_label_ticklabels_list = 0  # keep track of total sensor wf including x/y/z
-    for index_sensor_in_list, label in enumerate(sensor_wf_label_list):
-
-        # assume same order sensor wf and timestamp in lists
-        sensor_wf_df = df[label][index_station]
-        sensor_timestamps_label = sensor_timestamps_label_list[index_sensor_in_list]
-        time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin
-
-        if sensor_wf_df.ndim == 1:  # sensor that is NOT acceleration/gyroscope/magnetometer
-
-            sig_j = df[label][index_station] / np.max(df[label][index_station])
-            ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=wf_color)
-            xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
-            xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
-
-            index_sensor_label_ticklabels_list += 1
-
-        else:
-            for index_dimension, sensor_array in enumerate(sensor_wf_df):
-
-                sig_j = sensor_array / np.max(sensor_array)
-                ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=wf_color)
-                xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
-                xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
-
-                index_sensor_label_ticklabels_list += 1
-
-    ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))
-    ax1.grid(True)
-    if fig_title_show:
-        ax1.set_title('Normalized ' + fig_title + ' for Station ' + station_id_str, size=text_size)
     ax1.set_ylabel(y_label, size=text_size)
     if time_epoch_origin > 0:
         x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
