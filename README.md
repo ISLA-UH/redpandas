@@ -15,4 +15,4 @@ Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/maste
 ### License and Version History
 
 Visit [Development](https://github.com/RedVoxInc/redpandas/blob/master/docs/development.md) for more information on license,
-version history and reporting issues.
+version history and issues/bug report.

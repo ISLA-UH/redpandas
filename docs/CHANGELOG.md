@@ -2,6 +2,8 @@
 
 ## 1.1.5 ()
 
+- New and improved plot_wiggle_pandas
+- More documentation
 
 ## 1.1.4 (2021-06-16)
 

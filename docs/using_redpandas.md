@@ -14,7 +14,7 @@ This section covers the basics on how to use the RedVox Pandas (RedPandas) libra
     - [For RedVox data in a pickle format (.pkl)](#for-redvox-data-in-a-pickle-format-pkl)
     - [More options](#more-options)
 - [Opening RedPandas parquet files](#opening-redpandas-parquet-files)
-- [Data manipulation with RedPandas](#other-data-manipulation-with-redpandas)
+- [Data manipulation with RedPandas](#data-manipulation-with-redpandas)
 - [RedPandas example: Skyfall](#redpandas-example-skyfall)
     - [Downloading the RedVox Skyfall data](#downloading-the-redvox-skyfall-data)
     - [Running the Skyfall example](#running-the-skyfall-example)
@@ -22,11 +22,9 @@ This section covers the basics on how to use the RedVox Pandas (RedPandas) libra
 
 <!-- tocstop -->
 
-
-
 ### Basic definitions
 
-The following terms are common terminology used throughout the RedVox RedPandas Documentation.
+The following terms are common terminology used throughout the RedPandas Documentation.
 
 _RedVox related terms:_
 
@@ -38,9 +36,14 @@ To learn more about the app, click [here](https://www.redvoxsound.com).
 - _RedVox Python SDK_: A Software Development Kit (SDK) developed to read, create, edit, and write RedVox files 
 (files ending in .rdvxz for [RedVox API 900](https://bitbucket.org/redvoxhi/redvox-protobuf-api/src/master/) 
  files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files).
-For more details, click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk).
+For more details, click [here](https://github.com/RedVoxInc/redvox-python-sdk).
 
 _RedPandas related terms:_
+
+- _RedPandas_: short for [RedVox Pandas](https://pypi.org/project/redvox-pandas/).
+
+- _RedPandas DataFrame_: a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
+created with the RedPandas library and usually containing RedVox data.
 
 - _Station_: a device used to record data, e.g., a smartphone recording infrasound waves using 
 [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. Also a Python class designed in the RedVox Python SDK to
@@ -54,8 +57,6 @@ A station should always have audio sensor (and hence audio data).
 - _Epoch_ or _epoch time_: unix time (also referred to as the epoch time), the number of seconds since 1 January 1970. 
 The RedPandas' native unit of time is UTC epoch time in seconds.
 
-- _RedPandas DataFrame_: a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
-created with the RedPandas library and usually containing RedVox data.
 
 Return to _[Table of Contents](#table-of-contents)_.
 
@@ -211,6 +212,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 Visit the [Advanced data manipulation Documentation](advance_use_redpandas.md) to learn more about data manipulation with 
 RedPandas such as ensonifying RedVox data, plotting and more.
 
+Return to _[Table of Contents](#table-of-contents)_.
 
 ### RedPandas example: Skyfall
 
