@@ -1,7 +1,7 @@
 """
 These methods make assumptions about the RedVox sensor sample rates, which seldom exceed 500 Hz.
 I also assume the highest audio sample rate we'll use is 8 kHz.
-M. Garces, last updated 20210419
+M. Garces, last updated 20210702
 """
 
 import os
@@ -385,9 +385,3 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
                                         wav_filename=filename_with_path,
                                         wav_sample_rate_hz=192000.)
                     sensor_channel_index += 1
-
-
-
-#
-# if __name__ == "__main__":
-#     dual_tone_test()

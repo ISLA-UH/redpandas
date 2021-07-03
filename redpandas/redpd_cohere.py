@@ -162,6 +162,7 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                             ) -> pd.DataFrame:
     """
     TODO MAG: complete my description
+
     :param df: input pandas DataFrame
     :param ref_id:
     :param sig_id_label: string for column name with station ids in df

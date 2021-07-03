@@ -2,7 +2,7 @@
 This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
 to RedPandas DataFrames.
 
-Last updated: 25 June 2021
+Last updated: 2 July 2021
 """
 from typing import List, Dict, Union, Tuple
 
@@ -128,6 +128,7 @@ def build_station(station: Station,
                 sensor_waveform_highpass, _ = rpd_prep.highpass_from_diff(sig_wf=sensor_raw[index_dimension],
                                                                           sig_epoch_s=sensor_epoch_s,
                                                                           sample_rate_hz=sensor_sample_rate_hz,
+                                                                          fold_signal=True,
                                                                           highpass_type=highpass_type,
                                                                           frequency_filter_low=frequency_filter_low,
                                                                           filter_order=filter_order)
@@ -153,7 +154,7 @@ def audio_wf_time_build_station(station: Station,
     Builds mic waveform and times if it exists
 
     :param station: RDVX Station object
-    :param mean_type: TODO MC: under development
+    :param mean_type: "simple" (demean and replace nans with zeros), or "lin" (remove linear trend)
     :param raw: if false (default), boolean or nan mean removed
     :return: dictionary with sensor name, sample rate, timestamps, audio data
     """

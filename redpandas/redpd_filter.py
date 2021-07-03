@@ -1,14 +1,14 @@
 """
 Utils for managing pandas dataframes
 
-Last updated: 10 June 2021
+Last updated: 2 July 2021
 """
 import numpy as np
 import pandas as pd
 from scipy import signal
 import redpandas.redpd_preprocess as rpd_prep
 
-from typing import List, Tuple
+from typing import List, Tuple, Union
 
 
 # TODO: to add lowpass filter
@@ -187,156 +187,8 @@ def normalize_pandas(df: pd.DataFrame,
     return df
 
 
-# TODO MC: this for 3c
-def selected_decimate_signal_pandas(df: pd.DataFrame,
-                                    list_stations: List[str],
-                                    sig_id_label: str,
-                                    sig_wf_label: str,
-                                    sig_timestamps_label: str,
-                                    sample_rate_hz_label: str,
-                                    downsample_frequency_hz: str or int,
-                                    filter_order: int = 8,
-                                    new_column_label_decimated_sig: str = 'decimated_sig_data',
-                                    new_column_label_decimated_sig_timestamps: str = 'decimated_sig_epoch',
-                                    new_column_label_decimated_sample_rate_hz: str = 'decimated_sample_rate_hz',
-                                    verbose: bool = True) -> pd.DataFrame:
-    """
-    Decimate signal data ( via spicy.signal.decimate) and timestamp data (via calculating timestamps 'bin' where signal
-    data is decimated) for specified stations, copies the original timestamp and data for the rest of stations.
-
-    :param df: input pandas data frame
-    :param list_stations: list of strings of name of stations as saved in df
-    :param sig_id_label: string for column name with station ids in df
-    :param sig_wf_label:  string for column name with the waveform data in df
-    :param sig_timestamps_label: string for column name with the waveform timestamp data in df
-    :param sample_rate_hz_label: string for column name with sample rate in Hz information in df
-    :param downsample_frequency_hz: frequency to downsample to in Hz. For minimum frequency found in df, 'Min',
-    for other frequencies, integer
-    :param filter_order: the order of the filter integer. Default is 8
-    :param new_column_label_decimated_sig: string for new column containing signal decimated data
-    :param new_column_label_decimated_sig_timestamps: string for new column containing signal decimated timestamps
-    :param new_column_label_decimated_sample_rate_hz: string for new column containing signal decimated sample rate
-    :param verbose: Default is True
-    :return: original data frame with added columns for decimated signal, timestamps, and sample rate
-    """
-    # select frequency to downsample to
-    if downsample_frequency_hz == 'Min' or downsample_frequency_hz == 'min':
-        min_sample_rate = df[sample_rate_hz_label].min()  # find min sample rate in sample rate column
-    else:
-        min_sample_rate = int(downsample_frequency_hz)
-
-    if verbose:
-        print(f'\n{list_stations} will de downsampled to (or as close to) {min_sample_rate} Hz \n')
-
-    # lists that will be converted to columns added to the original df
-    list_all_decimated_timestamps = []
-    list_all_decimated_data = []
-    list_all_decimated_sample_rate_hz = []
-
-    # make a list with requested stations the same length as rows in df, easier for looping
-    list_zeros = ['no_station'] * (len(df)-len(list_stations))  # zeros list
-    list_complete_zeros_stations = list_zeros + list_stations  # complete list
-
-    for row in range(len(df)):
-
-        list_tuples = []  # list to store tuples
-        for station in list_complete_zeros_stations:
-            # if station list and df match, store as True, otherwise False
-            list_tuples.append((str(df[sig_id_label][row]) == str(station)))
-
-        # if any is True, decimate. This assumes only 1 True (aka one match between list and df) per row in df
-        if any(list_tuples) is True:
-
-            if df[sample_rate_hz_label][row] != min_sample_rate:
-                # calculate downsampling factor to reach downsampled frequency
-                downsampling_factor = int(df[sample_rate_hz_label][row]/min_sample_rate)
-
-                if downsampling_factor <= 1:
-                    if verbose:
-                        print(f'{df[sig_id_label][row]} can not be downsampled to {min_sample_rate} Hz')
-
-                    # store the original timestamp/data/sample rate values
-                    list_all_decimated_timestamps.append(df[sig_timestamps_label][row])
-                    list_all_decimated_data.append(df[sig_wf_label][row])
-                    list_all_decimated_sample_rate_hz.append(df[sample_rate_hz_label][row])
-
-                elif downsampling_factor <= 12:  # 13 is the max recommended, if larger, decimate in steps
-
-                    decimated_timestamp, decimated_data = \
-                        decimate_individual_station(downsampling_factor=downsampling_factor,
-                                                    filter_order=filter_order,
-                                                    sig_epoch_s=df[sig_timestamps_label][row],
-                                                    sig_wf=df[sig_wf_label][row],
-                                                    sample_rate_hz=df[sample_rate_hz_label][row])
-
-                    if verbose:
-                        print(f'{df[sig_id_label][row]} data downsampled to '
-                              f'{df[sample_rate_hz_label][row] / downsampling_factor} Hz '
-                              f'by downsampling factor of {downsampling_factor}')
-
-                    # store new decimated timestamp, data and sample rate
-                    list_all_decimated_timestamps.append(decimated_timestamp)
-                    list_all_decimated_data.append(decimated_data)
-                    list_all_decimated_sample_rate_hz.append(df[sample_rate_hz_label][row]/downsampling_factor)
-
-                else:  # if downsampling factor larger than 13, decimate in steps
-                    # find how many decimate 'steps' through primes
-                    list_prime_factors = prime_factors(downsampling_factor)
-
-                    # lists to temporarily store timestamps/data/sample rate decimated in between steps
-                    # fill temporary list with original timestamp/data/sample rate from df to work with
-                    # without changing the original
-                    list_temporary_timestamp_decimate_storage = [df[sig_timestamps_label][row]]
-                    list_temporary_data_decimate_storage = [df[sig_wf_label][row]]
-                    list_temporary_sample_rate_hz = [df[sample_rate_hz_label][row]]
-                    # loop through prime factors aka decimate steps
-                    for index_list_storage, prime in enumerate(list_prime_factors):
-
-                        decimated_timestamp, decimated_data = \
-                            decimate_individual_station(downsampling_factor=int(prime),
-                                                        filter_order=filter_order,
-                                                        sig_epoch_s=list_temporary_timestamp_decimate_storage[index_list_storage],
-                                                        sig_wf=list_temporary_data_decimate_storage[index_list_storage],
-                                                        sample_rate_hz=list_temporary_sample_rate_hz[index_list_storage])
-
-                        list_temporary_timestamp_decimate_storage.append(decimated_timestamp)
-                        list_temporary_data_decimate_storage.append(decimated_data)
-                        list_temporary_sample_rate_hz.append(list_temporary_sample_rate_hz[index_list_storage]/prime)
-
-                        if verbose:
-                            print(f'{df[sig_id_label][row]} data downsampled to '
-                                  f'{list_temporary_sample_rate_hz[index_list_storage] / prime} Hz '
-                                  f'by downsampling factor of {prime}')
-
-                    # once timestamps/data/sample rate decimated through all the steps (aka prime factors),
-                    # store in general list that will be converted to a df column
-                    # we want the last element of the temporary list aka the last decimated step
-                    list_all_decimated_timestamps.append(list_temporary_timestamp_decimate_storage[-1])
-                    list_all_decimated_data.append(list_temporary_data_decimate_storage[-1])
-                    list_all_decimated_sample_rate_hz.append(list_temporary_sample_rate_hz[-1])
-
-            else:  # if no decimation necessary, store the original timestamp/data/sample rate values
-                if verbose:
-                    print(f'{df[sig_id_label][row]} does not need to be downsampled')
-                list_all_decimated_timestamps.append(df[sig_timestamps_label][row])
-                list_all_decimated_data.append(df[sig_wf_label][row])
-                list_all_decimated_sample_rate_hz.append(df[sample_rate_hz_label][row])
-
-        else:  # if no list station and df station match, store the original signal timestamp and data
-            list_all_decimated_timestamps.append(df[sig_timestamps_label][row])
-            list_all_decimated_data.append(df[sig_wf_label][row])
-            list_all_decimated_sample_rate_hz.append(df[sample_rate_hz_label][row])
-
-    # convert to columns and add it to df
-    df[new_column_label_decimated_sig_timestamps] = list_all_decimated_timestamps
-    df[new_column_label_decimated_sig] = list_all_decimated_data
-    df[new_column_label_decimated_sample_rate_hz] = list_all_decimated_sample_rate_hz
-
-    return df
-
-
 def decimate_signal_pandas(df: pd.DataFrame,
-                           downsample_frequency_hz: str or int,
+                           downsample_frequency_hz: Union[str, int],
                            sig_id_label: str,
                            sig_wf_label: str,
                            sig_timestamps_label: str,

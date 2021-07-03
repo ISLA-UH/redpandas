@@ -1,5 +1,5 @@
 """
-This module contains functions to extrct and process geospatial data
+This module contains functions to extract and process geospatial data
 
 Last updated: 24 June 2021
 """

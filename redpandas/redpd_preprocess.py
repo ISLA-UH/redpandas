@@ -34,6 +34,7 @@ class NormType(Enum):
 def datetime_now_epoch_s() -> float:
     """
     Returns the invocation Unix time in seconds
+
     :return: The current epoch timestamp as seconds since the epoch UTC
     """
     return dt.datetime_to_epoch_seconds_utc(dt.now())
@@ -42,6 +43,7 @@ def datetime_now_epoch_s() -> float:
 def datetime_now_epoch_micros() -> float:
     """
     Returns the invocation Unix time in microseconds
+
     :return: The current epoch timestamp as microseconds since the epoch UTC
     """
     return dt.datetime_to_epoch_microseconds_utc(dt.now())
@@ -50,6 +52,7 @@ def datetime_now_epoch_micros() -> float:
 def normalize(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType = NormType.MAX) -> np.ndarray:
     """
     Scale a 1D time series
+
     :param sig_wf: signal waveform
     :param scaling: scaling parameter, division
     :param norm_type: {'max', l1, l2}, optional
@@ -68,6 +71,7 @@ def normalize(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType = Nor
 def demean_nan(sig_wf: np.ndarray) -> np.ndarray:
     """
     Detrend and normalize a 1D time series
+
     :param sig_wf: signal waveform
     :return: Detrended and normalized time series
     """
@@ -77,6 +81,7 @@ def demean_nan(sig_wf: np.ndarray) -> np.ndarray:
 def detrend_nan(sig_wf: np.ndarray) -> np.ndarray:
     """
     Detrend and normalize a 1D time series
+
     :param sig_wf: signal waveform
     :return: Detrended and normalized time series
     """
@@ -86,6 +91,7 @@ def detrend_nan(sig_wf: np.ndarray) -> np.ndarray:
 def demean_nan_norm(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType = NormType.MAX) -> np.ndarray:
     """
     Detrend and normalize a 1D time series
+
     :param sig_wf: signal waveform
     :param scaling: scaling parameter, division
     :param norm_type: {'max', l1, l2}, overrides scikit default of 'l2' by 'max'
@@ -97,6 +103,7 @@ def demean_nan_norm(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType
 def demean_nan_matrix(sig_wf: np.ndarray) -> np.ndarray:
     """
     Detrend and normalize a matrix of time series
+
     :param sig_wf: signal waveform
     :return: The detrended and normalized signature
     """
@@ -108,6 +115,7 @@ def taper_tukey(sig_wf_or_time: np.ndarray,
     """
     Constructs a symmetric Tukey window with the same dimensions as a time or signal numpy array.
     fraction_cosine = 0 is a rectangular window, 1 is a Hann window
+
     :param sig_wf_or_time: input signal or time
     :param fraction_cosine: fraction of the window inside the cosine tapered window, shared between the head and tail
     :return: tukey taper window amplitude
@@ -118,6 +126,7 @@ def taper_tukey(sig_wf_or_time: np.ndarray,
 def pad_reflection_symmetric(sig_wf: np.ndarray) -> Tuple[np.ndarray, int]:
     """
     Apply reflection transformation
+
     :param sig_wf: signal waveform
     :return: input signal with reflected edges, numbers of points folded per edge
     """
@@ -134,6 +143,7 @@ def filter_reflection_highpass(sig_wf: np.ndarray,
                                filter_cutoff_hz: float) -> np.ndarray:
     """
     Apply fold filter to input signal (edges reflected) and highpass
+
     :param sig_wf: signal waveform
     :param filter_cutoff_hz: filter corner frequency in Hz
     :param sample_rate_hz: sampling rate in Hz
@@ -152,6 +162,7 @@ def filter_reflection_highpass(sig_wf: np.ndarray,
 def height_asl_from_pressure_below10km(bar_waveform: np.ndarray) -> np.ndarray:
     """
     Simple model for troposphere
+
     :param bar_waveform: barometric pressure in kPa
     :return: height ASL in m
     """
@@ -161,6 +172,7 @@ def height_asl_from_pressure_below10km(bar_waveform: np.ndarray) -> np.ndarray:
 def model_height_from_pressure_skyfall(pressure_kpa: np.ndarray) -> np.ndarray:
     """
     Returns empirical height in m from input pressure
+
     :param pressure_kpa: barometric pressure in kPa
     :return: height in m
     """
@@ -176,6 +188,8 @@ def rc_high_pass_signal(sig_wf: np.ndarray,
                         sample_rate_hz: int,
                         highpass_cutoff: float) -> np.ndarray:
     """
+    TODO MAG: complete me
+
     :param sig_wf: signal waveform
     :param sample_rate_hz: sampling rate in Hz
     :param highpass_cutoff: filter corner frequency in Hz
@@ -192,6 +206,8 @@ def bandpass_butter_uneven(sig_wf: np.ndarray,
                            frequency_cut_low_hz: float,
                            filter_order: int) -> np.ndarray:
     """
+    Apply butterworth filter to a 1D signal
+
     :param sig_wf: signal waveform
     :param sample_rate_hz: sampling rate in Hz
     :param frequency_cut_low_hz: filter corner frequency in Hz
@@ -211,6 +227,7 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
     """
     Variation of cross-correlation function cross_stas.xcorr_all for unevenly sampled data
     with identical sampling and duration.
+
     :param sig_x: processed signal
     :param sig_ref: reference signal
     :return: cross-correlation metrics
@@ -238,7 +255,6 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
 
     else:
         print('One of the waveforms is broken')
-        # todo: use better defaults
         return np.array([]), np.array([]), np.nan, np.nan, np.array([])
 
     return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
@@ -247,6 +263,7 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
 def highpass_from_diff(sig_wf: np.ndarray,
                        sig_epoch_s: np.ndarray,
                        sample_rate_hz: int or float,
+                       fold_signal: bool = True,
                        highpass_type: str = 'obspy',
                        frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
                        filter_order: int = 4) -> Tuple[np.ndarray, float]:
@@ -255,9 +272,11 @@ def highpass_from_diff(sig_wf: np.ndarray,
     - remove nans and DC offset by getting the differential pressure in kPa
     - apply highpass filter at 100 second periods
     - reconstruct Pressure in kPa from differential pressure: P(i) = dP(i) + P(i-1)
+
     :param sig_wf: signal waveform
     :param sig_epoch_s: signal time in epoch s
     :param sample_rate_hz: sampling rate in Hz
+    :param fold_signal: apply reflection transformation and fold edges
     :param highpass_type: 'obspy', 'butter', 'rc'
     :param frequency_filter_low: apply highpass filter. Default is 100 second periods
     :param filter_order: filter corners / order. Default is 4.
@@ -277,8 +296,10 @@ def highpass_from_diff(sig_wf: np.ndarray,
         print('Default 100s highpass override. New highpass period = ', 1/frequency_filter_low)
 
     # Fold edges of wf
-    # TODO: Make folding an option
-    sensor_waveform_fold, number_points_folded = pad_reflection_symmetric(sensor_waveform_grad_dm)
+    if fold_signal is True:
+        sensor_waveform_fold, number_points_folded = pad_reflection_symmetric(sensor_waveform_grad_dm)
+    else:
+        sensor_waveform_fold = sensor_waveform_grad_dm
 
     if highpass_type == "obspy":
         # Zero phase, acausal
@@ -308,8 +329,9 @@ def highpass_from_diff(sig_wf: np.ndarray,
     else:
         raise Exception("No filter selected. Type 'obspy', 'butter', or 'rc'.")
 
-    # Cut fold edges of wf
-    sensor_waveform_dp_filtered = sensor_waveform_dp_filtered[number_points_folded:-number_points_folded]
+    if fold_signal is True:
+        # Cut fold edges of wf
+        sensor_waveform_dp_filtered = sensor_waveform_dp_filtered[number_points_folded:-number_points_folded]
 
     # Reconstruct Function dP: P(0), P(i) = dP(i) + P(i-1)
     sensor_waveform_reconstruct = np.zeros((len(sensor_waveform_dp_filtered)))
