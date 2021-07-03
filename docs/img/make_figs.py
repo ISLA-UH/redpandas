@@ -54,5 +54,27 @@ rpd_plot.plot_wiggles_pandas(df=df,
 
 import redpandas.redpd_filter as rpd_filter
 
-rpd_filter.signal_zero_mean_pandas(df=df,
-                                   sig_wf_label="audio_wf")
+# rpd_filter.decimate_signal_pandas(df=df,
+#                                   downsample_frequency_hz=20,
+#                                   sig_id_label="station_id",
+#                                   sig_wf_label="audio_wf",
+#                                   sig_timestamps_label="audio_epoch_s",
+#                                   sample_rate_hz_label="audio_sample_rate_nominal_hz")
+
+import redpandas.redpd_tfr as rpd_tfr
+
+rpd_tfr.tfr_bits_panda(df=df,
+                       sig_wf_label="audio_wf",
+                       sig_sample_rate_label="audio_sample_rate_nominal_hz",
+                       order_number_input=12,  # Optional, default=3
+                       tfr_type='stft')  # Optional, 'stft' or 'cwt, default='stft'
+
+df = df.drop(index=2)
+rpd_plot.plot_mesh_pandas(df=df,
+                          mesh_time_label="tfr_time_s",
+                          mesh_frequency_label="tfr_frequency_hz",
+                          mesh_tfr_label="tfr_bits",
+                          t0_sig_epoch_s=df["audio_epoch_s"][0][0],
+                          sig_id_label=["Station 1", "Station 2", "Station 3"],
+                          fig_title="STFT for Station 1 and Station 2")
+plt.show()
