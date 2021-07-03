@@ -8,7 +8,7 @@ Skyfall 2020 Configuration file
 
 # Step 0: I/O files
 # Absolute path to the skyfall data
-INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
+# INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 
 # See above for example of a well named directory
 # Avoid specifying /api900 directories if possible.
@@ -16,7 +16,7 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 # INPUT_DIR = "/Users/spopen/redvox/data/skyfall_data"
 # INPUT_DIR = "/Users/tyler/Documents/skyfall_pipeline"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
-# INPUT_DIR = "/Users/meritxell/Documents/skyfall"
+INPUT_DIR = "/Users/meritxell/Documents/skyfall"
 
 RPD_DIR = "rpd_files"
 EVENT_NAME = "Skyfall"

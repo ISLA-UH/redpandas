@@ -20,7 +20,7 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 #     EPISODE_END_EPOCH_S, STATIONS, DW_FILE, use_datawindow_tdr, use_pickle_tdr, use_parquet_tdr, PD_PQT_FILE, SENSOR_LABEL, \
 #     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
 
-from examples.skyfall.skyfall_config import skyfall_config
+from examples.skyfall.archive.skyfall_config import skyfall_config
 from redpandas.redpd_config import DataLoadMethod
 
 if __name__ == "__main__":

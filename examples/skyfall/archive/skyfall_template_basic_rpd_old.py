@@ -16,7 +16,7 @@ import redpandas.redpd_build_station as rpd_build_sta
 #     EPISODE_END_EPOCH_S, STATIONS, PD_PQT_FILE, OUTPUT_DIR, DW_FILE, build_dw_pickle, build_df_parquet, \
 #     plot_mic_waveforms, print_datawindow_dq, SENSOR_LABEL
 
-from examples.skyfall.skyfall_config import skyfall_config
+from examples.skyfall.archive.skyfall_config import skyfall_config
 
 
 

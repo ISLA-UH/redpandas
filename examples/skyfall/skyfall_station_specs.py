@@ -10,10 +10,18 @@ import redvox.common.date_time_utils as dt
 from redvox.common.station import Station
 
 # Configuration file
-from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, DW_FILE
+from examples.skyfall.skyfall_config_file import skyfall_config
 
 
-def station_specs_to_csv(data_window, export_file):
+def station_specs_to_csv(data_window: DataWindow,
+                         export_file: str) -> None:
+    """
+    Export station spects to CSV
+
+    :param data_window: RedVox DataWindow object
+    :param export_file: full path to directory which to export file
+    :return: save CSV to output directory provided
+    """
     station: Station
     with open(export_file, 'w', newline='') as csvfile:
         # writer = csv.writer(csvfile, delimiter=' ',
@@ -141,13 +149,13 @@ if __name__ == "__main__":
     print('Let the sky fall')
     print("Print and save station information")
 
-    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=OUTPUT_DIR,
-                                                              file_name=DW_FILE)
+    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
+                                                      file_name=skyfall_config.dw_file)
     rpd_dq.station_metadata(rdvx_data)
 
     print("\nSave Station specs to file")
-    csv_station_file = EVENT_NAME + "_station.csv"
-    csv_station_full_path = os.path.join(OUTPUT_DIR, csv_station_file)
+    csv_station_file = skyfall_config.event_name + "_station.csv"
+    csv_station_full_path = os.path.join(skyfall_config.output_dir, csv_station_file)
 
     station_specs_to_csv(rdvx_data, csv_station_full_path)
 
