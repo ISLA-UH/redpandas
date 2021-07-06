@@ -6,13 +6,13 @@ The RedVox Pandas (also known as RedPandas) pipeline is designed for integrabili
 
 ### Installation
 
-Installation instructions can be found in the [RedPandas Installation Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/installation.md).
+Installation instructions can be found in the [RedPandas Installation Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/installation.md).
 
 ### Getting started
 
-Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/using_redpandas.md) to get started.
+Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md) to get started.
 
 ### License and Version History
 
-Visit [Development](https://github.com/RedVoxInc/redpandas/blob/master/docs/development.md) for more information on license,
+Visit [Development](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/development.md) for more information on license,
 version history and issues/bug report.

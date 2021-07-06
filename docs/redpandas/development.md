@@ -19,7 +19,7 @@ Please feel free to submit issues on the GitHub [issue tracker](https://github.c
 
 #### Version History
 
-See [CHANGELOG.md](CHANGELOG.md).
+See [CHANGELOG.md](../CHANGELOG.md).
 
 #### License
 
