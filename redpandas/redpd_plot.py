@@ -1,7 +1,7 @@
 """
 This module constains main utils for plotting RedPandas DataFrames
 
-Last updated: 2 July 2021
+Last updated: 6 July 2021
 """
 import datetime as dt
 from typing import List, Union, Optional
@@ -548,28 +548,29 @@ def plot_psd_coh(psd_sig,
                  f_hz,
                  f_min_hz,
                  f_max_hz,
-                 f_scale: str = 'log',
+                 f_scale: str = "log",
                  sig_label: str = "PSD Sig",
                  ref_label: str = "PSD Ref",
-                 psd_label: str = 'PSD (bits)',
-                 coh_label: str = 'Coherence',
-                 f_label: str = 'Frequency (Hz)',
-                 fig_title: str = 'Power spectral density and coherence') -> None:
+                 psd_label: str = "PSD (bits)",
+                 coh_label: str = "Coherence",
+                 f_label: str = "Frequency (Hz)",
+                 fig_title: str = "Power spectral density and coherence") -> None:
     """
-    TODO MAG: Complete me
-    :param psd_sig:
-    :param psd_ref:
-    :param coherence_sig_ref:
-    :param f_hz:
-    :param f_min_hz:
-    :param f_max_hz:
-    :param f_scale:
-    :param sig_label:
-    :param ref_label:
-    :param psd_label:
-    :param coh_label:
-    :param f_label:
-    :param fig_title: title of figure
+    Plot coherence and power spectral density
+
+    :param psd_sig: Power spectral density of signal
+    :param psd_ref: Power spectral density of reference signal
+    :param coherence_sig_ref:  magnitude squared coherence of x and y
+    :param f_hz: sample frequencies of PSD
+    :param f_min_hz: minimum frequency to plot in Hz (x min limit)
+    :param f_max_hz: maximum frequency to plot in Hz (x max limit)
+    :param f_scale: scale of x axis. One of {"linear", "log", "symlog", "logit"}. Default is "log"
+    :param sig_label: label for signal. Default is "PSD Sig"
+    :param ref_label: label for reference. Default is "PSD Ref"
+    :param psd_label: label for PSD. Default is "PSD (bits)"
+    :param coh_label: label for coherence. Default is "Coherence"
+    :param f_label: x axis label. Default is "Frequency (Hz)"
+    :param fig_title: title of figure. Default is "Power spectral density and coherence"
     :return: plot
     """
     # Plot PSDs
@@ -606,14 +607,15 @@ def plot_response_scatter(h_magnitude,
                           f_scale: str = 'log',
                           fig_title: str = 'Response only valid at high coherence') -> None:
     """
-    TODO MAG: Complete me
-    :param h_magnitude:
-    :param h_phase_deg:
-    :param color_guide:
-    :param f_hz:
-    :param f_min_hz:
-    :param f_max_hz:
-    :param f_scale:
+    Plot coherence response
+
+    :param h_magnitude: magnitude, for example, absolute magnitude of response (which is power spectral density / cross-power spectral density)
+    :param h_phase_deg: coherence phase degrees
+    :param color_guide: parameters color guide, for example, magnitude squared coherence of x and y
+    :param f_hz: frequency of coherence in Hz
+    :param f_min_hz: minimum frequency to plot in Hz (x min limit)
+    :param f_max_hz: maximum frequency to plot in Hz (x max limit)
+    :param f_scale: scale of x axis. One of {"linear", "log", "symlog", "logit"}. Default is "log"
     :param fig_title: title of figure
     :return: plot
     """

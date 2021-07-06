@@ -1,7 +1,7 @@
 """
 This module contains function to calculate coherence
 
-Last updated: 10 June 2021
+Last updated: 6 July 2021
 """
 
 import numpy as np
@@ -20,24 +20,24 @@ def coherence_numpy(sig_in: np.ndarray,
                     window_seconds: float = 2.,
                     window_overlap_fractional: float = 0.5,
                     frequency_ref_hz: float = 40.,
-                    frequency_min_hz: float = 1,
+                    frequency_min_hz: float = 1.,
                     frequency_max_hz: float = 320.,
                     sig_calib: float = 1.,
                     sig_ref_calib: float = 1.):
     """
-    TODO MAG: complete me
+    Find coherence between a signal and a reference signal, plot results
 
-    :param sig_in:
-    :param sig_in_ref:
-    :param sig_sample_rate_hz:
-    :param sig_ref_sample_rate_hz:
-    :param window_seconds:
-    :param window_overlap_fractional:
-    :param frequency_ref_hz:
-    :param frequency_min_hz:
-    :param frequency_max_hz:
-    :param sig_calib:
-    :param sig_ref_calib:
+    :param sig_in: signal
+    :param sig_in_ref: reference signal
+    :param sig_sample_rate_hz: sample rate of signal in Hz
+    :param sig_ref_sample_rate_hz: sample rate of reference signal in Hz
+    :param window_seconds: seconds duration of window. Default is 2.0
+    :param window_overlap_fractional: number of points to overlap between segments in window. Default is 0.5
+    :param frequency_ref_hz: reference frequency in Hz. Default is 40.0
+    :param frequency_min_hz: minimum frequency to plot in Hz (x min limit). Default is 1.0
+    :param frequency_max_hz: maximum frequency to plot in Hz (x max limit). Default is 320.
+    :param sig_calib: calibration of signal. Default is 1.0
+    :param sig_ref_calib: calibration of reference signal. Default is 1.0
     :return: plots
     """
 
@@ -161,27 +161,27 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                             new_column_label_cohere_response_phase_degrees: str = 'coherence_response_phase_degrees'
                             ) -> pd.DataFrame:
     """
-    TODO MAG: complete my description
+    Find coherence between signals stored in dataframe, plot results
 
     :param df: input pandas DataFrame
-    :param ref_id:
+    :param ref_id: name of reference signal in sig_id_label column in df
     :param sig_id_label: string for column name with station ids in df
     :param sig_wf_label: string for column name with waveform data in df
     :param sig_sample_rate_label: string for column name with sample rate in Hz information in df
-    :param fs_fractional_tolerance:
-    :param window_seconds:
-    :param window_overlap_fractional:
-    :param frequency_ref_hz:
-    :param frequency_min_hz:
-    :param frequency_max_hz:
-    :param sig_calib:
-    :param sig_ref_calib:
-    :param export_option:
-    :param plot_response:
-    :param new_column_label_cohere_frequency:
-    :param new_column_label_cohere_value:
-    :param new_column_label_cohere_response_magnitude_bits:
-    :param new_column_label_cohere_response_phase_degrees:
+    :param fs_fractional_tolerance: difference in sample rate (in Hz) tolerated. Default is 0.02
+    :param window_seconds: seconds duration of window. Default is 2.0
+    :param window_overlap_fractional: number of points to overlap between segments in window. Default is 0.5
+    :param frequency_ref_hz: reference frequency in Hz. Default is 40.0
+    :param frequency_min_hz: minimum frequency to plot in Hz (x min limit). Default is 1.0
+    :param frequency_max_hz: maximum frequency to plot in Hz (x max limit). Default is 320.
+    :param sig_calib: calibration of signal. Default is 1.0
+    :param sig_ref_calib: sample rate of reference signal in Hz
+    :param export_option: 'max_coherence' or 'ref_frequency'. Default is 'max_coherenece'
+    :param plot_response: plot results. Default is False
+    :param new_column_label_cohere_frequency: string for new column containing coherence frequency
+    :param new_column_label_cohere_value: string for new column containing coherence values
+    :param new_column_label_cohere_response_magnitude_bits: string for new column containing coherence response in bits
+    :param new_column_label_cohere_response_phase_degrees: string for new column containing coherence phase in degrees
     :return: input pandas dataframe with new columns
     """
 

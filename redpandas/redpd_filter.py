@@ -1,7 +1,7 @@
 """
 Utils for managing pandas dataframes
 
-Last updated: 2 July 2021
+Last updated: 6 July 2021
 """
 import numpy as np
 import pandas as pd
@@ -78,7 +78,7 @@ def signal_zero_mean_pandas(df: pd.DataFrame,
 
     :param df: input pandas data frame
     :param sig_wf_label: string for column name with the waveform data in df
-    :param new_column_label: sig_label + string for new column containing zero mean signal data
+    :param new_column_label: string for new column containing zero mean signal data
     :return: original data frame with extra column containing zero mean signals
     """
     # label new column in df

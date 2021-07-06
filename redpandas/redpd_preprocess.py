@@ -2,7 +2,7 @@
 This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
 
-Last updated: 24 June 2021
+Last updated: 6 July 2021
 """
 
 from enum import Enum
@@ -188,7 +188,7 @@ def rc_high_pass_signal(sig_wf: np.ndarray,
                         sample_rate_hz: int,
                         highpass_cutoff: float) -> np.ndarray:
     """
-    TODO MAG: complete me
+    Apply RC high pass filter to signal
 
     :param sig_wf: signal waveform
     :param sample_rate_hz: sampling rate in Hz
