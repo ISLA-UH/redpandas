@@ -19,18 +19,26 @@ import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
 import redpandas.redpd_build_station as rpd_build_sta
 from redpandas.redpd_config import RedpdConfig
+import redpandas.redpd_scales as rpd_scales
 
 
-# TODO MC: think about the variables that are not in the config file
-# TODO MC: add highpass and filter options at redpd_dw_to_parquet level
 def redpd_dw_to_parquet_from_config(config: RedpdConfig,
                                     create_dw: bool = True,
                                     print_dq: bool = False,
-                                    show_raw_waveform_plots: bool = True):
+                                    show_raw_waveform_plots: bool = True,
+                                    highpass_type: str = 'obspy',
+                                    frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+                                    filter_order: int = 4):
     """
     Extract RedVox data, convert to pandas dataframe and save in parquet
 
     :param config:
+    :param create_dw: create RedVox DataWindow to load data. Default if True. If false, open existing pickle file
+    :param print_dq: print data quality statements. Default is True
+    :param show_raw_waveform_plots: bool = True,
+    :param highpass_type: obspy', 'butter', 'rc', default 'obspy'
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param filter_order: the order of the filter integer. Default is 4
     :return: print data quality statements, build parquet for RedVox data, plot waveforms
     """
     redpd_dw_to_parquet(input_dir=config.input_dir,
@@ -44,7 +52,10 @@ def redpd_dw_to_parquet_from_config(config: RedpdConfig,
                         station_ids=config.station_ids,
                         sensor_labels=config.sensor_labels,
                         start_epoch_s=config.event_start_epoch_s,
-                        end_epoch_s=config.event_end_epoch_s)
+                        end_epoch_s=config.event_end_epoch_s,
+                        highpass_type=highpass_type,
+                        frequency_filter_low=frequency_filter_low,
+                        filter_order=filter_order)
 
 
 def redpd_dw_to_parquet(input_dir: str,
@@ -61,7 +72,10 @@ def redpd_dw_to_parquet(input_dir: str,
                         end_epoch_s: Optional[float] = None,
                         start_buffer_minutes: Optional[int] = 3,
                         end_buffer_minutes: Optional[int] = 3,
-                        debug: bool = False):
+                        debug: bool = False,
+                        highpass_type: str = 'obspy',
+                        frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+                        filter_order: int = 4):
     """
     Extract RedVox data, convert to pandas dataframe and save in parquet
 
@@ -82,7 +96,10 @@ def redpd_dw_to_parquet(input_dir: str,
         when filtering data. Default is 3
     :param end_buffer_minutes: float representing the amount of minutes to include after the end datetime
         when filtering data. Default is 3
-    :param debug:
+    :param debug: print debug for DataWindow. Default is False
+    :param highpass_type: obspy', 'butter', 'rc', default 'obspy'
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param filter_order: the order of the filter integer. Default is 4
     :return: print data quality statements, build parquet for RedVox data, plot waveforms
     """
     print("Initiating conversion from RedVox DataWindow to RedPandas:")
@@ -136,7 +153,10 @@ def redpd_dw_to_parquet(input_dir: str,
     print("\nInitiating RedVox Redpandas:")
     df_all_sensors_all_stations = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
                                                                                       sdk_version=rdvx_data.sdk_version,
-                                                                                      sensor_labels=sensor_labels)
+                                                                                      sensor_labels=sensor_labels,
+                                                                                      highpass_type=highpass_type,
+                                                                                      frequency_filter_low=frequency_filter_low,
+                                                                                      filter_order=filter_order)
                                                 for station in rdvx_data.stations])
     df_all_sensors_all_stations.sort_values(by="station_id", ignore_index=True, inplace=True)
 

@@ -21,7 +21,10 @@ import redpandas.redpd_scales as rpd_scales
 def station_to_dict_from_dw(
         station: Station,
         sdk_version: str,
-        sensor_labels: List[str]) -> Dict[str, Union[str, None, float]]:
+        sensor_labels: List[str],
+        highpass_type: str = 'obspy',
+        frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+        filter_order: int = 4) -> Dict[str, Union[str, None, float]]:
     """
     converts information from a station object created by a data window into a dictionary easily converted into
     a dataframe
@@ -30,6 +33,9 @@ def station_to_dict_from_dw(
     :param sdk_version: version of Redvox SDK used to create the Station object
     :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer',
         'gyroscope', 'magnetometer', 'health', 'location', 'image']
+    :param highpass_type: obspy', 'butter', 'rc', default 'obspy'
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param filter_order: the order of the filter integer. Default is 4
     :return: a dictionary ready for conversion into a dataframe
     """
     sensors = {"station_id": station.id,
@@ -42,7 +48,11 @@ def station_to_dict_from_dw(
     print(f"Prep Station {station.id}...", end=" ")
     for label in sensor_labels:
         print(f"{label} sensor...", end=" ")
-        df_sensor = build_station(station=station, sensor_label=label)
+        df_sensor = build_station(station=station,
+                                  sensor_label=label,
+                                  highpass_type=highpass_type,
+                                  frequency_filter_low=frequency_filter_low,
+                                  filter_order=filter_order)
         if len(df_sensor.values()) > 0:
             sensors.update(df_sensor)
     print(f"Done.")
