@@ -19,11 +19,11 @@ Please feel free to submit issues on the GitHub [issue tracker](https://github.c
 
 #### Version History
 
-See [CHANGELOG.md](../CHANGELOG.md).
+See [CHANGELOG.md](https://github.com/RedVoxInc/redpandas/blob/master/docs/CHANGELOG.md).
 
 #### License
 
 [The Apache License](https://github.com/RedVoxInc/redpandas/blob/master/LICENSE)
 
 
-Return to main _[Table of Contents](https://github.com/RedVoxInc/redpandas)_.
+Return to _[main page](https://github.com/RedVoxInc/redpandas)_.

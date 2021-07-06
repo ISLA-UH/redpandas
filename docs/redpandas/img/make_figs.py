@@ -5,11 +5,12 @@ import redpandas.redpd_plot as rpd_plot
 import matplotlib.pyplot as plt
 
 # redpd_dw_to_parquet(input_dir='/Users/meritxell/Documents/api_m_pipeline_tests/20210617_Sweep_test_students',
-#                     sensor_labels=["audio", "barometer", "accelerometer", "gyroscope", "magnetometer"])
+#                     sensor_labels=["audio", "barometer", "accelerometer", "gyroscope", "magnetometer"],
+#                     start_epoch_s=1623962734, end_epoch_s=1623962730 + 15)
 
 
-INPUT_DIR = '/Users/meritxell/Documents/api_m_pipeline_tests/20210617_Sweep_test_students'
-df = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
+# INPUT_DIR = '/Users/meritxell/Documents/api_m_pipeline_tests/20210617_Sweep_test_students'
+df = pd.read_parquet('/Users/meritxell/Documents/api_m_pipeline_tests/20210617_Sweep_test_students' + "/rpd_files/Redvox_df.parquet")
 
 
 # sensor_column_label_list = ["audio_wf"]
@@ -75,6 +76,7 @@ rpd_plot.plot_mesh_pandas(df=df,
                           mesh_frequency_label="tfr_frequency_hz",
                           mesh_tfr_label="tfr_bits",
                           t0_sig_epoch_s=df["audio_epoch_s"][0][0],
-                          sig_id_label=["Station 1", "Station 2", "Station 3"],
+                          frequency_hz_ymin=20,
+                          sig_id_label=["Station 1", "Station 2"],
                           fig_title="STFT for Station 1 and Station 2")
 plt.show()

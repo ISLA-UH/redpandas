@@ -276,12 +276,15 @@ Once the TFR has been calculated, ``tfr_bits`` can be plotted with the function 
 _Plotting TFR for audio signal from a [previous example](#plotting-signal-waveforms-for-all-stations-stored-in-the-dataframe):_
 ```python
 import redpandas.redpd_plot as rpd_plot
+import matplotlib.pyplot as plt
 
+df = df.drop(index=2)  # eliminate Station 3 because it does not have a complete record as we saw in the previous example
 rpd_plot.plot_mesh_pandas(df=df,
                           mesh_time_label="tfr_time_s",
                           mesh_frequency_label="tfr_frequency_hz",
                           mesh_tfr_label="tfr_bits",
                           t0_sig_epoch_s=df["audio_epoch_s"][0][0],
+                          frequency_hz_ymin=20,
                           sig_id_label=["Station 1", "Station 2"],
                           fig_title="STFT for Station 1 and Station 2")
 plt.show()
