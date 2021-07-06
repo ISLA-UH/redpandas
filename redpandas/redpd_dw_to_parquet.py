@@ -104,8 +104,6 @@ def redpd_dw_to_parquet(input_dir: str,
     """
     print("Initiating conversion from RedVox DataWindow to RedPandas:")
 
-    # settings.set_parallelism_enabled(True)
-
     if sensor_labels is None:
         sensor_labels = ["audio"]
 
