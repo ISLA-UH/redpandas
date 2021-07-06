@@ -1,7 +1,7 @@
 """
 Pipeline from RedVox DataWindow to pandas DataFrame parquet
 
-Last updated: 29 June 2021
+Last updated: 6 July 2021
 """
 
 # Python libraries
