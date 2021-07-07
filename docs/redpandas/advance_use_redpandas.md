@@ -28,7 +28,7 @@ has been constructed and saved as a [parquet](using_redpandas.md#opening-redvox-
 
 You can listen to your RedVox dataset using the function ``ensonify_sensors_pandas`` to resample your data.
 
-_Example:_
+_Ensonifying RedVox data example:_
 ```python
 import pandas as pd
 import redpandas.redpd_ensonify as rpd_sound
@@ -51,7 +51,8 @@ rpd_sound.ensonify_sensors_pandas(df=df,
 
 #The number of elements in sensor_column_label_list and sig_sample_rate_label_list should be the same.
 ```
-The .wav files will be located in a folder named ``wav`` in the directory provided in ``output_wav_directory``. You can listen to the .wav files in the free and open-sourced app [Audacity](https://www.audacityteam.org/).
+The .wav files will be located in a folder named ``wav`` in the directory provided in teh variable ``output_wav_directory``. The free 
+and open-sourced app [Audacity](https://www.audacityteam.org/) can be used to listed to the .wav files.
 
 
 Note that for 3 component sensors, e.g., accelerometer, the optional ``sensor_name_list`` parameter should take into account 
@@ -96,6 +97,7 @@ The resulting plot is shown below:
 
 The function ``plot_wiggles_pandas`` provides a quick visual check as shown in the example above, where ``Station 3`` has 
 an incomplete audio record and therefore the signal might not be useful for further analysis. 
+
 Furthermore, ``plot_wiggles_pandas`` can also plot multiple signals for all stations. 
 For example, the input in the following parameters in ``plot_wiggle_pandas`` 
 would change to plot the accelerometer and the audio waveforms for all stations: ``sig_wf_label=["audio_wf", "accelerometer_wf_raw"]``, ``sig_sample_rate_label = ["audio_sample_rate_nominal_hz",
@@ -138,7 +140,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 ### Filter signals
 
-The RedPandas library has multiple tools for cleaning and filtering signals in the dataframe.
+The RedPandas library has multiple tools for cleaning and filtering signals stored in the dataframe.
 
 #### Eliminate DC offset
 

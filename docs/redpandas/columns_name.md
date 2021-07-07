@@ -25,10 +25,10 @@ This section covers the column labels in the RedPandas DataFrame.
 
 ### Columns always included in RedPandas:
 #### Columns related to station specs
-- ``station_id``: name or ID number of station
-- ``station_start_date_epoch_micros``: microseconds since epoch UTC when the station started recording
-- ``station_make``: make of the station, e.g., the make would be Samsung for a Samsung S10
-- ``station_model``: model of the station, e.g., the model would be SM-G973U1 for a Samsung S10
+- ``station_id``: name or ID number of [station](using_redpandas.md#basic-definitions)
+- ``station_start_date_epoch_micros``: microseconds since [epoch UTC](using_redpandas.md#basic-definitions) when the station started recording
+- ``station_make``: make of the [station](using_redpandas.md#basic-definitions), e.g., the make would be Samsung for a Samsung S10
+- ``station_model``: model of the [station](using_redpandas.md#basic-definitions), e.g., the model would be SM-G973U1 for a Samsung S10
 - ``station_app_version``: version of the [RedVox Infrasound Recorder app](https://www.redvoxsound.com/) at time of data collection
 - ``redvox_sdk_version``: version of the 
 [RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk) used to create the DataFrame
@@ -39,10 +39,10 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to audio sensor
 
-- ``audio_sensor_name``: name of audio sensor
+- ``audio_sensor_name``: name of audio [sensor](using_redpandas.md#basic-definitions)
 - ``audio_sample_rate_nominal_hz``: nominal sample rate in Hz
 - ``audio_sample_rate_corrected_hz``: corrected sample rate in Hz
-- ``audio_epoch_s``: audio data timestamps in epoch UTC seconds
+- ``audio_epoch_s``: audio data timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)
 - ``audio_wf_raw``: raw audio data
 - ``audio_wf``: demeaned audio data
 - ``audio_nans``: if there are any, index position of nans in the audio data
@@ -58,9 +58,9 @@ might be included in the DataFrame.
 
 #### Columns related to barometer, accelerometer, gyroscope, and magnetometer sensors
 
-- ``{sensor_label}_sensor_name``: name of barometer / accelerometer / gyroscope / magnetometer sensor
+- ``{sensor_label}_sensor_name``: name of barometer / accelerometer / gyroscope / magnetometer [sensor]((using_redpandas.md#basic-definitions))
 - ``{sensor_label}_sample_rate_hz``: sensor sample rate in Hz
-- ``{sensor_label}_epoch_s``: sensor data timestamps in epoch UTC seconds
+- ``{sensor_label}_epoch_s``: sensor data timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)
 - ``{sensor_label}_wf_raw``: raw sensor data
 - ``{sensor_label}_wf_highpass``: highpassed sensor data
 - ``{sensor_label}_nans``: if there are any, index position of nans in the sensor data
@@ -69,10 +69,10 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to location sensor
 
-- ``location_sensor_name``: name of location sensor
+- ``location_sensor_name``: name of [location sensor](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/low_level_api.md#working-with-the-location-sensor)
 - ``location_sample_rate_hz``: location sensor sample rate in Hz
-- ``location_epoch_s``: location sensor data timestamps in epoch UTC seconds
-- ``location_gps_epoch_s``: location sensor gps timestamps in epoch UTC seconds  
+- ``location_epoch_s``: location sensor data timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)
+- ``location_gps_epoch_s``: location sensor gps timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)  
 - ``location_latitude``: location sensor latitude data in degrees
 - ``location_longitude``: location sensor longitude data in degrees
 - ``location_altitude``: location sensor altitude data in meters
@@ -88,15 +88,19 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to best location sensor
 
-- ``best_location_sensor_name``: name of location sensor
-- ``best_location_sample_rate_hz``: location sensor sample rate in Hz
-- ``best_location_epoch_s``: location sensor data timestamps in epoch UTC seconds
-- ``best_location_gps_epoch_s``: location sensor gps timestamps in epoch UTC seconds  
-- ``best_location_latitude``: location sensor latitude data in degrees
-- ``best_location_longitude``: location sensor longitude data in degrees
-- ``best_location_altitude``: location sensor altitude data in meters
-- ``best_location_bearing``: location sensor bearing data in degrees
-- ``best_location_speed``: location sensor speed data in meters per second
+The best location sensor differs from the [location sensor](#columns-related-to-location-sensor) in that the previous "best" locations (or those with the highest 
+accuracy) captured at previous point in time are stored instead of continuous location information. For more information,
+visit [Working with the BestLocation type](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/low_level_api.md#working-with-the-bestlocation-types)
+
+- ``best_location_sensor_name``: name of [best location sensor](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/low_level_api.md#working-with-the-bestlocation-types).
+- ``best_location_sample_rate_hz``: best location sensor sample rate in Hz
+- ``best_location_epoch_s``: best location sensor data timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)
+- ``best_location_gps_epoch_s``: best location sensor gps timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)  
+- ``best_location_latitude``: best location sensor latitude data in degrees
+- ``best_location_longitude``: best location sensor longitude data in degrees
+- ``best_location_altitude``: best location sensor altitude data in meters
+- ``best_location_bearing``: best location sensor bearing data in degrees
+- ``best_location_speed``: best location sensor speed data in meters per second
 - ``best_location_horizontal_accuracy``: in meters
 - ``best_location_vertical_accuracy``: in meters
 - ``best_location_bearing_accuracy``: in degrees
@@ -107,9 +111,9 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to health sensor
 
-- ``health_sensor_name``: name of health sensor
+- ``health_sensor_name``: name of health [sensor](using_redpandas.md#basic-definitions)
 - ``health_sample_rate_hz``: health sensor sample rate in Hz
-- ``health_epoch_s``: health sensor data timestamps in epoch UTC seconds
+- ``health_epoch_s``: health sensor data timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)
 - ``battery_charge_remaining_per``: percentage of remaining battery charge
 - ``battery_current_strength_mA``: battery current strenght in mA
 - ``internal_temp_deg_C``: internal temperature in degrees Celsius
@@ -124,17 +128,20 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to image sensor
 
-- ``image_sensor_name``: name of image sensor
+- ``image_sensor_name``: name of image [sensor](using_redpandas.md#basic-definitions)
 - ``image_sample_rate_hz``: image sensor sample rate in Hz
-- ``image_epoch_s``: image sensor data timestamps in epoch UTC seconds
+- ``image_epoch_s``: image sensor data timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)
 - ``image_bytes``: image data in bytes
 - ``image_codec``: image codec
+
+For more information on how to view images collected with [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone 
+app, visit [gallery Command Details](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#gallery-command-details)
 
 Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to time synchronization
 
-- ``synchronization_epoch_s``: timesync timestamps in epoch UTC seconds
+- ``synchronization_epoch_s``: timesync timestamps in [epoch UTC seconds](using_redpandas.md#basic-definitions)
 - ``synchronization_latency_ms``: latency of the data in milliseconds
 - ``synchronization_offset_ms``: time offset of the data in milliseconds
 - ``synchronization_best_offset_ms``: mean offset of the data in milliseconds
@@ -148,7 +155,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### Columns related to clock offset and model
 
-- ``clock_start_time_epoch_s``: start timestamp of model in microseconds since epoch UTC
+- ``clock_start_time_epoch_s``: start timestamp of model in microseconds since [epoch UTC](using_redpandas.md#basic-definitions)
 - ``clock_best_latency_ms``: mean latency of the data in milliseconds 
 - ``clock_best_latency_std_ms``: standard deviation of best latency of the data in milliseconds
 - ``clock_offset_s``: the offset at start time
@@ -165,7 +172,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 ### Columns related to parquet saving/opening
 
 Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
-nested arrays in the RedPandas DataFrame. The columns ``{sensor}_wf_raw`` and ``{sensor}_wf_highpass`` will be flattened arrays
+nested arrays in the [RedPandas DataFrame](using_redpandas.md#basic-definitions). The columns ``{sensor}_wf_raw`` and ``{sensor}_wf_highpass`` will be flattened arrays
 (i.e., 1d arrays) that require the function ``df_column_unflatten`` to unflatten after loading the parquet. The columns ``{sensor}_wf_raw_ndim"``
 and ``{sensor}_wf_raw_ndim"`` contain the original column shape.
 

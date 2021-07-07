@@ -16,7 +16,7 @@ This section covers the basics on how to install and upgrade the RedVox Pandas (
 ### Installing and/or upgrading RedVox RedPandas with pip
 
 The RedPandas library can be installed using [pip](https://pip.pypa.io/en/stable/). The pip distribution and current RedPandas 
-version can be found in PyPI at https://pypi.org/project/redvox-pandas/.
+version can be found at [PyPI RedPandas](https://pypi.org/project/redvox-pandas/).
 
 The following command can be used to install and/or upgrade RedPandas:
 ```shell script
@@ -27,7 +27,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### Verifying the installation
 
-You can run the following command in your terminal to check if the RedPandas library has been installed correctly:
+To check if the RedPandas library has been installed correctly:
 ```shell script
 pip show redvox-pandas
 ```

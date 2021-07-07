@@ -25,7 +25,7 @@ The following terms are common terminology used throughout the RedPandas Documen
 
 _RedVox related terms:_
 
-- _RedVox_: Not the NYC based rock band. RedVox refers to products related to [RedVox, Inc.](http://nelha.hawaii.gov/our-clients/redvox/)
+- _RedVox_: Not the NYC based rock band. RedVox refers to products developed by [RedVox, Inc.](http://nelha.hawaii.gov/our-clients/redvox/)
 
 - _RedVox Infrasound Recorder_: A smartphone app that can record audio and other stimuli such as pressure. 
 Visit [RedVox Sound](https://www.redvoxsound.com) to learn more about the app.
@@ -53,15 +53,16 @@ be found in [RedVox SDK Sensor Documentation](https://github.com/RedVoxInc/redvo
 A station should always have audio sensor (and hence audio data).
 
 - _Epoch_ or _epoch time_: unix time (also referred to as the epoch time), the number of seconds since 1 January 1970. 
-The RedPandas' native unit of time is UTC epoch time in seconds.
+The RedPandas' native unit of time is UTC epoch time in seconds. For example the epoch time for Thursday, July 1, 2021 at 9:00:00 am
+UTC would be 1625130000.
 
 
 Return to _[Table of Contents](#table-of-contents)_.
 
 ### Downloading RedVox data
 
-You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app and download it. There are 
-four methods to download the RedVox collected data and/or RedPandas example datasets:
+The data collected with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app can be downloaded 
+with one of these four methods:
 
 1) Moving the RedVox files from your smartphone RedVox folder to your computer.
 2) Using the [RedVox Cloud Platform](https://beta.redvox.io/#/home).
@@ -79,7 +80,8 @@ Return to _[Table of Contents](#table-of-contents)_.
 ### Opening RedVox data with RedPandas
 
 The following subsections explain how to convert RedVox data to a 
-[Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) for easy data manipulation. 
+[Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html) and save as a parquet 
+for easy [data manipulation](advance_use_redpandas.md). 
 If you want to manipulate RedVox data files directly in your Python environment, visit the [RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk).
 
 
@@ -88,7 +90,7 @@ If you want to manipulate RedVox data files directly in your Python environment,
 The easiest method to covert RedVox data to a RedPandas dataframe is by using the function ``redpd_dw_to_parquet``. 
 This approach is ideal for python newcomers, new RedVox users, and for a superficial first glance at new RedVox data.
 
-_Example:_
+_Opening RedVox files (.rdvxz, .rdvxm) example:_
 
 ```python
 from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
@@ -104,8 +106,9 @@ redpd_dw_to_parquet(input_dir=INPUT_DIR)
 ```
 Note that ``redpd_dw_to_parquet`` will create a folder named ``rpd_files`` in the path/to/file given in the 
 ``INPUT_DIR`` variable. A folder named ``dw``,  (short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
-containing a compressed pickle (.pkl.lz4), a RedPandas parquet, and a JSON file will be created inside the ``rpd_files``
- folder. For more options, such as setting a specific output directory, visit the [More options](#more-options) section.
+containing a compressed pickle (.pkl.lz4), a RedPandas parquet (named ``Redvox_df.parquet``), and a JSON file (.json) will 
+be created inside the ``rpd_files`` folder. For more options, such as setting a specific output directory, 
+visit the [More options](#more-options) section.
 
 Continuing with the example case above, the following snippet of code can be applied to open the parquet and start manipulating 
 the data: 
@@ -116,7 +119,8 @@ df_data = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
 print(df_data.columns)
 ```
 
-For more information on columns found in RedPandas, column names and their contents, visit [RedVox RedPandas DataFrame Columns](columns_name.md). 
+For more information on columns found in the [RedPandas DataFrame](#basic-definitions) saved in the parquet, column names 
+and their contents, visit [RedVox RedPandas DataFrame Columns](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns). 
 For more information on manipulation of pandas DataFrames, visit [pandas.DataFrame documentation](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
 
 Return to _[Table of Contents](#table-of-contents)_.
@@ -124,9 +128,10 @@ Return to _[Table of Contents](#table-of-contents)_.
 #### For RedVox data in a pickle format (.pkl)
 
 A similar approach can be applied if the RedVox data is in a compressed pickle format (.pkl.lz4). The only 
-modification to the previously described method is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
+modification to the [previously described method](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md#for-raw-redvox-data-rdvxz-rdvxm) 
+is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
 
-_Example:_
+_Opening a compressed pickle (.pkl.lz4) containing RedVox data example:_
 
 ```python
 from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
@@ -153,13 +158,13 @@ Return to _[Table of Contents](#table-of-contents)_.
 The function ``redpd_dw_to_parquet`` has a few optional variables to provide more flexibility when creating 
 the RedPandas parquet.
 
-_Example:_
+_Opening Redvox files (.rdvxz, .rdvxm) with more options example:_
 
 ```python
 from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
 
-redpd_dw_to_parquet(input_dir="path/to/redvox/data",  # input directory where the data is located
-                    event_name="A cool example",  # name of dataset
+redpd_dw_to_parquet(input_dir="path/to/redvox/data",  # input directory where the data is located. Only variable REQUIRED
+                    event_name="A cool example",  # name of dataset, default is Redvox
                     create_dw=True,  # create DataWindow, false if pickle
                     print_dq=True,  # print data quality statements if True
                     show_raw_waveform_plots=True,  # plot audio and barometer (if available) waveforms if True
@@ -172,12 +177,16 @@ redpd_dw_to_parquet(input_dir="path/to/redvox/data",  # input directory where th
                     end_epoch_s=1624678740,  # end time in epoch s, if None, last available time
                     start_buffer_minutes=3,  # amount of minutes to include before the start datetime when filtering data
                     end_buffer_minutes=3,  # amount of minutes to include after the end datetime when filtering data
-                    debug=False)  # show debug if True
+                    debug=False,  # show debug if True
+                    highpass_type='obspy',  # type of highpass applied: 'obspy', 'butter', 'rc', default 'obspy'
+                    frequency_filter_low=0.01,  # apply highpass filter
+                    filter_order=4  #the order of the filter integer. Default is 4
+                    )  
 ```
 
 For the ``sensor_label`` variable, the available [sensors](#basic-definitions) in a station can vary depending on the smartphone and available options
 in the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. The current available sensors RedPandas works with 
-are ``['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer', 'health', 'location', 'image']`` but note that 
+are: ``['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer', 'health', 'location', 'image']`` but note that 
 some sensors might not be present in your data. For a complete list of available sensors in the RedVox Python SDK, visit 
 [RedVox Sensor Data](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access). 
 
@@ -188,7 +197,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
 nested arrays in the RedPandas DataFrame. The function ``df_column_unflatten`` recovers the original nested arrays of the sensors.
 
-_Example:_
+_Unflattening barometer raw data column example:_
 ```python
 import pandas as pd
 from redpandas.redpd_preprocess import df_column_unflatten
@@ -198,20 +207,21 @@ df_sensors = pd.read_parquet("path/to/output/directory/parquet_file_name.parquet
 
 # Unflatten barometer raw data column
 df_column_unflatten(df=df_sensors,
-                    ol_wf_label="barometer_wf_raw",
+                    col_wf_label="barometer_wf_raw",
                     col_ndim_label="barometer_wf_raw_ndim")
 
 ```
+For more information on the columns expected in ``col_ndim_label``, visit [RedPandas DataFrame Columns](columns_name.md#columns-related-to-parquet-savingopening).
+
 Return to _[Table of Contents](#table-of-contents)_.
 
 
 ### Data manipulation with RedPandas
 
 Visit the [Advanced data manipulation Documentation](advance_use_redpandas.md) to learn more about data manipulation with 
-RedPandas such as ensonifying RedVox data, plotting and more.
+RedPandas such as ensonifying RedVox data, plotting waveforms, and more.
 
 Return to _[Table of Contents](#table-of-contents)_.
-
 
 
 ### Frequently asked questions (FAQ)
@@ -221,7 +231,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
     One common problem is that you need to unflatten the columns with the barometer, accelerometer, gyroscope, and/or 
     magnetometer sensors. Check the section [Opening RedPandas parquet files](#opening-redpandas-parquet-files).
-    An easy way to diagnose if you need to unflatyen the column is by checking that ``df["accelerometer_wf_raw"][0]`` 
+    An easy way to diagnose if you need to unflatten the column is by checking that ``df["accelerometer_wf_raw"][0]`` (for example) 
     prints a 1d numpy array. If that is the case then you need to unflatten those data columns.
 
 - A function is broken, what do I do?
@@ -230,3 +240,5 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 
 Return to _[Table of Contents](#table-of-contents)_.
+
+Return to _[main page](https://github.com/RedVoxInc/redpandas)_.
