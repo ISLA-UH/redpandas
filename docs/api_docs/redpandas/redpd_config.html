@@ -22,14 +22,14 @@
 <h1 class="title">Module <code>redpandas.redpd_config</code></h1>
 </header>
 <section id="section-intro">
-<p>Configuration class for RedPandas</p>
+<p>Configuration class for RedPandas.</p>
 <p>Last updated: 17 June 2021</p>
 <details class="source">
 <summary>
 <span>Expand source code</span>
 </summary>
 <pre><code class="python">&#34;&#34;&#34;
-Configuration class for RedPandas
+Configuration class for RedPandas.
 
 Last updated: 17 June 2021
 &#34;&#34;&#34;
@@ -117,12 +117,6 @@ class RedpdConfig:
         self.dw_file: str = self.output_filename_pkl_pqt + &#34;.pkl&#34;
         self.pd_pqt_file: str = self.output_filename_pkl_pqt + &#34;_df.parquet&#34;
 
-        # TODO MC: think about TFR specific: band_order_nth, verbosity,
-        #  bounder specific: rerun_bounder
-        # self.bounder_input_path = os.path.join(self.input_dir, &#34;bounder&#34;)
-        # self.bounder_input_csv_file = &#34;skyfall_bounder.csv&#34;
-        # self.bounder_pd_pqt_file = self.event_name + &#34;_df_bounder.parquet&#34;
-
         self.station_ids = station_ids
 
         if sensor_labels is not None:
@@ -142,9 +136,6 @@ class RedpdConfig:
         self.end_buffer_minutes = end_buffer_minutes
 
         self.tdr_load_method = DataLoadMethod.method_from_str(tdr_load_method)
-
-        # todo: what is this?
-        # self.pipeline_label: List[str] = [&#39;TBD&#39;]
 
     def pretty(self) -&gt; str:
         # noinspection Mypy
@@ -173,20 +164,7 @@ class RedpdConfig:
 #     band_order_Nth=12,
 #     verbosity=1,
 #     is_rerun_bounder=True
-# )
-
-
-# TODO MC: ask Tyler if this is needed
-# @staticmethod
-# def from_path(config_path: str) -&gt; &#34;SkyfallConfig&#34;:
-#     try:
-#         with open(config_path, &#34;r&#34;) as config_in:
-#             config_dict: MutableMapping = toml.load(config_in)
-#             # noinspection Mypy
-#             return SkyfallConfig.from_dict(config_dict)
-#     except Exception as e:
-#         print(f&#34;Error loading configuration at: {config_path}&#34;)
-#         raise e</code></pre>
+# )</code></pre>
 </details>
 </section>
 <section>
@@ -355,12 +333,6 @@ Default is "datawindow"</p></div>
         self.dw_file: str = self.output_filename_pkl_pqt + &#34;.pkl&#34;
         self.pd_pqt_file: str = self.output_filename_pkl_pqt + &#34;_df.parquet&#34;
 
-        # TODO MC: think about TFR specific: band_order_nth, verbosity,
-        #  bounder specific: rerun_bounder
-        # self.bounder_input_path = os.path.join(self.input_dir, &#34;bounder&#34;)
-        # self.bounder_input_csv_file = &#34;skyfall_bounder.csv&#34;
-        # self.bounder_pd_pqt_file = self.event_name + &#34;_df_bounder.parquet&#34;
-
         self.station_ids = station_ids
 
         if sensor_labels is not None:
@@ -380,9 +352,6 @@ Default is "datawindow"</p></div>
         self.end_buffer_minutes = end_buffer_minutes
 
         self.tdr_load_method = DataLoadMethod.method_from_str(tdr_load_method)
-
-        # todo: what is this?
-        # self.pipeline_label: List[str] = [&#39;TBD&#39;]
 
     def pretty(self) -&gt; str:
         # noinspection Mypy
