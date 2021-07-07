@@ -10,9 +10,9 @@ Installation instructions can be found in the [RedPandas Installation Documentat
 
 ### Getting started
 
-Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md) to get started.
+- Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md) to get started.
 
-Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for details on RedPandas functions.
+- Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for more details on RedPandas functions.
 
 ### License and Version History
 
