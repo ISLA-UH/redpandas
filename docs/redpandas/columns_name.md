@@ -78,11 +78,11 @@ Return to _[Table of Contents](#table-of-contents)_.
 - ``location_altitude``: location sensor altitude data in meters
 - ``location_bearing``: location sensor bearing data in degrees
 - ``location_speed``: location sensor speed data in meters per second
-- ``location_horizontal_accuracy``: in meters
-- ``location_vertical_accuracy``: in meters
-- ``location_bearing_accuracy``: in degrees
-- ``location_speed_accuracy``: meters per second
-- ``location_provider``: 
+- ``location_horizontal_accuracy``: location latitude and longitude offset in meters
+- ``location_vertical_accuracy``: location altitude offset in meters
+- ``location_bearing_accuracy``: location bearing offset in degrees
+- ``location_speed_accuracy``: location speed meters offset in meters per second
+- ``location_provider``: location provider
 
 Return to _[Table of Contents](#table-of-contents)_.
 
@@ -101,11 +101,11 @@ visit [Working with the BestLocation type](https://github.com/RedVoxInc/redvox-p
 - ``best_location_altitude``: best location sensor altitude data in meters
 - ``best_location_bearing``: best location sensor bearing data in degrees
 - ``best_location_speed``: best location sensor speed data in meters per second
-- ``best_location_horizontal_accuracy``: in meters
-- ``best_location_vertical_accuracy``: in meters
-- ``best_location_bearing_accuracy``: in degrees
-- ``best_location_speed_accuracy``: meters per second
-- ``best_location_provider``: 
+- ``best_location_horizontal_accuracy``: best location latitude and longitude offset in meters
+- ``best_location_vertical_accuracy``: best location altitude offset in meters
+- ``best_location_bearing_accuracy``: best location bearing offset in degrees
+- ``best_location_speed_accuracy``: best location speed meters offset in meters per second
+- ``best_location_provider``: best location provider
 
 Return to _[Table of Contents](#table-of-contents)_.
 
