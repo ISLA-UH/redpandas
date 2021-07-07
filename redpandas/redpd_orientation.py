@@ -1,5 +1,5 @@
 """
-This module contains functions to integrate, and apply complimentary filters for phone orientation
+This module contains functions to integrate, and apply complimentary filters for phone orientation.
 
 Last updated: 24 June 2021
 """

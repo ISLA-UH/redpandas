@@ -1,7 +1,7 @@
 """
 These methods make assumptions about the RedVox sensor sample rates, which seldom exceed 500 Hz.
 I also assume the highest audio sample rate we'll use is 8 kHz.
-M. Garces, last updated 20210702
+M. Garces, last updated 20210702.
 """
 
 import os

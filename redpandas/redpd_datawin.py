@@ -1,5 +1,5 @@
 """
-DataWindow related modules
+DataWindow related modules.
 
 Last updated: 24 June 2021
 """

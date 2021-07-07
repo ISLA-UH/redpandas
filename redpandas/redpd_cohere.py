@@ -1,15 +1,13 @@
 """
-This module contains function to calculate coherence
+This module contains function to calculate coherence.
 
 Last updated: 6 July 2021
 """
 
 import numpy as np
-
 import pandas as pd
 from scipy import signal
 from libquantum import utils
-
 import redpandas.redpd_plot as rpd_plt
 
 
@@ -78,7 +76,6 @@ def coherence_numpy(sig_in: np.ndarray,
     # Coherence
     # Original code had no overlap - fixed
     # Same as coherence from PSD
-    # Cxy_psd = np.abs(Pxy)**2/(pxx_ref*pxx_sig)
     # TODO MAG: Compute coherence from spectral products with other representations
     f, Cxy = signal.coherence(x=sig,
                               y=sig_ref,
@@ -209,10 +206,9 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
         m_points = len(sig_m)
 
         for n in df.index:
-            # if n == m:
+
             #     # Skip itself
             #     continue
-
             sample_rate_condition = np.abs(df[sig_sample_rate_label][m] - df[sig_sample_rate_label][n]) \
                                     > fs_fractional_tolerance*df[sig_sample_rate_label][m]
             if sample_rate_condition:
@@ -251,7 +247,6 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             cross_spectrum_bits = 0.5 * utils.log2epsilon(abs(cross_spectrum))
 
             # Coherence, same as coherence from PSD
-            # Cxy_psd = np.abs(cross_spectrum)**2/(pxx_ref*auto_spectrum_sig)
             frequency_coherence, coherence_welch = signal.coherence(x=sig_n,
                                                                     y=sig_m,
                                                                     fs=df[sig_sample_rate_label][m],

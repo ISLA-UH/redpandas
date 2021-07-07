@@ -1,5 +1,5 @@
 """
-This module contains functions for calculating correlation
+This module contains functions for calculating correlation.
 
 Last updated: 6 July 2021
 """

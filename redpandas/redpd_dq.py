@@ -1,5 +1,5 @@
 """
-DQ/DA/UQ statistics/metrics
+DQ/DA/UQ statistics/metrics.
 
 Last updated: 10 June 2021
 """

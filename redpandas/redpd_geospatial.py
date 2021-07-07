@@ -1,5 +1,5 @@
 """
-This module contains functions to extract and process geospatial data
+This module contains functions to extract and process geospatial data.
 
 Last updated: 24 June 2021
 """
@@ -90,7 +90,6 @@ def bounder_model_height_from_pressure(pressure_kPa: np.ndarray) -> np.ndarray:
     pressure_ref_kPa = PRESSURE_SEA_LEVEL_KPA
     scaled_pressure = -np.log(pressure_kPa/pressure_ref_kPa)
     # Empirical model constructed from
-    # c, stats = np.polynomial.polynomial.polyfit(poly_x, bounder_loc['Alt_m'], 8, full=True)
     c = [1.52981286e+02, 7.39552295e+03, 2.44663285e+03, -3.57402081e+03, 2.02653051e+03,
          -6.26581722e+02, 1.11758211e+02, -1.08674469e+01, 4.46784010e-01]
     elevation_m = np.polynomial.polynomial.polyval(scaled_pressure, c, tensor=False)

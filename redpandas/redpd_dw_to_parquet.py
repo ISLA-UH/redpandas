@@ -1,5 +1,5 @@
 """
-Pipeline from RedVox DataWindow to pandas DataFrame parquet
+Pipeline from RedVox DataWindow to pandas DataFrame parquet.
 
 Last updated: 6 July 2021
 """

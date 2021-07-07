@@ -1,9 +1,9 @@
 """
-This module contains functions to apply exponential filter on accelerometer to separate gravity and linear acceleration
+This module contains functions to apply exponential filter on accelerometer to separate gravity and linear acceleration.
 Based on the "past-gen" Android code without incorporation of the gyroscope
 http://josejuansanchez.org/android-sensors-overview/gravity_and_linear_acceleration/README.html
 
-Last updated: 22 June 2021
+Last updated: 6 July 2021
 """
 
 import numpy as np
@@ -14,21 +14,23 @@ from typing import Tuple
 # See redpd_iterator
 def get_smoothing_factor(sensor_sample_rate_hz: float, low_pass_sample_rate_hz: float = 1) -> float:
     """
+    Obtain smoothing factor
 
-    :param sensor_sample_rate_hz:
-    :param low_pass_sample_rate_hz:
+    :param sensor_sample_rate_hz: sample rate of sensor in Hz
+    :param low_pass_sample_rate_hz: sample rate of low pass filter in Hz
     :return: alpha
     """
     # assuming sensor_sample_rate_hz << low_pass_sample_rate_hz
     return low_pass_sample_rate_hz / sensor_sample_rate_hz
 
 
-def get_gravity(accelerometer: np.ndarray, smoothing_factor: float):
+def get_gravity(accelerometer: np.ndarray, smoothing_factor: float) -> np.ndarray:
     """
     based on the slack thread: https://tinyurl.com/f6t3h2fp
-    :param accelerometer:
-    :param smoothing_factor:
-    :return:
+
+    :param accelerometer: accelerometer signal waveform
+    :param smoothing_factor: from get_smoothing_factor function
+    :return: numpy array with gravity values
     """
 
     # initialize gravity array
@@ -41,14 +43,16 @@ def get_gravity(accelerometer: np.ndarray, smoothing_factor: float):
     return gravity
 
 
-def get_gravity_and_linear_acceleration(accelerometer: np.ndarray, sensor_sample_rate_hz: float,
+def get_gravity_and_linear_acceleration(accelerometer: np.ndarray,
+                                        sensor_sample_rate_hz: float,
                                         low_pass_sample_rate_hz: float = 1) -> Tuple[np.ndarray, np.ndarray]:
     """
+    Obtain gravity and linear acceleration from smartphone accelerometer sensor
 
-    :param accelerometer:
-    :param sensor_sample_rate_hz:
-    :param low_pass_sample_rate_hz:
-    :return:
+    :param accelerometer: accelerometer signal waveform
+    :param sensor_sample_rate_hz: sample rate of accelerometer in Hz
+    :param low_pass_sample_rate_hz: sample rate of low pass filter in Hz
+    :return: numpy array with gravity and numpy array with linear acceleration
     """
     # get smoothing factor (alpha)
     alpha = get_smoothing_factor(sensor_sample_rate_hz=sensor_sample_rate_hz,
@@ -67,15 +71,17 @@ def get_gravity_and_linear_acceleration(accelerometer: np.ndarray, sensor_sample
 Generalized to any DC offset, for comparison
 """
 
+
 def get_sensor_lowpass(sensor_wf: np.ndarray,
                        sensor_sample_rate_hz: float,
-                       lowpass_frequency_hz: float = 1):
+                       lowpass_frequency_hz: float = 1) -> np.ndarray:
     """
     based on the slack thread: https://tinyurl.com/f6t3h2fp
-    :param sensor_wf:
-    :param sensor_sample_rate_hz:
-    :param low_pass_frequency_hz:
-    :return:
+
+    :param sensor_wf: signal waveform
+    :param sensor_sample_rate_hz: sample rate of sensor in Hz
+    :param lowpass_frequency_hz: sample rate of low pass filter in Hz
+    :return: sensor low pass
     """
 
     smoothing_factor = lowpass_frequency_hz / sensor_sample_rate_hz
@@ -89,14 +95,15 @@ def get_sensor_lowpass(sensor_wf: np.ndarray,
     return sensor_lowpass
 
 
-def get_lowpass_and_highpass(sensor_wf: np.ndarray, sensor_sample_rate_hz: float,
+def get_lowpass_and_highpass(sensor_wf: np.ndarray,
+                             sensor_sample_rate_hz: float,
                              lowpass_frequency_hz: float = 1) -> Tuple[np.ndarray, np.ndarray]:
     """
 
-    :param sensor_wf:
-    :param sensor_sample_rate_hz:
-    :param low_pass_sample_rate_hz:
-    :return:
+    :param sensor_wf: signal waveform
+    :param sensor_sample_rate_hz: sample rate of sensor in Hz
+    :param lowpass_frequency_hz: sample rate of low pass filter in Hz
+    :return: sensor low pass and high pass
     """
 
     # extract low-frequency component via exponential filtering

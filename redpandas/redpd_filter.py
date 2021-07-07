@@ -1,5 +1,5 @@
 """
-Utils for managing pandas dataframes
+Utils for filtering pandas dataframes.
 
 Last updated: 6 July 2021
 """

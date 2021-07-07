@@ -1,5 +1,5 @@
 """
-Configuration class for RedPandas
+Configuration class for RedPandas.
 
 Last updated: 17 June 2021
 """
@@ -87,12 +87,6 @@ class RedpdConfig:
         self.dw_file: str = self.output_filename_pkl_pqt + ".pkl"
         self.pd_pqt_file: str = self.output_filename_pkl_pqt + "_df.parquet"
 
-        # TODO MC: think about TFR specific: band_order_nth, verbosity,
-        #  bounder specific: rerun_bounder
-        # self.bounder_input_path = os.path.join(self.input_dir, "bounder")
-        # self.bounder_input_csv_file = "skyfall_bounder.csv"
-        # self.bounder_pd_pqt_file = self.event_name + "_df_bounder.parquet"
-
         self.station_ids = station_ids
 
         if sensor_labels is not None:
@@ -112,9 +106,6 @@ class RedpdConfig:
         self.end_buffer_minutes = end_buffer_minutes
 
         self.tdr_load_method = DataLoadMethod.method_from_str(tdr_load_method)
-
-        # todo: what is this?
-        # self.pipeline_label: List[str] = ['TBD']
 
     def pretty(self) -> str:
         # noinspection Mypy
@@ -144,16 +135,3 @@ class RedpdConfig:
 #     verbosity=1,
 #     is_rerun_bounder=True
 # )
-
-
-# TODO MC: ask Tyler if this is needed
-# @staticmethod
-# def from_path(config_path: str) -> "SkyfallConfig":
-#     try:
-#         with open(config_path, "r") as config_in:
-#             config_dict: MutableMapping = toml.load(config_in)
-#             # noinspection Mypy
-#             return SkyfallConfig.from_dict(config_dict)
-#     except Exception as e:
-#         print(f"Error loading configuration at: {config_path}")
-#         raise e
