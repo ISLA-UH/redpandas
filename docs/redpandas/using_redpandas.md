@@ -87,7 +87,8 @@ If you want to manipulate RedVox data files directly in your Python environment,
 
 #### For raw RedVox data (.rdvxz, .rdvxm)
 
-The easiest method to covert RedVox data to a RedPandas dataframe is by using the function ``redpd_dw_to_parquet``. 
+The easiest method to covert RedVox data to a RedPandas dataframe is by using the function
+[redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet). 
 This approach is ideal for python newcomers, new RedVox users, and for a superficial first glance at new RedVox data.
 
 _Opening RedVox files (.rdvxz, .rdvxm) example:_
@@ -104,7 +105,8 @@ INPUT_DIR = "path/to/redvox/data"
 # Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
 redpd_dw_to_parquet(input_dir=INPUT_DIR)
 ```
-Note that ``redpd_dw_to_parquet`` will create a folder named ``rpd_files`` in the path/to/file given in the 
+Note that [redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet) 
+will create a folder named ``rpd_files`` in the path/to/file given in the 
 ``INPUT_DIR`` variable. A folder named ``dw``,  (short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
 containing a compressed pickle (.pkl.lz4), a RedPandas parquet (named ``Redvox_df.parquet``), and a JSON file (.json) will 
 be created inside the ``rpd_files`` folder. For more options, such as setting a specific output directory, 
@@ -129,7 +131,8 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 A similar approach can be applied if the RedVox data is in a compressed pickle format (.pkl.lz4). The only 
 modification to the [previously described method](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md#for-raw-redvox-data-rdvxz-rdvxm) 
-is to include ``create_dw = False`` in ``redpd_dw_to_parquet``.
+is to include ``create_dw = False`` in 
+[redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet).
 
 _Opening a compressed pickle (.pkl.lz4) containing RedVox data example:_
 
@@ -155,8 +158,8 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### More options
 
-The function ``redpd_dw_to_parquet`` has a few optional variables to provide more flexibility when creating 
-the RedPandas parquet.
+The function [redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet)
+ has a few optional variables to provide more flexibility when creating the RedPandas parquet.
 
 _Opening Redvox files (.rdvxz, .rdvxm) with more options example:_
 
@@ -195,7 +198,8 @@ Return to _[Table of Contents](#table-of-contents)_.
 ### Opening RedPandas parquet files
 
 Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
-nested arrays in the RedPandas DataFrame. The function ``df_column_unflatten`` recovers the original nested arrays of the sensors.
+nested arrays in the RedPandas DataFrame. The function [df_column_unflatten](https://redvoxinc.github.io/redpandas/redpd_preprocess.html#redpandas.redpd_preprocess.df_column_unflatten) 
+recovers the original nested arrays of the sensors.
 
 _Unflattening barometer raw data column example:_
 ```python

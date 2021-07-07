@@ -173,8 +173,9 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
 nested arrays in the [RedPandas DataFrame](using_redpandas.md#basic-definitions). The columns ``{sensor}_wf_raw`` and ``{sensor}_wf_highpass`` will be flattened arrays
-(i.e., 1d arrays) that require the function ``df_column_unflatten`` to unflatten after loading the parquet. The columns ``{sensor}_wf_raw_ndim"``
-and ``{sensor}_wf_raw_ndim"`` contain the original column shape.
+(i.e., 1d arrays) that require the function [df_column_unflatten](https://redvoxinc.github.io/redpandas/redpd_preprocess.html#redpandas.redpd_preprocess.df_column_unflatten) 
+to unflatten after loading the parquet. The columns ``{sensor}_wf_raw_ndim"`` and ``{sensor}_wf_raw_ndim"`` contain the 
+original column shape.
 
 For more information on how to unflatten the barometer, accelerometer, gyroscope and magnetometer raw and highpass columns, 
 visit [Opening RedPandas parquet files](using_redpandas.md#opening-redpandas-parquet-files).
