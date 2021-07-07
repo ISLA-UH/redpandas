@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>redpandas.redpd_geospatial API documentation</title>
+<meta name="description" content="This module contains functions to extract and process geospatial data …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>redpandas.redpd_geospatial</code></h1>
+</header>
+<section id="section-intro">
+<p>This module contains functions to extract and process geospatial data</p>
+<p>Last updated: 24 June 2021</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+This module contains functions to extract and process geospatial data
+
+Last updated: 24 June 2021
+&#34;&#34;&#34;
+
+import os
+import numpy as np
+import pandas as pd
+import pymap3d as pm
+from typing import Any
+
+from redpandas.redpd_scales import EPSILON, NANOS_TO_S, DEGREES_TO_METERS, PRESSURE_SEA_LEVEL_KPA
+
+
+def redvox_loc(df_pqt_path: str) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Extract the location, temperature, and DC pressure payload from the microphones
+
+    :param df_pqt_path: path/to/parquet file with data stored in a pd.DataFrame
+    :return: pd. DataFrame with columns {&#39;station_id&#39;, &#39;location_epoch_s&#39;, &#39;location_latitude&#39;, &#39;location_longitude&#39;,
+    &#39;location_altitude&#39;, &#39;location_speed&#39;, &#39;location_horizontal_accuracy&#39;, &#39;barometer_epoch_s&#39;, &#39;barometer_wf_raw&#39;}
+    &#34;&#34;&#34;
+    # Check
+    if not os.path.exists(df_pqt_path):
+        print(&#34;Input file does not exist, check path:&#34;)
+        print(df_pqt_path)
+        exit()
+
+    df = pd.read_parquet(df_pqt_path)
+    print(&#39;Read parquet with pandas DataFrame&#39;)
+
+    # Extract selected fields
+    loc_fields = [&#39;station_id&#39;,
+                  &#39;location_epoch_s&#39;,
+                  &#39;location_latitude&#39;,
+                  &#39;location_longitude&#39;,
+                  &#39;location_altitude&#39;,
+                  &#39;location_speed&#39;,
+                  &#39;location_horizontal_accuracy&#39;,
+                  &#39;barometer_epoch_s&#39;,
+                  &#39;barometer_wf_raw&#39;]
+    df_loc = df[loc_fields]
+
+    return df_loc
+
+
+def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parquet: str) -&gt; None:
+    &#34;&#34;&#34;
+    Load data from balloon-based Bounder platform
+
+    :param path_bounder_csv: path/to/bounder csv and parquet files
+    :param file_bounder_csv: name bounder csv file
+    :param file_bounder_parquet: name bounder parquet file
+    :return: save as parquet
+    &#34;&#34;&#34;
+
+    # Event-specific start date and curated file
+    # Bounder Skyfall starts at 13:45:00, end at 14:16:00
+    yyyymmdd = &#34;2020-10-27 &#34;
+    rows = np.arange(5320, 7174)
+
+    input_path = os.path.join(path_bounder_csv, file_bounder_csv)
+    print(&#39;Input&#39;, input_path)
+    output_path = os.path.join(path_bounder_csv, file_bounder_parquet)
+
+    df = pd.read_csv(input_path, usecols=[5, 6, 7, 8, 9, 10, 11], skiprows=lambda x: x not in rows,
+                     names=[&#39;Pres_kPa&#39;, &#39;Temp_C&#39;, &#39;Batt_V&#39;, &#39;Lon_deg&#39;, &#39;Lat_deg&#39;, &#39;Alt_m&#39;, &#39;Time_hhmmss&#39;])
+    dtime = pd.to_datetime(yyyymmdd + df[&#39;Time_hhmmss&#39;], origin=&#39;unix&#39;)
+
+    # Convert datetime to unix nanoseconds, then to seconds
+    dtime_unix_s = dtime.astype(&#39;int64&#39;)*NANOS_TO_S
+
+    skyfall_bounder_loc = df.filter([&#39;Lat_deg&#39;, &#39;Lon_deg&#39;, &#39;Alt_m&#39;, &#39;Pres_kPa&#39;, &#39;Temp_C&#39;, &#39;Batt_V&#39;])
+    skyfall_bounder_loc.insert(0, &#39;Epoch_s&#39;, dtime_unix_s)
+    skyfall_bounder_loc.insert(1, &#39;Datetime&#39;, dtime)
+
+    print(skyfall_bounder_loc[&#39;Epoch_s&#39;])
+    # Save to parquet
+    skyfall_bounder_loc.to_parquet(output_path)
+
+
+def bounder_model_height_from_pressure(pressure_kPa: np.ndarray) -&gt; np.ndarray:
+    &#34;&#34;&#34;
+    Returns empirical height in m from input pressure
+
+    :param pressure_kPa: Atmospheric pressure in kPa
+    :return: Height in m above WGS84 Geoid
+    &#34;&#34;&#34;
+    pressure_ref_kPa = PRESSURE_SEA_LEVEL_KPA
+    scaled_pressure = -np.log(pressure_kPa/pressure_ref_kPa)
+    # Empirical model constructed from
+    # c, stats = np.polynomial.polynomial.polyfit(poly_x, bounder_loc[&#39;Alt_m&#39;], 8, full=True)
+    c = [1.52981286e+02, 7.39552295e+03, 2.44663285e+03, -3.57402081e+03, 2.02653051e+03,
+         -6.26581722e+02, 1.11758211e+02, -1.08674469e+01, 4.46784010e-01]
+    elevation_m = np.polynomial.polynomial.polyval(scaled_pressure, c, tensor=False)
+    return elevation_m
+
+
+def compute_t_xyz_uvw(unix_s: Any,
+                      lat_deg: Any,
+                      lon_deg: Any,
+                      alt_m: Any,
+                      ref_unix_s: Any,
+                      ref_lat_deg: Any,
+                      ref_lon_deg: Any,
+                      ref_alt_m: Any,
+                      geodetic_type: str = &#39;enu&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Compute time and location relative to a reference value; compute speed.
+
+    :param unix_s: target timestamp
+    :param lat_deg: target geodetic latitude
+    :param lon_deg: target geodetic longitude
+    :param alt_m: target altitude above ellipsoid (meters)
+    :param ref_unix_s: observer timestamp
+    :param ref_lat_deg: observer geodetic latitude
+    :param ref_lon_deg: observer geodetic longitude
+    :param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
+    :param geodetic_type: &#39;enu&#39; or &#39;ned&#39;
+    :return: pandas DataFrame with columns: {&#39;T_s&#39;, &#39;X_m&#39;, &#39;Y_m&#39;, &#39;Z_m&#39;, &#39;U_mps&#39;, &#39;V_mps&#39;, &#39;W_mps&#39;, &#39;Speed_mps&#39;}
+    &#34;&#34;&#34;
+
+    if geodetic_type == &#39;enu&#39;:
+        x_m, y_m, z_m = pm.geodetic2enu(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    elif geodetic_type == &#39;ned&#39;:
+        y_m, x_m, z_m = pm.geodetic2ned(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    else:
+        x_m = (lon_deg - ref_lon_deg).astype(float) * DEGREES_TO_METERS
+        y_m = (lat_deg - ref_lat_deg).astype(float) * DEGREES_TO_METERS
+        z_m = (alt_m - ref_alt_m).astype(float)
+        t_s = (unix_s - ref_unix_s).astype(float)
+
+    # Speed in mps. Compute diff, add EPSILON to avoid divide by zero on repeat values
+    u_mps = np.gradient(x_m)/(np.gradient(t_s)+EPSILON)
+    v_mps = np.gradient(y_m)/(np.gradient(t_s)+EPSILON)
+    w_mps = np.gradient(z_m)/(np.gradient(t_s)+EPSILON)
+
+    speed_mps = np.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
+
+    t_xyzuvw_s_m = pd.DataFrame(data={&#39;T_s&#39;: t_s,
+                                      &#39;X_m&#39;: x_m,
+                                      &#39;Y_m&#39;: y_m,
+                                      &#39;Z_m&#39;: z_m,
+                                      &#39;U_mps&#39;: u_mps,
+                                      &#39;V_mps&#39;: v_mps,
+                                      &#39;W_mps&#39;: w_mps,
+                                      &#39;Speed_mps&#39;: speed_mps})
+    return t_xyzuvw_s_m
+
+
+def compute_t_r_z_speed(unix_s: Any,
+                        lat_deg: Any,
+                        lon_deg: Any,
+                        alt_m: Any,
+                        ref_unix_s: Any,
+                        ref_lat_deg: Any,
+                        ref_lon_deg: Any,
+                        ref_alt_m: Any,
+                        geodetic_type: str = &#39;enu&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Compute time and location relative to a reference value; compute speed.
+
+    :param unix_s: target timestamp
+    :param lat_deg: target geodetic latitude
+    :param lon_deg: target geodetic longitude
+    :param alt_m: target altitude above ellipsoid (meters)
+    :param ref_unix_s: observer timestamp
+    :param ref_lat_deg: observer geodetic latitude
+    :param ref_lon_deg: observer geodetic longitude
+    :param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
+    :param geodetic_type: &#39;enu&#39; or &#39;ned&#39;
+    :return: pandas DataFrame with columns: {&#39;Elapsed_s&#39;, &#39;Range_m&#39;, &#39;Z_m&#39;, &#39;LatLon_speed_mps&#39;}
+    &#34;&#34;&#34;
+
+    if geodetic_type == &#39;enu&#39;:
+        x_m, y_m, z_m = pm.geodetic2enu(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    elif geodetic_type == &#39;ned&#39;:
+        y_m, x_m, z_m = pm.geodetic2ned(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    else:
+        x_m = (lon_deg - ref_lon_deg).astype(float) * DEGREES_TO_METERS
+        y_m = (lat_deg - ref_lat_deg).astype(float) * DEGREES_TO_METERS
+        z_m = (alt_m - ref_alt_m).astype(float)
+        t_s = (unix_s - ref_unix_s).astype(float)
+
+    # Speed in mps. Compute diff, add EPSILON to avoid divide by zero on repeat values
+    u_mps = np.gradient(x_m)/(np.gradient(t_s)+EPSILON)
+    v_mps = np.gradient(y_m)/(np.gradient(t_s)+EPSILON)
+    w_mps = np.gradient(z_m)/(np.gradient(t_s)+EPSILON)
+
+    range_m = np.sqrt(x_m**2 + y_m**2)
+    speed_mps = np.ma.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
+    time_range_z_speed_s_m = pd.DataFrame(data={&#39;Elapsed_s&#39;: t_s,
+                                                &#39;Range_m&#39;: range_m,
+                                                &#39;Z_m&#39;: z_m,
+                                                &#39;LatLon_speed_mps&#39;: speed_mps})
+    return time_range_z_speed_s_m</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="redpandas.redpd_geospatial.bounder_data"><code class="name flex">
+<span>def <span class="ident">bounder_data</span></span>(<span>path_bounder_csv: str, file_bounder_csv: str, file_bounder_parquet: str) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Load data from balloon-based Bounder platform</p>
+<p>:param path_bounder_csv: path/to/bounder csv and parquet files
+:param file_bounder_csv: name bounder csv file
+:param file_bounder_parquet: name bounder parquet file
+:return: save as parquet</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parquet: str) -&gt; None:
+    &#34;&#34;&#34;
+    Load data from balloon-based Bounder platform
+
+    :param path_bounder_csv: path/to/bounder csv and parquet files
+    :param file_bounder_csv: name bounder csv file
+    :param file_bounder_parquet: name bounder parquet file
+    :return: save as parquet
+    &#34;&#34;&#34;
+
+    # Event-specific start date and curated file
+    # Bounder Skyfall starts at 13:45:00, end at 14:16:00
+    yyyymmdd = &#34;2020-10-27 &#34;
+    rows = np.arange(5320, 7174)
+
+    input_path = os.path.join(path_bounder_csv, file_bounder_csv)
+    print(&#39;Input&#39;, input_path)
+    output_path = os.path.join(path_bounder_csv, file_bounder_parquet)
+
+    df = pd.read_csv(input_path, usecols=[5, 6, 7, 8, 9, 10, 11], skiprows=lambda x: x not in rows,
+                     names=[&#39;Pres_kPa&#39;, &#39;Temp_C&#39;, &#39;Batt_V&#39;, &#39;Lon_deg&#39;, &#39;Lat_deg&#39;, &#39;Alt_m&#39;, &#39;Time_hhmmss&#39;])
+    dtime = pd.to_datetime(yyyymmdd + df[&#39;Time_hhmmss&#39;], origin=&#39;unix&#39;)
+
+    # Convert datetime to unix nanoseconds, then to seconds
+    dtime_unix_s = dtime.astype(&#39;int64&#39;)*NANOS_TO_S
+
+    skyfall_bounder_loc = df.filter([&#39;Lat_deg&#39;, &#39;Lon_deg&#39;, &#39;Alt_m&#39;, &#39;Pres_kPa&#39;, &#39;Temp_C&#39;, &#39;Batt_V&#39;])
+    skyfall_bounder_loc.insert(0, &#39;Epoch_s&#39;, dtime_unix_s)
+    skyfall_bounder_loc.insert(1, &#39;Datetime&#39;, dtime)
+
+    print(skyfall_bounder_loc[&#39;Epoch_s&#39;])
+    # Save to parquet
+    skyfall_bounder_loc.to_parquet(output_path)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_geospatial.bounder_model_height_from_pressure"><code class="name flex">
+<span>def <span class="ident">bounder_model_height_from_pressure</span></span>(<span>pressure_kPa: numpy.ndarray) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Returns empirical height in m from input pressure</p>
+<p>:param pressure_kPa: Atmospheric pressure in kPa
+:return: Height in m above WGS84 Geoid</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bounder_model_height_from_pressure(pressure_kPa: np.ndarray) -&gt; np.ndarray:
+    &#34;&#34;&#34;
+    Returns empirical height in m from input pressure
+
+    :param pressure_kPa: Atmospheric pressure in kPa
+    :return: Height in m above WGS84 Geoid
+    &#34;&#34;&#34;
+    pressure_ref_kPa = PRESSURE_SEA_LEVEL_KPA
+    scaled_pressure = -np.log(pressure_kPa/pressure_ref_kPa)
+    # Empirical model constructed from
+    # c, stats = np.polynomial.polynomial.polyfit(poly_x, bounder_loc[&#39;Alt_m&#39;], 8, full=True)
+    c = [1.52981286e+02, 7.39552295e+03, 2.44663285e+03, -3.57402081e+03, 2.02653051e+03,
+         -6.26581722e+02, 1.11758211e+02, -1.08674469e+01, 4.46784010e-01]
+    elevation_m = np.polynomial.polynomial.polyval(scaled_pressure, c, tensor=False)
+    return elevation_m</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_geospatial.compute_t_r_z_speed"><code class="name flex">
+<span>def <span class="ident">compute_t_r_z_speed</span></span>(<span>unix_s: Any, lat_deg: Any, lon_deg: Any, alt_m: Any, ref_unix_s: Any, ref_lat_deg: Any, ref_lon_deg: Any, ref_alt_m: Any, geodetic_type: str = 'enu') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute time and location relative to a reference value; compute speed.</p>
+<p>:param unix_s: target timestamp
+:param lat_deg: target geodetic latitude
+:param lon_deg: target geodetic longitude
+:param alt_m: target altitude above ellipsoid (meters)
+:param ref_unix_s: observer timestamp
+:param ref_lat_deg: observer geodetic latitude
+:param ref_lon_deg: observer geodetic longitude
+:param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
+:param geodetic_type: 'enu' or 'ned'
+:return: pandas DataFrame with columns: {'Elapsed_s', 'Range_m', 'Z_m', 'LatLon_speed_mps'}</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_t_r_z_speed(unix_s: Any,
+                        lat_deg: Any,
+                        lon_deg: Any,
+                        alt_m: Any,
+                        ref_unix_s: Any,
+                        ref_lat_deg: Any,
+                        ref_lon_deg: Any,
+                        ref_alt_m: Any,
+                        geodetic_type: str = &#39;enu&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Compute time and location relative to a reference value; compute speed.
+
+    :param unix_s: target timestamp
+    :param lat_deg: target geodetic latitude
+    :param lon_deg: target geodetic longitude
+    :param alt_m: target altitude above ellipsoid (meters)
+    :param ref_unix_s: observer timestamp
+    :param ref_lat_deg: observer geodetic latitude
+    :param ref_lon_deg: observer geodetic longitude
+    :param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
+    :param geodetic_type: &#39;enu&#39; or &#39;ned&#39;
+    :return: pandas DataFrame with columns: {&#39;Elapsed_s&#39;, &#39;Range_m&#39;, &#39;Z_m&#39;, &#39;LatLon_speed_mps&#39;}
+    &#34;&#34;&#34;
+
+    if geodetic_type == &#39;enu&#39;:
+        x_m, y_m, z_m = pm.geodetic2enu(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    elif geodetic_type == &#39;ned&#39;:
+        y_m, x_m, z_m = pm.geodetic2ned(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    else:
+        x_m = (lon_deg - ref_lon_deg).astype(float) * DEGREES_TO_METERS
+        y_m = (lat_deg - ref_lat_deg).astype(float) * DEGREES_TO_METERS
+        z_m = (alt_m - ref_alt_m).astype(float)
+        t_s = (unix_s - ref_unix_s).astype(float)
+
+    # Speed in mps. Compute diff, add EPSILON to avoid divide by zero on repeat values
+    u_mps = np.gradient(x_m)/(np.gradient(t_s)+EPSILON)
+    v_mps = np.gradient(y_m)/(np.gradient(t_s)+EPSILON)
+    w_mps = np.gradient(z_m)/(np.gradient(t_s)+EPSILON)
+
+    range_m = np.sqrt(x_m**2 + y_m**2)
+    speed_mps = np.ma.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
+    time_range_z_speed_s_m = pd.DataFrame(data={&#39;Elapsed_s&#39;: t_s,
+                                                &#39;Range_m&#39;: range_m,
+                                                &#39;Z_m&#39;: z_m,
+                                                &#39;LatLon_speed_mps&#39;: speed_mps})
+    return time_range_z_speed_s_m</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_geospatial.compute_t_xyz_uvw"><code class="name flex">
+<span>def <span class="ident">compute_t_xyz_uvw</span></span>(<span>unix_s: Any, lat_deg: Any, lon_deg: Any, alt_m: Any, ref_unix_s: Any, ref_lat_deg: Any, ref_lon_deg: Any, ref_alt_m: Any, geodetic_type: str = 'enu') ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Compute time and location relative to a reference value; compute speed.</p>
+<p>:param unix_s: target timestamp
+:param lat_deg: target geodetic latitude
+:param lon_deg: target geodetic longitude
+:param alt_m: target altitude above ellipsoid (meters)
+:param ref_unix_s: observer timestamp
+:param ref_lat_deg: observer geodetic latitude
+:param ref_lon_deg: observer geodetic longitude
+:param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
+:param geodetic_type: 'enu' or 'ned'
+:return: pandas DataFrame with columns: {'T_s', 'X_m', 'Y_m', 'Z_m', 'U_mps', 'V_mps', 'W_mps', 'Speed_mps'}</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def compute_t_xyz_uvw(unix_s: Any,
+                      lat_deg: Any,
+                      lon_deg: Any,
+                      alt_m: Any,
+                      ref_unix_s: Any,
+                      ref_lat_deg: Any,
+                      ref_lon_deg: Any,
+                      ref_alt_m: Any,
+                      geodetic_type: str = &#39;enu&#39;) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Compute time and location relative to a reference value; compute speed.
+
+    :param unix_s: target timestamp
+    :param lat_deg: target geodetic latitude
+    :param lon_deg: target geodetic longitude
+    :param alt_m: target altitude above ellipsoid (meters)
+    :param ref_unix_s: observer timestamp
+    :param ref_lat_deg: observer geodetic latitude
+    :param ref_lon_deg: observer geodetic longitude
+    :param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
+    :param geodetic_type: &#39;enu&#39; or &#39;ned&#39;
+    :return: pandas DataFrame with columns: {&#39;T_s&#39;, &#39;X_m&#39;, &#39;Y_m&#39;, &#39;Z_m&#39;, &#39;U_mps&#39;, &#39;V_mps&#39;, &#39;W_mps&#39;, &#39;Speed_mps&#39;}
+    &#34;&#34;&#34;
+
+    if geodetic_type == &#39;enu&#39;:
+        x_m, y_m, z_m = pm.geodetic2enu(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    elif geodetic_type == &#39;ned&#39;:
+        y_m, x_m, z_m = pm.geodetic2ned(lat=lat_deg, lon=lon_deg, h=alt_m,
+                                        lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
+        t_s = (unix_s - ref_unix_s).astype(float)
+    else:
+        x_m = (lon_deg - ref_lon_deg).astype(float) * DEGREES_TO_METERS
+        y_m = (lat_deg - ref_lat_deg).astype(float) * DEGREES_TO_METERS
+        z_m = (alt_m - ref_alt_m).astype(float)
+        t_s = (unix_s - ref_unix_s).astype(float)
+
+    # Speed in mps. Compute diff, add EPSILON to avoid divide by zero on repeat values
+    u_mps = np.gradient(x_m)/(np.gradient(t_s)+EPSILON)
+    v_mps = np.gradient(y_m)/(np.gradient(t_s)+EPSILON)
+    w_mps = np.gradient(z_m)/(np.gradient(t_s)+EPSILON)
+
+    speed_mps = np.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
+
+    t_xyzuvw_s_m = pd.DataFrame(data={&#39;T_s&#39;: t_s,
+                                      &#39;X_m&#39;: x_m,
+                                      &#39;Y_m&#39;: y_m,
+                                      &#39;Z_m&#39;: z_m,
+                                      &#39;U_mps&#39;: u_mps,
+                                      &#39;V_mps&#39;: v_mps,
+                                      &#39;W_mps&#39;: w_mps,
+                                      &#39;Speed_mps&#39;: speed_mps})
+    return t_xyzuvw_s_m</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_geospatial.redvox_loc"><code class="name flex">
+<span>def <span class="ident">redvox_loc</span></span>(<span>df_pqt_path: str) ‑> pandas.core.frame.DataFrame</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Extract the location, temperature, and DC pressure payload from the microphones</p>
+<p>:param df_pqt_path: path/to/parquet file with data stored in a pd.DataFrame
+:return: pd. DataFrame with columns {'station_id', 'location_epoch_s', 'location_latitude', 'location_longitude',
+'location_altitude', 'location_speed', 'location_horizontal_accuracy', 'barometer_epoch_s', 'barometer_wf_raw'}</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def redvox_loc(df_pqt_path: str) -&gt; pd.DataFrame:
+    &#34;&#34;&#34;
+    Extract the location, temperature, and DC pressure payload from the microphones
+
+    :param df_pqt_path: path/to/parquet file with data stored in a pd.DataFrame
+    :return: pd. DataFrame with columns {&#39;station_id&#39;, &#39;location_epoch_s&#39;, &#39;location_latitude&#39;, &#39;location_longitude&#39;,
+    &#39;location_altitude&#39;, &#39;location_speed&#39;, &#39;location_horizontal_accuracy&#39;, &#39;barometer_epoch_s&#39;, &#39;barometer_wf_raw&#39;}
+    &#34;&#34;&#34;
+    # Check
+    if not os.path.exists(df_pqt_path):
+        print(&#34;Input file does not exist, check path:&#34;)
+        print(df_pqt_path)
+        exit()
+
+    df = pd.read_parquet(df_pqt_path)
+    print(&#39;Read parquet with pandas DataFrame&#39;)
+
+    # Extract selected fields
+    loc_fields = [&#39;station_id&#39;,
+                  &#39;location_epoch_s&#39;,
+                  &#39;location_latitude&#39;,
+                  &#39;location_longitude&#39;,
+                  &#39;location_altitude&#39;,
+                  &#39;location_speed&#39;,
+                  &#39;location_horizontal_accuracy&#39;,
+                  &#39;barometer_epoch_s&#39;,
+                  &#39;barometer_wf_raw&#39;]
+    df_loc = df[loc_fields]
+
+    return df_loc</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="redpandas" href="index.html">redpandas</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="redpandas.redpd_geospatial.bounder_data" href="#redpandas.redpd_geospatial.bounder_data">bounder_data</a></code></li>
+<li><code><a title="redpandas.redpd_geospatial.bounder_model_height_from_pressure" href="#redpandas.redpd_geospatial.bounder_model_height_from_pressure">bounder_model_height_from_pressure</a></code></li>
+<li><code><a title="redpandas.redpd_geospatial.compute_t_r_z_speed" href="#redpandas.redpd_geospatial.compute_t_r_z_speed">compute_t_r_z_speed</a></code></li>
+<li><code><a title="redpandas.redpd_geospatial.compute_t_xyz_uvw" href="#redpandas.redpd_geospatial.compute_t_xyz_uvw">compute_t_xyz_uvw</a></code></li>
+<li><code><a title="redpandas.redpd_geospatial.redvox_loc" href="#redpandas.redpd_geospatial.redvox_loc">redvox_loc</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>redpandas.redpd_build_station API documentation</title>
+<meta name="description" content="This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
+to RedPandas DataFrames …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>redpandas.redpd_build_station</code></h1>
+</header>
+<section id="section-intro">
+<p>This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
+to RedPandas DataFrames.</p>
+<p>Last updated: 2 July 2021</p>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
+to RedPandas DataFrames.
+
+Last updated: 2 July 2021
+&#34;&#34;&#34;
+from typing import List, Dict, Union, Tuple
+
+import numpy as np
+from redvox.common.station import Station
+
+# RedPandas library
+import redpandas.redpd_preprocess as rpd_prep
+import redpandas.redpd_scales as rpd_scales
+# Note: Available sensors in build station: [&#39;audio&#39;, &#39;barometer&#39;, &#39;accelerometer&#39;, &#39;magnetometer&#39;, &#39;gyroscope&#39;,
+# &#39;health&#39;, &#39;location&#39;, &#39;clock&#39;, &#39;synchronization&#39;, &#39;best_location&#39;, &#39;light]
+# To construct: [&#39;ambient_temperature&#39;, &#39;compressed_audio&#39;, &#39;gravity&#39;, &#39;linear_acceleration&#39;, &#39;orientation&#39;,
+# &#39;proximity&#39;, &#39;relative_humidity&#39;, &#39;rotation vector&#39;]
+
+
+def station_to_dict_from_dw(
+        station: Station,
+        sdk_version: str,
+        sensor_labels: List[str],
+        highpass_type: str = &#39;obspy&#39;,
+        frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+        filter_order: int = 4) -&gt; Dict[str, Union[str, None, float]]:
+    &#34;&#34;&#34;
+    converts information from a station object created by a data window into a dictionary easily converted into
+    a dataframe
+
+    :param station: RDVX station object
+    :param sdk_version: version of Redvox SDK used to create the Station object
+    :param sensor_labels: the names of the sensors to extract, one of: [&#39;audio&#39;, &#39;barometer&#39;, &#39;accelerometer&#39;,
+        &#39;gyroscope&#39;, &#39;magnetometer&#39;, &#39;health&#39;, &#39;location&#39;, &#39;image&#39;]
+    :param highpass_type: obspy&#39;, &#39;butter&#39;, &#39;rc&#39;, default &#39;obspy&#39;
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param filter_order: the order of the filter integer. Default is 4
+    :return: a dictionary ready for conversion into a dataframe
+    &#34;&#34;&#34;
+    sensors = {&#34;station_id&#34;: station.id,
+               &#39;station_start_date_epoch_micros&#39;: station.start_timestamp,
+               &#39;station_make&#39;: station.metadata.make,
+               &#39;station_model&#39;: station.metadata.model,
+               &#39;station_app_version&#39;: station.metadata.app_version,
+               &#39;redvox_sdk_version&#39;: sdk_version}
+
+    print(f&#34;Prep Station {station.id}...&#34;, end=&#34; &#34;)
+    for label in sensor_labels:
+        print(f&#34;{label} sensor...&#34;, end=&#34; &#34;)
+        df_sensor = build_station(station=station,
+                                  sensor_label=label,
+                                  highpass_type=highpass_type,
+                                  frequency_filter_low=frequency_filter_low,
+                                  filter_order=filter_order)
+        if len(df_sensor.values()) &gt; 0:
+            sensors.update(df_sensor)
+    print(f&#34;Done.&#34;)
+    return sensors
+
+
+def sensor_uneven(station: Station, sensor_label: str) -&gt; Tuple[Union[None, float], Union[None, np.ndarray],
+                                                                Union[None, np.ndarray], Union[None, np.ndarray]]:
+    &#34;&#34;&#34;
+    ID nans, sample rate, epoch, raw of uneven sensor
+
+    :param station: RDVX Station object
+    :param sensor_label: one of: [&#39;barometer&#39;, &#39;accelerometer&#39;, &#39;gyroscope&#39;, &#39;magnetometer&#39;]
+    :return: sensor sample rate (Hz), timestamps, raw data and nans in sensor.
+    &#34;&#34;&#34;
+
+    # default parameters
+    sensor_sample_rate_hz = None
+    sensor_epoch_s = None
+    sensor_raw = None
+    sensor_nans = None
+
+    if eval(&#39;station.has_&#39; + sensor_label + &#39;_data()&#39;):
+        sensor_dw = eval(&#39;station.&#39; + sensor_label + &#39;_sensor()&#39;)
+        sensor_sample_rate_hz = sensor_dw.sample_rate_hz
+        sensor_epoch_s = sensor_dw.data_timestamps() * rpd_scales.MICROS_TO_S
+        sensor_raw = sensor_dw.samples()
+        sensor_nans = np.argwhere(np.isnan(sensor_raw))
+    else:
+        print(f&#39;Station {station.id} has no {sensor_label} data.&#39;)
+
+    return sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans
+
+
+# Build station modules
+def build_station(station: Station,
+                  sensor_label: str,
+                  highpass_type: str = &#39;obspy&#39;,
+                  frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+                  filter_order: int = 4) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtain sensor data from RDVX station
+
+    :param station: RDVX Station object
+    :param sensor_label: one of: [&#39;audio&#39;, &#39;barometer&#39;, &#39;accelerometer&#39;, &#39;gyroscope&#39;, &#39;magnetometer&#39;,
+    &#39;health&#39;, &#39;location&#39;, &#39;image&#39;]
+    :param highpass_type: &#39;obspy&#39;, &#39;butter&#39;, &#39;rc&#39;, default &#39;obspy&#39;
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param filter_order: the order of the filter integer. Default is 4
+    :return: dictionary with sensor name, sample rate, timestamps, data (raw and highpassed)
+    &#34;&#34;&#34;
+    if sensor_label == &#39;mic&#39; or sensor_label == &#39;microphone&#39; or sensor_label == &#39;audio&#39;:
+        return audio_wf_time_build_station(station=station, mean_type=&#39;simple&#39;, raw=False)
+
+    elif sensor_label == &#39;location&#39; or sensor_label == &#39;loc&#39;:
+        return location_build_station(station=station)
+
+    elif sensor_label == &#39;best_location&#39; or sensor_label == &#39;best_loc&#39;:
+        return best_location_build_station(station=station)
+
+    elif sensor_label == &#39;clock&#39;:
+        return clock_build_station(station=station)
+
+    elif sensor_label == &#39;synchronization&#39; or sensor_label == &#39;sync&#39;:
+        return synchronization_build_station(station=station)
+
+    elif sensor_label == &#39;health&#39; or sensor_label == &#39;soh&#39;:
+        return state_of_health_build_station(station=station)
+
+    elif sensor_label == &#39;image&#39; or sensor_label == &#39;im&#39;:
+        return image_build_station(station=station)
+
+    elif sensor_label == &#39;light&#39;:
+        return light_build_station(station=station)
+
+    else:  # barometer, acceleration, gyroscope, magnetometer, linear_accel, orientation, rotation_vector, gravity
+        sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = sensor_uneven(station=station,
+                                                                                       sensor_label=sensor_label)
+
+        list_sensor_highpass = []
+        if sensor_sample_rate_hz:
+            for index_dimension, _ in enumerate(sensor_raw):
+                sensor_waveform_highpass, _ = rpd_prep.highpass_from_diff(sig_wf=sensor_raw[index_dimension],
+                                                                          sig_epoch_s=sensor_epoch_s,
+                                                                          sample_rate_hz=sensor_sample_rate_hz,
+                                                                          fold_signal=True,
+                                                                          highpass_type=highpass_type,
+                                                                          frequency_filter_low=frequency_filter_low,
+                                                                          filter_order=filter_order)
+                # print(sensor_waveform_highpass)
+                list_sensor_highpass.append(sensor_waveform_highpass)
+
+            return {f&#39;{sensor_label}_sensor_name&#39;: eval(&#39;station.&#39; + sensor_label + &#39;_sensor()&#39;).name,
+                    f&#39;{sensor_label}_sample_rate_hz&#39;: sensor_sample_rate_hz,
+                    f&#39;{sensor_label}_epoch_s&#39;: sensor_epoch_s,
+                    f&#39;{sensor_label}_wf_raw&#39;: sensor_raw,
+                    f&#39;{sensor_label}_wf_highpass&#39;: np.array(list_sensor_highpass),
+                    f&#39;{sensor_label}_nans&#39;: sensor_nans}
+        else:
+            print(f&#34;{sensor_label} doesn&#39;t exist in the station.&#34;)
+            return {}
+
+
+# Modules for specific sensors
+def audio_wf_time_build_station(station: Station,
+                                mean_type: str = &#34;simple&#34;,
+                                raw: bool = False) -&gt; dict:
+    &#34;&#34;&#34;
+    Builds mic waveform and times if it exists
+
+    :param station: RDVX Station object
+    :param mean_type: &#34;simple&#34; (demean and replace nans with zeros), or &#34;lin&#34; (remove linear trend)
+    :param raw: if false (default), boolean or nan mean removed
+    :return: dictionary with sensor name, sample rate, timestamps, audio data
+    &#34;&#34;&#34;
+    if station.has_audio_data():
+        mic_wf_raw = station.audio_sensor().get_data_channel(&#34;microphone&#34;)
+        mic_epoch_s = station.audio_sensor().data_timestamps() * rpd_scales.MICROS_TO_S
+        mic_nans = np.array(np.argwhere(np.isnan(mic_wf_raw)))
+
+        if raw:
+            mic_wf = np.array(mic_wf_raw)
+        else:
+            if mean_type == &#34;simple&#34;:
+                # Simple demean and replace nans with zeros. OK for mic, not OK for all other DC-biased sensors
+                mic_wf = rpd_prep.demean_nan(mic_wf_raw)
+            else:
+                # Remove linear trend
+                mic_wf = rpd_prep.detrend_nan(mic_wf_raw)
+
+        return {&#39;audio_sensor_name&#39;: station.audio_sensor().name,
+                &#39;audio_sample_rate_nominal_hz&#39;: station.audio_sample_rate_nominal_hz,
+                &#39;audio_sample_rate_corrected_hz&#39;: station.audio_sensor().sample_rate_hz,
+                &#39;audio_epoch_s&#39;: mic_epoch_s,
+                &#39;audio_wf_raw&#39;: mic_wf_raw,
+                &#39;audio_wf&#39;: mic_wf,
+                &#39;audio_nans&#39;: mic_nans.tolist()}
+    else:
+        print(f&#39;Station {station.id} has no audio data.&#39;)
+        return {}
+
+
+def location_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains location data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
+    horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.
+    &#34;&#34;&#34;
+    if station.has_location_data():
+        return {&#39;location_sensor_name&#39;: station.location_sensor().name,
+                &#39;location_sample_rate_hz&#39;: station.location_sensor().sample_rate_hz,
+                &#39;location_epoch_s&#39;: station.location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;location_gps_epoch_s&#39;: station.location_sensor().get_data_channel(&#39;gps_timestamps&#39;)
+                                        * rpd_scales.MICROS_TO_S,
+                &#39;location_latitude&#39;: station.location_sensor().get_data_channel(&#34;latitude&#34;),
+                &#39;location_longitude&#39;: station.location_sensor().get_data_channel(&#34;longitude&#34;),
+                &#39;location_altitude&#39;: station.location_sensor().get_data_channel(&#34;altitude&#34;),
+                &#39;location_bearing&#39;: station.location_sensor().get_data_channel(&#34;bearing&#34;),
+                &#39;location_speed&#39;: station.location_sensor().get_data_channel(&#34;speed&#34;),
+                &#39;location_horizontal_accuracy&#39;:
+                    station.location_sensor().get_data_channel(&#34;horizontal_accuracy&#34;),
+                &#39;location_vertical_accuracy&#39;: station.location_sensor().get_data_channel(&#34;vertical_accuracy&#34;),
+                &#39;location_bearing_accuracy&#39;: station.location_sensor().get_data_channel(&#34;bearing_accuracy&#34;),
+                &#39;location_speed_accuracy&#39;: station.location_sensor().get_data_channel(&#34;speed_accuracy&#34;),
+                &#39;location_provider&#39;: station.location_sensor().get_data_channel(&#34;location_provider&#34;)}
+    else:
+        print(f&#39;Station {station.id} has no location data.&#39;)
+        return {}
+
+
+def best_location_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains best location data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
+    horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.
+    &#34;&#34;&#34;
+    if station.has_best_location_data():
+        return {&#39;best_location_sensor_name&#39;: station.best_location_sensor().name,
+                &#39;best_location_sample_rate_hz&#39;: station.best_location_sensor().sample_rate_hz,
+                &#39;best_location_epoch_s&#39;: station.best_location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;best_location_gps_epoch_s&#39;: station.best_location_sensor().get_data_channel(&#39;gps_timestamps&#39;)
+                                             * rpd_scales.MICROS_TO_S,
+                &#39;best_location_latitude&#39;: station.best_location_sensor().get_data_channel(&#34;latitude&#34;),
+                &#39;best_location_longitude&#39;: station.best_location_sensor().get_data_channel(&#34;longitude&#34;),
+                &#39;best_location_altitude&#39;: station.best_location_sensor().get_data_channel(&#34;altitude&#34;),
+                &#39;best_location_bearing&#39;: station.best_location_sensor().get_data_channel(&#34;bearing&#34;),
+                &#39;best_location_speed&#39;: station.best_location_sensor().get_data_channel(&#34;speed&#34;),
+                &#39;best_location_horizontal_accuracy&#39;:
+                    station.best_location_sensor().get_data_channel(&#34;horizontal_accuracy&#34;),
+                &#39;best_location_vertical_accuracy&#39;: station.best_location_sensor().get_data_channel(&#34;vertical_accuracy&#34;),
+                &#39;best_location_bearing_accuracy&#39;: station.best_location_sensor().get_data_channel(&#34;bearing_accuracy&#34;),
+                &#39;best-location_speed_accuracy&#39;: station.best_location_sensor().get_data_channel(&#34;speed_accuracy&#34;),
+                &#39;best_location_provider&#39;: station.best_location_sensor().get_data_channel(&#34;location_provider&#34;)}
+    else:
+        print(f&#39;Station {station.id} has no best location data.&#39;)
+        return {}
+
+
+def state_of_health_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains state of health data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, batt. charge, batt. current strength,
+    internal temp., network type, network strength, power state, available ram and disk, and cell service state
+    &#34;&#34;&#34;
+    if station.has_health_data():
+        return {&#39;health_sensor_name&#39;: station.health_sensor().name,
+                &#39;health_sample_rate_hz&#39;: station.health_sensor().sample_rate_hz,
+                &#39;health_epoch_s&#39;: station.health_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;battery_charge_remaining_per&#39;:
+                    station.health_sensor().get_data_channel(&#39;battery_charge_remaining&#39;),
+                &#39;battery_current_strength_mA&#39;:
+                    station.health_sensor().get_data_channel(&#39;battery_current_strength&#39;),
+                &#39;internal_temp_deg_C&#39;: station.health_sensor().get_data_channel(&#39;internal_temp_c&#39;),
+                &#39;network_type&#39;: station.health_sensor().get_data_channel(&#39;network_type&#39;),
+                &#39;network_strength_dB&#39;: station.health_sensor().get_data_channel(&#39;network_strength&#39;),
+                &#39;power_state&#39;: station.health_sensor().get_data_channel(&#39;power_state&#39;),
+                &#39;available_ram_byte&#39;: station.health_sensor().get_data_channel(&#39;avail_ram&#39;),
+                &#39;available_disk_byte&#39;: station.health_sensor().get_data_channel(&#39;avail_disk&#39;),
+                &#39;cell_service_state&#39;: station.health_sensor().get_data_channel(&#39;cell_service&#39;)}
+    else:
+        print(f&#39;Station {station.id} has no health data.&#39;)
+        return {}
+
+
+def image_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains images from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, image (bytes), and image codec.
+    &#34;&#34;&#34;
+    if station.has_image_data():
+        return {&#39;image_sensor_name&#39;: station.image_sensor().name,
+                &#39;image_sample_rate_hz&#39;: station.image_sensor().sample_rate_hz,
+                &#39;image_epoch_s&#39;: station.image_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;image_bytes&#39;: station.image_sensor().get_data_channel(&#39;image&#39;),
+                &#39;image_codec&#39;: station.image_sensor().get_data_channel(&#39;image_codec&#39;)}
+    else:
+        print(f&#39;Station {station.id} has no image data.&#39;)
+        return {}
+
+
+def synchronization_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains time sync data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with synchronization start time (s), synchronization latency (ms), synchronization offset (ms),
+    synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.
+    &#34;&#34;&#34;
+    if station.has_timesync_data():
+        synchronization = station.timesync_analysis
+        return {&#39;synchronization_epoch_s&#39;: synchronization.get_start_times() * rpd_scales.MICROS_TO_S,
+                &#39;synchronization_latency_ms&#39;: synchronization.get_latencies() * rpd_scales.MICROS_TO_MILLIS,
+                &#39;synchronization_offset_ms&#39;: synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS,
+                &#39;synchronization_best_offset_ms&#39;: synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
+                &#39;synchronization_offset_delta_ms&#39;: synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS -
+                                                   synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
+                &#39;synchronization_number_exchanges&#39;: synchronization.timesync_data[0].num_tri_messages()}
+    else:
+        print(f&#39;Station {station.id} has no time sync data.&#39;)
+        return {}
+
+
+def clock_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains clock model data from the station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with clock start time (s), clock latency (ms), clock best latency (ms), clock offset (s),
+    clock number bins, clock number samples, clock offset slope, and clock offset model score.
+    &#34;&#34;&#34;
+    if station.has_timesync_data():
+        print(&#39;App start time s:&#39;, station.start_timestamp)
+        clock = station.timesync_analysis.offset_model
+        return {&#39;clock_start_time_epoch_s&#39;: clock.start_time * rpd_scales.MICROS_TO_S,
+                &#39;clock_best_latency_ms&#39;: clock.mean_latency * rpd_scales.MICROS_TO_MILLIS,
+                &#39;clock_best_latency_std_ms&#39;: clock.std_dev_latency * rpd_scales.MICROS_TO_MILLIS,
+                &#39;clock_offset_s&#39;: clock.intercept * rpd_scales.MICROS_TO_S,
+                &#39;clock_number_bins&#39;: clock.k_bins,
+                &#39;clock_number_samples&#39;: clock.n_samples,
+                &#39;clock_offset_slope&#39;: clock.slope,
+                &#39;clock_offset_model_score&#39;: clock.score}
+    else:
+        print(f&#39;Station {station.id} has no timesync analysis.&#39;)
+        return {}
+
+
+def light_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains luminosity data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, light data.
+    &#34;&#34;&#34;
+    if station.has_light_data():
+
+        return {&#39;light_sensor_name&#39;: station.light_sensor().name,
+                &#39;light_sample_rate_hz&#39;: station.light_sensor().sample_rate_hz,
+                &#39;light_epoch_s&#39;: station.light_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;light_lux&#39;: station.light_sensor().get_data_channel(&#39;light&#39;)}
+    else:
+        print(f&#39;Station {station.id} has no luminosity data.&#39;)
+        return {}</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="redpandas.redpd_build_station.audio_wf_time_build_station"><code class="name flex">
+<span>def <span class="ident">audio_wf_time_build_station</span></span>(<span>station: redvox.common.station.Station, mean_type: str = 'simple', raw: bool = False) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Builds mic waveform and times if it exists</p>
+<p>:param station: RDVX Station object
+:param mean_type: "simple" (demean and replace nans with zeros), or "lin" (remove linear trend)
+:param raw: if false (default), boolean or nan mean removed
+:return: dictionary with sensor name, sample rate, timestamps, audio data</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def audio_wf_time_build_station(station: Station,
+                                mean_type: str = &#34;simple&#34;,
+                                raw: bool = False) -&gt; dict:
+    &#34;&#34;&#34;
+    Builds mic waveform and times if it exists
+
+    :param station: RDVX Station object
+    :param mean_type: &#34;simple&#34; (demean and replace nans with zeros), or &#34;lin&#34; (remove linear trend)
+    :param raw: if false (default), boolean or nan mean removed
+    :return: dictionary with sensor name, sample rate, timestamps, audio data
+    &#34;&#34;&#34;
+    if station.has_audio_data():
+        mic_wf_raw = station.audio_sensor().get_data_channel(&#34;microphone&#34;)
+        mic_epoch_s = station.audio_sensor().data_timestamps() * rpd_scales.MICROS_TO_S
+        mic_nans = np.array(np.argwhere(np.isnan(mic_wf_raw)))
+
+        if raw:
+            mic_wf = np.array(mic_wf_raw)
+        else:
+            if mean_type == &#34;simple&#34;:
+                # Simple demean and replace nans with zeros. OK for mic, not OK for all other DC-biased sensors
+                mic_wf = rpd_prep.demean_nan(mic_wf_raw)
+            else:
+                # Remove linear trend
+                mic_wf = rpd_prep.detrend_nan(mic_wf_raw)
+
+        return {&#39;audio_sensor_name&#39;: station.audio_sensor().name,
+                &#39;audio_sample_rate_nominal_hz&#39;: station.audio_sample_rate_nominal_hz,
+                &#39;audio_sample_rate_corrected_hz&#39;: station.audio_sensor().sample_rate_hz,
+                &#39;audio_epoch_s&#39;: mic_epoch_s,
+                &#39;audio_wf_raw&#39;: mic_wf_raw,
+                &#39;audio_wf&#39;: mic_wf,
+                &#39;audio_nans&#39;: mic_nans.tolist()}
+    else:
+        print(f&#39;Station {station.id} has no audio data.&#39;)
+        return {}</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.best_location_build_station"><code class="name flex">
+<span>def <span class="ident">best_location_build_station</span></span>(<span>station: redvox.common.station.Station) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains best location data from RedVox station if it exists</p>
+<p>:param station: RDVX Station object
+:return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
+horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def best_location_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains best location data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
+    horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.
+    &#34;&#34;&#34;
+    if station.has_best_location_data():
+        return {&#39;best_location_sensor_name&#39;: station.best_location_sensor().name,
+                &#39;best_location_sample_rate_hz&#39;: station.best_location_sensor().sample_rate_hz,
+                &#39;best_location_epoch_s&#39;: station.best_location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;best_location_gps_epoch_s&#39;: station.best_location_sensor().get_data_channel(&#39;gps_timestamps&#39;)
+                                             * rpd_scales.MICROS_TO_S,
+                &#39;best_location_latitude&#39;: station.best_location_sensor().get_data_channel(&#34;latitude&#34;),
+                &#39;best_location_longitude&#39;: station.best_location_sensor().get_data_channel(&#34;longitude&#34;),
+                &#39;best_location_altitude&#39;: station.best_location_sensor().get_data_channel(&#34;altitude&#34;),
+                &#39;best_location_bearing&#39;: station.best_location_sensor().get_data_channel(&#34;bearing&#34;),
+                &#39;best_location_speed&#39;: station.best_location_sensor().get_data_channel(&#34;speed&#34;),
+                &#39;best_location_horizontal_accuracy&#39;:
+                    station.best_location_sensor().get_data_channel(&#34;horizontal_accuracy&#34;),
+                &#39;best_location_vertical_accuracy&#39;: station.best_location_sensor().get_data_channel(&#34;vertical_accuracy&#34;),
+                &#39;best_location_bearing_accuracy&#39;: station.best_location_sensor().get_data_channel(&#34;bearing_accuracy&#34;),
+                &#39;best-location_speed_accuracy&#39;: station.best_location_sensor().get_data_channel(&#34;speed_accuracy&#34;),
+                &#39;best_location_provider&#39;: station.best_location_sensor().get_data_channel(&#34;location_provider&#34;)}
+    else:
+        print(f&#39;Station {station.id} has no best location data.&#39;)
+        return {}</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.build_station"><code class="name flex">
+<span>def <span class="ident">build_station</span></span>(<span>station: redvox.common.station.Station, sensor_label: str, highpass_type: str = 'obspy', frequency_filter_low: float = 0.01, filter_order: int = 4) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtain sensor data from RDVX station</p>
+<p>:param station: RDVX Station object
+:param sensor_label: one of: ['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer',
+'health', 'location', 'image']
+:param highpass_type: 'obspy', 'butter', 'rc', default 'obspy'
+:param frequency_filter_low: apply highpass filter. Default is 100 second periods
+:param filter_order: the order of the filter integer. Default is 4
+:return: dictionary with sensor name, sample rate, timestamps, data (raw and highpassed)</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def build_station(station: Station,
+                  sensor_label: str,
+                  highpass_type: str = &#39;obspy&#39;,
+                  frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+                  filter_order: int = 4) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtain sensor data from RDVX station
+
+    :param station: RDVX Station object
+    :param sensor_label: one of: [&#39;audio&#39;, &#39;barometer&#39;, &#39;accelerometer&#39;, &#39;gyroscope&#39;, &#39;magnetometer&#39;,
+    &#39;health&#39;, &#39;location&#39;, &#39;image&#39;]
+    :param highpass_type: &#39;obspy&#39;, &#39;butter&#39;, &#39;rc&#39;, default &#39;obspy&#39;
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param filter_order: the order of the filter integer. Default is 4
+    :return: dictionary with sensor name, sample rate, timestamps, data (raw and highpassed)
+    &#34;&#34;&#34;
+    if sensor_label == &#39;mic&#39; or sensor_label == &#39;microphone&#39; or sensor_label == &#39;audio&#39;:
+        return audio_wf_time_build_station(station=station, mean_type=&#39;simple&#39;, raw=False)
+
+    elif sensor_label == &#39;location&#39; or sensor_label == &#39;loc&#39;:
+        return location_build_station(station=station)
+
+    elif sensor_label == &#39;best_location&#39; or sensor_label == &#39;best_loc&#39;:
+        return best_location_build_station(station=station)
+
+    elif sensor_label == &#39;clock&#39;:
+        return clock_build_station(station=station)
+
+    elif sensor_label == &#39;synchronization&#39; or sensor_label == &#39;sync&#39;:
+        return synchronization_build_station(station=station)
+
+    elif sensor_label == &#39;health&#39; or sensor_label == &#39;soh&#39;:
+        return state_of_health_build_station(station=station)
+
+    elif sensor_label == &#39;image&#39; or sensor_label == &#39;im&#39;:
+        return image_build_station(station=station)
+
+    elif sensor_label == &#39;light&#39;:
+        return light_build_station(station=station)
+
+    else:  # barometer, acceleration, gyroscope, magnetometer, linear_accel, orientation, rotation_vector, gravity
+        sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = sensor_uneven(station=station,
+                                                                                       sensor_label=sensor_label)
+
+        list_sensor_highpass = []
+        if sensor_sample_rate_hz:
+            for index_dimension, _ in enumerate(sensor_raw):
+                sensor_waveform_highpass, _ = rpd_prep.highpass_from_diff(sig_wf=sensor_raw[index_dimension],
+                                                                          sig_epoch_s=sensor_epoch_s,
+                                                                          sample_rate_hz=sensor_sample_rate_hz,
+                                                                          fold_signal=True,
+                                                                          highpass_type=highpass_type,
+                                                                          frequency_filter_low=frequency_filter_low,
+                                                                          filter_order=filter_order)
+                # print(sensor_waveform_highpass)
+                list_sensor_highpass.append(sensor_waveform_highpass)
+
+            return {f&#39;{sensor_label}_sensor_name&#39;: eval(&#39;station.&#39; + sensor_label + &#39;_sensor()&#39;).name,
+                    f&#39;{sensor_label}_sample_rate_hz&#39;: sensor_sample_rate_hz,
+                    f&#39;{sensor_label}_epoch_s&#39;: sensor_epoch_s,
+                    f&#39;{sensor_label}_wf_raw&#39;: sensor_raw,
+                    f&#39;{sensor_label}_wf_highpass&#39;: np.array(list_sensor_highpass),
+                    f&#39;{sensor_label}_nans&#39;: sensor_nans}
+        else:
+            print(f&#34;{sensor_label} doesn&#39;t exist in the station.&#34;)
+            return {}</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.clock_build_station"><code class="name flex">
+<span>def <span class="ident">clock_build_station</span></span>(<span>station: redvox.common.station.Station) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains clock model data from the station if it exists</p>
+<p>:param station: RDVX Station object
+:return: dictionary with clock start time (s), clock latency (ms), clock best latency (ms), clock offset (s),
+clock number bins, clock number samples, clock offset slope, and clock offset model score.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def clock_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains clock model data from the station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with clock start time (s), clock latency (ms), clock best latency (ms), clock offset (s),
+    clock number bins, clock number samples, clock offset slope, and clock offset model score.
+    &#34;&#34;&#34;
+    if station.has_timesync_data():
+        print(&#39;App start time s:&#39;, station.start_timestamp)
+        clock = station.timesync_analysis.offset_model
+        return {&#39;clock_start_time_epoch_s&#39;: clock.start_time * rpd_scales.MICROS_TO_S,
+                &#39;clock_best_latency_ms&#39;: clock.mean_latency * rpd_scales.MICROS_TO_MILLIS,
+                &#39;clock_best_latency_std_ms&#39;: clock.std_dev_latency * rpd_scales.MICROS_TO_MILLIS,
+                &#39;clock_offset_s&#39;: clock.intercept * rpd_scales.MICROS_TO_S,
+                &#39;clock_number_bins&#39;: clock.k_bins,
+                &#39;clock_number_samples&#39;: clock.n_samples,
+                &#39;clock_offset_slope&#39;: clock.slope,
+                &#39;clock_offset_model_score&#39;: clock.score}
+    else:
+        print(f&#39;Station {station.id} has no timesync analysis.&#39;)
+        return {}</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.image_build_station"><code class="name flex">
+<span>def <span class="ident">image_build_station</span></span>(<span>station: redvox.common.station.Station) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains images from RedVox station if it exists</p>
+<p>:param station: RDVX Station object
+:return: dictionary with sensor name, sample rate, timestamps, image (bytes), and image codec.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def image_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains images from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, image (bytes), and image codec.
+    &#34;&#34;&#34;
+    if station.has_image_data():
+        return {&#39;image_sensor_name&#39;: station.image_sensor().name,
+                &#39;image_sample_rate_hz&#39;: station.image_sensor().sample_rate_hz,
+                &#39;image_epoch_s&#39;: station.image_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;image_bytes&#39;: station.image_sensor().get_data_channel(&#39;image&#39;),
+                &#39;image_codec&#39;: station.image_sensor().get_data_channel(&#39;image_codec&#39;)}
+    else:
+        print(f&#39;Station {station.id} has no image data.&#39;)
+        return {}</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.light_build_station"><code class="name flex">
+<span>def <span class="ident">light_build_station</span></span>(<span>station: redvox.common.station.Station) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains luminosity data from RedVox station if it exists</p>
+<p>:param station: RDVX Station object
+:return: dictionary with sensor name, sample rate, timestamps, light data.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def light_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains luminosity data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, light data.
+    &#34;&#34;&#34;
+    if station.has_light_data():
+
+        return {&#39;light_sensor_name&#39;: station.light_sensor().name,
+                &#39;light_sample_rate_hz&#39;: station.light_sensor().sample_rate_hz,
+                &#39;light_epoch_s&#39;: station.light_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;light_lux&#39;: station.light_sensor().get_data_channel(&#39;light&#39;)}
+    else:
+        print(f&#39;Station {station.id} has no luminosity data.&#39;)
+        return {}</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.location_build_station"><code class="name flex">
+<span>def <span class="ident">location_build_station</span></span>(<span>station: redvox.common.station.Station) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains location data from RedVox station if it exists</p>
+<p>:param station: RDVX Station object
+:return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
+horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def location_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains location data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, latitude, longitude, altitude, bearing, speed,
+    horizontal accuracy, vertical accuracy, bearing accuracy, speed accuracy, and location provider.
+    &#34;&#34;&#34;
+    if station.has_location_data():
+        return {&#39;location_sensor_name&#39;: station.location_sensor().name,
+                &#39;location_sample_rate_hz&#39;: station.location_sensor().sample_rate_hz,
+                &#39;location_epoch_s&#39;: station.location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;location_gps_epoch_s&#39;: station.location_sensor().get_data_channel(&#39;gps_timestamps&#39;)
+                                        * rpd_scales.MICROS_TO_S,
+                &#39;location_latitude&#39;: station.location_sensor().get_data_channel(&#34;latitude&#34;),
+                &#39;location_longitude&#39;: station.location_sensor().get_data_channel(&#34;longitude&#34;),
+                &#39;location_altitude&#39;: station.location_sensor().get_data_channel(&#34;altitude&#34;),
+                &#39;location_bearing&#39;: station.location_sensor().get_data_channel(&#34;bearing&#34;),
+                &#39;location_speed&#39;: station.location_sensor().get_data_channel(&#34;speed&#34;),
+                &#39;location_horizontal_accuracy&#39;:
+                    station.location_sensor().get_data_channel(&#34;horizontal_accuracy&#34;),
+                &#39;location_vertical_accuracy&#39;: station.location_sensor().get_data_channel(&#34;vertical_accuracy&#34;),
+                &#39;location_bearing_accuracy&#39;: station.location_sensor().get_data_channel(&#34;bearing_accuracy&#34;),
+                &#39;location_speed_accuracy&#39;: station.location_sensor().get_data_channel(&#34;speed_accuracy&#34;),
+                &#39;location_provider&#39;: station.location_sensor().get_data_channel(&#34;location_provider&#34;)}
+    else:
+        print(f&#39;Station {station.id} has no location data.&#39;)
+        return {}</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.sensor_uneven"><code class="name flex">
+<span>def <span class="ident">sensor_uneven</span></span>(<span>station: redvox.common.station.Station, sensor_label: str) ‑> Tuple[Union[NoneType, float], Union[NoneType, numpy.ndarray], Union[NoneType, numpy.ndarray], Union[NoneType, numpy.ndarray]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>ID nans, sample rate, epoch, raw of uneven sensor</p>
+<p>:param station: RDVX Station object
+:param sensor_label: one of: ['barometer', 'accelerometer', 'gyroscope', 'magnetometer']
+:return: sensor sample rate (Hz), timestamps, raw data and nans in sensor.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sensor_uneven(station: Station, sensor_label: str) -&gt; Tuple[Union[None, float], Union[None, np.ndarray],
+                                                                Union[None, np.ndarray], Union[None, np.ndarray]]:
+    &#34;&#34;&#34;
+    ID nans, sample rate, epoch, raw of uneven sensor
+
+    :param station: RDVX Station object
+    :param sensor_label: one of: [&#39;barometer&#39;, &#39;accelerometer&#39;, &#39;gyroscope&#39;, &#39;magnetometer&#39;]
+    :return: sensor sample rate (Hz), timestamps, raw data and nans in sensor.
+    &#34;&#34;&#34;
+
+    # default parameters
+    sensor_sample_rate_hz = None
+    sensor_epoch_s = None
+    sensor_raw = None
+    sensor_nans = None
+
+    if eval(&#39;station.has_&#39; + sensor_label + &#39;_data()&#39;):
+        sensor_dw = eval(&#39;station.&#39; + sensor_label + &#39;_sensor()&#39;)
+        sensor_sample_rate_hz = sensor_dw.sample_rate_hz
+        sensor_epoch_s = sensor_dw.data_timestamps() * rpd_scales.MICROS_TO_S
+        sensor_raw = sensor_dw.samples()
+        sensor_nans = np.argwhere(np.isnan(sensor_raw))
+    else:
+        print(f&#39;Station {station.id} has no {sensor_label} data.&#39;)
+
+    return sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.state_of_health_build_station"><code class="name flex">
+<span>def <span class="ident">state_of_health_build_station</span></span>(<span>station: redvox.common.station.Station) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains state of health data from RedVox station if it exists</p>
+<p>:param station: RDVX Station object
+:return: dictionary with sensor name, sample rate, timestamps, batt. charge, batt. current strength,
+internal temp., network type, network strength, power state, available ram and disk, and cell service state</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def state_of_health_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains state of health data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with sensor name, sample rate, timestamps, batt. charge, batt. current strength,
+    internal temp., network type, network strength, power state, available ram and disk, and cell service state
+    &#34;&#34;&#34;
+    if station.has_health_data():
+        return {&#39;health_sensor_name&#39;: station.health_sensor().name,
+                &#39;health_sample_rate_hz&#39;: station.health_sensor().sample_rate_hz,
+                &#39;health_epoch_s&#39;: station.health_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
+                &#39;battery_charge_remaining_per&#39;:
+                    station.health_sensor().get_data_channel(&#39;battery_charge_remaining&#39;),
+                &#39;battery_current_strength_mA&#39;:
+                    station.health_sensor().get_data_channel(&#39;battery_current_strength&#39;),
+                &#39;internal_temp_deg_C&#39;: station.health_sensor().get_data_channel(&#39;internal_temp_c&#39;),
+                &#39;network_type&#39;: station.health_sensor().get_data_channel(&#39;network_type&#39;),
+                &#39;network_strength_dB&#39;: station.health_sensor().get_data_channel(&#39;network_strength&#39;),
+                &#39;power_state&#39;: station.health_sensor().get_data_channel(&#39;power_state&#39;),
+                &#39;available_ram_byte&#39;: station.health_sensor().get_data_channel(&#39;avail_ram&#39;),
+                &#39;available_disk_byte&#39;: station.health_sensor().get_data_channel(&#39;avail_disk&#39;),
+                &#39;cell_service_state&#39;: station.health_sensor().get_data_channel(&#39;cell_service&#39;)}
+    else:
+        print(f&#39;Station {station.id} has no health data.&#39;)
+        return {}</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.station_to_dict_from_dw"><code class="name flex">
+<span>def <span class="ident">station_to_dict_from_dw</span></span>(<span>station: redvox.common.station.Station, sdk_version: str, sensor_labels: List[str], highpass_type: str = 'obspy', frequency_filter_low: float = 0.01, filter_order: int = 4) ‑> Dict[str, Union[str, NoneType, float]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>converts information from a station object created by a data window into a dictionary easily converted into
+a dataframe</p>
+<p>:param station: RDVX station object
+:param sdk_version: version of Redvox SDK used to create the Station object
+:param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer',
+'gyroscope', 'magnetometer', 'health', 'location', 'image']
+:param highpass_type: obspy', 'butter', 'rc', default 'obspy'
+:param frequency_filter_low: apply highpass filter. Default is 100 second periods
+:param filter_order: the order of the filter integer. Default is 4
+:return: a dictionary ready for conversion into a dataframe</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def station_to_dict_from_dw(
+        station: Station,
+        sdk_version: str,
+        sensor_labels: List[str],
+        highpass_type: str = &#39;obspy&#39;,
+        frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+        filter_order: int = 4) -&gt; Dict[str, Union[str, None, float]]:
+    &#34;&#34;&#34;
+    converts information from a station object created by a data window into a dictionary easily converted into
+    a dataframe
+
+    :param station: RDVX station object
+    :param sdk_version: version of Redvox SDK used to create the Station object
+    :param sensor_labels: the names of the sensors to extract, one of: [&#39;audio&#39;, &#39;barometer&#39;, &#39;accelerometer&#39;,
+        &#39;gyroscope&#39;, &#39;magnetometer&#39;, &#39;health&#39;, &#39;location&#39;, &#39;image&#39;]
+    :param highpass_type: obspy&#39;, &#39;butter&#39;, &#39;rc&#39;, default &#39;obspy&#39;
+    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param filter_order: the order of the filter integer. Default is 4
+    :return: a dictionary ready for conversion into a dataframe
+    &#34;&#34;&#34;
+    sensors = {&#34;station_id&#34;: station.id,
+               &#39;station_start_date_epoch_micros&#39;: station.start_timestamp,
+               &#39;station_make&#39;: station.metadata.make,
+               &#39;station_model&#39;: station.metadata.model,
+               &#39;station_app_version&#39;: station.metadata.app_version,
+               &#39;redvox_sdk_version&#39;: sdk_version}
+
+    print(f&#34;Prep Station {station.id}...&#34;, end=&#34; &#34;)
+    for label in sensor_labels:
+        print(f&#34;{label} sensor...&#34;, end=&#34; &#34;)
+        df_sensor = build_station(station=station,
+                                  sensor_label=label,
+                                  highpass_type=highpass_type,
+                                  frequency_filter_low=frequency_filter_low,
+                                  filter_order=filter_order)
+        if len(df_sensor.values()) &gt; 0:
+            sensors.update(df_sensor)
+    print(f&#34;Done.&#34;)
+    return sensors</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_build_station.synchronization_build_station"><code class="name flex">
+<span>def <span class="ident">synchronization_build_station</span></span>(<span>station: redvox.common.station.Station) ‑> dict</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Obtains time sync data from RedVox station if it exists</p>
+<p>:param station: RDVX Station object
+:return: dictionary with synchronization start time (s), synchronization latency (ms), synchronization offset (ms),
+synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def synchronization_build_station(station: Station) -&gt; dict:
+    &#34;&#34;&#34;
+    Obtains time sync data from RedVox station if it exists
+
+    :param station: RDVX Station object
+    :return: dictionary with synchronization start time (s), synchronization latency (ms), synchronization offset (ms),
+    synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.
+    &#34;&#34;&#34;
+    if station.has_timesync_data():
+        synchronization = station.timesync_analysis
+        return {&#39;synchronization_epoch_s&#39;: synchronization.get_start_times() * rpd_scales.MICROS_TO_S,
+                &#39;synchronization_latency_ms&#39;: synchronization.get_latencies() * rpd_scales.MICROS_TO_MILLIS,
+                &#39;synchronization_offset_ms&#39;: synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS,
+                &#39;synchronization_best_offset_ms&#39;: synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
+                &#39;synchronization_offset_delta_ms&#39;: synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS -
+                                                   synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
+                &#39;synchronization_number_exchanges&#39;: synchronization.timesync_data[0].num_tri_messages()}
+    else:
+        print(f&#39;Station {station.id} has no time sync data.&#39;)
+        return {}</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="redpandas" href="index.html">redpandas</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="redpandas.redpd_build_station.audio_wf_time_build_station" href="#redpandas.redpd_build_station.audio_wf_time_build_station">audio_wf_time_build_station</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.best_location_build_station" href="#redpandas.redpd_build_station.best_location_build_station">best_location_build_station</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.build_station" href="#redpandas.redpd_build_station.build_station">build_station</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.clock_build_station" href="#redpandas.redpd_build_station.clock_build_station">clock_build_station</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.image_build_station" href="#redpandas.redpd_build_station.image_build_station">image_build_station</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.light_build_station" href="#redpandas.redpd_build_station.light_build_station">light_build_station</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.location_build_station" href="#redpandas.redpd_build_station.location_build_station">location_build_station</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.sensor_uneven" href="#redpandas.redpd_build_station.sensor_uneven">sensor_uneven</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.state_of_health_build_station" href="#redpandas.redpd_build_station.state_of_health_build_station">state_of_health_build_station</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.station_to_dict_from_dw" href="#redpandas.redpd_build_station.station_to_dict_from_dw">station_to_dict_from_dw</a></code></li>
+<li><code><a title="redpandas.redpd_build_station.synchronization_build_station" href="#redpandas.redpd_build_station.synchronization_build_station">synchronization_build_station</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

@@ -14,7 +14,6 @@ import matplotlib.pyplot as plt
 
 # RedVox and Red Pandas modules
 from redvox.common.data_window import DataWindow
-import redvox.settings as settings
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
 import redpandas.redpd_build_station as rpd_build_sta
