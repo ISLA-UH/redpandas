@@ -33,7 +33,6 @@ DQ/DA/UQ statistics/metrics.
 
 Last updated: 10 June 2021
 &#34;&#34;&#34;
-# TODO: finish class definitions
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
@@ -253,8 +252,6 @@ def station_metadata(data_window: DataWindow) -&gt; None:
               f&#34;{station.metadata.os_version}\n&#34;
               f&#34;App Version: &#34;
               f&#34;{station.metadata.app_version}\n&#34;)
-
-        # TODO: Location framework specs, with Jonathan
 
         if station.has_audio_data():
             print(f&#34;\nAudio Sensor:\n&#34;
@@ -548,8 +545,6 @@ Magnetometer sensors.
               f&#34;{station.metadata.os_version}\n&#34;
               f&#34;App Version: &#34;
               f&#34;{station.metadata.app_version}\n&#34;)
-
-        # TODO: Location framework specs, with Jonathan
 
         if station.has_audio_data():
             print(f&#34;\nAudio Sensor:\n&#34;

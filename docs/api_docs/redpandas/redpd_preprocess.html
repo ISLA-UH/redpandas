@@ -38,7 +38,7 @@ Last updated: 6 July 2021
 &#34;&#34;&#34;
 
 from enum import Enum
-from typing import Tuple, Union, Iterable
+from typing import Tuple
 
 import numpy as np
 from scipy import signal
@@ -285,11 +285,11 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
         xcorr_offset_samples = xcorr_indexes[xcorr_offset_index]
         xcorr_peak = xcorr[xcorr_offset_index]
 
+        return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
+
     else:
         print(&#39;One of the waveforms is broken&#39;)
         return np.array([]), np.array([]), np.nan, np.nan, np.array([])
-
-    return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
 
 
 def highpass_from_diff(sig_wf: np.ndarray,
@@ -315,7 +315,6 @@ def highpass_from_diff(sig_wf: np.ndarray,
     :zero phase filters are acausal
     :return: filtered signal waveform, frequency_filter_low value used
     &#34;&#34;&#34;
-
     # Apply diff to remove DC offset; difference of nans is a nan
     # Replace nans with zeros, otherwise most things don&#39;t run
     # Using gradient instead of diff seems to fix off by zero issue!
@@ -694,7 +693,6 @@ def df_column_unflatten(df: pd.DataFrame,
     :zero phase filters are acausal
     :return: filtered signal waveform, frequency_filter_low value used
     &#34;&#34;&#34;
-
     # Apply diff to remove DC offset; difference of nans is a nan
     # Replace nans with zeros, otherwise most things don&#39;t run
     # Using gradient instead of diff seems to fix off by zero issue!
@@ -937,11 +935,11 @@ with identical sampling and duration.</p>
         xcorr_offset_samples = xcorr_indexes[xcorr_offset_index]
         xcorr_peak = xcorr[xcorr_offset_index]
 
+        return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
+
     else:
         print(&#39;One of the waveforms is broken&#39;)
-        return np.array([]), np.array([]), np.nan, np.nan, np.array([])
-
-    return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples</code></pre>
+        return np.array([]), np.array([]), np.nan, np.nan, np.array([])</code></pre>
 </details>
 </dd>
 </dl>
