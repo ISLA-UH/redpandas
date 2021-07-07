@@ -76,7 +76,6 @@ def coherence_numpy(sig_in: np.ndarray,
     # Coherence
     # Original code had no overlap - fixed
     # Same as coherence from PSD
-    # TODO MAG: Compute coherence from spectral products with other representations
     f, Cxy = signal.coherence(x=sig,
                               y=sig_ref,
                               fs=sig_ref_sample_rate_hz,
@@ -203,7 +202,6 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
     if m is not None:
         print("Coherence Reference station ", df[sig_id_label][m])
         sig_m = np.copy(df[sig_wf_label][m]) * sig_ref_calib
-        m_points = len(sig_m)
 
         for n in df.index:
 
@@ -217,10 +215,7 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             else:
                 # Generalized sensor cross correlations, including unequal lengths
                 sig_n = np.copy(df[sig_wf_label][n]) * sig_calib
-                n_points = len(sig_n)
 
-            # TODO MAG: Can incorrectly feed in different length windows.
-            #  Inherit length/sample rate checks from xcorr and spectcorr.
             # Compute PSDs for each and coherence between the two
             window_points = int(window_seconds * df[sig_sample_rate_label][m])
             window_overlap_points = int(window_overlap_fractional*window_points)
@@ -261,7 +256,6 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             phase_degrees = np.unwrap(180 / np.pi * np.angle(h_complex_response_sig))
 
             # Assumes all the frequencies are the same - must verify
-            # TODO MAG: use function for closest
             frequency_ref_index = np.argmin(np.abs(frequency_coherence - frequency_ref_hz))
             frequency_coherence_max_index = np.argmax(coherence_welch)
 

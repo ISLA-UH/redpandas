@@ -272,4 +272,3 @@ def plot_dw_baro(data_window: DataWindow) -> None:
             ax1.legend(loc='upper right')
             ax1.set_title("Pressure raw normalized waveforms")
             ax1.set_xlabel("Time from record start, s")
-

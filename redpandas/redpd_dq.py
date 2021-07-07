@@ -3,7 +3,6 @@ DQ/DA/UQ statistics/metrics.
 
 Last updated: 10 June 2021
 """
-# TODO: finish class definitions
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json
 
@@ -223,8 +222,6 @@ def station_metadata(data_window: DataWindow) -> None:
               f"{station.metadata.os_version}\n"
               f"App Version: "
               f"{station.metadata.app_version}\n")
-
-        # TODO: Location framework specs, with Jonathan
 
         if station.has_audio_data():
             print(f"\nAudio Sensor:\n"

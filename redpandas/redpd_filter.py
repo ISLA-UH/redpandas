@@ -11,8 +11,6 @@ import redpandas.redpd_preprocess as rpd_prep
 from typing import List, Tuple, Union
 
 
-# TODO: to add lowpass filter
-
 # Utils for filter modules
 def prime_factors(n: int) -> List[int]:
 
@@ -148,7 +146,6 @@ def normalize_pandas(df: pd.DataFrame,
                      new_column_label: str = 'normalized') -> pd.DataFrame:
     """
     Normalize all signals in df
-    # TODO: Issue with norm class in libquantum, please review (Tyler/Anthony)
     :param df: input pandas data frame
     :param sig_wf_label: string for column name with the waveform data in df
     :param scaling: scaling parameter, division
@@ -171,12 +168,12 @@ def normalize_pandas(df: pd.DataFrame,
 
         if df[sig_wf_label][row].ndim == 1:
             # use libquantum utils normalize module
-            list_normalized_signals.append(rpd_prep.normalize(sig=df[sig_wf_label][row], scaling=scaling,
+            list_normalized_signals.append(rpd_prep.normalize(sig_wf=df[sig_wf_label][row], scaling=scaling,
                                                               norm_type=norm_type_utils))
         else:
             list_3c_normalized_signals = []
             for index_dimension, _ in enumerate(df[sig_wf_label][row]):
-                list_3c_normalized_signals.append(rpd_prep.normalize(sig=df[sig_wf_label][row][index_dimension],
+                list_3c_normalized_signals.append(rpd_prep.normalize(sig_wf=df[sig_wf_label][row][index_dimension],
                                                                      scaling=scaling,
                                                                      norm_type=norm_type_utils))
 
@@ -351,7 +348,6 @@ def bandpass_butter_pandas(df: pd.DataFrame,
 
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
-        # TODO: check for j out of sorts
         if df[sig_wf_label][j].ndim == 1:
             nyquist = 0.5 * df[sig_sample_rate_label][j]
             edge_low = frequency_cut_low_hz / nyquist

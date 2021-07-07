@@ -28,8 +28,6 @@ class DataLoadMethod(enum.Enum):
             return DataLoadMethod.UNKNOWN
 
 
-# Todo MC: finish defining required and optional/not required fields with defaults
-
 class RedpdConfig:
 
     def __init__(self, input_directory: str,
@@ -110,28 +108,3 @@ class RedpdConfig:
     def pretty(self) -> str:
         # noinspection Mypy
         return pprint.pformat(vars(self))
-
-# example_config = RedpdConfig(
-#     event_name="Skyfall",
-#     input_directory=INPUT_DIR,
-#     sensor_labels=['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
-#                    'health', 'location', 'clock', 'synchronization'],
-#     rpd_dir="rpd_files",
-#     output_directory=os.path.join(INPUT_DIR, RPD_DIR),
-#     stations=["1637610021"],
-#     episode_start_epoch_s=1603806314,  # 2020-10-27T13:45:14
-#     duration_s=30*60,                  # 30 minutes
-#     ref_latitude_deg=35.83728,
-#     ref_longitude_deg=-115.57234,
-#     ref_altitude_m=1028.2,
-#     ref_epoch_s=1603808160,
-#     compress_dw=True,
-#     print_dw_quality=False,
-#     plot_mic_waveforms=False,
-#     build_df_parquet=True,
-#     tdr_load_method=DataLoadMethod.PARQUET,
-#     tfr_load_method=DataLoadMethod.PARQUET,
-#     band_order_Nth=12,
-#     verbosity=1,
-#     is_rerun_bounder=True
-# )

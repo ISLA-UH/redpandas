@@ -6,7 +6,7 @@ Last updated: 6 July 2021
 """
 
 from enum import Enum
-from typing import Tuple, Union, Iterable
+from typing import Tuple
 
 import numpy as np
 from scipy import signal
@@ -253,11 +253,11 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
         xcorr_offset_samples = xcorr_indexes[xcorr_offset_index]
         xcorr_peak = xcorr[xcorr_offset_index]
 
+        return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
+
     else:
         print('One of the waveforms is broken')
         return np.array([]), np.array([]), np.nan, np.nan, np.array([])
-
-    return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
 
 
 def highpass_from_diff(sig_wf: np.ndarray,
@@ -283,7 +283,6 @@ def highpass_from_diff(sig_wf: np.ndarray,
     :zero phase filters are acausal
     :return: filtered signal waveform, frequency_filter_low value used
     """
-
     # Apply diff to remove DC offset; difference of nans is a nan
     # Replace nans with zeros, otherwise most things don't run
     # Using gradient instead of diff seems to fix off by zero issue!
@@ -361,5 +360,3 @@ def df_column_unflatten(df: pd.DataFrame,
     for index_array in df.index:
         col_values[index_array].shape = (df[col_ndim_label][index_array][0],
                                          df[col_ndim_label][index_array][1])
-
-

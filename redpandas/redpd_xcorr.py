@@ -1,7 +1,7 @@
 """
 This module contains functions for calculating correlation.
 
-Last updated: 6 July 2021
+Last updated: 7 July 2021
 """
 
 import numpy as np
@@ -71,7 +71,6 @@ def most_similar_station_index(xnorm_max) -> Tuple[int, float]:
     return xcorr_ref_index, xcorr_mean_max
 
 
-# TODO: Repeat with spectrogram, return time, frequency, and max cross-correlation
 # Sort out time first: time gate input, refer to shared datum, correct times
 def xcorr_pandas(df: pd.DataFrame,
                  sig_wf_label: str,
@@ -201,11 +200,9 @@ def xcorr_re_ref_pandas(df: pd.DataFrame,
 
     number_sig = len(df.index)
     print("XCORR Nmber of signals:", number_sig)
-    # exit()
 
     m_list = df.index[df[sig_id_label] == ref_id_label]
     m = m_list[0]
-    # print("m", m)
     if len(m_list) > 1:
         raise Warning("More than one station meets the id spec. Picked first instance")
 
@@ -340,21 +337,17 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
     :return: input df with new columns
     """
 
-    # TODO: Refer to quantum/examples/blast_spectcorr_check, test with redshift
     # Have to learn how to use/validate correlate2D
     number_sig = len(df.index)
     print("SPECTCORR number of signals:", number_sig)
-    # exit()
 
     # M is the reference station
     m_list = df.index[df[sig_id_label] == ref_id_label]
     m = m_list[0]
-    # print("m", m)
     if len(m_list) > 1:
         raise Warning("More than one station meets the id spec. Picked first instance")
 
     # Find frequency edges
-
     freq_index_low = find_nearest(df[sig_tfr_frequency_low_hz_label][m], df[sig_tfr_frequency_label][m])
     freq_index_high = find_nearest(df[sig_tfr_frequency_high_hz_label][m], df[sig_tfr_frequency_label][m])
 

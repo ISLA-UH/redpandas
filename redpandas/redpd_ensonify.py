@@ -19,8 +19,6 @@ from typing import List, Optional
 permitted_wav_fs_values = 8000., 16000., 48000., 96000., 192000.
 exception_str = "Wav sample rate must be 8000, 16000, 48000, 96000, or 192000  Hz"
 lowest_wav_fs_value = 8000.
-# TODO: Roll out lowest_fs
-# TODO: Build tests in doc string
 
 
 def stretch_factor_str(sig_sample_rate_hz: float,
@@ -241,7 +239,6 @@ def pandas_to_elastic_wav(df: pd.DataFrame,
     :param sig_id_label: label to be used to id the signal
     :param wav_dir_prefix: export directory, and prefix for file
     :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
-    :param sample_rate_tolerance_percent: percent of permitted difference in sig and wav sample rates
     :return: export to .wav
     """
 

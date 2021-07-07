@@ -9,4 +9,4 @@ from redvox.common.data_window_configuration import DataWindowConfig
 class PipelineResult:
     output_dir: str
     data_window_config: DataWindowConfig
-    # TODO: all da kines
+
