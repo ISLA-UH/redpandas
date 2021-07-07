@@ -46,5 +46,6 @@ Location: /path/where/module/is/installed
 Requires: matplotlib, scipy, libquantum, redvox, fastkml, obspy, librosa, pymap3d, numpy, pandas, libwwz
 Required-by: 
 ```
+Return to _[Table of Contents](#table-of-contents)_.
 
 Return to _[main page](https://github.com/RedVoxInc/redpandas)_.

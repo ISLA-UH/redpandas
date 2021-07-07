@@ -15,9 +15,6 @@ This section covers the basics on how to use the RedVox Pandas (RedPandas) libra
     - [More options](#more-options)
 - [Opening RedPandas parquet files](#opening-redpandas-parquet-files)
 - [Data manipulation with RedPandas](#data-manipulation-with-redpandas)
-- [RedPandas example: Skyfall](#redpandas-example-skyfall)
-    - [Downloading the RedVox Skyfall data](#downloading-the-redvox-skyfall-data)
-    - [Running the Skyfall example](#running-the-skyfall-example)
 - [Frequently asked questions (FAQ)](#frequently-asked-questions-faq)
 
 <!-- tocstop -->
@@ -63,10 +60,10 @@ Return to _[Table of Contents](#table-of-contents)_.
 ### Downloading RedVox data
 
 You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone app and download it. There are 
-four methods to download the RedVox collected data and/or RedPandas example datasets (such as [Skyfall](#redpandas-example-skyfall)):
+four methods to download the RedVox collected data and/or RedPandas example datasets:
 
 1) Moving the RedVox files from your smartphone RedVox folder to your computer.
-2) Using RedVox Cloud Platform (link) (recommended).
+2) Using [RedVox Cloud Platform](https://beta.redvox.io/#/home).
 3) Using the [RedVox Python SDK cloud-download](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#cloud-download-command-details). Note that you will need to install the [GUI RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/installation.md#installing-optional-dependencies) 
 dependencies to use the cloud-download.
 4) Using the [RedVox Python SDK Command Line Interface (CLI)](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#data-req-command-details) 
@@ -214,63 +211,7 @@ RedPandas such as ensonifying RedVox data, plotting and more.
 
 Return to _[Table of Contents](#table-of-contents)_.
 
-### RedPandas example: Skyfall
 
-The Skyfall data is a great dataset to showcase the RedPandas library for processing smartphone data collected 
-with the [RedVox Infrasound Recorder app](https://www.redvoxsound.com).
-
-A balloon hoisted a commercial, off-the-shelf, smartphone to a height of 36 km (around 119,000 feet) and purposely burst
-to let the smartphone freefall (hence the name _Skyfall_). As the smartphone fell back to Earth, it recorded its 30 minute 
-descent using the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. You can find more information about this project at 
-(a link to the paper will be added once it is published).
-
-
-#### Downloading the RedVox Skyfall data
-
-You will need to download the necessary data to run the Skyfall example. 
-
-#### Running the Skyfall example
-
-There are three main steps to run the Skyfall example: setting up the configuration file, preprocessing RedVox data, and
-plotting the data.
-
-##### Configuration file
-
-The configuration file is 
-
-##### Running
-
-##### More information
-
-#### Troubleshooting and common problems in running the Skyfall example
-
-Here are some solutions to problems that might occur.
-
-- The following error appears when I try to run Skyfall: _ModuleNotFoundError: No module named 'skyfall_config_file'_
-
-    Make sure that skyfall_config_file.py is in the same folder as skyfall_first_run.py
-
-- The following error appears when I try to run Skyfall:  _ERROR: Could not find a version that satisfies the requirement 
-redvox-pandas (from versions: none)_ and _ERROR: No matching distribution found for redvox-pandas_
-
-    Check that you have RedPandas installed in your python environment with
-    ```shell script
-    pip show redvox-pandas
-    ```
-    If ``WARNING: Package(s) not found: redvox-pandas`` appears, you need to install RedPandas (visit [RedPandas Installation](installation.md) 
-    for more details). If you wish to install the RedPandas library locally in the same folder skyfall_config_file.py and skyfall_first_run.py 
-    are located, run the following command in your terminal:
-    
-    ```shell script
-    pip3 install --target=/path/to/folder/with/skyfall/scripts redvox-pandas --upgrade
-    ```
-
-- When I run Skyfall, I get TypeErrors and similar Errors
-
-    We probably changed some modules. Make sure you are up to date with the latest RedPandas version, visit [RedPandas Installation](installation.md) 
-    for more details. If you suspect it might a bug or an issue, please feel free to submit an issue on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
-
-Return to _[Table of Contents](#table-of-contents)_.
 
 ### Frequently asked questions (FAQ)
 
