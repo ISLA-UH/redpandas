@@ -25,15 +25,15 @@ The following terms are common terminology used throughout the RedPandas Documen
 
 _RedVox related terms:_
 
-- _RedVox_: Not the NYC based rock band.
+- _RedVox_: Not the NYC based rock band. RedVox refers to products related to [RedVox, Inc.](http://nelha.hawaii.gov/our-clients/redvox/)
 
 - _RedVox Infrasound Recorder_: A smartphone app that can record audio and other stimuli such as pressure. 
-To learn more about the app, click [here](https://www.redvoxsound.com).
+Visit [RedVox Sound](https://www.redvoxsound.com) to learn more about the app.
 
 - _RedVox Python SDK_: A Software Development Kit (SDK) developed to read, create, edit, and write RedVox files 
 (files ending in .rdvxz for [RedVox API 900](https://bitbucket.org/redvoxhi/redvox-protobuf-api/src/master/) 
- files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files).
-For more details, click [here](https://github.com/RedVoxInc/redvox-python-sdk).
+ files and .rdvxm for [RedVox API 1000](https://github.com/RedVoxInc/redvox-api-1000) files). Visit
+  [GitHub RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk) to learn more about the SDK.
 
 _RedPandas related terms:_
 
@@ -42,10 +42,11 @@ _RedPandas related terms:_
 - _RedPandas DataFrame_: a [Pandas DataFrame](https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html)
 created with the RedPandas library and usually containing RedVox data.
 
-- _Station_: a device used to record data, e.g., a smartphone recording infrasound waves using 
+- _Station_: a device used to record data, e.g., a smartphone recording infrasound waves using the
 [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. Also a Python class designed in the RedVox Python SDK to
-store station and sensor data. For more information on the Station Python class, 
-click [here](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station). A station has sensors (see below).
+store station and sensor data. Visit 
+[Station Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station)
+for more information on the Station Python class. A station has sensors (see below).
 
 - _Sensor_: a device that responds to a physical stimulus, e.g., barometer, accelerometer. The units for each available sensor can
 be found in [RedVox SDK Sensor Documentation](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access).
@@ -63,7 +64,7 @@ You can collect data with the [RedVox Infrasound Recorder](https://www.redvoxsou
 four methods to download the RedVox collected data and/or RedPandas example datasets:
 
 1) Moving the RedVox files from your smartphone RedVox folder to your computer.
-2) Using [RedVox Cloud Platform](https://beta.redvox.io/#/home).
+2) Using the [RedVox Cloud Platform](https://beta.redvox.io/#/home).
 3) Using the [RedVox Python SDK cloud-download](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#cloud-download-command-details). Note that you will need to install the [GUI RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/installation.md#installing-optional-dependencies) 
 dependencies to use the cloud-download.
 4) Using the [RedVox Python SDK Command Line Interface (CLI)](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#data-req-command-details) 
