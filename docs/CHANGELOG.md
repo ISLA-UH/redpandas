@@ -1,10 +1,12 @@
 ## RedVox Pandas (RedPandas) Version History
 
-## 1.1.5 ()
+## 1.1.5 (2021-07-07)
 
-- New and improved plot_wiggle_pandas
+- New and improved plot_wiggle_pandas, plot_mesh_pandas
+- Major clean up and docstring documentation added
 - More documentation and examples added
 - API documentation added
+- Now GitHub RedPandas repository public
 
 ## 1.1.4 (2021-06-16)
 
