@@ -14,7 +14,8 @@ from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 # from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, PD_PQT_FILE, \
 #     OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, is_rerun_bounder
 
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
+from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, \
+    ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 skyfall_config.is_rerun_bounder = True
 
 def bounder_specs_to_csv(df, csv_export_file):
@@ -107,13 +108,6 @@ if __name__ == '__main__':
     file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name
                                               + '_bounder_start_end.csv')
     bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
-
-    # TODO: Use the bounder terminus values in the configuration file
-    # Propagated to tdr
-    ref_latitude_deg = 35.83728
-    ref_longitude_deg = -115.57234
-    ref_altitude_m = 1028.2
-    ref_epoch_s = 1603808160
 
     # Compare to phone
     phone_datetime_start = dt.datetime_from_epoch_seconds_utc(phone_loc['location_epoch_s'][0])

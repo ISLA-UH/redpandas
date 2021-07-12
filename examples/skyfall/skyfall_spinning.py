@@ -18,21 +18,14 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
+from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, \
+    ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 
 if __name__ == "__main__":
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
     Last updated: 18 June 2021
     """
-
-    # TODO: same as loc_rpd
-    # Skyfall example exclusive variables (from Bounder)
-    ref_latitude_deg = 35.83728
-    ref_longitude_deg = -115.57234
-    ref_altitude_m = 1028.2
-    ref_epoch_s = 1603808160
-
     print('Let the sky fall')
 
     # Label columns in dataframe

@@ -27,7 +27,7 @@ axes = ["X", "Y", "Z"]
 def main():
     """
     RedVox RedPandas time-frequency representation of API900 data. Example: Skyfall.
-    Last updated: 29 June 2021
+    Last updated: 12 July 2021
     """
 
     print('Let the sky fall')
@@ -81,10 +81,10 @@ def main():
     magnetometer_tfr_time_s_label: str = "magnetometer_tfr_time_s"
 
     # Load data options
-    if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW or \
-            skyfall_config.tdr_load_method == DataLoadMethod.PICKLE:
+    if tfr_config.tfr_load_method == DataLoadMethod.DATAWINDOW or \
+            tfr_config.tfr_load_method == DataLoadMethod.PICKLE:
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
-        if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
+        if tfr_config.tfr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow...", end=" ")
 
             rdvx_data = rpd_dw.dw_from_config_epoch(config=skyfall_config)
@@ -103,7 +103,7 @@ def main():
                                         for station in rdvx_data.stations])
         df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
 
-    elif skyfall_config.tdr_load_method == DataLoadMethod.PARQUET:  # Option C: Open dataframe from parquet file
+    elif tfr_config.tfr_load_method == DataLoadMethod.PARQUET:  # Option C: Open dataframe from parquet file
         print("Loading existing RedPandas Parquet...", end=" ")
         df_skyfall_data = pd.read_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
         print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
