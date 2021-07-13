@@ -12,6 +12,8 @@ example_station = rdvx_data.get_station("1637610021")[0]
 #  - Datasets with: image, luminosity
 #  - Write tests accordingly
 
+# TODO MC: make pickle out of data so loading data is faster, especially as more datasets are introduced
+
 
 class TestUnevenSensor(unittest.TestCase):
     def setUp(self) -> None:
