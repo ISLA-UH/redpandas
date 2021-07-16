@@ -51,9 +51,11 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 ### Variable columns in RedPandas
 
-Depending on the selected sensors in ``sensor_labels`` in the functions ``build_station`` and 
-``station_to_station_to_dict_from_dw``, and the sensors available in the data, the following columns 
-might be included in the DataFrame.
+Depending on the selected sensors in ``sensor_labels`` in the functions 
+[build_station](https://redvoxinc.github.io/redpandas/redpd_build_station.html#redpandas.redpd_build_station.build_station) 
+and 
+[station_to_dict_from_dw](https://redvoxinc.github.io/redpandas/redpd_build_station.html#redpandas.redpd_build_station.station_to_dict_from_dw), 
+and the sensors available in the data, the following columns might be included in the DataFrame.
 
 
 #### Columns related to barometer, accelerometer, gyroscope, and magnetometer sensors
@@ -90,7 +92,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 The best location sensor differs from the [location sensor](#columns-related-to-location-sensor) in that the previous "best" locations (or those with the highest 
 accuracy) captured at previous point in time are stored instead of continuous location information. For more information,
-visit [Working with the BestLocation type](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/low_level_api.md#working-with-the-bestlocation-types)
+visit [Working with the BestLocation type](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/low_level_api.md#working-with-the-bestlocation-types).
 
 - ``best_location_sensor_name``: name of [best location sensor](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/low_level_api.md#working-with-the-bestlocation-types).
 - ``best_location_sample_rate_hz``: best location sensor sample rate in Hz
@@ -135,7 +137,8 @@ Return to _[Table of Contents](#table-of-contents)_.
 - ``image_codec``: image codec
 
 For more information on how to view images collected with [RedVox Infrasound Recorder](https://www.redvoxsound.com/) smartphone 
-app, visit [gallery Command Details](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#gallery-command-details)
+app, visit
+[gallery Command Details](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#gallery-command-details).
 
 Return to _[Table of Contents](#table-of-contents)_.
 
