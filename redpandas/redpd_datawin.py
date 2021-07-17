@@ -7,6 +7,7 @@ Last updated: 24 June 2021
 # Python libraries
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
 from typing import List, Optional
 from datetime import datetime
 import os
@@ -96,26 +97,30 @@ def dw_from_config_epoch(config: RedpdConfig) -> DataWindow:
     return rdvx_data
 
 
-def build_from_config(config: RedpdConfig) -> None:
+def build_from_config(config: RedpdConfig) -> DataWindow:
     """
     Load data, construct data window, export as pickle using a configuration file
 
     :param config: RedpdConfig
-    :return: RedVox DataWindow saved in pickle file and corresponding JSON file
+    :return: RedVox DataWindow, optionally DataWindow saved in pickle file and corresponding JSON file
     """
-    build(api_input_directory=config.input_dir,
-          event_name=config.event_name,
-          output_directory=config.output_dir,
-          output_filename=config.output_filename_pkl_pqt,
-          redvox_station_ids=config.station_ids,
-          start_epoch_s=config.event_start_epoch_s,
-          end_epoch_s=config.event_end_epoch_s,
-          start_buffer_minutes=config.start_buffer_minutes,
-          end_buffer_minutes=config.end_buffer_minutes,
-          debug=False)
+    dw = build(api_input_directory=config.input_dir,
+               export_pickle=True,  # TODO: add this to redconfig
+               event_name=config.event_name,
+               output_directory=config.output_dir,
+               output_filename=config.output_filename_pkl_pqt,
+               redvox_station_ids=config.station_ids,
+               start_epoch_s=config.event_start_epoch_s,
+               end_epoch_s=config.event_end_epoch_s,
+               start_buffer_minutes=config.start_buffer_minutes,
+               end_buffer_minutes=config.end_buffer_minutes,
+               debug=False)
+
+    return dw
 
 
 def build(api_input_directory: str,
+          export_pickle: bool = True,
           event_name: Optional[str] = "Redvox",
           output_directory: Optional[str] = None,
           output_filename: Optional[str] = None,
@@ -124,12 +129,13 @@ def build(api_input_directory: str,
           end_epoch_s: Optional[float] = None,
           start_buffer_minutes: Optional[int] = 3,
           end_buffer_minutes: Optional[int] = 3,
-          debug: bool = False) -> None:
+          debug: bool = False) -> DataWindow:
 
     """
     Load data, construct data window, export as pickle
 
     :param api_input_directory: directory where data is located
+    :param export_pickle: export pickle file with RedVox DataWindow if True. Default is True
     :param event_name: name of event
     :param output_directory: directory where pickle and JSON files are saved. Default is api_input_directory
     :param output_filename: name for pickle and JSON files. Default is event_name + .pkl
@@ -140,7 +146,8 @@ def build(api_input_directory: str,
     Default is 3.
     :param end_buffer_minutes: the amount of time to include after the end_epoch_s when filtering data. Default is 3.
     :param debug: Toggle DataWindow debug_dw on/off. Default is False.
-    :return: RedVox DataWindow saved in pickle file and corresponding JSON file
+
+    :return: RedVox DataWindow, optionally RedVox DataWindow saved in pickle file and corresponding JSON file
     """
 
     print(f"Loading data and constructing RedVox DataWindow for: {event_name}...", end=" ")
@@ -201,42 +208,46 @@ def build(api_input_directory: str,
                                      end_padding_seconds=end_buffer_minutes * 60,
                                      debug=debug)
 
-    # Load signals
+    # Load signals with RedVox DataWindow
     rdvx_data = DataWindow.from_config(dw_config)
     print(f"Done.")
     print(f"RedVox SDK version: {rdvx_data.sdk_version}")
 
-    if output_directory is None:  # set output directory
-        output_directory = os.path.join(api_input_directory, "rpd_files")
-        if not os.path.exists(output_directory):  # make output directory if first time running build function
-            print(f"Creating output directory: {output_directory}...")
-            os.mkdir(output_directory)
+    if export_pickle is True:  # Export pickle
 
-    else:  # check output directory exists
-        if not os.path.exists(output_directory):  # make output directory if it doesn't exist
-            print(f"Creating output directory: {output_directory}...")
-            os.mkdir(output_directory)
+        if output_directory is None:  # set output directory
+            output_directory = os.path.join(api_input_directory, "rpd_files")
+            if not os.path.exists(output_directory):  # make output directory if first time running build function
+                print(f"Creating output directory: {output_directory}...")
+                os.mkdir(output_directory)
 
-    if output_filename is None:  # set output filename
-        output_filename: str = event_name
-    else:
-        output_filename = output_filename.replace(".pkl", "")
+        else:  # check output directory exists
+            if not os.path.exists(output_directory):  # make output directory if it doesn't exist
+                print(f"Creating output directory: {output_directory}...")
+                os.mkdir(output_directory)
 
-    print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
-    rdvx_data.to_json_file(base_dir=output_directory,
-                           file_name=output_filename)
+        if output_filename is None:  # set output filename
+            output_filename: str = event_name
+        else:
+            output_filename = output_filename.replace(".pkl", "")
 
-    if output_filename.find(".pkl") == -1:
-        print(f"Done. Path:{os.path.join(output_directory,output_filename + '.pkl')}")
-    else:
-        print(f"Done. Path:{os.path.join(output_directory,output_filename)}")
+        print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
+        rdvx_data.to_json_file(base_dir=output_directory,
+                               file_name=output_filename)
+
+        if output_filename.find(".pkl") == -1:
+            print(f"Done. Path:{os.path.join(output_directory,output_filename + '.pkl')}")
+        else:
+            print(f"Done. Path:{os.path.join(output_directory,output_filename)}")
+
+    return rdvx_data
 
 
-def plot_dw_mic(data_window: DataWindow) -> None:
+def plot_dw_mic(data_window: DataWindow) -> Figure:
     """
     Plot audio data for all stations in RedVox DataWindow
     :param data_window: RedVox DataWindow object
-    :return: plot
+    :return: matplotlib figure instance
     """
     station: Station
     f1, ax1 = plt.subplots(figsize=(10, 8))  # Adjust to your screen
@@ -252,12 +263,14 @@ def plot_dw_mic(data_window: DataWindow) -> None:
             ax1.set_title("Audio raw normalized waveforms")
             ax1.set_xlabel("Time from record start, s")
 
+    return f1
 
-def plot_dw_baro(data_window: DataWindow) -> None:
+
+def plot_dw_baro(data_window: DataWindow) -> Figure:
     """
     Plot barometer data for all stations in RedVox DataWindow
     :param data_window: RedVox DataWindow object
-    :return: plot
+    :return: matplotlib figure instance
     """
     station: Station
     f1, ax1 = plt.subplots(figsize=(10, 8))  # Adjust to your screen
@@ -272,3 +285,5 @@ def plot_dw_baro(data_window: DataWindow) -> None:
             ax1.legend(loc='upper right')
             ax1.set_title("Pressure raw normalized waveforms")
             ax1.set_xlabel("Time from record start, s")
+
+    return f1

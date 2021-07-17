@@ -94,7 +94,7 @@ This approach is ideal for python newcomers, new RedVox users, and for a superfi
 _Opening RedVox files (.rdvxz, .rdvxm) example:_
 
 ```python
-from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
+from redpandas.redpd_dw_to_parquet import redpd_df
 
 """
 Extract RedVox data into a Pandas DataFrame
@@ -103,7 +103,7 @@ Extract RedVox data into a Pandas DataFrame
 INPUT_DIR = "path/to/redvox/data"
 
 # Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
-redpd_dw_to_parquet(input_dir=INPUT_DIR)
+redpd_df(input_dir=INPUT_DIR)
 ```
 Note that [redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet) 
 will create a folder named ``rpd_files`` in the path/to/file given in the 
@@ -137,7 +137,7 @@ is to include ``create_dw = False`` in
 _Opening a compressed pickle (.pkl.lz4) containing RedVox data example:_
 
 ```python
-from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
+from redpandas.redpd_dw_to_parquet import redpd_df
 import pandas as pd
 
 """
@@ -147,7 +147,7 @@ Extract RedVox data into a Pandas DataFrame
 INPUT_DIR = "path/to/redvox/data"
 
 # Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
-redpd_dw_to_parquet(input_dir=INPUT_DIR,
+redpd_df(input_dir=INPUT_DIR,
                     create_dw = False)
 
 df_data = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
@@ -164,9 +164,9 @@ The function [redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_d
 _Opening Redvox files (.rdvxz, .rdvxm) with more options example:_
 
 ```python
-from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
+from redpandas.redpd_dw_to_parquet import redpd_df
 
-redpd_dw_to_parquet(input_dir="path/to/redvox/data",  # input directory where the data is located. Only variable REQUIRED
+redpd_df(input_dir="path/to/redvox/data",  # input directory where the data is located. Only variable REQUIRED
                     event_name="A cool example",  # name of dataset, default is Redvox
                     create_dw=True,  # create DataWindow, false if pickle
                     print_dq=True,  # print data quality statements if True

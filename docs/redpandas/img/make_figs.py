@@ -1,12 +1,12 @@
-from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet
+from redpandas.redpd_dw_to_parquet import redpd_df
 from redpandas.redpd_ensonify import ensonify_sensors_pandas
 import pandas as pd
 import redpandas.redpd_plot as rpd_plot
 import matplotlib.pyplot as plt
 
-redpd_dw_to_parquet(input_dir='/Users/meritxell/Documents/api_m_pipeline_tests/20210617_Sweep_test_students',
-                    sensor_labels=["audio", "barometer", "accelerometer", "gyroscope", "magnetometer"],
-                    start_epoch_s=1623962734, end_epoch_s=1623962730 + 15)
+redpd_df(input_dir='/Users/meritxell/Documents/api_m_pipeline_tests/20210617_Sweep_test_students',
+         sensor_labels=["audio", "barometer", "accelerometer", "gyroscope", "magnetometer"],
+         start_epoch_s=1623962734, end_epoch_s=1623962730 + 15)
 
 
 # INPUT_DIR = '/Users/meritxell/Documents/api_m_pipeline_tests/20210617_Sweep_test_students'

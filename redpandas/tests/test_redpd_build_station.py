@@ -4,15 +4,14 @@ import redpandas.redpd_build_station as rpd_build_sta
 from redvox.common.data_window import DataWindow
 
 # Load data once for speed
-rdvx_data: DataWindow = DataWindow.from_config_file("test_data/datawin_config.toml")
+rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="test_data",
+                                                  file_name="aud_bar_acc_mag_gyr_loc_soh_clock_sync")
 example_station = rdvx_data.get_station("1637610021")[0]
 
 # TODO MC:
 #  - Datasets with no: barometer, accelerometer, gyroscope, magnetometer, location, best location, clock, synch, health
 #  - Datasets with: image, luminosity
 #  - Write tests accordingly
-
-# TODO MC: make pickle out of data so loading data is faster, especially as more datasets are introduced
 
 
 class TestUnevenSensor(unittest.TestCase):
@@ -282,6 +281,51 @@ class TestStationToDictFromDw(unittest.TestCase):
         returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
                                                               sdk_version="3.0",
                                                               sensor_labels=["audio"],
+                                                              highpass_type="obspy",
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_barometer_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version="3.0",
+                                                              sensor_labels=["barometer"],
+                                                              highpass_type="obspy",
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_acceleration_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version="3.0",
+                                                              sensor_labels=["accelerometer"],
+                                                              highpass_type="obspy",
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_magnetometer_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version="3.0",
+                                                              sensor_labels=["magnetometer"],
+                                                              highpass_type="obspy",
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_gyroscope_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version="3.0",
+                                                              sensor_labels=["gyroscope"],
+                                                              highpass_type="obspy",
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_multiple(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version="3.0",
+                                                              sensor_labels=["audio", "barometer"],
                                                               highpass_type="obspy",
                                                               frequency_filter_low=1/100,
                                                               filter_order=4)

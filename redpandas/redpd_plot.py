@@ -1,13 +1,13 @@
 """
 This module contains main utils for plotting RedPandas DataFrames.
-
-Last updated: 6 July 2021
 """
+
 import datetime as dt
-from typing import List, Union, Optional
+from typing import List, Union, Optional, Tuple
 
 import matplotlib.pyplot as plt
 from matplotlib.colorbar import Colorbar
+from matplotlib.figure import Figure
 import numpy as np
 import pandas as pd
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
@@ -28,8 +28,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      mesh_time_label: Union[str, List[str]],
                      mesh_frequency_label: Union[str, List[str]],
                      mesh_tfr_label: Union[str, List[str]],
-                     t0_sig_epoch_s: float,
                      sig_id_label: Union[str, List[str]],
+                     t0_sig_epoch_s: float = None,
                      fig_title_show: bool = True,
                      fig_title: str = "STFT",
                      frequency_scaling: str = "log",
@@ -37,7 +37,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      frequency_hz_ymax: float = rpd_scales.Slice.F0,
                      common_colorbar: bool = True,
                      mesh_color_scaling: Union[List[str], str] = 'auto',
-                     mesh_color_range: Union[List[float], float] = 15) -> None:
+                     mesh_color_range: Union[List[float], float] = 15,
+                     show_figure: bool = True) -> Figure:
 
     """
      Plots spectrogram for all signals in df
@@ -46,17 +47,18 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param mesh_time_label: string for the mesh time column name in df. List of strings for multiple
      :param mesh_frequency_label: string for the mesh frequency column name in df. List of strings for multiple
      :param mesh_tfr_label: string for the mesh tfr column name in df. List of strings for multiple
-     :param t0_sig_epoch_s: epoch time in seconds of first timestamp
      :param sig_id_label: string for column name with station ids in df. You can also provide a list of custom labels
+      :param t0_sig_epoch_s: epoch time in seconds of first timestamp. Default is None
      :param fig_title_show: include a title in the figure. Default is True
-     :param fig_title: figure title label
+     :param fig_title: figure title label. Default is "STFT"
      :param frequency_scaling: "log" or "lin". Default is "log"
      :param frequency_hz_ymin: y axis min lim
      :param frequency_hz_ymax: y axis max lim
      :param common_colorbar: display a colorbar for all mesh panels. Default is True
      :param mesh_color_scaling: colorbar scaling, "auto" or "range". Default is 'auto'
      :param mesh_color_range: Default is 15
-     :return: plot
+     :param show_figure: show figure is True. Default is True
+     :return: matplotlib figure instance
      """
 
     # Create List of mesh tfr to loop through later
@@ -363,48 +365,27 @@ def plot_mesh_pandas(df: pd.DataFrame,
         mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
         mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
 
+    if show_figure is True:
+        plt.show()
 
-def plot_wiggles_pandas(df: pd.DataFrame,
-                        sig_wf_label: Union[List[str], str],
-                        sig_sample_rate_label: Union[List[str], str],
-                        sig_id_label: Union[List[str], str],
-                        station_id_str: Optional[str] = None,
-                        x_label: str = "Time (s)",
-                        y_label: str = "Signals",
-                        fig_title_show: bool = True,
-                        fig_title: str = 'Signals',
-                        wf_color: str = 'midnightblue',
-                        sig_timestamps_label: Optional[Union[List[str], str]] = None,
-                        custom_yticks: Optional[Union[List[str], str]] = None) -> None:
+    return fig
+
+
+def find_wiggle_num_yticks(df: pd.DataFrame,
+                           sig_wf_label: Union[List[str], str] = "audio_wf",
+                           sig_id_label: str = "station_id",
+                           station_id_str: Optional[str] = None,
+                           custom_yticks: Optional[Union[List[str], str]] = None) -> Tuple[int, List]:
     """
-    More nuanced plots with minimal distraction. Optimized for pandas input.
-    Add signal timestamps to sig_timestamps_label for more accurate representation.
+    Determine number of wiggles and ylabels that will be used
 
-    :param df: input pandas data frame
-    :param sig_wf_label: single string or list of strings for the waveform column name in df
-    :param sig_sample_rate_label: single string or list of strings for the sample rate in Hz column name in df
-    :param sig_id_label: string for the station id column name in df
-    :param station_id_str: string with name of one station to plot only that station. Default is None
-    :param x_label: x label. Default is "Time (s)"
-    :param y_label: y label. Default is "Signals"
-    :param fig_title_show: include a title in the figure. Default is True
-    :param fig_title: 'Normalized' + title label
-    :param wf_color: waveform color. Default is midnightblue
-    :param sig_timestamps_label: string or list of strings for column label in df with epoch time, default = None
-    :param custom_yticks: provide custom names for yticks, list of strings (one label per channel component) or "index"
-    :return: plot
+    :param df:
+    :param sig_wf_label:
+    :param sig_id_label:
+    :param station_id_str:
+    :param custom_yticks:
+    :return:
     """
-
-    # Create List of signal channels to loop through later
-    # If given only one, aka a sting, make it a list of length 1
-    if type(sig_wf_label) == str:
-        sig_wf_label = [sig_wf_label]
-    if type(sig_sample_rate_label) == str:
-        sig_sample_rate_label = [sig_sample_rate_label]
-    if type(sig_timestamps_label) == str:
-        sig_timestamps_label = [sig_timestamps_label]
-
-    # First, determine number of wiggles and ylabels that will be used
     wiggle_num_list = []  # number of wiggles
     wiggle_yticklabel = []  # name/y label of wiggles
 
@@ -452,6 +433,62 @@ def plot_wiggles_pandas(df: pd.DataFrame,
               'required for each component.')
         print('In case you provided a str in station_id_str, make sure the str actually exists in the dataframe')
         exit()
+
+    return wiggle_num, wiggle_yticklabel
+
+
+def plot_wiggles_pandas(df: pd.DataFrame,
+                        sig_wf_label: Union[List[str], str] = "audio_wf",
+                        sig_sample_rate_label: Union[List[str], str] = "audio_sample_rate_nominal_hz",
+                        sig_id_label: str = "station_id",
+                        station_id_str: Optional[str] = None,
+                        x_label: str = "Time (s)",
+                        y_label: str = "Signals",
+                        fig_title_show: bool = True,
+                        fig_title: str = 'Signals',
+                        wf_color: str = 'midnightblue',
+                        sig_timestamps_label: Optional[Union[List[str], str]] = None,
+                        custom_yticks: Optional[Union[List[str], str]] = None,
+                        show_figure: bool = True) -> Figure:
+
+    """
+    More nuanced plots with minimal distraction. Optimized for pandas input.
+    Add signal timestamps to sig_timestamps_label for more accurate representation.
+    For more information on available columns, visit
+    https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
+
+    :param df: input pandas data frame
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf"
+    :param sig_sample_rate_label: single string or list of strings for the sample rate in Hz column name in df.
+        Default is "audio_sample_rate_nominal_hz"
+    :param sig_id_label: string for the station id column name in df. Default is "station_id"
+    :param station_id_str: string with name of one station to plot only that station. Default is None
+    :param x_label: x label. Default is "Time (s)"
+    :param y_label: y label. Default is "Signals"
+    :param fig_title_show: include a title in the figure. Default is True
+    :param fig_title: 'Normalized' + title label. Default is "signals"
+    :param wf_color: waveform color. Default is midnightblue
+    :param sig_timestamps_label: string or list of strings for column label in df with epoch time, default = None
+    :param custom_yticks: provide custom names for yticks, list of strings (one label per channel component) or "index"
+    :param show_figure: show figure if True. Default is True
+
+    :return: matplotlib figure instance
+    """
+
+    # Create List of signal channels to loop through later
+    # If given only one, aka a sting, make it a list of length 1
+    if type(sig_wf_label) == str:
+        sig_wf_label = [sig_wf_label]
+    if type(sig_sample_rate_label) == str:
+        sig_sample_rate_label = [sig_sample_rate_label]
+    if type(sig_timestamps_label) == str:
+        sig_timestamps_label = [sig_timestamps_label]
+
+    wiggle_num, wiggle_yticklabel = find_wiggle_num_yticks(df=df,
+                                                           sig_wf_label=sig_wf_label,
+                                                           sig_id_label=sig_id_label,
+                                                           station_id_str=station_id_str,
+                                                           custom_yticks=custom_yticks)
 
     # Wiggle scaling
     offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
@@ -541,6 +578,11 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     ax1.set_xlabel(x_label, size=text_size)
     fig.tight_layout()
 
+    if show_figure is True:
+        plt.show()
+
+    return fig
+
 
 def plot_psd_coh(psd_sig,
                  psd_ref,
@@ -554,7 +596,8 @@ def plot_psd_coh(psd_sig,
                  psd_label: str = "PSD (bits)",
                  coh_label: str = "Coherence",
                  f_label: str = "Frequency (Hz)",
-                 fig_title: str = "Power spectral density and coherence") -> None:
+                 fig_title: str = "Power spectral density and coherence",
+                 show_figure: bool = True) -> Figure:
     """
     Plot coherence and power spectral density
 
@@ -571,7 +614,9 @@ def plot_psd_coh(psd_sig,
     :param coh_label: label for coherence. Default is "Coherence"
     :param f_label: x axis label. Default is "Frequency (Hz)"
     :param fig_title: title of figure. Default is "Power spectral density and coherence"
-    :return: plot
+    :param show_figure: show figure is True. Default is True
+
+    :return: matplotlib figure instance
     """
     # Plot PSDs
     fig1 = plt.figure()
@@ -597,6 +642,11 @@ def plot_psd_coh(psd_sig,
     ax2.set_ylabel(coh_label)
     ax2.grid('on', which='both')
 
+    if show_figure is True:
+        plt.show()
+
+    return fig1
+
 
 def plot_response_scatter(h_magnitude,
                           h_phase_deg,
@@ -605,11 +655,13 @@ def plot_response_scatter(h_magnitude,
                           f_min_hz,
                           f_max_hz,
                           f_scale: str = 'log',
-                          fig_title: str = 'Response only valid at high coherence') -> None:
+                          fig_title: str = 'Response only valid at high coherence',
+                          show_figure: bool = True) -> Figure:
     """
     Plot coherence response
 
-    :param h_magnitude: magnitude, for example, absolute magnitude of response (which is power spectral density / cross-power spectral density)
+    :param h_magnitude: magnitude, for example, absolute magnitude of response (which is power spectral density /
+        cross-power spectral density)
     :param h_phase_deg: coherence phase degrees
     :param color_guide: parameters color guide, for example, magnitude squared coherence of x and y
     :param f_hz: frequency of coherence in Hz
@@ -617,38 +669,35 @@ def plot_response_scatter(h_magnitude,
     :param f_max_hz: maximum frequency to plot in Hz (x max limit)
     :param f_scale: scale of x axis. One of {"linear", "log", "symlog", "logit"}. Default is "log"
     :param fig_title: title of figure
-    :return: plot
+    :param show_figure: show figure is True. Default is True
+
+    :return: matplotlib figure instance
     """
     # plot magnitude and coherence
     fig = plt.figure()
     fig.set_size_inches(8, 6)
     ax1 = plt.subplot(211)
-    # plt.hlines(1,1e-02,2e+01,linestyle='dashed',color='darkgrey')
-    # plt.vlines([0.02,10],1e-2,2,'r','dashed')
-    # h31=ax31.scatter(f, mag, 100, Cxy, '.', edgecolor='', cmap=CM, zorder=5)
     im1 = ax1.scatter(x=f_hz, y=h_magnitude, c=color_guide, marker='o')
     ax1.set_xscale(f_scale)
     ax1.set_xlim([f_min_hz, f_max_hz])
     ax1.grid('on', which='both')
-    # h31.set_clim(CLIM)
     hc = fig.colorbar(im1)
     hc.set_label('Coherence')
     ax1.set_ylabel('Magnitude ')
     ax1.set_title(fig_title)
 
     ax2 = plt.subplot(212)
-    # plt.hlines(0,1e-02,2e+01,linestyle='dashed',color='darkgrey')
-    # plt.vlines([0.02,10],-180,180,'r','dashed')
-    # h32=ax32.scatter(f, ph, 100, Cxy, '.', edgecolor='', cmap=CM, zorder=5)
     im2 = ax2.scatter(x=f_hz, y=h_phase_deg, c=color_guide, marker='o')
     ax2.set_xscale(f_scale)
     ax2.set_xlim([f_min_hz, f_max_hz])
     ax2.grid('on', which='both')
 
-    # ax32.axis([.01, 20, -15, 15])
     ax2.set_xlabel('Frequency [Hz]')
     ax2.set_ylabel('Phase [deg]')
-    # ax32.grid('on',which='both')
-    # h32.set_clim(CLIM)
     hc = plt.colorbar(im2)
     hc.set_label('Coherence')
+
+    if show_figure is True:
+        plt.show()
+
+    return fig
