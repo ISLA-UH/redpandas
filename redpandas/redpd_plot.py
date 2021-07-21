@@ -563,7 +563,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     """
     More nuanced plots with minimal distraction. Optimized for pandas input.
     Add signal timestamps to sig_timestamps_label for more accurate representation.
-    For more information on available columns, visit
+    For more information on available columns in dataframe, visit
     https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
 
     :param df: input pandas data frame
@@ -627,7 +627,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
             # first things first, check if column with data exists and if there is data in it:
             if check_if_column_exists_in_df(df=df, label=label) is False or type(df[label][index_station]) == float:
-                print(f"SensorMissingException: the column {label} is not in input_dw_or_path DataFrame")
+                print(f"SensorMissingException: the column {label} is not in input DataFrame")
                 continue  # if not, skip this iteration
 
             if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
