@@ -132,6 +132,8 @@ class TestFindWiggleNumYticks(unittest.TestCase):
         self.sinewave_barometer = None
         self.dict_to_df = None
         self.df_data = None
+        self.yticks = None
+        self.num_wiggle = None
 
 
 class TestIrregularFindWiggleNumYticks(unittest.TestCase):
@@ -255,6 +257,8 @@ class TestIrregularFindWiggleNumYticks(unittest.TestCase):
         self.sinewave_barometer = None
         self.dict_to_df = None
         self.df_data = None
+        self.yticks = None
+        self.num_wiggle = None
 
 
 class TestCheckIfStationExistsInDf(unittest.TestCase):
@@ -399,6 +403,7 @@ class TestDetermineTimeEpochOrigin(unittest.TestCase):
         self.signal_time_barometer = None
         self.dict_to_df = None
         self.df_data = None
+        self.time_epoch_origin = None
 
 
 # class TestPlotWigglesPandas(unittest.TestCase):
