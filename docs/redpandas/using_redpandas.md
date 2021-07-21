@@ -166,7 +166,7 @@ _Opening Redvox files (.rdvxz, .rdvxm) with more options example:_
 ```python
 from redpandas.redpd_dw_to_parquet import redpd_df
 
-redpd_df(input_dir="path/to/redvox/data",  # input directory where the data is located. Only variable REQUIRED
+redpd_df(input_dir="path/to/redvox/data",  # input_dw_or_path directory where the data is located. Only variable REQUIRED
                     event_name="A cool example",  # name of dataset, default is Redvox
                     create_dw=True,  # create DataWindow, false if pickle
                     print_dq=True,  # print data quality statements if True

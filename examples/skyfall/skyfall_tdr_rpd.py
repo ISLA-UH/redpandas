@@ -96,7 +96,7 @@ def main():
         if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow ...", end=" ")
 
-            rdvx_data = rpd_dw.dw_from_config_epoch(config=skyfall_config)
+            rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")

@@ -1,8 +1,6 @@
 """
-This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
-to RedPandas DataFrames.
-
-Last updated: 2 July 2021
+This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion to
+RedPandas DataFrames.
 """
 from typing import List, Dict, Union, Tuple
 
@@ -26,13 +24,12 @@ def station_to_dict_from_dw(
         frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
         filter_order: int = 4) -> Dict[str, Union[str, None, float]]:
     """
-    converts information from a station object created by a data window into a dictionary easily converted into
-    a dataframe
+    converts information from a station object created by a data window into a dictionary easily converted into a dataframe
 
     :param station: RDVX station object
     :param sdk_version: version of Redvox SDK used to create the Station object
-    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer',
-        'gyroscope', 'magnetometer', 'health', 'location', 'image']
+    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer', 'gyroscope',
+        'magnetometer', 'health', 'location', 'image']
     :param highpass_type: obspy', 'butter', 'rc', default 'obspy'
     :param frequency_filter_low: apply highpass filter. Default is 100 second periods
     :param filter_order: the order of the filter integer. Default is 4

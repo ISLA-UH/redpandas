@@ -1,6 +1,7 @@
 import unittest
 import pandas as pd
 import numpy as np
+from matplotlib.figure import Figure
 import redpandas.redpd_plot as rpd_plot
 
 
@@ -399,6 +400,18 @@ class TestDetermineTimeEpochOrigin(unittest.TestCase):
         self.dict_to_df = None
         self.df_data = None
 
+
+# class TestPlotWigglesPandas(unittest.TestCase):
+#
+#     def setUp(self) -> None:
+#
+#
+#     def test_return_is_figure_instance(self):
+#         self.figure = rpd_plot.plot_wiggles_pandas()
+#
+#         self.assertEqual(type(self.figure), Figure)
+#
+#     def
 
 if __name__ == '__main__':
     unittest.main()

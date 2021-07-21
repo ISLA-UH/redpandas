@@ -72,7 +72,7 @@ if __name__ == "__main__":
             #                        end_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.event_end_epoch_s),
             #                        apply_correction=True,
             #                        structured_layout=True)
-            rdvx_data = rpd_dw.dw_from_config_epoch(config=skyfall_config)
+            rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")

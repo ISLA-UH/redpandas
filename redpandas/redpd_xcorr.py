@@ -78,7 +78,7 @@ def xcorr_pandas(df: pd.DataFrame,
                  fs_fractional_tolerance: float = 0.02,
                  abs_xcorr: bool = True) -> Tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
-    Returns square matrix, a concise snapshot of the self-similarity of the input data set.
+    Returns square matrix, a concise snapshot of the self-similarity of the input_dw_or_path data set.
 
     :param df: input pandas data frame
     :param sig_wf_label: string for the waveform column name in df
@@ -278,7 +278,7 @@ def xcorr_re_ref_pandas(df: pd.DataFrame,
                     continue
 
                 # Main export parameters
-                # Allows negative peak in cross correlation (pi phase shift) in raw waveform, unless the input is power
+                # Allows negative peak in cross correlation (pi phase shift) in raw waveform, unless the input_dw_or_path is power
                 xcorr_normalized_max.append(xcorr[xcorr_offset_index])
                 xcorr_offset_points.append(xcorr_offset_samples)
                 xcorr_offset_seconds.append(xcorr_offset_samples/df[sig_sample_rate_label][n])

@@ -3,10 +3,10 @@ import numpy as np
 import redpandas.redpd_build_station as rpd_build_sta
 from redvox.common.data_window import DataWindow
 
-# Load data once for speed
-rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="test_data",
-                                                  file_name="aud_bar_acc_mag_gyr_loc_soh_clock_sync")
-example_station = rdvx_data.get_station("1637610021")[0]
+# # Load data once for speed
+# rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="test_data",
+#                                                   file_name="aud_bar_acc_mag_gyr_loc_soh_clock_sync")
+# example_station = rdvx_data.get_station("1637610021")[0]
 
 # TODO MC:
 #  - Datasets with no: barometer, accelerometer, gyroscope, magnetometer, location, best location, clock, synch, health

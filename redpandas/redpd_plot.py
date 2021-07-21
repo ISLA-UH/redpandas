@@ -592,6 +592,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     if type(sig_wf_label) == str:
         sig_wf_label = [sig_wf_label]
 
+    # Get wiggle number, yticks label
     wiggle_num, wiggle_yticklabel = find_wiggle_num_yticks(df=df,
                                                            sig_wf_label=sig_wf_label,
                                                            sig_id_label=sig_id_label,
@@ -624,13 +625,10 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     for index_station in df.index:  # loop per station
         for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
 
-            # first things first, check if column with data exists aka no sensor:
-            if check_if_column_exists_in_df(df=df, label=label) is False:
-                print(f"SensorMissingException: the column {label} is not in input DataFrame")
+            # first things first, check if column with data exists and if there is data in it:
+            if check_if_column_exists_in_df(df=df, label=label) is False or type(df[label][index_station]) == float:
+                print(f"SensorMissingException: the column {label} is not in input_dw_or_path DataFrame")
                 continue  # if not, skip this iteration
-
-            if type(df[label][index_station]) == float:  # not an array, so a Nan
-                continue  # skip cause entry for this station is empty
 
             if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
                 sensor_wf_df = df[label][index_station]
