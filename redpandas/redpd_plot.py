@@ -558,7 +558,6 @@ def check_if_station_exists_in_df(df: pd.DataFrame,
 
 
 # PLOT_WIGGLES
-# TODO: improve docstring
 def plot_wiggles_pandas(df: pd.DataFrame,
                         sig_wf_label: Union[List[str], str] = "audio_wf",
                         sig_timestamps_label: Union[List[str], str] = "audio_epoch_s",
@@ -574,9 +573,9 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
     """
     More nuanced plots with minimal distraction. Optimized for pandas input.
-    Add signal timestamps to sig_timestamps_label for more accurate representation.
+    Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label parameters.
     For more information on available columns in dataframe, visit
-    https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
+    `RedPandas columns <https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns>`__
 
     :param df: input pandas data frame. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for

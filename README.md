@@ -29,7 +29,7 @@ Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for more d
 
 ### Development
 
-- Please feel free to submit issues on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues).
+- Please feel free to submit issues and bugs on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues).
 - [Version History](https://github.com/RedVoxInc/redpandas/blob/master/docs/CHANGELOG.md)
 - [The Apache License](https://github.com/RedVoxInc/redpandas/blob/master/LICENSE)
 
