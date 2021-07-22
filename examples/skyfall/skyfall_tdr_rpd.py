@@ -428,18 +428,6 @@ def main():
                                   'Acc Z hp', 'Gyr X hp', 'Gyr Y hp', 'Gyr Z hp',
                                   'Mag X hp', 'Mag Y hp', 'Mag Z hp']
 
-        # rpd_plot.plot_sensor_wiggles_pandas(df=df_skyfall_data,
-        #                                     station_id_str='1637610021',
-        #                                     sensor_wf_label_list=sensor_column_label_list,
-        #                                     sensor_timestamps_label_list=sensor_epoch_column_label_list,
-        #                                     sig_id_label='station_id',
-        #                                     x_label='Time (s)',
-        #                                     y_label='Sensor',
-        #                                     fig_title_show=False,
-        #                                     fig_title='sensor waveforms',
-        #                                     wf_color='midnightblue',
-        #                                     sensor_yticks_label_list=sensor_ticklabels_list)
-
         rpd_plot.plot_wiggles_pandas(df=df_skyfall_data,
                                      sig_wf_label=sensor_column_label_list,
                                      sig_timestamps_label=sensor_epoch_column_label_list,

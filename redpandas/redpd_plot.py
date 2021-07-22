@@ -425,7 +425,7 @@ def find_wiggle_num_yticks(df: pd.DataFrame,
             # first things first, check if column exists:
             if check_if_column_exists_in_df(df=df, label=sensor_in_list) is False:
                 continue  # if not, skip this iteration
-
+            # check if empty
             if type(df[sensor_in_list][index_n]) == float:  # not an array, so a Nan
                 print(f'No data in column {sensor_in_list} for station {df[sig_id_label][index_n]}')
                 continue  # skip cause entry for this station is empty

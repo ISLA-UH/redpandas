@@ -19,8 +19,15 @@ class TestFindWiggleNumYticks(unittest.TestCase):
         # Create barometer
         self.sample_rate_barometer = 31
         self.signal_time_barometer = np.arange(self.start_time, self.end_time, 1/self.sample_rate_barometer)
-        sinewave_barometer = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_barometer)
-        self.sinewave_barometer = sinewave_barometer.reshape((1, len(sinewave_barometer)))
+        self.sinewave_barometer_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_barometer)
+        self.sinewave_barometer = self.sinewave_barometer_base.reshape((1, len(self.sinewave_barometer_base)))
+
+        # Create accelerometer
+        self.sample_rate_acc = 30
+        self.signal_time_acc = np.arange(self.start_time, self.end_time, 1/self.sample_rate_acc)
+        self.sinewave_acc_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_acc)
+        self.points_per_row = int(len(self.sinewave_acc_base)/3)
+        self.sinewave_acc = self.sinewave_acc_base.reshape((3, self.points_per_row))
 
         # Create df
         self.dict_to_df = {0: {"station_id": "1234567890",
@@ -31,7 +38,9 @@ class TestFindWiggleNumYticks(unittest.TestCase):
                                "barometer_sensor_name": "synch_barometer",
                                "barometer_sample_rate_nominal_hz": self.sample_rate_barometer,
                                "barometer_epoch_s": self.signal_time_barometer,
-                               "barometer_wf": self.sinewave_barometer},
+                               "barometer_wf_raw": self.sinewave_barometer,
+                               "accelerometer_epoch_s": self.signal_time_acc,
+                               "accelerometer_wf_raw": self.sinewave_acc},
                            1: {"station_id": "2345678901",   # Add another station
                                "audio_sensor_name": "synch_audio",
                                "audio_sample_rate_nominal_hz": self.sample_rate_audio,
@@ -40,7 +49,9 @@ class TestFindWiggleNumYticks(unittest.TestCase):
                                "barometer_sensor_name": "synch_barometer",
                                "barometer_sample_rate_nominal_hz": self.sample_rate_barometer,
                                "barometer_epoch_s": self.signal_time_barometer,
-                               "barometer_wf": self.sinewave_barometer}}
+                               "barometer_wf_raw": self.sinewave_barometer,
+                               "accelerometer_epoch_s": self.signal_time_acc,
+                               "accelerometer_wf_raw": self.sinewave_acc}}
 
         self.df_data = pd.DataFrame(self.dict_to_df).T
 
@@ -57,7 +68,7 @@ class TestFindWiggleNumYticks(unittest.TestCase):
     def test_num_wiggle_is_2_barometer(self):
 
         self.num_wiggle, _ = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
-                                                             sig_wf_label=["barometer_wf"],
+                                                             sig_wf_label=["barometer_wf_raw"],
                                                              sig_id_label="station_id",
                                                              station_id_str=None,
                                                              custom_yticks=None)
@@ -66,20 +77,62 @@ class TestFindWiggleNumYticks(unittest.TestCase):
     def test_num_wiggle_is_4_audio_barometer(self):
 
         self.num_wiggle, _ = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
-                                                             sig_wf_label=["audio_wf", "barometer_wf"],
+                                                             sig_wf_label=["audio_wf", "barometer_wf_raw"],
                                                              sig_id_label="station_id",
                                                              station_id_str=None)
 
         self.assertEqual(self.num_wiggle, 4)
 
-    def test_yticks_is_station_id(self):
+    def test_num_wiggle_is_10_audio_barometer_acc(self):
+
+        self.num_wiggle, _ = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
+                                                             sig_wf_label=["audio_wf", "barometer_wf_raw",
+                                                                           "accelerometer_wf_raw"],
+                                                             sig_id_label="station_id",
+                                                             station_id_str=None)
+        self.assertEqual(self.num_wiggle, 10)
+
+    def test_yticks_is_station_id_one_sensor_no_custom_yticks(self):
         _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
                                                          sig_wf_label=["audio_wf"],
                                                          sig_id_label="station_id",
                                                          station_id_str=None,
                                                          custom_yticks=None)
-
         self.assertEqual(self.yticks, ["1234567890", "2345678901"])
+
+    def test_yticks_multiple_stations_multiple_sensors(self):
+        _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
+                                                         sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                                         sig_id_label="station_id",
+                                                         station_id_str=None,
+                                                         custom_yticks=None)
+        self.assertEqual(self.yticks, ["1234567890 aud", "2345678901 aud", "1234567890 bar raw", "2345678901 bar raw"])
+
+    def test_yticks_multiple_stations_multiple_sensors_with_3c_sensors(self):
+        _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
+                                                         sig_wf_label=["audio_wf", "barometer_wf_raw",
+                                                                       "accelerometer_wf_raw"],
+                                                         sig_id_label="station_id",
+                                                         station_id_str=None,
+                                                         custom_yticks=None)
+        self.assertEqual(self.yticks, ["1234567890 aud", "2345678901 aud", "1234567890 bar raw", "2345678901 bar raw",
+                                       "1234567890 acc X raw", "1234567890 acc Y raw", "1234567890 acc Z raw",
+                                       "2345678901 acc X raw", "2345678901 acc Y raw", "2345678901 acc Z raw"])
+
+    def test_yticks_one_station_multiple_sensors(self):
+        _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
+                                                         sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                                         sig_id_label="station_id",
+                                                         station_id_str="1234567890")
+        self.assertEqual(self.yticks, ['aud', 'bar raw'])
+
+    def test_yticks_one_station_multiple_sensors_with_3c_sensors(self):
+        _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
+                                                         sig_wf_label=["audio_wf", "barometer_wf_raw",
+                                                                       "accelerometer_wf_raw"],
+                                                         sig_id_label="station_id",
+                                                         station_id_str="1234567890")
+        self.assertEqual(self.yticks, ['aud', 'bar raw', 'acc X raw', 'acc Y raw', 'acc Z raw'])
 
     def test_yticks_if_custom_yticks_index(self):
         _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data,
@@ -112,7 +165,7 @@ class TestFindWiggleNumYticks(unittest.TestCase):
                                                                             station_id_str="283976987",
                                                                             custom_yticks=['a', 'b'])
 
-    def test_yticks_if_correct_input_custom_yticks_and_correct_station(self):
+    def test_yticks_if_incorrect_input_custom_yticks_and_correct_one_station(self):
         with self.assertRaises(ValueError): rpd_plot.find_wiggle_num_yticks(df=self.df_data,
                                                                             sig_wf_label=["audio_wf"],
                                                                             sig_id_label="station_id",
@@ -134,6 +187,12 @@ class TestFindWiggleNumYticks(unittest.TestCase):
         self.df_data = None
         self.yticks = None
         self.num_wiggle = None
+        self.sinewave_barometer_base = None
+        self.sample_rate_acc = None
+        self.signal_time_acc = None
+        self.sinewave_acc_base = None
+        self.points_per_row = None
+        self.sinewave_acc = None
 
 
 class TestIrregularFindWiggleNumYticks(unittest.TestCase):
@@ -151,8 +210,15 @@ class TestIrregularFindWiggleNumYticks(unittest.TestCase):
         # Create barometer
         self.sample_rate_barometer = 31
         self.signal_time_barometer = np.arange(self.start_time, self.end_time, 1/self.sample_rate_barometer)
-        sinewave_barometer = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_barometer)
-        self.sinewave_barometer = sinewave_barometer.reshape((1, len(sinewave_barometer)))
+        self.sinewave_barometer_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_barometer)
+        self.sinewave_barometer = self.sinewave_barometer_base.reshape((1, len(self.sinewave_barometer_base)))
+
+        # Create accelerometer
+        self.sample_rate_acc = 30
+        self.signal_time_acc = np.arange(self.start_time, self.end_time, 1/self.sample_rate_acc)
+        self.sinewave_acc_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_acc)
+        self.points_per_row = int(len(self.sinewave_acc_base)/3)
+        self.sinewave_acc = self.sinewave_acc_base.reshape((3, self.points_per_row))
 
         # Create irregular df with one station with audio and barometer, other only audio
         self.dict_to_df_irregular = {0: {"station_id": "1234567890",
@@ -163,19 +229,21 @@ class TestIrregularFindWiggleNumYticks(unittest.TestCase):
                                          "barometer_sensor_name": "synch_barometer",
                                          "barometer_sample_rate_nominal_hz": self.sample_rate_barometer,
                                          "barometer_epoch_s": self.signal_time_barometer,
-                                         "barometer_wf": sinewave_barometer},
+                                         "barometer_wf_raw": self.sinewave_barometer},
                                      1: {"station_id": "2345678901",   # Add another station
                                          "audio_sensor_name": "synch_audio",
                                          "audio_sample_rate_nominal_hz": self.sample_rate_audio,
                                          "audio_epoch_s": self.signal_time_audio,
-                                         "audio_wf": self.sinewave_audio}}
+                                         "audio_wf": self.sinewave_audio,
+                                         "accelerometer_epoch_s": self.signal_time_acc,
+                                         "accelerometer_wf_raw": self.sinewave_acc}}
 
         self.df_data_irregular = pd.DataFrame(self.dict_to_df_irregular).T
 
     def test_irregular_num_wiggle_is_1_barometer(self):
 
         self.num_wiggle, _ = rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
-                                                             sig_wf_label=["barometer_wf"],
+                                                             sig_wf_label=["barometer_wf_raw"],
                                                              sig_id_label="station_id",
                                                              station_id_str=None,
                                                              custom_yticks=None)
@@ -184,20 +252,52 @@ class TestIrregularFindWiggleNumYticks(unittest.TestCase):
     def test_irregular_num_wiggle_is_3_audio_barometer(self):
 
         self.num_wiggle, _ = rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
-                                                             sig_wf_label=["audio_wf", "barometer_wf"],
+                                                             sig_wf_label=["audio_wf", "barometer_wf_raw"],
                                                              sig_id_label="station_id",
                                                              station_id_str=None)
 
         self.assertEqual(self.num_wiggle, 3)
 
-    def test_irregular_yticks_is_station_id(self):
+    def test_irregular_num_wiggle_is_6_audio_barometer(self):
+
+        self.num_wiggle, _ = rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
+                                                             sig_wf_label=["audio_wf", "barometer_wf_raw",
+                                                                           "accelerometer_wf_raw"],
+                                                             sig_id_label="station_id",
+                                                             station_id_str=None)
+
+        self.assertEqual(self.num_wiggle, 6)
+
+    def test_irregular_yticks_is_station_id_one_sensor_no_custom_yticks(self):
         _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
                                                          sig_wf_label=["audio_wf"],
                                                          sig_id_label="station_id",
                                                          station_id_str=None,
                                                          custom_yticks=None)
-
         self.assertEqual(self.yticks, ["1234567890", "2345678901"])
+
+    def test_irregular_yticks_multiple_stations_multiple_sensors(self):
+        _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
+                                                         sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                                         sig_id_label="station_id",
+                                                         station_id_str=None,
+                                                         custom_yticks=None)
+        self.assertEqual(self.yticks, ["1234567890 aud", "2345678901 aud", "1234567890 bar raw"])
+
+    def test_irregular_yticks_one_station_multiple_sensors_with_3c_sensors(self):
+        _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
+                                                         sig_wf_label=["audio_wf",
+                                                                       "accelerometer_wf_raw"],
+                                                         sig_id_label="station_id",
+                                                         station_id_str="2345678901")
+        self.assertEqual(self.yticks, ['aud', 'acc X raw', 'acc Y raw', 'acc Z raw'])
+
+    def test_irregular_yticks_one_station_multiple_sensors(self):
+        _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
+                                                         sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                                         sig_id_label="station_id",
+                                                         station_id_str="2345678901")
+        self.assertEqual(self.yticks, ['aud'])
 
     def test_irregular_yticks_if_custom_yticks_index(self):
         _, self.yticks = rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
@@ -239,7 +339,7 @@ class TestIrregularFindWiggleNumYticks(unittest.TestCase):
 
     def test_irregular_yticks_if_no_sensor_data_in_station(self):
         with self.assertRaises(ValueError): rpd_plot.find_wiggle_num_yticks(df=self.df_data_irregular,
-                                                                            sig_wf_label=["barometer_wf"],
+                                                                            sig_wf_label=["barometer_wf_raw"],
                                                                             sig_id_label="station_id",
                                                                             station_id_str="1234567890",
                                                                             custom_yticks=['a', 'b'])
@@ -259,6 +359,12 @@ class TestIrregularFindWiggleNumYticks(unittest.TestCase):
         self.df_data = None
         self.yticks = None
         self.num_wiggle = None
+        self.sinewave_barometer_base = None
+        self.sample_rate_acc = None
+        self.signal_time_acc = None
+        self.sinewave_acc_base = None
+        self.points_per_row = None
+        self.sinewave_acc = None
 
 
 class TestCheckIfStationExistsInDf(unittest.TestCase):
@@ -289,7 +395,7 @@ class TestCheckIfColumnExistsInDf(unittest.TestCase):
 
     def setUp(self):
         self.dict_to_df = {0: {"audio_wf": "0"},
-                           1: {"barometer_wf": "1"}}
+                           1: {"barometer_wf_raw": "1"}}
         self.df_data = pd.DataFrame(self.dict_to_df).T
 
     def test_correct_column_name(self):
@@ -386,13 +492,6 @@ class TestDetermineTimeEpochOrigin(unittest.TestCase):
                                                                       sig_id_label="station_id")
         self.assertEqual(self.time_epoch_origin, 1.0)
 
-    def test_result_with_multiple_timestamp_input_incorrect_one_station(self):
-        with self.assertRaises(ValueError): rpd_plot.determine_time_epoch_origin(df=self.df_data,
-                                                                                 sig_timestamps_label=["audio_epoch_s",
-                                                                                                       "barometer_epoch_s"],
-                                                                                 station_id_str="345678901",
-                                                                                 sig_id_label="station_id")
-
     def tearDown(self):
         self.start_time_audio = None
         self.end_time = None
@@ -424,10 +523,4 @@ class TestDetermineTimeEpochOrigin(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
-    # TODO:
-    #  - for yticks_wiggle:
-    #           - test yticks for one station (should be just names sensors),
-    #           - test yticks for one sensor (should be just name stations),
-    #           - test yticks multiple sensors and stations (should be both stations and sensors)
-    #           - test with accelerometer 3c structure
-    #  - test plot wiggles
+
