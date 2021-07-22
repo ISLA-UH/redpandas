@@ -89,6 +89,7 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
         - Default all stations included, for filtering specific stations see station_ids parameter.
         - To export RedVox DataWindow to pickle, change export_dw_pickle parameter to export_dw_pickle = True
         - To export RedPandas DataFrame to parquet, change export_df_parquet parameter to export_df_parquet = True
+        - If you wish to export to parquet and input_dw_or_path is a RedVox DataWindow, you need to provide an output directory in output_dir parameter
 
     :param input_dw_or_path: REQUIRED. Redvox DataWindow, or string with directory that contains the files to read data from
     :param export_dw_pickle: optional bool, export RedVox DataWindow to pickle if True. Default is False
@@ -96,12 +97,15 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
     :param event_name: optional string, name of event. Default is "Redvox"
     :param print_dq: optional bool, print data quality statements. Default is False
     :param show_raw_waveform_plots: optional bool, plot and show raw waveforms if True. Default is True
-    :param output_dir: optional string, directory to created save pickle/JSON/parquet. Default is None
-    :param output_filename_pkl: optional string, name of created parquet and pickle files. Default is None
-    :param output_filename_pqt: optional list of strings, list of station ids to filter on. Default is None
-    :param station_ids: optional list of strings, list of station ids to filter on. Default is None, so all stations included
+    :param output_dir: optional string, directory to created save pickle/JSON/parquet. Default is None. If None, a default
+        file output directory is created using this format: [input_dw_or_path]/rpd_files.
+    :param output_filename_pkl: optional string, name of created parquet and pickle files. Default is None. If None, a default
+        filename is created using this format: [event_name].pkl
+    :param output_filename_pqt: optional list of strings, list of station ids to filter on. Default is None. if None, a default
+        filename is created using this format: [event_name]_df.parquet
+    :param station_ids: optional list of strings, list of station ids to filter on. Default is None, so all stations are included
     :param sensor_labels: optional list of strings, list of sensors available ['audio', 'barometer', 'accelerometer',
-        'gyroscope', 'magnetometer', 'health', 'location', 'image']. For example: sensor_labels = ['audio', 'accelerometer'].
+        'gyroscope', 'magnetometer', 'health', 'location', 'synchronization', 'best_location']. For example: sensor_labels = ['audio', 'accelerometer'].
         Default is ["audio"]
     :param start_epoch_s: optional float, start time in epoch s. Default is None
     :param end_epoch_s: optional float, end time in epoch s. Default is None
@@ -114,27 +118,25 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
     :param frequency_filter_low: optional float, lowest frequency for highpass filter. Default is 100 second periods
     :param filter_order: optional integer, the order of the filter. Default is 4
 
-    :return: pd.DataFrame, string with output directory for parquet if export_df_parquet = True, string with output directory for pickle
-    if export_dw_pickle = True
+    :return: pd.DataFrame, string with output directory for parquet if export_df_parquet = True, string with output directory for pickle if export_dw_pickle = True
     """
     print("Initiating conversion from RedVox DataWindow to RedPandas:")
 
     if sensor_labels is None:
         sensor_labels = ["audio"]
 
+    if type(sensor_labels) is not list:
+        raise TypeError("must be a list")
+
+    # Check output dir valid if exporting
     if export_dw_pickle is True or export_df_parquet is True:
         if type(input_dw_or_path) is str:
-            if output_filename_pkl is None:
-                output_filename_pkl: str = event_name
-            else:
-                # make sure the .pkl does not repeat when we save the DataWindow
-                output_filename_pkl = output_filename_pkl.replace(".pkl", "")
-
             # set output dir for DataWindow pickle/JSON and parquet data products
             if output_dir is None:
                 output_dw_pqt_dir = os.path.join(input_dw_or_path, "rpd_files")
             else:
                 output_dw_pqt_dir = output_dir
+
         else:
             if output_dir is None:
                 raise ValueError("Please provide a directory in output_dir parameter")
@@ -165,8 +167,7 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
         rdvx_data: DataWindow = input_dw_or_path
 
     if export_dw_pickle is True:
-        full_path_pickle = rpd_dw.export_dw_to_pickle(api_input_directory=input_dw_or_path,
-                                                      dw=rdvx_data,
+        full_path_pickle = rpd_dw.export_dw_to_pickle(dw=rdvx_data,
                                                       output_directory=output_dir,
                                                       output_filename=output_filename_pkl,
                                                       event_name=event_name)
@@ -200,10 +201,10 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
 
     if export_df_parquet is True:  # export dataframe to parquet
         full_path_parquet = export_df_to_parquet(df=df_all_sensors_all_stations,
-                                                 sensor_labels=sensor_labels,
                                                  output_filename_pqt=output_filename_pqt,
                                                  event_name=event_name,
                                                  output_dir_pqt=output_dw_pqt_dir)
+        print(full_path_parquet)
     else:
         full_path_parquet = None
 
@@ -217,7 +218,6 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
 
 def export_df_to_parquet(df: pd.DataFrame,
                          output_dir_pqt: str,
-                         sensor_labels: List[str],
                          output_filename_pqt: Optional[str] = None,
                          event_name: Optional[str] = "Redvox") -> str:
     """
@@ -225,48 +225,52 @@ def export_df_to_parquet(df: pd.DataFrame,
 
     :param df: input pandas DataFrame. REQUIRED
     :param output_dir_pqt: string, output directory for parquet. REQUIRED
-    :param sensor_labels: list of strings, list of sensors available ['audio', 'barometer', 'accelerometer',
-        'gyroscope', 'magnetometer', 'health', 'location', 'image']. REQUIRED
     :param output_filename_pqt: optional string for parquet filename. Default is None
     :param event_name: optional string with name of event. Default is "Redvox"
 
     :return: string with full path (output directory and filename) of parquet
     """
+    if not os.path.exists(output_dir_pqt):  # make output directory if it doesn't exist
+        print(f"Creating output directory: {output_dir_pqt}...")
+        os.mkdir(output_dir_pqt)
 
-    # Need to flatten to save to parquet
-    for label in sensor_labels:
-        if label in ['barometer', 'accelerometer', 'gyroscope', 'magnetometer']:
+    key_sensors = {'barometer', 'accelerometer', 'gyroscope', 'magnetometer'}
+    for label in key_sensors:
 
-            if f'{label}_wf_raw' in df.columns:  # make sure there is raw data first
-                # Create new columns with shape tuple for future unflattening/reshaping
-                df[[f'{label}_wf_raw_ndim',
-                    f'{label}_wf_highpass_ndim',
-                    f'{label}_nans_ndim']] = \
-                    df[[f'{label}_wf_raw',
-                        f'{label}_wf_highpass',
-                        f'{label}_nans']].applymap(np.shape)
-
-                # Change tuples to 1D np.array to save it to parquet
-                df[[f'{label}_wf_raw_ndim',
-                    f'{label}_wf_highpass_ndim',
-                    f'{label}_nans_ndim']] = \
-                    df[[f'{label}_wf_raw_ndim',
-                        f'{label}_wf_highpass_ndim',
-                        f'{label}_nans_ndim']].applymap(np.asarray)
-
-                # Flatten each row in wf columns
+        if f'{label}_wf_raw' in df.columns:  # make sure there is raw data first
+            # Create new columns with shape tuple for future unflattening/reshaping
+            df[[f'{label}_wf_raw_ndim',
+                f'{label}_wf_highpass_ndim',
+                f'{label}_nans_ndim']] = \
                 df[[f'{label}_wf_raw',
                     f'{label}_wf_highpass',
-                    f'{label}_nans']] = \
-                    df[[f'{label}_wf_raw',
-                        f'{label}_wf_highpass',
-                        f'{label}_nans']].applymap(np.ravel)
+                    f'{label}_nans']].applymap(np.shape)
 
-    # Export pandas data frame to parquet
+            # Change tuples to 1D np.array to save it to parquet
+            df[[f'{label}_wf_raw_ndim',
+                f'{label}_wf_highpass_ndim',
+                f'{label}_nans_ndim']] = \
+                df[[f'{label}_wf_raw_ndim',
+                    f'{label}_wf_highpass_ndim',
+                    f'{label}_nans_ndim']].applymap(np.asarray)
+
+            # Flatten each row in wf columns
+            df[[f'{label}_wf_raw',
+                f'{label}_wf_highpass',
+                f'{label}_nans']] = \
+                df[[f'{label}_wf_raw',
+                    f'{label}_wf_highpass',
+                    f'{label}_nans']].applymap(np.ravel)
+
+    # Make filename if non given
     if output_filename_pqt is None:
         output_filename_pqt: str = event_name + "_df.parquet"
 
-    full_output_dir_path_parquet = os.path.join(output_dir_pqt, output_filename_pqt)
+    if output_filename_pqt.find(".parquet") == -1 and output_filename_pqt.find(".pqt") == -1:
+        full_output_dir_path_parquet = os.path.join(output_dir_pqt, output_filename_pqt + ".parquet")
+    else:
+        full_output_dir_path_parquet = os.path.join(output_dir_pqt, output_filename_pqt)
+
     df.to_parquet(full_output_dir_path_parquet)
     print(f"\nExported Parquet RedPandas DataFrame to {full_output_dir_path_parquet}")
 
