@@ -7,7 +7,7 @@ and [API 1000](https://github.com/RedVoxInc/redvox-api-1000) (API M) data.
 The RedVox Pandas (also known as RedPandas) pipeline is designed for integrability with other legacy and heterogeneous data sources.
 
 <p align="center">
-<img src="docs/redpandas/img/cover_fig.png" alt="Wiggles" width="700">
+<img src="https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/img/cover_fig.png?raw=true" alt="Wiggles" width="700">
 </p>
 
 ### Installation 
