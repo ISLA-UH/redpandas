@@ -309,60 +309,60 @@ class TestDetermineTimeEpochOrigin(unittest.TestCase):
 
     def setUp(self) -> None:
         # Create audio
-        self.start_time_audio = 1.
-        self.end_time = 10.
-        self.sample_rate_audio = 100.
-        self.signal_time_audio = np.arange(self.start_time_audio, self.end_time, 1/self.sample_rate_audio)
+        self.start_time_audio1 = 1.
+        self.end_time1 = 10.
+        self.sample_rate_audio1 = 100.
+        self.signal_time_audio1 = np.arange(self.start_time_audio1, self.end_time1, 1/self.sample_rate_audio1)
 
         # Create barometer
-        self.start_time_barometer = 2.
-        self.sample_rate_barometer = 31.
-        self.signal_time_barometer = np.arange(self.start_time_barometer, self.end_time, 1/self.sample_rate_barometer)
+        self.start_time_barometer1 = 2.
+        self.sample_rate_barometer1 = 31.
+        self.signal_time_barometer1 = np.arange(self.start_time_barometer1, self.end_time1,
+                                                1/self.sample_rate_barometer1)
+
+        # Create audio
+        self.start_time_audio2 = 0.5
+        self.end_time2 = 10.
+        self.sample_rate_audio2 = 100.
+        self.signal_time_audio2 = np.arange(self.start_time_audio2, self.end_time2, 1/self.sample_rate_audio2)
+
+        # Create barometer
+        self.start_time_barometer2 = 0.2
+        self.sample_rate_barometer2 = 31.
+        self.signal_time_barometer2 = np.arange(self.start_time_barometer2, self.end_time2,
+                                                1/self.sample_rate_barometer2)
 
         # Create df
         self.dict_to_df = {0: {"station_id": "1234567890",
                                "audio_sensor_name": "synch_audio",
-                               "audio_sample_rate_nominal_hz": self.sample_rate_audio,
-                               "audio_epoch_s": self.signal_time_audio,
+                               "audio_sample_rate_nominal_hz": self.sample_rate_audio1,
+                               "audio_epoch_s": self.signal_time_audio1,
                                "barometer_sensor_name": "synch_barometer",
-                               "barometer_sample_rate_nominal_hz": self.sample_rate_barometer,
-                               "barometer_epoch_s": self.signal_time_barometer},
+                               "barometer_sample_rate_nominal_hz": self.sample_rate_barometer1,
+                               "barometer_epoch_s": self.signal_time_barometer1},
                            1: {"station_id": "2345678901",   # Add another station
                                "audio_sensor_name": "synch_audio",
-                               "audio_sample_rate_nominal_hz": self.sample_rate_audio,
-                               "audio_epoch_s": self.signal_time_audio,
+                               "audio_sample_rate_nominal_hz": self.sample_rate_audio2,
+                               "audio_epoch_s": self.signal_time_audio2,
                                "barometer_sensor_name": "synch_barometer",
-                               "barometer_sample_rate_nominal_hz": self.sample_rate_barometer,
-                               "barometer_epoch_s": self.signal_time_barometer}}
+                               "barometer_sample_rate_nominal_hz": self.sample_rate_barometer2,
+                               "barometer_epoch_s": self.signal_time_barometer2}}
 
         self.df_data = pd.DataFrame(self.dict_to_df).T
-
-    def test_result_if_no_timestamp_input_all_stations(self):
-        self.time_epoch_origin = rpd_plot.determine_time_epoch_origin(df=self.df_data,
-                                                                      sig_timestamps_label=None,
-                                                                      station_id_str=None,
-                                                                      sig_id_label="station_id")
-        self.assertEqual(self.time_epoch_origin, 0.0)
-
-    def test_result_if_no_timestamp_input_with_correct_one_station(self):
-        self.time_epoch_origin = rpd_plot.determine_time_epoch_origin(df=self.df_data,
-                                                                      sig_timestamps_label=None,
-                                                                      station_id_str="2345678901",
-                                                                      sig_id_label="station_id")
-        self.assertEqual(self.time_epoch_origin, 0.0)
-
-    def test_result_if_no_timestamp_input_with_incorrect_one_station(self):
-        with self.assertRaises(ValueError): rpd_plot.determine_time_epoch_origin(df=self.df_data,
-                                                                                 sig_timestamps_label=None,
-                                                                                 station_id_str="345678901",
-                                                                                 sig_id_label="station_id")
 
     def test_result_with_correct_timestamp_input_all_stations(self):
         self.time_epoch_origin = rpd_plot.determine_time_epoch_origin(df=self.df_data,
                                                                       sig_timestamps_label=["audio_epoch_s"],
                                                                       station_id_str=None,
                                                                       sig_id_label="station_id")
-        self.assertEqual(self.time_epoch_origin, 1.0)
+        self.assertEqual(self.time_epoch_origin, 0.5)
+
+    def test_result_with_correct_string_timestamp_input_all_stations(self):
+        self.time_epoch_origin = rpd_plot.determine_time_epoch_origin(df=self.df_data,
+                                                                      sig_timestamps_label="audio_epoch_s",
+                                                                      station_id_str=None,
+                                                                      sig_id_label="station_id")
+        self.assertEqual(self.time_epoch_origin, 0.5)
 
     def test_result_with_incorrect_timestamp_input_all_stations(self):
         with self.assertRaises(ValueError): rpd_plot.determine_time_epoch_origin(df=self.df_data,
@@ -376,13 +376,13 @@ class TestDetermineTimeEpochOrigin(unittest.TestCase):
                                                                                             "barometer_epoch_s"],
                                                                       station_id_str=None,
                                                                       sig_id_label="station_id")
-        self.assertEqual(self.time_epoch_origin, 1.0)
+        self.assertEqual(self.time_epoch_origin, 0.2)
 
     def test_result_with_multiple_timestamp_input_correct_one_station(self):
         self.time_epoch_origin = rpd_plot.determine_time_epoch_origin(df=self.df_data,
                                                                       sig_timestamps_label=["audio_epoch_s",
                                                                                             "barometer_epoch_s"],
-                                                                      station_id_str="2345678901",
+                                                                      station_id_str="1234567890",
                                                                       sig_id_label="station_id")
         self.assertEqual(self.time_epoch_origin, 1.0)
 
@@ -416,7 +416,18 @@ class TestDetermineTimeEpochOrigin(unittest.TestCase):
 #
 #         self.assertEqual(type(self.figure), Figure)
 #
-#     def
+#     def test_wrong_number_of_columns(self):
+#         with self.assertRaises(ValueError): rpd_plot.plot_wiggles_pandas(df=df,
+#                                                                          sig_wf_label="audio_wf",
+#                                                                          sig_timestamps_label=["audio_epoch_s",
+#                                                                                                "barometer_epoch_s"])
 
 if __name__ == '__main__':
     unittest.main()
+    # TODO:
+    #  - for yticks_wiggle:
+    #           - test yticks for one station (should be just names sensors),
+    #           - test yticks for one sensor (should be just name stations),
+    #           - test yticks multiple sensors and stations (should be both stations and sensors)
+    #           - test with accelerometer 3c structure
+    #  - test plot wiggles

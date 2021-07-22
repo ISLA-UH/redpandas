@@ -22,9 +22,6 @@ Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/maste
 
 Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for more details on RedPandas functions.
 
-### Examples?
-
-### Demos?
 
 ### Development
 
