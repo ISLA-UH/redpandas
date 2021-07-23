@@ -316,3 +316,5 @@ for dynamic range adjustments. Visit [plot_mesh_pandas](https://redvoxinc.github
 for defaults and more options.
 
 Return to _[Table of Contents](#table-of-contents)_.
+
+Return to _[main page](https://github.com/RedVoxInc/redpandas#redpandas)_.

@@ -245,4 +245,4 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 Return to _[Table of Contents](#table-of-contents)_.
 
-Return to _[main page](https://github.com/RedVoxInc/redpandas)_.
+Return to _[main page](https://github.com/RedVoxInc/redpandas#redpandas)_.
