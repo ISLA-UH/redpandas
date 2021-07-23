@@ -370,7 +370,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
     return fig
 
-# TODO: docstring
+
 # PLOT_WIGGLES AUXILIARY FUNCTIONS
 def find_wiggle_num_yticks(df: pd.DataFrame,
                            sig_wf_label: Union[List[str], str] = "audio_wf",
@@ -380,12 +380,14 @@ def find_wiggle_num_yticks(df: pd.DataFrame,
     """
     Determine number of wiggles and ylabels that will be used
 
-    :param df:
-    :param sig_wf_label:
-    :param sig_id_label:
-    :param station_id_str:
+    :param df: input pandas dataframe. REQUIRED
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
+        multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
+    :param sig_id_label: optional string for the station id column name in df. Default is "station_id"
+    :param station_id_str: optional string with name of one station to plot. Default is None
     :param custom_yticks:
-    :return:
+
+    :return: number of wiggles, list of y tick labels
     """
     dict_yticks = {"audio_wf": "aud",
                    "barometer_wf_raw[0]": "bar raw",
@@ -427,7 +429,6 @@ def find_wiggle_num_yticks(df: pd.DataFrame,
                 continue  # if not, skip this iteration
             # check if empty
             if type(df[sensor_in_list][index_n]) == float:  # not an array, so a Nan
-                print(f'No data in column {sensor_in_list} for station {df[sig_id_label][index_n]}')
                 continue  # skip cause entry for this station is empty
 
             if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
@@ -490,7 +491,7 @@ def determine_time_epoch_origin(df: pd.DataFrame,
                                 sig_timestamps_label: Union[List[str], str] = "audio_epoch_s",
                                 station_id_str: Optional[str] = None) -> float:
     """
-    Get time epoch origin for all sensors for all stations to establish the earliest timestamp if sig_timestamps_label provided
+    Get time epoch origin for all sensors for all stations to establish the earliest timestamp
 
     :param df: input pandas dataframe. REQUIRED
     :param sig_id_label: optional string for the station id column name in df. Default is "station_id"
@@ -511,19 +512,22 @@ def determine_time_epoch_origin(df: pd.DataFrame,
 
             # loop though each sensor in station
             for index_time_label, sensor_time_label in enumerate(sig_timestamps_label):
-
                 # check that the time column exists first
                 if check_if_column_exists_in_df(df=df, label=sensor_time_label) is False:
-                    raise ValueError(f"the column name ({sensor_time_label}) was not found in dataframe")
+                    raise ValueError(f"the column name ({sensor_time_label}) was not found in the dataframe")
 
-                if type(df[sensor_time_label][index_station]) == float:  # not an array, so a Nan
+                elif type(df[sensor_time_label][index_station]) == float:  # not an array, so a Nan
                     continue  # skip cause entry for this station is empty
 
                 else:
                     epoch_j.append(df[sensor_time_label][index_station].min())
 
     epoch_j = np.array(epoch_j)
-    time_epoch_origin = np.min(epoch_j[np.nonzero(epoch_j)])
+    try:
+        time_epoch_origin = np.min(epoch_j[np.nonzero(epoch_j)])
+    except ValueError:  # unless it so happens all min values are 0
+        time_epoch_origin = 0.0
+
     return time_epoch_origin
 
 
@@ -533,8 +537,8 @@ def check_if_column_exists_in_df(df: pd.DataFrame,
     Check if column is in dataframe.
     Based on the assumption that there is data in the column if it exists.
 
-    :param df: input pandas dataframe
-    :param label: string with column name
+    :param df: input pandas dataframe. REQUIRED
+    :param label: string with column name. REQUIRED
 
     :return: False if label not in df
     """
@@ -547,8 +551,8 @@ def check_if_station_exists_in_df(df: pd.DataFrame,
     """
     Check if station is in dataframe.
 
-    :param df: input pandas dataframe
-    :param station_id_str: string with name of one station to plot only that station. Default is None
+    :param df: input pandas dataframe. REQUIRED
+    :param station_id_str: string with name of one station to plot only that station. REQUIRED
     :param sig_id_label: string for the station id column name in df. Default is "station_id"
 
     :return: False if label not in df
@@ -574,8 +578,8 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     """
     More nuanced plots with minimal distraction. Optimized for pandas input.
     Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label parameters.
-    For more information on available columns in dataframe, visit
-    `RedPandas columns <https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns>`__
+    For more information on available columns in dataframe, visit:
+    https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
 
     :param df: input pandas data frame. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
@@ -621,19 +625,19 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
     wiggle_yticks = wiggle_offset
 
-    # set up figure
+    # Set up figure
     fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
     ax1.set_yticks(wiggle_yticks)
     ax1.set_yticklabels(wiggle_yticklabel)
     ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
     ax1.tick_params(axis='both', which='both', labelsize=text_size)
 
-    # get t0 out of all the sensors for all stations
+    # Get t0 out of all the sensors for all stations
     time_epoch_origin = determine_time_epoch_origin(df=df,
                                                     sig_timestamps_label=sig_timestamps_label,
                                                     station_id_str=station_id_str,
                                                     sig_id_label=sig_id_label)
-    # set up xlim min and max arrays.
+    # Set up xlim min and max arrays.
     xlim_min = np.empty(wiggle_num)
     xlim_max = np.empty(wiggle_num)
 
@@ -644,7 +648,8 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
             # first things first, check if column with data exists and if there is data in it:
             if check_if_column_exists_in_df(df=df, label=label) is False or type(df[label][index_station]) == float:
-                print(f"SensorMissingException: the column {label} is not in input DataFrame")
+                print(f"SensorMissingException: The column {label} was not found in DataFrame or no data available in "
+                      f"{label} for station {df[sig_id_label][index_station]}")
                 continue  # if not, skip this iteration
 
             if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:

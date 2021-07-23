@@ -84,7 +84,7 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
                     frequency_filter_low: Optional[float] = 1./rpd_scales.Slice.T100S,
                     filter_order: Optional[int] = 4) -> Tuple[pd.DataFrame, Union[str, None], Union[str, None]]:
     """
-    Extract RedVox data from raw or RedVox DataWindow, and construct pandas dataframe. Note:
+    Extract RedVox data from RedVox files or RedVox DataWindow, and construct pandas dataframe. Note:
         - Default sensor extracted is audio, for more options see sensor_labels parameter.
         - Default all stations included, for filtering specific stations see station_ids parameter.
         - To export RedVox DataWindow to pickle, change export_dw_pickle parameter to export_dw_pickle = True
@@ -103,12 +103,13 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
         filename is created using this format: [event_name].pkl
     :param output_filename_pqt: optional list of strings, list of station ids to filter on. Default is None. if None, a default
         filename is created using this format: [event_name]_df.parquet
-    :param station_ids: optional list of strings, list of station ids to filter on. Default is None, so all stations are included
+    :param station_ids: optional list of strings, list of station ids to filter on. Default is None, so all stations are included.
+        For example, to focus on Station 1 and Station 2, station_ids = ["Station 1", "Station 2"]
     :param sensor_labels: optional list of strings, list of sensors available ['audio', 'barometer', 'accelerometer',
         'gyroscope', 'magnetometer', 'health', 'location', 'synchronization', 'best_location']. For example: sensor_labels = ['audio', 'accelerometer'].
         Default is ["audio"]
-    :param start_epoch_s: optional float, start time in epoch s. Default is None
-    :param end_epoch_s: optional float, end time in epoch s. Default is None
+    :param start_epoch_s: optional float, start time in epoch s. Default is None, so first timestamp found in data
+    :param end_epoch_s: optional float, end time in epoch s. Default is None, so last timestamp found in data
     :param start_buffer_minutes: float representing the amount of minutes to include before the start datetime
         when filtering data. Default is 3
     :param end_buffer_minutes: float representing the amount of minutes to include after the end datetime
@@ -128,7 +129,7 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
     if type(sensor_labels) is not list:
         raise TypeError("must be a list")
 
-    # Check output dir valid if exporting
+    # Create output dir if exporting
     if export_dw_pickle is True or export_df_parquet is True:
         if type(input_dw_or_path) is str:
             # set output dir for DataWindow pickle/JSON and parquet data products
@@ -145,8 +146,9 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
 
     if type(input_dw_or_path) == str:
 
-        if start_epoch_s is not None and end_epoch_s is not None:
+        if start_epoch_s is not None:
             start_epoch_s = dt_utils.datetime_from_epoch_seconds_utc(start_epoch_s)
+        if end_epoch_s is not None:
             end_epoch_s = dt_utils.datetime_from_epoch_seconds_utc(end_epoch_s)
 
         # Load signals, create a RedVox DataWindow structure
