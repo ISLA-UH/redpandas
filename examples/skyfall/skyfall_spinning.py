@@ -3,7 +3,6 @@
 import os.path
 import matplotlib.pyplot as plt
 import pandas as pd
-import datetime as dtime
 import numpy as np
 
 # RedVox RedPandas and related RedVox modules
@@ -11,15 +10,11 @@ from redvox.common.data_window import DataWindow
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_plot as rpd_plot
-import redpandas.redpd_geospatial as rpd_geo
-from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, \
-    ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
+from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
 
 if __name__ == "__main__":
     """

@@ -1,12 +1,5 @@
-from redvox.api900.reader import read_file
-from redvox.common.data_window import DataWindow
-from redvox.common.data_window_configuration import DataWindowConfig
 import pandas as pd
-from typing import List
-from redpandas.redpd_df import redpd_dataframe
-import pathlib
-from redpandas.redpd_plot import plot_wiggles_pandas, find_wiggle_num_yticks
-import os
+from redpandas.redpd_plot.redpd_plot import plot_wiggles_pandas
 import numpy as np
 
 

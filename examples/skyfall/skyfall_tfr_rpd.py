@@ -5,16 +5,12 @@ import pandas as pd
 
 # RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindow
-import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_plot as rpd_plot
-import redpandas.redpd_geospatial as rpd_geo
+import redpandas.redpd_plot.redpd_plot as rpd_plot
 import redpandas.redpd_tfr as rpd_tfr
 import redpandas.redpd_datawin as rpd_dw
-from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
-from libquantum.spectra import stft_from_sig
 
 # Configuration file
 from redpandas.redpd_config import DataLoadMethod

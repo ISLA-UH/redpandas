@@ -20,170 +20,73 @@ import redpandas.redpd_scales as rpd_scales
 import redvox.common.date_time_utils as dt_utils
 
 
-def redpd_dataframe_from_config(config: RedpdConfig,
-                                export_dw_pickle: bool = False,
-                                export_df_parquet: bool = False,
-                                print_dq: bool = False,
-                                show_raw_waveform_plots: bool = True,
-                                highpass_type: str = 'obspy',
-                                frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
-                                filter_order: int = 4):
-    """
-    Extract RedVox data, convert to pandas dataframe and save in parquet
+# def redpd_dataframe_from_config(config: RedpdConfig,
+#                                 export_dw_pickle: bool = False,
+#                                 export_df_parquet: bool = False,
+#                                 print_dq: bool = False,
+#                                 show_raw_waveform_plots: bool = True,
+#                                 highpass_type: str = 'obspy',
+#                                 frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+#                                 filter_order: int = 4):
+#     """
+#     Extract RedVox data, convert to pandas dataframe and save in parquet
+#
+#     :param config:
+#     :param export_dw_pickle: optional bool, export RedVox DataWindow to pickle if True. Default is False
+#     :param export_df_parquet: optional bool, export created RedPandas Dataframe to parquet if True. Default is False
+#     :param print_dq: optional bool, print data quality statements. Default is False
+#     :param show_raw_waveform_plots: optional bool, plot and show raw waveforms if True. Default is True
+#     :param highpass_type: optional string, type of highpass applied. One of: {'obspy', 'butter', or 'rc'}. Default is 'obspy'
+#     :param frequency_filter_low: optional float, lowest frequency for highpass filter. Default is 100 second periods
+#     :param filter_order: optional integer, the order of the filter. Default is 4
+#
+#     :return: pd.DataFrame, string with output directory for parquet if export_df_parquet = True, string with output directory
+#         for pickle if export_dw_pickle = True
+#     """
+#     df_all_sensors_all_stations, full_path_parquet, full_path_pickle = \
+#         redpd_dataframe(input_dw=config.input_dir,
+#                         export_dw_pickle=export_dw_pickle,
+#                         export_df_parquet=export_df_parquet,
+#                         event_name=config.event_name,
+#                         print_dq=print_dq,
+#                         show_raw_waveform_plots=show_raw_waveform_plots,
+#                         output_dir=config.output_dir,
+#                         output_filename_pkl=config.dw_file,
+#                         output_filename_pqt=config.pd_pqt_file,
+#                         station_ids=config.station_ids,
+#                         sensor_labels=config.sensor_labels,
+#                         start_epoch_s=config.event_start_epoch_s,
+#                         end_epoch_s=config.event_end_epoch_s,
+#                         highpass_type=highpass_type,
+#                         frequency_filter_low=frequency_filter_low,
+#                         filter_order=filter_order)
+#
+#     return df_all_sensors_all_stations, full_path_parquet, full_path_pickle
 
-    :param config:
-    :param export_dw_pickle: optional bool, export RedVox DataWindow to pickle if True. Default is False
-    :param export_df_parquet: optional bool, export created RedPandas Dataframe to parquet if True. Default is False
-    :param print_dq: optional bool, print data quality statements. Default is False
-    :param show_raw_waveform_plots: optional bool, plot and show raw waveforms if True. Default is True
-    :param highpass_type: optional string, type of highpass applied. One of: {'obspy', 'butter', or 'rc'}. Default is 'obspy'
-    :param frequency_filter_low: optional float, lowest frequency for highpass filter. Default is 100 second periods
-    :param filter_order: optional integer, the order of the filter. Default is 4
 
-    :return: pd.DataFrame, string with output directory for parquet if export_df_parquet = True, string with output directory
-        for pickle if export_dw_pickle = True
-    """
-    df_all_sensors_all_stations, full_path_parquet, full_path_pickle = \
-        redpd_dataframe(input_dw_or_path=config.input_dir,
-                        export_dw_pickle=export_dw_pickle,
-                        export_df_parquet=export_df_parquet,
-                        event_name=config.event_name,
-                        print_dq=print_dq,
-                        show_raw_waveform_plots=show_raw_waveform_plots,
-                        output_dir=config.output_dir,
-                        output_filename_pkl=config.dw_file,
-                        output_filename_pqt=config.pd_pqt_file,
-                        station_ids=config.station_ids,
-                        sensor_labels=config.sensor_labels,
-                        start_epoch_s=config.event_start_epoch_s,
-                        end_epoch_s=config.event_end_epoch_s,
-                        highpass_type=highpass_type,
-                        frequency_filter_low=frequency_filter_low,
-                        filter_order=filter_order)
-
-    return df_all_sensors_all_stations, full_path_parquet, full_path_pickle
-
-
-def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
-                    export_dw_pickle: Optional[bool] = False,
-                    export_df_parquet: Optional[bool] = False,
-                    event_name: Optional[str] = "Redvox",
-                    print_dq: Optional[bool] = False,
-                    show_raw_waveform_plots: bool = True,
-                    output_dir: Optional[str] = None,
-                    output_filename_pkl: Optional[str] = None,
-                    output_filename_pqt: Optional[str] = None,
-                    station_ids: Optional[List[str]] = None,
-                    sensor_labels: Optional[List[str]] = None,
-                    start_epoch_s: Optional[float] = None,
-                    end_epoch_s: Optional[float] = None,
-                    start_buffer_minutes: Optional[int] = 3,
-                    end_buffer_minutes: Optional[int] = 3,
-                    debug: Optional[bool] = False,
+def redpd_dataframe(input_dw: DataWindow,
+                    sensor_labels: Optional[List[str]] = ["audio"],
                     highpass_type: Optional[str] = 'obspy',
                     frequency_filter_low: Optional[float] = 1./rpd_scales.Slice.T100S,
-                    filter_order: Optional[int] = 4) -> Tuple[pd.DataFrame, Union[str, None], Union[str, None]]:
+                    filter_order: Optional[int] = 4) -> pd.DataFrame:
     """
-    Extract RedVox data from RedVox files or RedVox DataWindow, and construct pandas dataframe. Note:
-        - Default sensor extracted is audio, for more options see sensor_labels parameter.
-        - Default all stations included, for filtering specific stations see station_ids parameter.
-        - To export RedVox DataWindow to pickle, change export_dw_pickle parameter to export_dw_pickle = True
-        - To export RedPandas DataFrame to parquet, change export_df_parquet parameter to export_df_parquet = True
-        - If you wish to export to parquet and input_dw_or_path is a RedVox DataWindow, you need to provide an output directory in output_dir parameter
+    Construct pandas dataframe from RedVox DataWindow. Default sensor extracted is audio, for more options see sensor_labels parameter.
 
-    :param input_dw_or_path: REQUIRED. Redvox DataWindow, or string with directory that contains the files to read data from
-    :param export_dw_pickle: optional bool, export RedVox DataWindow to pickle if True. Default is False
-    :param export_df_parquet: optional bool, export created RedPandas Dataframe to parquet if True. Default is False
-    :param event_name: optional string, name of event. Default is "Redvox"
-    :param print_dq: optional bool, print data quality statements. Default is False
-    :param show_raw_waveform_plots: optional bool, plot and show raw waveforms if True. Default is True
-    :param output_dir: optional string, directory to created save pickle/JSON/parquet. Default is None. If None, a default
-        file output directory is created using this format: [input_dw_or_path]/rpd_files.
-    :param output_filename_pkl: optional string, name of created parquet and pickle files. Default is None. If None, a default
-        filename is created using this format: [event_name].pkl
-    :param output_filename_pqt: optional list of strings, list of station ids to filter on. Default is None. if None, a default
-        filename is created using this format: [event_name]_df.parquet
-    :param station_ids: optional list of strings, list of station ids to filter on. Default is None, so all stations are included.
-        For example, to focus on Station 1 and Station 2, station_ids = ["Station 1", "Station 2"]
+    :param input_dw: REQUIRED. Redvox DataWindow
     :param sensor_labels: optional list of strings, list of sensors available ['audio', 'barometer', 'accelerometer',
         'gyroscope', 'magnetometer', 'health', 'location', 'synchronization', 'best_location']. For example: sensor_labels = ['audio', 'accelerometer'].
         Default is ["audio"]
-    :param start_epoch_s: optional float, start time in epoch s. Default is None, so first timestamp found in data
-    :param end_epoch_s: optional float, end time in epoch s. Default is None, so last timestamp found in data
-    :param start_buffer_minutes: float representing the amount of minutes to include before the start datetime
-        when filtering data. Default is 3
-    :param end_buffer_minutes: float representing the amount of minutes to include after the end datetime
-        when filtering data. Default is 3
-    :param debug: optional bool, print debug for DataWindow if True. Default is False
     :param highpass_type: optional string, type of highpass applied. One of: 'obspy', 'butter', or 'rc'. Default is 'obspy'
     :param frequency_filter_low: optional float, lowest frequency for highpass filter. Default is 100 second periods
     :param filter_order: optional integer, the order of the filter. Default is 4
 
-    :return: pd.DataFrame, string with output directory for parquet if export_df_parquet = True, string with output directory for pickle if export_dw_pickle = True
+    :return: pd.DataFrame
     """
     print("Initiating conversion from RedVox DataWindow to RedPandas:")
+    rdvx_data: DataWindow = input_dw
 
-    if sensor_labels is None:
+    if sensor_labels is not list:
         sensor_labels = ["audio"]
-
-    if type(sensor_labels) is not list:
-        raise TypeError("must be a list")
-
-    # Create output dir if exporting
-    if export_dw_pickle is True or export_df_parquet is True:
-        if type(input_dw_or_path) is str:
-            # set output dir for DataWindow pickle/JSON and parquet data products
-            if output_dir is None:
-                output_dw_pqt_dir = os.path.join(input_dw_or_path, "rpd_files")
-            else:
-                output_dw_pqt_dir = output_dir
-
-        else:
-            if output_dir is None:
-                raise ValueError("Please provide a directory in output_dir parameter")
-            else:
-                output_dw_pqt_dir = output_dir
-
-    if type(input_dw_or_path) == str:
-
-        if start_epoch_s is not None:
-            start_epoch_s = dt_utils.datetime_from_epoch_seconds_utc(start_epoch_s)
-        if end_epoch_s is not None:
-            end_epoch_s = dt_utils.datetime_from_epoch_seconds_utc(end_epoch_s)
-
-        # Load signals, create a RedVox DataWindow structure
-        print("Loading data with RedVox DataWindow...", end=" ")
-        rdvx_data: DataWindow = DataWindow(input_dir=input_dw_or_path,
-                                           structured_layout=True,
-                                           start_datetime=start_epoch_s,
-                                           end_datetime=end_epoch_s,
-                                           station_ids=station_ids,
-                                           start_buffer_td=dt_utils.timedelta(minutes=start_buffer_minutes),
-                                           end_buffer_td=dt_utils.timedelta(minutes=end_buffer_minutes),
-                                           apply_correction=True,
-                                           debug=debug)
-        print("Done.")
-
-    else:
-        # Load DataWindow
-        rdvx_data: DataWindow = input_dw_or_path
-
-    if export_dw_pickle is True:
-        full_path_pickle = rpd_dw.export_dw_to_pickle(dw=rdvx_data,
-                                                      output_directory=output_dir,
-                                                      output_filename=output_filename_pkl,
-                                                      event_name=event_name)
-    else:
-        full_path_pickle = None
-
-    # Print out basic stats
-    if print_dq:
-        print("\nDQ/DA LAYER: STATION")
-        rpd_dq.station_metadata(rdvx_data)
-        print("DQ/DA LAYER: MIC & SYNCH")
-        rpd_dq.mic_sync(rdvx_data)
-        print("DQ/DA LAYER: SENSOR TIMING")
-        rpd_dq.station_channel_timing(rdvx_data)
 
     # BEGIN RED PANDAS
     print("\nInitiating RedVox Redpandas:")
@@ -201,21 +104,7 @@ def redpd_dataframe(input_dw_or_path: Union[str, DataWindow],
     print(f"Available stations: \n{df_all_sensors_all_stations['station_id'].to_string(index=False)}")
     print(f"Total columns in DataFrame: {len(df_all_sensors_all_stations.columns)}")
 
-    if export_df_parquet is True:  # export dataframe to parquet
-        full_path_parquet = export_df_to_parquet(df=df_all_sensors_all_stations,
-                                                 output_filename_pqt=output_filename_pqt,
-                                                 event_name=event_name,
-                                                 output_dir_pqt=output_dw_pqt_dir)
-        print(full_path_parquet)
-    else:
-        full_path_parquet = None
-
-    if show_raw_waveform_plots:
-        fig_mic = rpd_dw.plot_dw_mic(data_window=rdvx_data)
-        fig_bar = rpd_dw.plot_dw_baro(data_window=rdvx_data)
-        plt.show()
-
-    return df_all_sensors_all_stations, full_path_parquet, full_path_pickle
+    return df_all_sensors_all_stations
 
 
 def export_df_to_parquet(df: pd.DataFrame,

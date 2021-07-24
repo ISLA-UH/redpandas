@@ -74,7 +74,7 @@ plots signal waveforms stored in the [RedPandas DataFrame](using_redpandas.md#ba
  _Plotting audio for all stations example:_
 ```python
 import pandas as pd
-import redpandas.redpd_plot as rpd_plot
+import redpandas.redpd_plot.redpd_plot as rpd_plot
 import matplotlib.pyplot as plt
 
 df = pd.read_parquet("path/to/parquet/file_name.parquet")
@@ -290,7 +290,7 @@ Once the TFR has been calculated, ``tfr_bits`` can be plotted with the function 
 
 _Plotting TFR for audio signal from a [previous example](#plotting-signal-waveforms-for-all-stations-stored-in-the-dataframe):_
 ```python
-import redpandas.redpd_plot as rpd_plot
+import redpandas.redpd_plot.redpd_plot as rpd_plot
 import matplotlib.pyplot as plt
 
 df = df.drop(index=2)  # eliminate Station 3 because it does not have a complete record as we saw in the previous example
