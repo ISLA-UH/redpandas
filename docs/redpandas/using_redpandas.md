@@ -11,8 +11,8 @@ This section covers the basics on how to use the RedVox Pandas (RedPandas) libra
 - [Downloading RedVox data](#downloading-redvox-data)
 - [Opening RedVox data with RedPandas](#opening-redvox-data-with-redpandas)
     - [For raw RedVox data (.rdvxz, .rdvxm)](#for-raw-redvox-data-rdvxz-rdvxm)
-    - [For RedVox data in a pickle format (.pkl)](#for-redvox-data-in-a-pickle-format-pkl)
     - [More options](#more-options)
+    - [Exporting RedPandas DataFrame](#exporting-redpandas-dataframe)
 - [Opening RedPandas parquet files](#opening-redpandas-parquet-files)
 - [Data manipulation with RedPandas](#data-manipulation-with-redpandas)
 - [Frequently asked questions (FAQ)](#frequently-asked-questions-faq)
@@ -88,7 +88,7 @@ If you want to manipulate RedVox data files directly in your Python environment,
 #### For raw RedVox data (.rdvxz, .rdvxm)
 
 The easiest method to covert RedVox data to a RedPandas dataframe is by using the function
-[redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet). 
+[redpd_dataframe](https://redvoxinc.github.io/redpandas/redpd_df.html#redpandas.redpd_df.redpd_dataframe). 
 This approach is ideal for python newcomers, new RedVox users, and for a superficial first glance at new RedVox data.
 
 _Opening RedVox files (.rdvxz, .rdvxm) example:_
@@ -102,59 +102,19 @@ Extract RedVox data into a Pandas DataFrame
 """
 # Absolute path
 INPUT_DIR = "path/to/redvox/data"
+#Make a RedVox DataWindow
+
 rdvx_data: DataWindow = DataWindow(input_dir=INPUT_DIR)
 
 # Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
 redpd_dataframe(input_dw=rdvx_data)
 ```
-Note that [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet) 
-will create a folder named ``rpd_files`` in the path/to/file given in the 
-``INPUT_DIR`` variable. A folder named ``dw``,  (short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
-containing a compressed pickle (.pkl.lz4), a RedPandas parquet (named ``Redvox_df.parquet``), and a JSON file (.json) will 
-be created inside the ``rpd_files`` folder. For more options, such as setting a specific output directory, 
-visit the [More options](#more-options) section.
-
-Continuing with the example case above, the following snippet of code can be applied to open the parquet and start manipulating 
-the data: 
-```python
-import pandas as pd
-
-df_data = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
-print(df_data.columns)
-```
+Note that [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpd_df.html#redpandas.redpd_df.redpd_dataframe) 
+will only export audio sensor. For more options, such as type of sensors, visit the [More options](#more-options) section.
 
 For more information on columns found in the [RedPandas DataFrame](#basic-definitions) saved in the parquet, column names 
 and their contents, visit [RedVox RedPandas DataFrame Columns](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns). 
 For more information on manipulation of pandas DataFrames, visit [pandas.DataFrame documentation](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
-
-Return to _[Table of Contents](#table-of-contents)_.
-
-#### For RedVox data in a pickle format (.pkl)
-
-A similar approach can be applied if the RedVox data is in a compressed pickle format (.pkl.lz4). The only 
-modification to the [previously described method](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md#for-raw-redvox-data-rdvxz-rdvxm) 
-is to include ``create_dw = False`` in 
-[redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet).
-
-_Opening a compressed pickle (.pkl.lz4) containing RedVox data example:_
-
-```python
-from redpandas.redpd_dw_to_parquet import redpd_df
-import pandas as pd
-
-"""
-Extract RedVox data into a Pandas DataFrame
-"""
-# Absolute path
-INPUT_DIR = "path/to/redvox/data"
-
-# Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
-redpd_df(input_dir=INPUT_DIR,
-                    create_dw = False)
-
-df_data = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
-print(df_data.columns)
-```
 
 Return to _[Table of Contents](#table-of-contents)_.
 
@@ -166,27 +126,14 @@ The function [redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_d
 _Opening Redvox files (.rdvxz, .rdvxm) with more options example:_
 
 ```python
-from redpandas.redpd_dw_to_parquet import redpd_df
+from redpandas.redpd_df import redpd_dataframe
 
-redpd_df(input_dir="path/to/redvox/data",  # input_dw_or_path directory where the data is located. Only variable REQUIRED
-                    event_name="A cool example",  # name of dataset, default is Redvox
-                    create_dw=True,  # create DataWindow, false if pickle
-                    print_dq=True,  # print data quality statements if True
-                    show_raw_waveform_plots=True,  # plot audio and barometer (if available) waveforms if True
-                    output_dir="path/to/save/parquet",  # change output directory where parquet is saved
-                    output_filename_pkl="pkl_a_cool_example",  # change file name for pickle
-                    output_filename_pqt="pqt_a_cool_example",  # change file name for parquet
-                    station_ids=["1234567890", "2345678901"],  # ID of stations, if None, all stations in data are laoded
-                    sensor_labels=["audio", "barometer"],  # name of sensors, if None, audio will be loaded
-                    start_epoch_s=1624674098,  # start time in epoch s, if None, first available time
-                    end_epoch_s=1624678740,  # end time in epoch s, if None, last available time
-                    start_buffer_minutes=3,  # amount of minutes to include before the start datetime when filtering data
-                    end_buffer_minutes=3,  # amount of minutes to include after the end datetime when filtering data
-                    debug=False,  # show debug if True
-                    highpass_type='obspy',  # type of highpass applied: 'obspy', 'butter', 'rc', default 'obspy'
-                    frequency_filter_low=0.01,  # apply highpass filter
-                    filter_order=4  #the order of the filter integer. Default is 4
-                    )  
+df_data = redpd_dataframe(input_dir="path/to/redvox/data",  # input_dw_or_path directory where the data is located. Only variable REQUIRED
+                          sensor_labels=["audio", "barometer"],  # name of sensors, if None, audio will be loaded
+                          highpass_type='obspy',  # type of highpass applied: 'obspy', 'butter', 'rc', default 'obspy'
+                          frequency_filter_low=0.01,  # apply highpass filter
+                          filter_order=4  #the order of the filter integer. Default is 4
+                          )  
 ```
 
 For the ``sensor_label`` variable, the available [sensors](#basic-definitions) in a station can vary depending on the smartphone and available options
@@ -195,6 +142,21 @@ are: ``['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer', 'hea
 some sensors might not be present in your data. For a complete list of available sensors in the RedVox Python SDK, visit 
 [RedVox Sensor Data](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window/station#sensor-data-dataframe-access). 
 
+Return to _[Table of Contents](#table-of-contents)_.
+
+### Exporting RedPandas DataFrame
+
+The function [export_df_to_parquet](https://redvoxinc.github.io/redpandas/redpd_df.html#redpandas.redpd_df.export_df_to_parquet)
+exports to parquet for later use.
+
+_Exporting RedPandas example:_
+```python
+from redpandas.redpd_df import export_df_to_parquet
+
+export_df_to_parquet(df=df_data,
+                     output_dir_pqt="path/to/save/parquet",
+                     output_filename_pqt="A_Cool_example")
+```
 Return to _[Table of Contents](#table-of-contents)_.
 
 ### Opening RedPandas parquet files
