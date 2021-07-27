@@ -1,0 +1,924 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>redpandas.redpd_ensonify API documentation</title>
+<meta name="description" content="These methods make assumptions about the RedVox sensor sample rates, which seldom exceed 500 Hz.
+I also assume the highest audio sample rate we&#39;ll use …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>redpandas.redpd_ensonify</code></h1>
+</header>
+<section id="section-intro">
+These methods make assumptions about the RedVox sensor sample rates, which seldom exceed 500 Hz.<br>I also assume the highest audio sample rate we'll use is 8 kHz.<br>M. Garces, last updated 20210702.
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+These methods make assumptions about the RedVox sensor sample rates, which seldom exceed 500 Hz.
+I also assume the highest audio sample rate we&#39;ll use is 8 kHz.
+M. Garces, last updated 20210702.
+&#34;&#34;&#34;
+
+import os
+import numpy as np
+import pandas as pd
+import scipy.io.wavfile
+import scipy.signal as signal
+from scipy.fft import rfft, fftfreq
+from libquantum import synthetics
+import matplotlib.pyplot as plt
+from typing import List, Optional
+
+
+# Supported wav sample rates
+permitted_wav_fs_values = 8000., 16000., 48000., 96000., 192000.
+exception_str = &#34;Wav sample rate must be 8000, 16000, 48000, 96000, or 192000  Hz&#34;
+lowest_wav_fs_value = 8000.
+
+
+def stretch_factor_str(sig_sample_rate_hz: float,
+                       wav_sample_rate_hz: float) -&gt; str:
+    &#34;&#34;&#34;
+    Compute file string for speedup and slowdown options
+
+    :param sig_sample_rate_hz: input signal sample rate
+    :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
+    :return:
+    &#34;&#34;&#34;
+    stretch_factor = wav_sample_rate_hz / sig_sample_rate_hz
+    # If stretch factor is unity, no change
+    stretch_str = &#39;_preserve&#39;
+    if stretch_factor &gt; 1:
+        stretch_str = &#39;_speedup_&#39; + str(int(10.*stretch_factor)/10) + &#39;x_to&#39;
+    elif 1 &gt; stretch_factor &gt; 0:
+        stretch_str = &#39;_slowdown_&#39; + str(int(10./stretch_factor)/10) + &#39;x_to&#39;
+    else:
+        print(&#34;Stretch factor is zero or negative, address&#34;)
+    return stretch_str
+
+
+def resample_factor_str(sig_sample_rate_hz: float,
+                        wav_sample_rate_hz: float) -&gt; str:
+    &#34;&#34;&#34;
+    Compute file string for oversample and downsample options
+
+    :param sig_sample_rate_hz: input signal sample rate
+    :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
+    :return: string with resample factor
+    &#34;&#34;&#34;
+    resample_factor = wav_sample_rate_hz / sig_sample_rate_hz
+    # If resample factor is unity, no change
+    resample_str = &#39;_preserve&#39;
+    if resample_factor &gt; 1:
+        resample_str = &#39;_upsample_&#39; + str(int(10.*resample_factor)/10) + &#39;x_to&#39;
+    elif 1 &gt; resample_factor &gt; 0:
+        resample_str = &#39;_decimate_&#39; + str(int(10./resample_factor)/10) + &#39;x_to&#39;
+    else:
+        print(&#34;Resample factor is zero or negative, address&#34;)
+    return resample_str
+
+
+def sample_rate_str(wav_sample_rate_hz: float) -&gt; str:
+    &#34;&#34;&#34;
+    Generate the sample rate string for the exported sound file
+
+    :param wav_sample_rate_hz: target wav sample rate
+    :return: string with sample rate in kHz
+    &#34;&#34;&#34;
+    wav_fs_str = &#39;_&#39; + str(int(wav_sample_rate_hz / 1000)) + &#39;khz.wav&#39;
+    return wav_fs_str
+
+
+def resample_fourier(sig_wf: np.ndarray,
+                     sig_sample_rate_hz: float,
+                     new_sample_rate_hz: float = 8000.) -&gt; np.ndarray:
+    &#34;&#34;&#34;
+    Resample the Fourier way; can upsample or downsample. Downsample will be aliased, so use decimate in that case.
+
+    :param sig_wf: input signal waveform, reasonably well preprocessed
+    :param sig_sample_rate_hz: signal sample rate
+    :param new_sample_rate_hz: resampling sample rate
+    :return: resampled signal
+    &#34;&#34;&#34;
+    sig_len = len(sig_wf)
+    new_len = int(sig_len * new_sample_rate_hz / sig_sample_rate_hz)
+    sig_resampled = signal.resample(x=sig_wf, num=new_len)
+    return sig_resampled
+
+
+def decimate_to_aud(sig_wf: np.ndarray,
+                    sig_sample_rate_hz: float,
+                    new_sample_rate_hz: float = 8000.) -&gt; np.ndarray:
+    &#34;&#34;&#34;
+    Decimate with AA, min of 8 kHz. Assumed preprocessed for gaps, DC offset, slope, etc.
+
+    :param sig_wf: input signal waveform, reasonably well preprocessed
+    :param sig_sample_rate_hz: signal sample rate
+    :param new_sample_rate_hz: target wav sample rate
+    :return: decimated signal
+    &#34;&#34;&#34;
+
+    decimation_factor = int(np.round(sig_sample_rate_hz/new_sample_rate_hz))
+
+    if decimation_factor &gt;= 2:
+        sig_resampled = signal.decimate(x=sig_wf, q=decimation_factor, zero_phase=True)
+        return sig_resampled
+    else:
+        print(&#34;Should not have gotten this far, check code&#34;)
+        exit()
+
+
+def save_to_elastic_wav(sig_wf: np.ndarray,
+                        sig_sample_rate_hz: float,
+                        wav_filename: str,
+                        wav_sample_rate_hz: float = 8000.) -&gt; None:
+    &#34;&#34;&#34;
+    Save input signal to wav file
+
+    :param sig_wf: input signal waveform, reasonably well preprocessed
+    :param sig_sample_rate_hz: input signal sample rate
+    :param wav_filename: wav file name, with directory path
+    :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
+    :return: Export to wav file
+    &#34;&#34;&#34;
+
+    if int(wav_sample_rate_hz) in permitted_wav_fs_values:
+        stretch_str = stretch_factor_str(sig_sample_rate_hz=sig_sample_rate_hz,
+                                         wav_sample_rate_hz=wav_sample_rate_hz)
+        khz_str = sample_rate_str(wav_sample_rate_hz=wav_sample_rate_hz)
+        export_filename = wav_filename + stretch_str + khz_str
+        synth_wav = 0.9 * np.real(sig_wf) / np.max(np.abs((np.real(sig_wf))))
+        scipy.io.wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
+    else:
+        print(exception_str)
+
+
+def save_to_resampled_wav(sig_wf: np.ndarray,
+                          sig_sample_rate_hz: float,
+                          wav_filename: str,
+                          wav_sample_rate_hz: float = 8000.) -&gt; None:
+    &#34;&#34;&#34;
+    Save input signal to wav file
+
+    :param sig_wf: input signal waveform, reasonably well preprocessed
+    :param sig_sample_rate_hz: input signal sample rate
+    :param wav_filename: wav file name, with directory path
+    :param wav_sample_rate_hz: wav sample rate; only 8kHz, 16kHz, and 48kHz
+    :return: Export to wav file
+    &#34;&#34;&#34;
+
+    # Export to wav directory
+    if int(wav_sample_rate_hz) in permitted_wav_fs_values:
+        resample_str = resample_factor_str(sig_sample_rate_hz=sig_sample_rate_hz,
+                                           wav_sample_rate_hz=wav_sample_rate_hz)
+        khz_str = sample_rate_str(wav_sample_rate_hz=wav_sample_rate_hz)
+        export_filename = wav_filename + resample_str + khz_str
+        synth_wav = 0.9 * np.real(sig_wf) / np.max(np.abs((np.real(sig_wf))))
+        scipy.io.wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
+    else:
+        print(exception_str)
+
+
+def pandas_to_resampled_wav(df: pd.DataFrame,
+                            sig_wf_label: str,
+                            sig_sample_rate_hz_label: str,
+                            sig_id_label: str = &#34;index&#34;,
+                            wav_dir_prefix: str = &#34;aud_&#34;,
+                            wav_sample_rate_hz: float = 8000.,
+                            sample_rate_tolerance_percent: float = 1.) -&gt; None:
+    &#34;&#34;&#34;
+    Ensonify a pandas data frame
+
+    :param df: data frame
+    :param sig_wf_label: label of signal to be ensonified
+    :param sig_sample_rate_hz_label: label of sample rate
+    :param sig_id_label: label to be used to id the signal
+    :param wav_dir_prefix: export directory, and prefix for file
+    :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
+    :param sample_rate_tolerance_percent: percent of permitted difference in sig and wav sample rates
+    :return: export to .wav
+    &#34;&#34;&#34;
+
+    for n in df.index:
+        if sig_id_label == &#34;index&#34;:
+            sig_id_str = str(df.index[n])
+        else:
+            sig_id_str = df[sig_id_label][n]
+
+        wav_pd_filename = wav_dir_prefix + sig_id_str
+        sig_sample_rate_hz = df[sig_sample_rate_hz_label][n]
+
+        # Criteria to decimate to downsample or resample to upsample
+        decimation_factor = int(np.round(sig_sample_rate_hz/wav_sample_rate_hz))
+
+        # Some variability is expected; don&#39;t resample if difference is less than tolerance
+        threshold = sample_rate_tolerance_percent/100.*sig_sample_rate_hz
+        if np.abs(sig_sample_rate_hz - wav_sample_rate_hz) &gt; threshold:
+            if decimation_factor &gt;= 2:
+                # Decimate
+                sig_resampled = \
+                    decimate_to_aud(sig_wf=df[sig_wf_label][n],
+                                    sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                                    new_sample_rate_hz=wav_sample_rate_hz)
+            else:
+                # Resample
+                sig_resampled = \
+                    resample_fourier(sig_wf=df[sig_wf_label][n],
+                                     sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                                     new_sample_rate_hz=wav_sample_rate_hz)
+
+            save_to_resampled_wav(sig_wf=sig_resampled,
+                                  sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                                  wav_filename=wav_pd_filename,
+                                  wav_sample_rate_hz=wav_sample_rate_hz)
+        else:
+            # Save unchanged waveform
+            save_to_resampled_wav(sig_wf=df[sig_wf_label][n],
+                                  sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                                  wav_filename=wav_pd_filename,
+                                  wav_sample_rate_hz=wav_sample_rate_hz)
+
+
+def pandas_to_elastic_wav(df: pd.DataFrame,
+                          sig_wf_label: str,
+                          sig_sample_rate_hz_label: str,
+                          sig_id_label: str = &#34;index&#34;,
+                          wav_dir_prefix: str = &#34;aud_&#34;,
+                          wav_sample_rate_hz: float = 8000.) -&gt; None:
+    &#34;&#34;&#34;
+    Ensonify a pandas data frame
+
+    :param df: data frame
+    :param sig_wf_label: label of signal to be ensonified
+    :param sig_sample_rate_hz_label: label of sample rate
+    :param sig_id_label: label to be used to id the signal
+    :param wav_dir_prefix: export directory, and prefix for file
+    :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
+    :return: export to .wav
+    &#34;&#34;&#34;
+
+    for n in df.index:
+        if sig_id_label == &#34;index&#34;:
+            sig_id_str = str(df.index[n])
+        else:
+            sig_id_str = df[sig_id_label][n]
+
+        wav_pd_filename = wav_dir_prefix + sig_id_str
+        save_to_elastic_wav(sig_wf=df[sig_wf_label][n],
+                            sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                            wav_filename=wav_pd_filename,
+                            wav_sample_rate_hz=wav_sample_rate_hz)
+
+
+def dual_tone_test():
+    dir_filename = &#34;./test&#34;
+    # Test tone
+    sample_rate = 48000.
+    new_rate = 8000.
+    duration_s = 1.
+    center_frequency = np.min([sample_rate, new_rate]) / 8.
+    t = np.arange(0, duration_s, 1 / sample_rate)
+    peak_amp = np.sqrt(2)
+    y = peak_amp * np.sin(2 * np.pi * center_frequency * t) + \
+        peak_amp * np.sin(2 * np.pi * new_rate/2. * t)
+    z = synthetics.antialias_halfNyquist(y)
+    lz = len(z)
+    print(&#39;Original Number of Points: &#39;, lz)
+    fz = 2 * rfft(z) / lz
+    fz_f = fftfreq(lz, 1 / sample_rate)
+
+    z_rs = resample_fourier(sig_wf=z, sig_sample_rate_hz=sample_rate, new_sample_rate_hz=new_rate)
+    lz_rs = len(z_rs)
+    print(&#39;Resampled Number of Points: &#39;, lz_rs)
+    t_rs = np.arange(lz_rs) / new_rate
+    fz_rs = 2 * rfft(z_rs) / lz_rs
+    fz_rs_f = fftfreq(lz_rs, 1 / new_rate)
+
+    plt.figure()
+    plt.subplot(211), plt.plot(t, z)
+    plt.title(&#39;Unit rms test tone, fc = &#39; + str(int(center_frequency)) + &#39; Hz&#39;)
+    plt.subplot(212), plt.loglog(fz_f[1:lz // 2], np.abs(fz[1:lz // 2]))
+
+    plt.figure()
+    plt.subplot(211), plt.plot(t_rs, z_rs)
+    plt.title(&#39;Resampled test tone, fc = &#39; + str(int(center_frequency)) + &#39; Hz + Nyquist at new rate&#39;)
+    plt.subplot(212), plt.loglog(fz_rs_f[1:lz_rs // 2], np.abs(fz_rs[1:lz_rs // 2]))
+
+    save_to_resampled_wav(sig_wf=z_rs,
+                          sig_sample_rate_hz=sample_rate,
+                          wav_filename=dir_filename,
+                          wav_sample_rate_hz=new_rate)
+    save_to_elastic_wav(sig_wf=z,
+                        sig_sample_rate_hz=sample_rate,
+                        wav_filename=dir_filename,
+                        wav_sample_rate_hz=new_rate)
+
+    plt.show()
+
+
+def ensonify_sensors_pandas(df: pd.DataFrame,
+                            sig_id_label: str,
+                            sensor_column_label_list: List[str],
+                            sig_sample_rate_label_list: List[str],
+                            wav_sample_rate_hz: float,
+                            output_wav_directory: str,
+                            output_wav_filename: str = &#39;redvox&#39;,
+                            sensor_name_list: Optional[List[str]] = None) -&gt; None:
+    &#34;&#34;&#34;
+    Channel sensor data sonification
+
+    :param df: input pandas data frame
+    :param sig_id_label: string for column name with station ids in df
+    :param sensor_column_label_list: list of strings with column name with sensor waveform data in df
+    :param sig_sample_rate_label_list: list of strings with the sensor sample rate in Hz column name in df
+    :param wav_sample_rate_hz: sample rate in Hz which to resample to. One of: 8000., 16000., 48000., 96000., 192000.
+    :param output_wav_directory: output directory where .wav files are stored
+    :param output_wav_filename: output name for .wav files
+    :param sensor_name_list: optional list of strings with channel names per sensor
+    :return: .wav files, plot
+    &#34;&#34;&#34;
+
+    output_wav_directory = os.path.join(output_wav_directory, &#34;wav&#34;)
+    if not os.path.exists(output_wav_directory):
+        os.mkdir(output_wav_directory)
+    print(&#34;Exporting wav files to &#34; + output_wav_directory)
+
+    # sensor_channel_index = 0
+    for station in df.index:
+
+        print(f&#39;\nStation: {df[sig_id_label][station]}&#39;)
+        sensor_channel_index = 0
+
+        for index_sensor_label, sensor_label in enumerate(sensor_column_label_list):
+
+            sensor_fs_column_label = sig_sample_rate_label_list[index_sensor_label]
+
+            sig_j = df[sensor_label][station]
+            fs_j = df[sensor_fs_column_label][station]
+
+            print(f&#39;\nSensor for {sensor_label}&#39;)
+            print(&#39;Sample rate:&#39;, fs_j)
+
+            if sig_j.ndim == 1:  # audio basically
+                print(&#39;Sensor signal shape:&#39;, sig_j.shape)
+                # Exporting .wav
+                if sensor_name_list is None:
+                    full_filename = f&#34;{output_wav_filename}_{df[sig_id_label][station]}_{sensor_label}&#34;
+                else:
+
+                    full_filename = f&#34;{output_wav_filename}_{df[sig_id_label][station]}_{sensor_name_list[sensor_channel_index]}&#34;
+                filename_with_path = os.path.join(output_wav_directory, full_filename)
+                print(filename_with_path)
+                # Save to 48, 96, 192 kHz
+                save_to_elastic_wav(sig_wf=sig_j,
+                                    sig_sample_rate_hz=fs_j,
+                                    wav_filename=filename_with_path,
+                                    wav_sample_rate_hz=wav_sample_rate_hz)
+                sensor_channel_index += 1
+
+            else:
+                print(&#39;Sensor signal shape:&#39;, sig_j.shape)
+
+                names_index_channel = [&#39;_X&#39;, &#39;_Y&#39;, &#39;_Z&#39;]
+                for index_channel, _ in enumerate(sig_j):
+                    sig_j_ch_m = sig_j[index_channel]  # get x,y,z of sensor
+
+                    # Exporting .wav
+                    if sensor_name_list is None:
+                        full_filename = f&#34;{output_wav_filename}_{df[sig_id_label][station]}_{sensor_label + names_index_channel[index_channel]}&#34;
+                    else:
+                        full_filename = f&#34;{output_wav_filename}_{df[sig_id_label][station]}_{sensor_name_list[sensor_channel_index]}&#34;
+
+                    filename_with_path = os.path.join(output_wav_directory, full_filename)
+                    print(filename_with_path)
+                    # Save to 48, 96, 192 kHz
+                    save_to_elastic_wav(sig_wf=sig_j_ch_m,
+                                        sig_sample_rate_hz=fs_j,
+                                        wav_filename=filename_with_path,
+                                        wav_sample_rate_hz=192000.)
+                    sensor_channel_index += 1</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="redpandas.redpd_ensonify.decimate_to_aud"><code class="name flex">
+<span>def <span class="ident">decimate_to_aud</span></span>(<span>sig_wf: numpy.ndarray, sig_sample_rate_hz: float, new_sample_rate_hz: float = 8000.0) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc">Decimate with AA, min of 8 kHz. Assumed preprocessed for gaps, DC offset, slope, etc.<br><br>:param sig_wf: input signal waveform, reasonably well preprocessed<br>:param sig_sample_rate_hz: signal sample rate<br>:param new_sample_rate_hz: target wav sample rate<br>:return: decimated signal</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def decimate_to_aud(sig_wf: np.ndarray,
+                    sig_sample_rate_hz: float,
+                    new_sample_rate_hz: float = 8000.) -&gt; np.ndarray:
+    &#34;&#34;&#34;
+    Decimate with AA, min of 8 kHz. Assumed preprocessed for gaps, DC offset, slope, etc.
+
+    :param sig_wf: input signal waveform, reasonably well preprocessed
+    :param sig_sample_rate_hz: signal sample rate
+    :param new_sample_rate_hz: target wav sample rate
+    :return: decimated signal
+    &#34;&#34;&#34;
+
+    decimation_factor = int(np.round(sig_sample_rate_hz/new_sample_rate_hz))
+
+    if decimation_factor &gt;= 2:
+        sig_resampled = signal.decimate(x=sig_wf, q=decimation_factor, zero_phase=True)
+        return sig_resampled
+    else:
+        print(&#34;Should not have gotten this far, check code&#34;)
+        exit()</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.dual_tone_test"><code class="name flex">
+<span>def <span class="ident">dual_tone_test</span></span>(<span>)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def dual_tone_test():
+    dir_filename = &#34;./test&#34;
+    # Test tone
+    sample_rate = 48000.
+    new_rate = 8000.
+    duration_s = 1.
+    center_frequency = np.min([sample_rate, new_rate]) / 8.
+    t = np.arange(0, duration_s, 1 / sample_rate)
+    peak_amp = np.sqrt(2)
+    y = peak_amp * np.sin(2 * np.pi * center_frequency * t) + \
+        peak_amp * np.sin(2 * np.pi * new_rate/2. * t)
+    z = synthetics.antialias_halfNyquist(y)
+    lz = len(z)
+    print(&#39;Original Number of Points: &#39;, lz)
+    fz = 2 * rfft(z) / lz
+    fz_f = fftfreq(lz, 1 / sample_rate)
+
+    z_rs = resample_fourier(sig_wf=z, sig_sample_rate_hz=sample_rate, new_sample_rate_hz=new_rate)
+    lz_rs = len(z_rs)
+    print(&#39;Resampled Number of Points: &#39;, lz_rs)
+    t_rs = np.arange(lz_rs) / new_rate
+    fz_rs = 2 * rfft(z_rs) / lz_rs
+    fz_rs_f = fftfreq(lz_rs, 1 / new_rate)
+
+    plt.figure()
+    plt.subplot(211), plt.plot(t, z)
+    plt.title(&#39;Unit rms test tone, fc = &#39; + str(int(center_frequency)) + &#39; Hz&#39;)
+    plt.subplot(212), plt.loglog(fz_f[1:lz // 2], np.abs(fz[1:lz // 2]))
+
+    plt.figure()
+    plt.subplot(211), plt.plot(t_rs, z_rs)
+    plt.title(&#39;Resampled test tone, fc = &#39; + str(int(center_frequency)) + &#39; Hz + Nyquist at new rate&#39;)
+    plt.subplot(212), plt.loglog(fz_rs_f[1:lz_rs // 2], np.abs(fz_rs[1:lz_rs // 2]))
+
+    save_to_resampled_wav(sig_wf=z_rs,
+                          sig_sample_rate_hz=sample_rate,
+                          wav_filename=dir_filename,
+                          wav_sample_rate_hz=new_rate)
+    save_to_elastic_wav(sig_wf=z,
+                        sig_sample_rate_hz=sample_rate,
+                        wav_filename=dir_filename,
+                        wav_sample_rate_hz=new_rate)
+
+    plt.show()</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.ensonify_sensors_pandas"><code class="name flex">
+<span>def <span class="ident">ensonify_sensors_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_id_label: str, sensor_column_label_list: List[str], sig_sample_rate_label_list: List[str], wav_sample_rate_hz: float, output_wav_directory: str, output_wav_filename: str = 'redvox', sensor_name_list: Union[List[str], NoneType] = None) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Channel sensor data sonification<br><br>:param df: input pandas data frame<br>:param sig_id_label: string for column name with station ids in df<br>:param sensor_column_label_list: list of strings with column name with sensor waveform data in df<br>:param sig_sample_rate_label_list: list of strings with the sensor sample rate in Hz column name in df<br>:param wav_sample_rate_hz: sample rate in Hz which to resample to. One of: 8000., 16000., 48000., 96000., 192000.<br>:param output_wav_directory: output directory where .wav files are stored<br>:param output_wav_filename: output name for .wav files<br>:param sensor_name_list: optional list of strings with channel names per sensor<br>:return: .wav files, plot</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def ensonify_sensors_pandas(df: pd.DataFrame,
+                            sig_id_label: str,
+                            sensor_column_label_list: List[str],
+                            sig_sample_rate_label_list: List[str],
+                            wav_sample_rate_hz: float,
+                            output_wav_directory: str,
+                            output_wav_filename: str = &#39;redvox&#39;,
+                            sensor_name_list: Optional[List[str]] = None) -&gt; None:
+    &#34;&#34;&#34;
+    Channel sensor data sonification
+
+    :param df: input pandas data frame
+    :param sig_id_label: string for column name with station ids in df
+    :param sensor_column_label_list: list of strings with column name with sensor waveform data in df
+    :param sig_sample_rate_label_list: list of strings with the sensor sample rate in Hz column name in df
+    :param wav_sample_rate_hz: sample rate in Hz which to resample to. One of: 8000., 16000., 48000., 96000., 192000.
+    :param output_wav_directory: output directory where .wav files are stored
+    :param output_wav_filename: output name for .wav files
+    :param sensor_name_list: optional list of strings with channel names per sensor
+    :return: .wav files, plot
+    &#34;&#34;&#34;
+
+    output_wav_directory = os.path.join(output_wav_directory, &#34;wav&#34;)
+    if not os.path.exists(output_wav_directory):
+        os.mkdir(output_wav_directory)
+    print(&#34;Exporting wav files to &#34; + output_wav_directory)
+
+    # sensor_channel_index = 0
+    for station in df.index:
+
+        print(f&#39;\nStation: {df[sig_id_label][station]}&#39;)
+        sensor_channel_index = 0
+
+        for index_sensor_label, sensor_label in enumerate(sensor_column_label_list):
+
+            sensor_fs_column_label = sig_sample_rate_label_list[index_sensor_label]
+
+            sig_j = df[sensor_label][station]
+            fs_j = df[sensor_fs_column_label][station]
+
+            print(f&#39;\nSensor for {sensor_label}&#39;)
+            print(&#39;Sample rate:&#39;, fs_j)
+
+            if sig_j.ndim == 1:  # audio basically
+                print(&#39;Sensor signal shape:&#39;, sig_j.shape)
+                # Exporting .wav
+                if sensor_name_list is None:
+                    full_filename = f&#34;{output_wav_filename}_{df[sig_id_label][station]}_{sensor_label}&#34;
+                else:
+
+                    full_filename = f&#34;{output_wav_filename}_{df[sig_id_label][station]}_{sensor_name_list[sensor_channel_index]}&#34;
+                filename_with_path = os.path.join(output_wav_directory, full_filename)
+                print(filename_with_path)
+                # Save to 48, 96, 192 kHz
+                save_to_elastic_wav(sig_wf=sig_j,
+                                    sig_sample_rate_hz=fs_j,
+                                    wav_filename=filename_with_path,
+                                    wav_sample_rate_hz=wav_sample_rate_hz)
+                sensor_channel_index += 1
+
+            else:
+                print(&#39;Sensor signal shape:&#39;, sig_j.shape)
+
+                names_index_channel = [&#39;_X&#39;, &#39;_Y&#39;, &#39;_Z&#39;]
+                for index_channel, _ in enumerate(sig_j):
+                    sig_j_ch_m = sig_j[index_channel]  # get x,y,z of sensor
+
+                    # Exporting .wav
+                    if sensor_name_list is None:
+                        full_filename = f&#34;{output_wav_filename}_{df[sig_id_label][station]}_{sensor_label + names_index_channel[index_channel]}&#34;
+                    else:
+                        full_filename = f&#34;{output_wav_filename}_{df[sig_id_label][station]}_{sensor_name_list[sensor_channel_index]}&#34;
+
+                    filename_with_path = os.path.join(output_wav_directory, full_filename)
+                    print(filename_with_path)
+                    # Save to 48, 96, 192 kHz
+                    save_to_elastic_wav(sig_wf=sig_j_ch_m,
+                                        sig_sample_rate_hz=fs_j,
+                                        wav_filename=filename_with_path,
+                                        wav_sample_rate_hz=192000.)
+                    sensor_channel_index += 1</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.pandas_to_elastic_wav"><code class="name flex">
+<span>def <span class="ident">pandas_to_elastic_wav</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_sample_rate_hz_label: str, sig_id_label: str = 'index', wav_dir_prefix: str = 'aud_', wav_sample_rate_hz: float = 8000.0) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Ensonify a pandas data frame<br><br>:param df: data frame<br>:param sig_wf_label: label of signal to be ensonified<br>:param sig_sample_rate_hz_label: label of sample rate<br>:param sig_id_label: label to be used to id the signal<br>:param wav_dir_prefix: export directory, and prefix for file<br>:param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz<br>:return: export to .wav</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pandas_to_elastic_wav(df: pd.DataFrame,
+                          sig_wf_label: str,
+                          sig_sample_rate_hz_label: str,
+                          sig_id_label: str = &#34;index&#34;,
+                          wav_dir_prefix: str = &#34;aud_&#34;,
+                          wav_sample_rate_hz: float = 8000.) -&gt; None:
+    &#34;&#34;&#34;
+    Ensonify a pandas data frame
+
+    :param df: data frame
+    :param sig_wf_label: label of signal to be ensonified
+    :param sig_sample_rate_hz_label: label of sample rate
+    :param sig_id_label: label to be used to id the signal
+    :param wav_dir_prefix: export directory, and prefix for file
+    :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
+    :return: export to .wav
+    &#34;&#34;&#34;
+
+    for n in df.index:
+        if sig_id_label == &#34;index&#34;:
+            sig_id_str = str(df.index[n])
+        else:
+            sig_id_str = df[sig_id_label][n]
+
+        wav_pd_filename = wav_dir_prefix + sig_id_str
+        save_to_elastic_wav(sig_wf=df[sig_wf_label][n],
+                            sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                            wav_filename=wav_pd_filename,
+                            wav_sample_rate_hz=wav_sample_rate_hz)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.pandas_to_resampled_wav"><code class="name flex">
+<span>def <span class="ident">pandas_to_resampled_wav</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_sample_rate_hz_label: str, sig_id_label: str = 'index', wav_dir_prefix: str = 'aud_', wav_sample_rate_hz: float = 8000.0, sample_rate_tolerance_percent: float = 1.0) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Ensonify a pandas data frame<br><br>:param df: data frame<br>:param sig_wf_label: label of signal to be ensonified<br>:param sig_sample_rate_hz_label: label of sample rate<br>:param sig_id_label: label to be used to id the signal<br>:param wav_dir_prefix: export directory, and prefix for file<br>:param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz<br>:param sample_rate_tolerance_percent: percent of permitted difference in sig and wav sample rates<br>:return: export to .wav</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pandas_to_resampled_wav(df: pd.DataFrame,
+                            sig_wf_label: str,
+                            sig_sample_rate_hz_label: str,
+                            sig_id_label: str = &#34;index&#34;,
+                            wav_dir_prefix: str = &#34;aud_&#34;,
+                            wav_sample_rate_hz: float = 8000.,
+                            sample_rate_tolerance_percent: float = 1.) -&gt; None:
+    &#34;&#34;&#34;
+    Ensonify a pandas data frame
+
+    :param df: data frame
+    :param sig_wf_label: label of signal to be ensonified
+    :param sig_sample_rate_hz_label: label of sample rate
+    :param sig_id_label: label to be used to id the signal
+    :param wav_dir_prefix: export directory, and prefix for file
+    :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
+    :param sample_rate_tolerance_percent: percent of permitted difference in sig and wav sample rates
+    :return: export to .wav
+    &#34;&#34;&#34;
+
+    for n in df.index:
+        if sig_id_label == &#34;index&#34;:
+            sig_id_str = str(df.index[n])
+        else:
+            sig_id_str = df[sig_id_label][n]
+
+        wav_pd_filename = wav_dir_prefix + sig_id_str
+        sig_sample_rate_hz = df[sig_sample_rate_hz_label][n]
+
+        # Criteria to decimate to downsample or resample to upsample
+        decimation_factor = int(np.round(sig_sample_rate_hz/wav_sample_rate_hz))
+
+        # Some variability is expected; don&#39;t resample if difference is less than tolerance
+        threshold = sample_rate_tolerance_percent/100.*sig_sample_rate_hz
+        if np.abs(sig_sample_rate_hz - wav_sample_rate_hz) &gt; threshold:
+            if decimation_factor &gt;= 2:
+                # Decimate
+                sig_resampled = \
+                    decimate_to_aud(sig_wf=df[sig_wf_label][n],
+                                    sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                                    new_sample_rate_hz=wav_sample_rate_hz)
+            else:
+                # Resample
+                sig_resampled = \
+                    resample_fourier(sig_wf=df[sig_wf_label][n],
+                                     sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                                     new_sample_rate_hz=wav_sample_rate_hz)
+
+            save_to_resampled_wav(sig_wf=sig_resampled,
+                                  sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                                  wav_filename=wav_pd_filename,
+                                  wav_sample_rate_hz=wav_sample_rate_hz)
+        else:
+            # Save unchanged waveform
+            save_to_resampled_wav(sig_wf=df[sig_wf_label][n],
+                                  sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
+                                  wav_filename=wav_pd_filename,
+                                  wav_sample_rate_hz=wav_sample_rate_hz)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.resample_factor_str"><code class="name flex">
+<span>def <span class="ident">resample_factor_str</span></span>(<span>sig_sample_rate_hz: float, wav_sample_rate_hz: float) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc">Compute file string for oversample and downsample options<br><br>:param sig_sample_rate_hz: input signal sample rate<br>:param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values<br>:return: string with resample factor</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def resample_factor_str(sig_sample_rate_hz: float,
+                        wav_sample_rate_hz: float) -&gt; str:
+    &#34;&#34;&#34;
+    Compute file string for oversample and downsample options
+
+    :param sig_sample_rate_hz: input signal sample rate
+    :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
+    :return: string with resample factor
+    &#34;&#34;&#34;
+    resample_factor = wav_sample_rate_hz / sig_sample_rate_hz
+    # If resample factor is unity, no change
+    resample_str = &#39;_preserve&#39;
+    if resample_factor &gt; 1:
+        resample_str = &#39;_upsample_&#39; + str(int(10.*resample_factor)/10) + &#39;x_to&#39;
+    elif 1 &gt; resample_factor &gt; 0:
+        resample_str = &#39;_decimate_&#39; + str(int(10./resample_factor)/10) + &#39;x_to&#39;
+    else:
+        print(&#34;Resample factor is zero or negative, address&#34;)
+    return resample_str</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.resample_fourier"><code class="name flex">
+<span>def <span class="ident">resample_fourier</span></span>(<span>sig_wf: numpy.ndarray, sig_sample_rate_hz: float, new_sample_rate_hz: float = 8000.0) ‑> numpy.ndarray</span>
+</code></dt>
+<dd>
+<div class="desc">Resample the Fourier way; can upsample or downsample. Downsample will be aliased, so use decimate in that case.<br><br>:param sig_wf: input signal waveform, reasonably well preprocessed<br>:param sig_sample_rate_hz: signal sample rate<br>:param new_sample_rate_hz: resampling sample rate<br>:return: resampled signal</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def resample_fourier(sig_wf: np.ndarray,
+                     sig_sample_rate_hz: float,
+                     new_sample_rate_hz: float = 8000.) -&gt; np.ndarray:
+    &#34;&#34;&#34;
+    Resample the Fourier way; can upsample or downsample. Downsample will be aliased, so use decimate in that case.
+
+    :param sig_wf: input signal waveform, reasonably well preprocessed
+    :param sig_sample_rate_hz: signal sample rate
+    :param new_sample_rate_hz: resampling sample rate
+    :return: resampled signal
+    &#34;&#34;&#34;
+    sig_len = len(sig_wf)
+    new_len = int(sig_len * new_sample_rate_hz / sig_sample_rate_hz)
+    sig_resampled = signal.resample(x=sig_wf, num=new_len)
+    return sig_resampled</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.sample_rate_str"><code class="name flex">
+<span>def <span class="ident">sample_rate_str</span></span>(<span>wav_sample_rate_hz: float) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc">Generate the sample rate string for the exported sound file<br><br>:param wav_sample_rate_hz: target wav sample rate<br>:return: string with sample rate in kHz</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sample_rate_str(wav_sample_rate_hz: float) -&gt; str:
+    &#34;&#34;&#34;
+    Generate the sample rate string for the exported sound file
+
+    :param wav_sample_rate_hz: target wav sample rate
+    :return: string with sample rate in kHz
+    &#34;&#34;&#34;
+    wav_fs_str = &#39;_&#39; + str(int(wav_sample_rate_hz / 1000)) + &#39;khz.wav&#39;
+    return wav_fs_str</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.save_to_elastic_wav"><code class="name flex">
+<span>def <span class="ident">save_to_elastic_wav</span></span>(<span>sig_wf: numpy.ndarray, sig_sample_rate_hz: float, wav_filename: str, wav_sample_rate_hz: float = 8000.0) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Save input signal to wav file<br><br>:param sig_wf: input signal waveform, reasonably well preprocessed<br>:param sig_sample_rate_hz: input signal sample rate<br>:param wav_filename: wav file name, with directory path<br>:param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values<br>:return: Export to wav file</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_to_elastic_wav(sig_wf: np.ndarray,
+                        sig_sample_rate_hz: float,
+                        wav_filename: str,
+                        wav_sample_rate_hz: float = 8000.) -&gt; None:
+    &#34;&#34;&#34;
+    Save input signal to wav file
+
+    :param sig_wf: input signal waveform, reasonably well preprocessed
+    :param sig_sample_rate_hz: input signal sample rate
+    :param wav_filename: wav file name, with directory path
+    :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
+    :return: Export to wav file
+    &#34;&#34;&#34;
+
+    if int(wav_sample_rate_hz) in permitted_wav_fs_values:
+        stretch_str = stretch_factor_str(sig_sample_rate_hz=sig_sample_rate_hz,
+                                         wav_sample_rate_hz=wav_sample_rate_hz)
+        khz_str = sample_rate_str(wav_sample_rate_hz=wav_sample_rate_hz)
+        export_filename = wav_filename + stretch_str + khz_str
+        synth_wav = 0.9 * np.real(sig_wf) / np.max(np.abs((np.real(sig_wf))))
+        scipy.io.wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
+    else:
+        print(exception_str)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.save_to_resampled_wav"><code class="name flex">
+<span>def <span class="ident">save_to_resampled_wav</span></span>(<span>sig_wf: numpy.ndarray, sig_sample_rate_hz: float, wav_filename: str, wav_sample_rate_hz: float = 8000.0) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Save input signal to wav file<br><br>:param sig_wf: input signal waveform, reasonably well preprocessed<br>:param sig_sample_rate_hz: input signal sample rate<br>:param wav_filename: wav file name, with directory path<br>:param wav_sample_rate_hz: wav sample rate; only 8kHz, 16kHz, and 48kHz<br>:return: Export to wav file</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def save_to_resampled_wav(sig_wf: np.ndarray,
+                          sig_sample_rate_hz: float,
+                          wav_filename: str,
+                          wav_sample_rate_hz: float = 8000.) -&gt; None:
+    &#34;&#34;&#34;
+    Save input signal to wav file
+
+    :param sig_wf: input signal waveform, reasonably well preprocessed
+    :param sig_sample_rate_hz: input signal sample rate
+    :param wav_filename: wav file name, with directory path
+    :param wav_sample_rate_hz: wav sample rate; only 8kHz, 16kHz, and 48kHz
+    :return: Export to wav file
+    &#34;&#34;&#34;
+
+    # Export to wav directory
+    if int(wav_sample_rate_hz) in permitted_wav_fs_values:
+        resample_str = resample_factor_str(sig_sample_rate_hz=sig_sample_rate_hz,
+                                           wav_sample_rate_hz=wav_sample_rate_hz)
+        khz_str = sample_rate_str(wav_sample_rate_hz=wav_sample_rate_hz)
+        export_filename = wav_filename + resample_str + khz_str
+        synth_wav = 0.9 * np.real(sig_wf) / np.max(np.abs((np.real(sig_wf))))
+        scipy.io.wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
+    else:
+        print(exception_str)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_ensonify.stretch_factor_str"><code class="name flex">
+<span>def <span class="ident">stretch_factor_str</span></span>(<span>sig_sample_rate_hz: float, wav_sample_rate_hz: float) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc">Compute file string for speedup and slowdown options<br><br>:param sig_sample_rate_hz: input signal sample rate<br>:param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values<br>:return:</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def stretch_factor_str(sig_sample_rate_hz: float,
+                       wav_sample_rate_hz: float) -&gt; str:
+    &#34;&#34;&#34;
+    Compute file string for speedup and slowdown options
+
+    :param sig_sample_rate_hz: input signal sample rate
+    :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
+    :return:
+    &#34;&#34;&#34;
+    stretch_factor = wav_sample_rate_hz / sig_sample_rate_hz
+    # If stretch factor is unity, no change
+    stretch_str = &#39;_preserve&#39;
+    if stretch_factor &gt; 1:
+        stretch_str = &#39;_speedup_&#39; + str(int(10.*stretch_factor)/10) + &#39;x_to&#39;
+    elif 1 &gt; stretch_factor &gt; 0:
+        stretch_str = &#39;_slowdown_&#39; + str(int(10./stretch_factor)/10) + &#39;x_to&#39;
+    else:
+        print(&#34;Stretch factor is zero or negative, address&#34;)
+    return stretch_str</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="redpandas" href="index.html">redpandas</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="redpandas.redpd_ensonify.decimate_to_aud" href="#redpandas.redpd_ensonify.decimate_to_aud">decimate_to_aud</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.dual_tone_test" href="#redpandas.redpd_ensonify.dual_tone_test">dual_tone_test</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.ensonify_sensors_pandas" href="#redpandas.redpd_ensonify.ensonify_sensors_pandas">ensonify_sensors_pandas</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.pandas_to_elastic_wav" href="#redpandas.redpd_ensonify.pandas_to_elastic_wav">pandas_to_elastic_wav</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.pandas_to_resampled_wav" href="#redpandas.redpd_ensonify.pandas_to_resampled_wav">pandas_to_resampled_wav</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.resample_factor_str" href="#redpandas.redpd_ensonify.resample_factor_str">resample_factor_str</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.resample_fourier" href="#redpandas.redpd_ensonify.resample_fourier">resample_fourier</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.sample_rate_str" href="#redpandas.redpd_ensonify.sample_rate_str">sample_rate_str</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.save_to_elastic_wav" href="#redpandas.redpd_ensonify.save_to_elastic_wav">save_to_elastic_wav</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.save_to_resampled_wav" href="#redpandas.redpd_ensonify.save_to_resampled_wav">save_to_resampled_wav</a></code></li>
+<li><code><a title="redpandas.redpd_ensonify.stretch_factor_str" href="#redpandas.redpd_ensonify.stretch_factor_str">stretch_factor_str</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

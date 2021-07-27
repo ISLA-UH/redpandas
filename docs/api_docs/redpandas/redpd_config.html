@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>redpandas.redpd_config API documentation</title>
+<meta name="description" content="Configuration class for RedPandas …" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>redpandas.redpd_config</code></h1>
+</header>
+<section id="section-intro">
+Configuration class for RedPandas.<br><br>Last updated: 17 June 2021
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Configuration class for RedPandas.
+
+Last updated: 17 June 2021
+&#34;&#34;&#34;
+import os
+import enum
+from typing import List, Optional, Dict, Union
+
+import pprint
+
+
+class DataLoadMethod(enum.Enum):
+    UNKNOWN = 0
+    DATAWINDOW = 1
+    PICKLE = 2
+    PARQUET = 3
+
+    @staticmethod
+    def method_from_str(method_str: str) -&gt; &#34;DataLoadMethod&#34;:
+        if method_str.lower() == &#34;datawindow&#34;:
+            return DataLoadMethod.DATAWINDOW
+        elif method_str.lower() == &#34;pickle&#34;:
+            return DataLoadMethod.PICKLE
+        elif method_str.lower() == &#34;parquet&#34;:
+            return DataLoadMethod.PARQUET
+        else:
+            return DataLoadMethod.UNKNOWN
+
+
+class RedpdConfig:
+
+    def __init__(self, input_directory: str,
+                 event_name: str = &#34;Redvox&#34;,
+                 output_directory: Optional[str] = None,
+                 output_filename_pkl_pqt: Optional[str] = None,
+                 station_ids: Optional[List[str]] = None,
+                 sensor_labels: Optional[List[str]] = None,
+                 event_start_epoch_s: Optional[float] = None,
+                 duration_s: Optional[int] = None,
+                 start_buffer_minutes: Optional[int] = 3,
+                 end_buffer_minutes: Optional[int] = 3,
+                 tdr_load_method: Optional[str] = &#34;datawindow&#34;):
+
+        &#34;&#34;&#34;
+        Configuration parameters for RedPandas
+
+        :param input_directory: string, directory that contains the files to read data from.  REQUIRED
+        :param event_name: optional string, name of event. Default is &#34;Redvox&#34;
+        :param output_directory: optional string, directory to created save pickle/JSON/parquet
+        :param output_filename_pkl_pqt: optional string, name of created parquet and pickle files
+        :param station_ids: optional list of strings, list of station ids to filter on
+        :param sensor_labels: optional list of strings, list of sensors. Default is &#34;audio&#34;
+        :param event_start_epoch_s: optional float, start time in epoch s. Default is None
+        :param duration_s: optional int, durtion of event in minutes. Default is None
+        :param start_buffer_minutes: float representing the amount of minutes to include before the start datetime
+         when filtering data. Default is 3
+        :param end_buffer_minutes: float representing the amount of minutes to include before the end datetime
+         when filtering data. Default is 3
+        :param tdr_load_method: optional string, chose loading data method: &#34;datawindow&#34;, &#34;pickle&#34;, or &#34;parquet&#34;.
+         Default is &#34;datawindow&#34;
+        &#34;&#34;&#34;
+
+        self.input_dir = input_directory
+        self.event_name = event_name
+
+        # Check if input and output dir exists
+        if not os.path.exists(self.input_dir):
+            print(f&#34;Input directory does not exist, check path: {self.input_dir}&#34;)
+            exit()
+
+        if output_directory is not None:
+            self.output_dir = output_directory
+            if not os.path.exists(self.output_dir):
+                print(f&#34;Creating output directory: {self.output_dir}&#34;)
+                os.mkdir(self.output_dir)
+        else:
+            self.output_dir = os.path.join(self.input_dir, &#34;rpd_files&#34;)
+
+        if output_filename_pkl_pqt is None:
+            self.output_filename_pkl_pqt = event_name
+        else:
+            self.output_filename_pkl_pqt = output_filename_pkl_pqt
+
+        self.dw_file: str = self.output_filename_pkl_pqt + &#34;.pkl&#34;
+        self.pd_pqt_file: str = self.output_filename_pkl_pqt + &#34;_df.parquet&#34;
+
+        self.station_ids = station_ids
+
+        if sensor_labels is not None:
+            self.sensor_labels = sensor_labels
+        else:
+            self.sensor_labels = [&#34;audio&#34;]
+
+        self.event_start_epoch_s = event_start_epoch_s
+        self.duration_s = duration_s
+
+        if duration_s is not None:
+            self.event_end_epoch_s: float = self.event_start_epoch_s + self.duration_s
+        else:
+            self.event_end_epoch_s = None
+
+        self.start_buffer_minutes = start_buffer_minutes
+        self.end_buffer_minutes = end_buffer_minutes
+
+        self.tdr_load_method = DataLoadMethod.method_from_str(tdr_load_method)
+
+    def pretty(self) -&gt; str:
+        # noinspection Mypy
+        return pprint.pformat(vars(self))
+
+
+class TFRConfig:
+
+    def __init__(self, tfr_type: str,
+                 tfr_order_number_N: int,
+                 show_fig_titles: bool,
+                 mesh_color_scale: Optional[Union[Dict[str, str] or str]] = &#39;range&#39;,
+                 mesh_color_range: Optional[Union[Dict[str, float] or float]] = 18.,
+                 sensor_highpass: Optional[Union[Dict[str, bool] or bool]] = True,
+                 tfr_load_method: Optional[str] = &#34;datawindow&#34;):
+        &#34;&#34;&#34;
+        Configuration parameters for skyfall_tfr_rpd
+
+        :param tfr_type: string, &#39;stft&#39; or &#39;cwt&#39;
+        :param tfr_order_number_N: int, order number of the transform
+        :param show_fig_titles: bool, display or hide figure titles
+        :param mesh_color_scale: string or dictionary of strings, color scale mode for spectrograms
+        :param mesh_color_range: float or dictionary of floats, color range for spectrograms
+        :param sensor_highpass: boolean or dictionary of booleans, use highpass of data if available
+        :param tfr_load_method: optional string, chose loading data method: &#34;datawindow&#34;, &#34;pickle&#34;, or &#34;parquet&#34;
+        &#34;&#34;&#34;
+        self.tfr_type = tfr_type
+        self.tfr_order_number_N = tfr_order_number_N
+        self.show_fig_titles = show_fig_titles
+        self.tfr_load_method = DataLoadMethod.method_from_str(tfr_load_method)
+        self.sensor_labels = [&#39;Audio&#39;, &#39;Bar&#39;, &#39;Acc&#39;, &#39;Gyr&#39;, &#39;Mag&#39;]
+        n = len(self.sensor_labels)
+
+        if type(mesh_color_scale) == str:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[mesh_color_scale]))
+        else:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[&#39;range&#39;]))
+            for label in mesh_color_scale.keys():
+                self.mc_scale[label] = mesh_color_scale[label]
+
+        if type(mesh_color_range) == float:
+            self.mc_range = dict(zip(self.sensor_labels, n*[mesh_color_range]))
+        else:
+            self.mc_range = dict(zip(self.sensor_labels, n*[18.]))
+            for label in mesh_color_range.keys():
+                self.mc_range[label] = mesh_color_range[label]
+
+        if type(sensor_highpass) == bool:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[sensor_highpass]))
+        else:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[True]))
+            for label in sensor_highpass.keys():
+                self.sensor_hp[label] = sensor_highpass[label]
+
+        self.sensor_3d = dict(zip([&#39;Audio&#39;, &#39;Bar&#39;, &#39;Acc&#39;, &#39;Gyr&#39;, &#39;Mag&#39;], [False, False, True, True, True]))</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="redpandas.redpd_config.DataLoadMethod"><code class="flex name class">
+<span>class <span class="ident">DataLoadMethod</span></span>
+<span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
+</code></dt>
+<dd>
+<div class="desc">An enumeration.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class DataLoadMethod(enum.Enum):
+    UNKNOWN = 0
+    DATAWINDOW = 1
+    PICKLE = 2
+    PARQUET = 3
+
+    @staticmethod
+    def method_from_str(method_str: str) -&gt; &#34;DataLoadMethod&#34;:
+        if method_str.lower() == &#34;datawindow&#34;:
+            return DataLoadMethod.DATAWINDOW
+        elif method_str.lower() == &#34;pickle&#34;:
+            return DataLoadMethod.PICKLE
+        elif method_str.lower() == &#34;parquet&#34;:
+            return DataLoadMethod.PARQUET
+        else:
+            return DataLoadMethod.UNKNOWN</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>enum.Enum</li>
+</ul>
+<h3>Class variables</h3>
+<dl>
+<dt id="redpandas.redpd_config.DataLoadMethod.DATAWINDOW"><code class="name">var <span class="ident">DATAWINDOW</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="redpandas.redpd_config.DataLoadMethod.PARQUET"><code class="name">var <span class="ident">PARQUET</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="redpandas.redpd_config.DataLoadMethod.PICKLE"><code class="name">var <span class="ident">PICKLE</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+<dt id="redpandas.redpd_config.DataLoadMethod.UNKNOWN"><code class="name">var <span class="ident">UNKNOWN</span></code></dt>
+<dd>
+<div class="desc"></div>
+</dd>
+</dl>
+<h3>Static methods</h3>
+<dl>
+<dt id="redpandas.redpd_config.DataLoadMethod.method_from_str"><code class="name flex">
+<span>def <span class="ident">method_from_str</span></span>(<span>method_str: str) ‑> <a title="redpandas.redpd_config.DataLoadMethod" href="#redpandas.redpd_config.DataLoadMethod">DataLoadMethod</a></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def method_from_str(method_str: str) -&gt; &#34;DataLoadMethod&#34;:
+    if method_str.lower() == &#34;datawindow&#34;:
+        return DataLoadMethod.DATAWINDOW
+    elif method_str.lower() == &#34;pickle&#34;:
+        return DataLoadMethod.PICKLE
+    elif method_str.lower() == &#34;parquet&#34;:
+        return DataLoadMethod.PARQUET
+    else:
+        return DataLoadMethod.UNKNOWN</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.redpd_config.RedpdConfig"><code class="flex name class">
+<span>class <span class="ident">RedpdConfig</span></span>
+<span>(</span><span>input_directory: str, event_name: str = 'Redvox', output_directory: Union[str, NoneType] = None, output_filename_pkl_pqt: Union[str, NoneType] = None, station_ids: Union[List[str], NoneType] = None, sensor_labels: Union[List[str], NoneType] = None, event_start_epoch_s: Union[float, NoneType] = None, duration_s: Union[int, NoneType] = None, start_buffer_minutes: Union[int, NoneType] = 3, end_buffer_minutes: Union[int, NoneType] = 3, tdr_load_method: Union[str, NoneType] = 'datawindow')</span>
+</code></dt>
+<dd>
+<div class="desc">Configuration parameters for RedPandas<br><br>:param input_directory: string, directory that contains the files to read data from.
+REQUIRED<br>:param event_name: optional string, name of event. Default is "Redvox"<br>:param output_directory: optional string, directory to created save pickle/JSON/parquet<br>:param output_filename_pkl_pqt: optional string, name of created parquet and pickle files<br>:param station_ids: optional list of strings, list of station ids to filter on<br>:param sensor_labels: optional list of strings, list of sensors. Default is "audio"<br>:param event_start_epoch_s: optional float, start time in epoch s. Default is None<br>:param duration_s: optional int, durtion of event in minutes. Default is None<br>:param start_buffer_minutes: float representing the amount of minutes to include before the start datetime<br> when filtering data. Default is 3<br>:param end_buffer_minutes: float representing the amount of minutes to include before the end datetime<br> when filtering data. Default is 3<br>:param tdr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet".<br> Default is "datawindow"</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class RedpdConfig:
+
+    def __init__(self, input_directory: str,
+                 event_name: str = &#34;Redvox&#34;,
+                 output_directory: Optional[str] = None,
+                 output_filename_pkl_pqt: Optional[str] = None,
+                 station_ids: Optional[List[str]] = None,
+                 sensor_labels: Optional[List[str]] = None,
+                 event_start_epoch_s: Optional[float] = None,
+                 duration_s: Optional[int] = None,
+                 start_buffer_minutes: Optional[int] = 3,
+                 end_buffer_minutes: Optional[int] = 3,
+                 tdr_load_method: Optional[str] = &#34;datawindow&#34;):
+
+        &#34;&#34;&#34;
+        Configuration parameters for RedPandas
+
+        :param input_directory: string, directory that contains the files to read data from.  REQUIRED
+        :param event_name: optional string, name of event. Default is &#34;Redvox&#34;
+        :param output_directory: optional string, directory to created save pickle/JSON/parquet
+        :param output_filename_pkl_pqt: optional string, name of created parquet and pickle files
+        :param station_ids: optional list of strings, list of station ids to filter on
+        :param sensor_labels: optional list of strings, list of sensors. Default is &#34;audio&#34;
+        :param event_start_epoch_s: optional float, start time in epoch s. Default is None
+        :param duration_s: optional int, durtion of event in minutes. Default is None
+        :param start_buffer_minutes: float representing the amount of minutes to include before the start datetime
+         when filtering data. Default is 3
+        :param end_buffer_minutes: float representing the amount of minutes to include before the end datetime
+         when filtering data. Default is 3
+        :param tdr_load_method: optional string, chose loading data method: &#34;datawindow&#34;, &#34;pickle&#34;, or &#34;parquet&#34;.
+         Default is &#34;datawindow&#34;
+        &#34;&#34;&#34;
+
+        self.input_dir = input_directory
+        self.event_name = event_name
+
+        # Check if input and output dir exists
+        if not os.path.exists(self.input_dir):
+            print(f&#34;Input directory does not exist, check path: {self.input_dir}&#34;)
+            exit()
+
+        if output_directory is not None:
+            self.output_dir = output_directory
+            if not os.path.exists(self.output_dir):
+                print(f&#34;Creating output directory: {self.output_dir}&#34;)
+                os.mkdir(self.output_dir)
+        else:
+            self.output_dir = os.path.join(self.input_dir, &#34;rpd_files&#34;)
+
+        if output_filename_pkl_pqt is None:
+            self.output_filename_pkl_pqt = event_name
+        else:
+            self.output_filename_pkl_pqt = output_filename_pkl_pqt
+
+        self.dw_file: str = self.output_filename_pkl_pqt + &#34;.pkl&#34;
+        self.pd_pqt_file: str = self.output_filename_pkl_pqt + &#34;_df.parquet&#34;
+
+        self.station_ids = station_ids
+
+        if sensor_labels is not None:
+            self.sensor_labels = sensor_labels
+        else:
+            self.sensor_labels = [&#34;audio&#34;]
+
+        self.event_start_epoch_s = event_start_epoch_s
+        self.duration_s = duration_s
+
+        if duration_s is not None:
+            self.event_end_epoch_s: float = self.event_start_epoch_s + self.duration_s
+        else:
+            self.event_end_epoch_s = None
+
+        self.start_buffer_minutes = start_buffer_minutes
+        self.end_buffer_minutes = end_buffer_minutes
+
+        self.tdr_load_method = DataLoadMethod.method_from_str(tdr_load_method)
+
+    def pretty(self) -&gt; str:
+        # noinspection Mypy
+        return pprint.pformat(vars(self))</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.redpd_config.RedpdConfig.pretty"><code class="name flex">
+<span>def <span class="ident">pretty</span></span>(<span>self) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pretty(self) -&gt; str:
+    # noinspection Mypy
+    return pprint.pformat(vars(self))</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.redpd_config.TFRConfig"><code class="flex name class">
+<span>class <span class="ident">TFRConfig</span></span>
+<span>(</span><span>tfr_type: str, tfr_order_number_N: int, show_fig_titles: bool, mesh_color_scale: Union[Dict[str, str], NoneType] = 'range', mesh_color_range: Union[Dict[str, float], NoneType] = 18.0, sensor_highpass: Union[Dict[str, bool], NoneType] = True, tfr_load_method: Union[str, NoneType] = 'datawindow')</span>
+</code></dt>
+<dd>
+<div class="desc">Configuration parameters for skyfall_tfr_rpd<br><br>:param tfr_type: string, 'stft' or 'cwt'<br>:param tfr_order_number_N: int, order number of the transform<br>:param show_fig_titles: bool, display or hide figure titles<br>:param mesh_color_scale: string or dictionary of strings, color scale mode for spectrograms<br>:param mesh_color_range: float or dictionary of floats, color range for spectrograms<br>:param sensor_highpass: boolean or dictionary of booleans, use highpass of data if available<br>:param tfr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet"</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TFRConfig:
+
+    def __init__(self, tfr_type: str,
+                 tfr_order_number_N: int,
+                 show_fig_titles: bool,
+                 mesh_color_scale: Optional[Union[Dict[str, str] or str]] = &#39;range&#39;,
+                 mesh_color_range: Optional[Union[Dict[str, float] or float]] = 18.,
+                 sensor_highpass: Optional[Union[Dict[str, bool] or bool]] = True,
+                 tfr_load_method: Optional[str] = &#34;datawindow&#34;):
+        &#34;&#34;&#34;
+        Configuration parameters for skyfall_tfr_rpd
+
+        :param tfr_type: string, &#39;stft&#39; or &#39;cwt&#39;
+        :param tfr_order_number_N: int, order number of the transform
+        :param show_fig_titles: bool, display or hide figure titles
+        :param mesh_color_scale: string or dictionary of strings, color scale mode for spectrograms
+        :param mesh_color_range: float or dictionary of floats, color range for spectrograms
+        :param sensor_highpass: boolean or dictionary of booleans, use highpass of data if available
+        :param tfr_load_method: optional string, chose loading data method: &#34;datawindow&#34;, &#34;pickle&#34;, or &#34;parquet&#34;
+        &#34;&#34;&#34;
+        self.tfr_type = tfr_type
+        self.tfr_order_number_N = tfr_order_number_N
+        self.show_fig_titles = show_fig_titles
+        self.tfr_load_method = DataLoadMethod.method_from_str(tfr_load_method)
+        self.sensor_labels = [&#39;Audio&#39;, &#39;Bar&#39;, &#39;Acc&#39;, &#39;Gyr&#39;, &#39;Mag&#39;]
+        n = len(self.sensor_labels)
+
+        if type(mesh_color_scale) == str:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[mesh_color_scale]))
+        else:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[&#39;range&#39;]))
+            for label in mesh_color_scale.keys():
+                self.mc_scale[label] = mesh_color_scale[label]
+
+        if type(mesh_color_range) == float:
+            self.mc_range = dict(zip(self.sensor_labels, n*[mesh_color_range]))
+        else:
+            self.mc_range = dict(zip(self.sensor_labels, n*[18.]))
+            for label in mesh_color_range.keys():
+                self.mc_range[label] = mesh_color_range[label]
+
+        if type(sensor_highpass) == bool:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[sensor_highpass]))
+        else:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[True]))
+            for label in sensor_highpass.keys():
+                self.sensor_hp[label] = sensor_highpass[label]
+
+        self.sensor_3d = dict(zip([&#39;Audio&#39;, &#39;Bar&#39;, &#39;Acc&#39;, &#39;Gyr&#39;, &#39;Mag&#39;], [False, False, True, True, True]))</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="redpandas" href="index.html">redpandas</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="redpandas.redpd_config.DataLoadMethod" href="#redpandas.redpd_config.DataLoadMethod">DataLoadMethod</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.redpd_config.DataLoadMethod.DATAWINDOW" href="#redpandas.redpd_config.DataLoadMethod.DATAWINDOW">DATAWINDOW</a></code></li>
+<li><code><a title="redpandas.redpd_config.DataLoadMethod.PARQUET" href="#redpandas.redpd_config.DataLoadMethod.PARQUET">PARQUET</a></code></li>
+<li><code><a title="redpandas.redpd_config.DataLoadMethod.PICKLE" href="#redpandas.redpd_config.DataLoadMethod.PICKLE">PICKLE</a></code></li>
+<li><code><a title="redpandas.redpd_config.DataLoadMethod.UNKNOWN" href="#redpandas.redpd_config.DataLoadMethod.UNKNOWN">UNKNOWN</a></code></li>
+<li><code><a title="redpandas.redpd_config.DataLoadMethod.method_from_str" href="#redpandas.redpd_config.DataLoadMethod.method_from_str">method_from_str</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.redpd_config.RedpdConfig" href="#redpandas.redpd_config.RedpdConfig">RedpdConfig</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.redpd_config.RedpdConfig.pretty" href="#redpandas.redpd_config.RedpdConfig.pretty">pretty</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.redpd_config.TFRConfig" href="#redpandas.redpd_config.TFRConfig">TFRConfig</a></code></h4>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>
