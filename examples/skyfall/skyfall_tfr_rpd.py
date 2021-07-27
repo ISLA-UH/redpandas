@@ -7,7 +7,7 @@ import pandas as pd
 from redvox.common.data_window import DataWindow
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_plot.redpd_plot as rpd_plot
+import redpandas.redpd_plot.mesh as rpd_plot
 import redpandas.redpd_tfr as rpd_tfr
 import redpandas.redpd_datawin as rpd_dw
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
