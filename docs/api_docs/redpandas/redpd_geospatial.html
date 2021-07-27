@@ -22,8 +22,7 @@
 <h1 class="title">Module <code>redpandas.redpd_geospatial</code></h1>
 </header>
 <section id="section-intro">
-<p>This module contains functions to extract and process geospatial data.</p>
-<p>Last updated: 24 June 2021</p>
+This module contains functions to extract and process geospatial data.<br><br>Last updated: 24 June 2021
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -245,11 +244,7 @@ def compute_t_r_z_speed(unix_s: Any,
 <span>def <span class="ident">bounder_data</span></span>(<span>path_bounder_csv: str, file_bounder_csv: str, file_bounder_parquet: str) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Load data from balloon-based Bounder platform</p>
-<p>:param path_bounder_csv: path/to/bounder csv and parquet files
-:param file_bounder_csv: name bounder csv file
-:param file_bounder_parquet: name bounder parquet file
-:return: save as parquet</p></div>
+<div class="desc">Load data from balloon-based Bounder platform<br><br>:param path_bounder_csv: path/to/bounder csv and parquet files<br>:param file_bounder_csv: name bounder csv file<br>:param file_bounder_parquet: name bounder parquet file<br>:return: save as parquet</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -293,9 +288,7 @@ def compute_t_r_z_speed(unix_s: Any,
 <span>def <span class="ident">bounder_model_height_from_pressure</span></span>(<span>pressure_kPa: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns empirical height in m from input pressure</p>
-<p>:param pressure_kPa: Atmospheric pressure in kPa
-:return: Height in m above WGS84 Geoid</p></div>
+<div class="desc">Returns empirical height in m from input pressure<br><br>:param pressure_kPa: Atmospheric pressure in kPa<br>:return: Height in m above WGS84 Geoid</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -320,17 +313,7 @@ def compute_t_r_z_speed(unix_s: Any,
 <span>def <span class="ident">compute_t_r_z_speed</span></span>(<span>unix_s: Any, lat_deg: Any, lon_deg: Any, alt_m: Any, ref_unix_s: Any, ref_lat_deg: Any, ref_lon_deg: Any, ref_alt_m: Any, geodetic_type: str = 'enu') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Compute time and location relative to a reference value; compute speed.</p>
-<p>:param unix_s: target timestamp
-:param lat_deg: target geodetic latitude
-:param lon_deg: target geodetic longitude
-:param alt_m: target altitude above ellipsoid (meters)
-:param ref_unix_s: observer timestamp
-:param ref_lat_deg: observer geodetic latitude
-:param ref_lon_deg: observer geodetic longitude
-:param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
-:param geodetic_type: 'enu' or 'ned'
-:return: pandas DataFrame with columns: {'Elapsed_s', 'Range_m', 'Z_m', 'LatLon_speed_mps'}</p></div>
+<div class="desc">Compute time and location relative to a reference value; compute speed.<br><br>:param unix_s: target timestamp<br>:param lat_deg: target geodetic latitude<br>:param lon_deg: target geodetic longitude<br>:param alt_m: target altitude above ellipsoid (meters)<br>:param ref_unix_s: observer timestamp<br>:param ref_lat_deg: observer geodetic latitude<br>:param ref_lon_deg: observer geodetic longitude<br>:param ref_alt_m: observer altitude above geodetic ellipsoid (meters)<br>:param geodetic_type: 'enu' or 'ned'<br>:return: pandas DataFrame with columns: {'Elapsed_s', 'Range_m', 'Z_m', 'LatLon_speed_mps'}</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -391,17 +374,7 @@ def compute_t_r_z_speed(unix_s: Any,
 <span>def <span class="ident">compute_t_xyz_uvw</span></span>(<span>unix_s: Any, lat_deg: Any, lon_deg: Any, alt_m: Any, ref_unix_s: Any, ref_lat_deg: Any, ref_lon_deg: Any, ref_alt_m: Any, geodetic_type: str = 'enu') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Compute time and location relative to a reference value; compute speed.</p>
-<p>:param unix_s: target timestamp
-:param lat_deg: target geodetic latitude
-:param lon_deg: target geodetic longitude
-:param alt_m: target altitude above ellipsoid (meters)
-:param ref_unix_s: observer timestamp
-:param ref_lat_deg: observer geodetic latitude
-:param ref_lon_deg: observer geodetic longitude
-:param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
-:param geodetic_type: 'enu' or 'ned'
-:return: pandas DataFrame with columns: {'T_s', 'X_m', 'Y_m', 'Z_m', 'U_mps', 'V_mps', 'W_mps', 'Speed_mps'}</p></div>
+<div class="desc">Compute time and location relative to a reference value; compute speed.<br><br>:param unix_s: target timestamp<br>:param lat_deg: target geodetic latitude<br>:param lon_deg: target geodetic longitude<br>:param alt_m: target altitude above ellipsoid (meters)<br>:param ref_unix_s: observer timestamp<br>:param ref_lat_deg: observer geodetic latitude<br>:param ref_lon_deg: observer geodetic longitude<br>:param ref_alt_m: observer altitude above geodetic ellipsoid (meters)<br>:param geodetic_type: 'enu' or 'ned'<br>:return: pandas DataFrame with columns: {'T_s', 'X_m', 'Y_m', 'Z_m', 'U_mps', 'V_mps', 'W_mps', 'Speed_mps'}</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -466,10 +439,7 @@ def compute_t_r_z_speed(unix_s: Any,
 <span>def <span class="ident">redvox_loc</span></span>(<span>df_pqt_path: str) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Extract the location, temperature, and DC pressure payload from the microphones</p>
-<p>:param df_pqt_path: path/to/parquet file with data stored in a pd.DataFrame
-:return: pd. DataFrame with columns {'station_id', 'location_epoch_s', 'location_latitude', 'location_longitude',
-'location_altitude', 'location_speed', 'location_horizontal_accuracy', 'barometer_epoch_s', 'barometer_wf_raw'}</p></div>
+<div class="desc">Extract the location, temperature, and DC pressure payload from the microphones<br><br>:param df_pqt_path: path/to/parquet file with data stored in a pd.DataFrame<br>:return: pd. DataFrame with columns {'station_id', 'location_epoch_s', 'location_latitude', 'location_longitude',<br>'location_altitude', 'location_speed', 'location_horizontal_accuracy', 'barometer_epoch_s', 'barometer_wf_raw'}</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -535,7 +505,7 @@ def compute_t_r_z_speed(unix_s: Any,
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

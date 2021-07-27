@@ -1,0 +1,1902 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>redpandas.tests.test_redpd_build_station API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>redpandas.tests.test_redpd_build_station</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import unittest
+import numpy as np
+import redpandas.redpd_build_station as rpd_build_sta
+from redvox.common.data_window import DataWindow
+
+# # Load data once for speed
+# rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=&#34;test_data&#34;,
+#                                                   file_name=&#34;aud_bar_acc_mag_gyr_loc_soh_clock_sync&#34;)
+# example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+# TODO:
+#  - Datasets with no: barometer, accelerometer, gyroscope, magnetometer, location, best location, clock, synch, health
+#  - Datasets with: image, luminosity
+#  - Write tests accordingly
+
+
+class TestUnevenSensor(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = example_station
+        sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = \
+            rpd_build_sta.sensor_uneven(station=self.example_station,
+                                        sensor_label=&#34;barometer&#34;)
+        self.sensor_sample_rate_hz = sensor_sample_rate_hz
+        self.sensor_epoch_s = sensor_epoch_s
+        self.sensor_raw = sensor_raw
+        self.sensor_nans = sensor_nans
+
+    def test_results_is_not_None(self):
+        # Should not be None as there is data
+        self.assertIsNotNone(self.sensor_sample_rate_hz)
+        self.assertIsNotNone(self.sensor_epoch_s)
+        self.assertIsNotNone(self.sensor_raw)
+        self.assertIsNotNone(self.sensor_nans)
+
+    def test_results_type(self):
+        # Check return type is what it should be
+        self.assertTrue(type(self.sensor_sample_rate_hz) is float)
+        self.assertTrue(type(self.sensor_epoch_s) is np.ndarray)
+        self.assertTrue(type(self.sensor_raw) is np.ndarray)
+        self.assertTrue(type(self.sensor_nans) is np.ndarray)
+
+    def test_no_data(self):
+        # Should return None cause there is no data
+        sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = \
+            rpd_build_sta.sensor_uneven(station=example_station,
+                                        sensor_label=&#34;light&#34;)
+        self.assertIsNone(sensor_sample_rate_hz)
+        self.assertIsNone(sensor_epoch_s)
+        self.assertIsNone(sensor_raw)
+        self.assertIsNone(sensor_nans)
+
+    def tearDown(self):
+        self.example_station = None
+        self.sensor_sample_rate_hz = None
+        self.sensor_epoch_s = None
+        self.sensor_raw = None
+        self.sensor_nans = None
+
+
+class TestAudioWfTimeBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type_simple(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                                  mean_type=&#34;simple&#34;,
+                                                                  raw=False)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_lin(self):
+        returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                                  mean_type=&#34;lin&#34;,
+                                                                  raw=False)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_raw(self):
+        returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                                  mean_type=&#34;simple&#34;,
+                                                                  raw=True)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestLocationBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.location_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestBestLocationBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.best_location_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestStateOfHealthBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.state_of_health_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestImageBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.image_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestSynchronizationBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.synchronization_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestClockBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.clock_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestLightBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.light_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestBuildStation(unittest.TestCase):
+
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type_audio_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;audio&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_audio_butter(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;audio&#34;,
+                                                    highpass_type=&#34;butter&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_audio_rc(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;audio&#34;,
+                                                    highpass_type=&#34;rc&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_barometer_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;barometer&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_accelerometer_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;accelerometer&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_gyroscope_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;gyroscope&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_magnetometer_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;magnetometer&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_health(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;magnetometer&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_location(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;location&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_best_location(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;best_location&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_image(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;image&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+class TestStationToDictFromDw(unittest.TestCase):
+
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type_audio_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;audio&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_barometer_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;barometer&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_acceleration_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;accelerometer&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_magnetometer_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;magnetometer&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_gyroscope_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;gyroscope&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_multiple(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;audio&#34;, &#34;barometer&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None
+
+
+if __name__ == &#39;__main__&#39;:
+    unittest.main()</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestAudioWfTimeBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestAudioWfTimeBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type_simple(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                                  mean_type=&#34;simple&#34;,
+                                                                  raw=False)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_lin(self):
+        returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                                  mean_type=&#34;lin&#34;,
+                                                                  raw=False)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_raw(self):
+        returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                                  mean_type=&#34;simple&#34;,
+                                                                  raw=True)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_lin"><code class="name flex">
+<span>def <span class="ident">test_result_type_lin</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_lin(self):
+    returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                              mean_type=&#34;lin&#34;,
+                                                              raw=False)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_raw"><code class="name flex">
+<span>def <span class="ident">test_result_type_raw</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_raw(self):
+    returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                              mean_type=&#34;simple&#34;,
+                                                              raw=True)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_simple"><code class="name flex">
+<span>def <span class="ident">test_result_type_simple</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_simple(self):
+    # Should return dictionary
+    returned_dict = rpd_build_sta.audio_wf_time_build_station(station=self.example_station,
+                                                              mean_type=&#34;simple&#34;,
+                                                              raw=False)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestBestLocationBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestBestLocationBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.best_location_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.test_result_type"><code class="name flex">
+<span>def <span class="ident">test_result_type</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type(self):
+    # Should return dictionary
+    returned_dict = rpd_build_sta.best_location_build_station(station=self.example_station)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestBuildStation(unittest.TestCase):
+
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type_audio_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;audio&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_audio_butter(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;audio&#34;,
+                                                    highpass_type=&#34;butter&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_audio_rc(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;audio&#34;,
+                                                    highpass_type=&#34;rc&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_barometer_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;barometer&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_accelerometer_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;accelerometer&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_gyroscope_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;gyroscope&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_magnetometer_obspy(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;magnetometer&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_health(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;magnetometer&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_location(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;location&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_best_location(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;best_location&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_image(self):
+        returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                    sensor_label=&#34;image&#34;,
+                                                    highpass_type=&#34;obspy&#34;,
+                                                    frequency_filter_low=1/100,
+                                                    filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_accelerometer_obspy"><code class="name flex">
+<span>def <span class="ident">test_result_type_accelerometer_obspy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_accelerometer_obspy(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;accelerometer&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_butter"><code class="name flex">
+<span>def <span class="ident">test_result_type_audio_butter</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_audio_butter(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;audio&#34;,
+                                                highpass_type=&#34;butter&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_obspy"><code class="name flex">
+<span>def <span class="ident">test_result_type_audio_obspy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_audio_obspy(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;audio&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_rc"><code class="name flex">
+<span>def <span class="ident">test_result_type_audio_rc</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_audio_rc(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;audio&#34;,
+                                                highpass_type=&#34;rc&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_barometer_obspy"><code class="name flex">
+<span>def <span class="ident">test_result_type_barometer_obspy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_barometer_obspy(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;barometer&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_best_location"><code class="name flex">
+<span>def <span class="ident">test_result_type_best_location</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_best_location(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;best_location&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_gyroscope_obspy"><code class="name flex">
+<span>def <span class="ident">test_result_type_gyroscope_obspy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_gyroscope_obspy(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;gyroscope&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_health"><code class="name flex">
+<span>def <span class="ident">test_result_type_health</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_health(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;magnetometer&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_image"><code class="name flex">
+<span>def <span class="ident">test_result_type_image</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_image(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;image&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_location"><code class="name flex">
+<span>def <span class="ident">test_result_type_location</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_location(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;location&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_magnetometer_obspy"><code class="name flex">
+<span>def <span class="ident">test_result_type_magnetometer_obspy</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_magnetometer_obspy(self):
+    returned_dict = rpd_build_sta.build_station(station=self.example_station,
+                                                sensor_label=&#34;magnetometer&#34;,
+                                                highpass_type=&#34;obspy&#34;,
+                                                frequency_filter_low=1/100,
+                                                filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestClockBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestClockBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestClockBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.clock_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestClockBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestClockBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestClockBuildStation.test_result_type"><code class="name flex">
+<span>def <span class="ident">test_result_type</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type(self):
+    # Should return dictionary
+    returned_dict = rpd_build_sta.clock_build_station(station=self.example_station)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestImageBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestImageBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestImageBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.image_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestImageBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestImageBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestImageBuildStation.test_result_type"><code class="name flex">
+<span>def <span class="ident">test_result_type</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type(self):
+    # Should return dictionary
+    returned_dict = rpd_build_sta.image_build_station(station=self.example_station)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestLightBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestLightBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestLightBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.light_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestLightBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestLightBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestLightBuildStation.test_result_type"><code class="name flex">
+<span>def <span class="ident">test_result_type</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type(self):
+    # Should return dictionary
+    returned_dict = rpd_build_sta.light_build_station(station=self.example_station)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestLocationBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestLocationBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestLocationBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.location_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestLocationBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestLocationBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestLocationBuildStation.test_result_type"><code class="name flex">
+<span>def <span class="ident">test_result_type</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type(self):
+    # Should return dictionary
+    returned_dict = rpd_build_sta.location_build_station(station=self.example_station)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestStateOfHealthBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestStateOfHealthBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.state_of_health_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.test_result_type"><code class="name flex">
+<span>def <span class="ident">test_result_type</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type(self):
+    # Should return dictionary
+    returned_dict = rpd_build_sta.state_of_health_build_station(station=self.example_station)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw"><code class="flex name class">
+<span>class <span class="ident">TestStationToDictFromDw</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestStationToDictFromDw(unittest.TestCase):
+
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type_audio_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;audio&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_barometer_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;barometer&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_acceleration_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;accelerometer&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_magnetometer_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;magnetometer&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_gyroscope_only(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;gyroscope&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def test_result_type_multiple(self):
+        returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                              sdk_version=&#34;3.0&#34;,
+                                                              sensor_labels=[&#34;audio&#34;, &#34;barometer&#34;],
+                                                              highpass_type=&#34;obspy&#34;,
+                                                              frequency_filter_low=1/100,
+                                                              filter_order=4)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_acceleration_only"><code class="name flex">
+<span>def <span class="ident">test_result_type_acceleration_only</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_acceleration_only(self):
+    returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                          sdk_version=&#34;3.0&#34;,
+                                                          sensor_labels=[&#34;accelerometer&#34;],
+                                                          highpass_type=&#34;obspy&#34;,
+                                                          frequency_filter_low=1/100,
+                                                          filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_audio_only"><code class="name flex">
+<span>def <span class="ident">test_result_type_audio_only</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_audio_only(self):
+    returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                          sdk_version=&#34;3.0&#34;,
+                                                          sensor_labels=[&#34;audio&#34;],
+                                                          highpass_type=&#34;obspy&#34;,
+                                                          frequency_filter_low=1/100,
+                                                          filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_barometer_only"><code class="name flex">
+<span>def <span class="ident">test_result_type_barometer_only</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_barometer_only(self):
+    returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                          sdk_version=&#34;3.0&#34;,
+                                                          sensor_labels=[&#34;barometer&#34;],
+                                                          highpass_type=&#34;obspy&#34;,
+                                                          frequency_filter_low=1/100,
+                                                          filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_gyroscope_only"><code class="name flex">
+<span>def <span class="ident">test_result_type_gyroscope_only</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_gyroscope_only(self):
+    returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                          sdk_version=&#34;3.0&#34;,
+                                                          sensor_labels=[&#34;gyroscope&#34;],
+                                                          highpass_type=&#34;obspy&#34;,
+                                                          frequency_filter_low=1/100,
+                                                          filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_magnetometer_only"><code class="name flex">
+<span>def <span class="ident">test_result_type_magnetometer_only</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_magnetometer_only(self):
+    returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                          sdk_version=&#34;3.0&#34;,
+                                                          sensor_labels=[&#34;magnetometer&#34;],
+                                                          highpass_type=&#34;obspy&#34;,
+                                                          frequency_filter_low=1/100,
+                                                          filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_multiple"><code class="name flex">
+<span>def <span class="ident">test_result_type_multiple</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type_multiple(self):
+    returned_dict = rpd_build_sta.station_to_dict_from_dw(station=self.example_station,
+                                                          sdk_version=&#34;3.0&#34;,
+                                                          sensor_labels=[&#34;audio&#34;, &#34;barometer&#34;],
+                                                          highpass_type=&#34;obspy&#34;,
+                                                          frequency_filter_low=1/100,
+                                                          filter_order=4)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation"><code class="flex name class">
+<span>class <span class="ident">TestSynchronizationBuildStation</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestSynchronizationBuildStation(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]
+
+    def test_result_type(self):
+        # Should return dictionary
+        returned_dict = rpd_build_sta.synchronization_build_station(station=self.example_station)
+        self.assertTrue(type(returned_dict) is dict)
+
+    def tearDown(self):
+        self.example_station = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = rdvx_data.get_station(&#34;1637610021&#34;)[0]</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.test_result_type"><code class="name flex">
+<span>def <span class="ident">test_result_type</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_result_type(self):
+    # Should return dictionary
+    returned_dict = rpd_build_sta.synchronization_build_station(station=self.example_station)
+    self.assertTrue(type(returned_dict) is dict)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestUnevenSensor"><code class="flex name class">
+<span>class <span class="ident">TestUnevenSensor</span></span>
+<span>(</span><span>methodName='runTest')</span>
+</code></dt>
+<dd>
+<div class="desc">A class whose instances are single test cases.<br><br>By default, the test code itself should be placed in a method named<br>'runTest'.<br><br>If the fixture may be used for many test cases, create as<br>many test methods as are needed. When instantiating such a TestCase<br>subclass, specify in the constructor arguments the name of the test method<br>that the instance is to execute.<br><br>Test authors should subclass TestCase for their own tests. Construction<br>and deconstruction of the test's environment ('fixture') can be<br>implemented by overriding the 'setUp' and 'tearDown' methods respectively.<br><br>If it is necessary to override the __init__ method, the base class<br>__init__ method must always be called. It is important that subclasses<br>should not change the signature of their __init__ method, since instances<br>of the classes are instantiated automatically by parts of the framework<br>in order to be run.<br><br>When subclassing TestCase, you can set these attributes:<br>* failureException: determines which exception will be raised when<br>
+the instance's assertion methods fail; test methods raising this<br>
+exception will be deemed to have 'failed' rather than 'errored'.<br>* longMessage: determines whether long messages (including repr of<br>
+objects used in assert methods) will be printed on failure in *addition*<br>
+to any explicit message passed.<br>* maxDiff: sets the maximum length of a diff in failure messages<br>
+by assert methods using difflib. It is looked up as an instance<br>
+attribute so can be configured by individual tests if required.<br><br>Create an instance of the class that will use the named test<br>method when executed. Raises a ValueError if the instance does<br>not have a method with the specified name.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TestUnevenSensor(unittest.TestCase):
+    def setUp(self) -&gt; None:
+        self.example_station = example_station
+        sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = \
+            rpd_build_sta.sensor_uneven(station=self.example_station,
+                                        sensor_label=&#34;barometer&#34;)
+        self.sensor_sample_rate_hz = sensor_sample_rate_hz
+        self.sensor_epoch_s = sensor_epoch_s
+        self.sensor_raw = sensor_raw
+        self.sensor_nans = sensor_nans
+
+    def test_results_is_not_None(self):
+        # Should not be None as there is data
+        self.assertIsNotNone(self.sensor_sample_rate_hz)
+        self.assertIsNotNone(self.sensor_epoch_s)
+        self.assertIsNotNone(self.sensor_raw)
+        self.assertIsNotNone(self.sensor_nans)
+
+    def test_results_type(self):
+        # Check return type is what it should be
+        self.assertTrue(type(self.sensor_sample_rate_hz) is float)
+        self.assertTrue(type(self.sensor_epoch_s) is np.ndarray)
+        self.assertTrue(type(self.sensor_raw) is np.ndarray)
+        self.assertTrue(type(self.sensor_nans) is np.ndarray)
+
+    def test_no_data(self):
+        # Should return None cause there is no data
+        sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = \
+            rpd_build_sta.sensor_uneven(station=example_station,
+                                        sensor_label=&#34;light&#34;)
+        self.assertIsNone(sensor_sample_rate_hz)
+        self.assertIsNone(sensor_epoch_s)
+        self.assertIsNone(sensor_raw)
+        self.assertIsNone(sensor_nans)
+
+    def tearDown(self):
+        self.example_station = None
+        self.sensor_sample_rate_hz = None
+        self.sensor_epoch_s = None
+        self.sensor_raw = None
+        self.sensor_nans = None</code></pre>
+</details>
+<h3>Ancestors</h3>
+<ul class="hlist">
+<li>unittest.case.TestCase</li>
+</ul>
+<h3>Methods</h3>
+<dl>
+<dt id="redpandas.tests.test_redpd_build_station.TestUnevenSensor.setUp"><code class="name flex">
+<span>def <span class="ident">setUp</span></span>(<span>self) ‑> NoneType</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for setting up the test fixture before exercising it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def setUp(self) -&gt; None:
+    self.example_station = example_station
+    sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = \
+        rpd_build_sta.sensor_uneven(station=self.example_station,
+                                    sensor_label=&#34;barometer&#34;)
+    self.sensor_sample_rate_hz = sensor_sample_rate_hz
+    self.sensor_epoch_s = sensor_epoch_s
+    self.sensor_raw = sensor_raw
+    self.sensor_nans = sensor_nans</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestUnevenSensor.tearDown"><code class="name flex">
+<span>def <span class="ident">tearDown</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc">Hook method for deconstructing the test fixture after testing it.</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def tearDown(self):
+    self.example_station = None
+    self.sensor_sample_rate_hz = None
+    self.sensor_epoch_s = None
+    self.sensor_raw = None
+    self.sensor_nans = None</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_no_data"><code class="name flex">
+<span>def <span class="ident">test_no_data</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_no_data(self):
+    # Should return None cause there is no data
+    sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans = \
+        rpd_build_sta.sensor_uneven(station=example_station,
+                                    sensor_label=&#34;light&#34;)
+    self.assertIsNone(sensor_sample_rate_hz)
+    self.assertIsNone(sensor_epoch_s)
+    self.assertIsNone(sensor_raw)
+    self.assertIsNone(sensor_nans)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_results_is_not_None"><code class="name flex">
+<span>def <span class="ident">test_results_is_not_None</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_results_is_not_None(self):
+    # Should not be None as there is data
+    self.assertIsNotNone(self.sensor_sample_rate_hz)
+    self.assertIsNotNone(self.sensor_epoch_s)
+    self.assertIsNotNone(self.sensor_raw)
+    self.assertIsNotNone(self.sensor_nans)</code></pre>
+</details>
+</dd>
+<dt id="redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_results_type"><code class="name flex">
+<span>def <span class="ident">test_results_type</span></span>(<span>self)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def test_results_type(self):
+    # Check return type is what it should be
+    self.assertTrue(type(self.sensor_sample_rate_hz) is float)
+    self.assertTrue(type(self.sensor_epoch_s) is np.ndarray)
+    self.assertTrue(type(self.sensor_raw) is np.ndarray)
+    self.assertTrue(type(self.sensor_nans) is np.ndarray)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="redpandas.tests" href="index.html">redpandas.tests</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation" href="#redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation">TestAudioWfTimeBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_lin" href="#redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_lin">test_result_type_lin</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_raw" href="#redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_raw">test_result_type_raw</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_simple" href="#redpandas.tests.test_redpd_build_station.TestAudioWfTimeBuildStation.test_result_type_simple">test_result_type_simple</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation" href="#redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation">TestBestLocationBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.test_result_type" href="#redpandas.tests.test_redpd_build_station.TestBestLocationBuildStation.test_result_type">test_result_type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation" href="#redpandas.tests.test_redpd_build_station.TestBuildStation">TestBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_accelerometer_obspy" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_accelerometer_obspy">test_result_type_accelerometer_obspy</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_butter" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_butter">test_result_type_audio_butter</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_obspy" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_obspy">test_result_type_audio_obspy</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_rc" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_audio_rc">test_result_type_audio_rc</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_barometer_obspy" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_barometer_obspy">test_result_type_barometer_obspy</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_best_location" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_best_location">test_result_type_best_location</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_gyroscope_obspy" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_gyroscope_obspy">test_result_type_gyroscope_obspy</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_health" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_health">test_result_type_health</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_image" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_image">test_result_type_image</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_location" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_location">test_result_type_location</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_magnetometer_obspy" href="#redpandas.tests.test_redpd_build_station.TestBuildStation.test_result_type_magnetometer_obspy">test_result_type_magnetometer_obspy</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestClockBuildStation" href="#redpandas.tests.test_redpd_build_station.TestClockBuildStation">TestClockBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestClockBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestClockBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestClockBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestClockBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestClockBuildStation.test_result_type" href="#redpandas.tests.test_redpd_build_station.TestClockBuildStation.test_result_type">test_result_type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestImageBuildStation" href="#redpandas.tests.test_redpd_build_station.TestImageBuildStation">TestImageBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestImageBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestImageBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestImageBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestImageBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestImageBuildStation.test_result_type" href="#redpandas.tests.test_redpd_build_station.TestImageBuildStation.test_result_type">test_result_type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestLightBuildStation" href="#redpandas.tests.test_redpd_build_station.TestLightBuildStation">TestLightBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestLightBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestLightBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestLightBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestLightBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestLightBuildStation.test_result_type" href="#redpandas.tests.test_redpd_build_station.TestLightBuildStation.test_result_type">test_result_type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestLocationBuildStation" href="#redpandas.tests.test_redpd_build_station.TestLocationBuildStation">TestLocationBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestLocationBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestLocationBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestLocationBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestLocationBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestLocationBuildStation.test_result_type" href="#redpandas.tests.test_redpd_build_station.TestLocationBuildStation.test_result_type">test_result_type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation" href="#redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation">TestStateOfHealthBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.test_result_type" href="#redpandas.tests.test_redpd_build_station.TestStateOfHealthBuildStation.test_result_type">test_result_type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw">TestStationToDictFromDw</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.setUp" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.tearDown" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_acceleration_only" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_acceleration_only">test_result_type_acceleration_only</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_audio_only" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_audio_only">test_result_type_audio_only</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_barometer_only" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_barometer_only">test_result_type_barometer_only</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_gyroscope_only" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_gyroscope_only">test_result_type_gyroscope_only</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_magnetometer_only" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_magnetometer_only">test_result_type_magnetometer_only</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_multiple" href="#redpandas.tests.test_redpd_build_station.TestStationToDictFromDw.test_result_type_multiple">test_result_type_multiple</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation" href="#redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation">TestSynchronizationBuildStation</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.setUp" href="#redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.tearDown" href="#redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.test_result_type" href="#redpandas.tests.test_redpd_build_station.TestSynchronizationBuildStation.test_result_type">test_result_type</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="redpandas.tests.test_redpd_build_station.TestUnevenSensor" href="#redpandas.tests.test_redpd_build_station.TestUnevenSensor">TestUnevenSensor</a></code></h4>
+<ul class="">
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestUnevenSensor.setUp" href="#redpandas.tests.test_redpd_build_station.TestUnevenSensor.setUp">setUp</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestUnevenSensor.tearDown" href="#redpandas.tests.test_redpd_build_station.TestUnevenSensor.tearDown">tearDown</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_no_data" href="#redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_no_data">test_no_data</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_results_is_not_None" href="#redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_results_is_not_None">test_results_is_not_None</a></code></li>
+<li><code><a title="redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_results_type" href="#redpandas.tests.test_redpd_build_station.TestUnevenSensor.test_results_type">test_results_type</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

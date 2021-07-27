@@ -22,8 +22,7 @@
 <h1 class="title">Module <code>redpandas.redpd_filter</code></h1>
 </header>
 <section id="section-intro">
-<p>Utils for filtering pandas dataframes.</p>
-<p>Last updated: 6 July 2021</p>
+Utils for filtering pandas dataframes.<br><br>Last updated: 6 July 2021
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -514,18 +513,7 @@ def highpass_butter_pandas(df: pd.DataFrame,
 <span>def <span class="ident">bandpass_butter_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_sample_rate_label: str, frequency_cut_low_hz: float, frequency_cut_high_hz: float, filter_order: int = 4, tukey_alpha: float = 0.5, new_column_label_sig_bandpass: str = 'bandpass', new_column_label_frequency_low: str = 'frequency_low_hz', new_column_label_frequency_high: str = 'frequency_high_hz') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply a taper and a butterworth bandpass filter</p>
-<p>:param df: input pandas data frame
-:param sig_wf_label: string for the waveform column name in df
-:param sig_sample_rate_label: string for the sample rate in Hz column name in df
-:param frequency_cut_low_hz: low cutoff frequency in Hz
-:param frequency_cut_high_hz: high cutoff frequency in Hz
-:param filter_order: filter order is doubled with filtfilt, nominal 4 -&gt; 8
-:param tukey_alpha: 0 = no taper, 1 = Hann taper. 0.25 is flat over 3/4 of sig, good for 75% overlap
-:param new_column_label_sig_bandpass: string for new column with bandpassed signal data
-:param new_column_label_frequency_low: string for new column
-:param new_column_label_frequency_high: string for new column</p>
-<p>:return: original df with added columns for band passed tapered signal, frequency high and low values</p></div>
+<div class="desc">Apply a taper and a butterworth bandpass filter<br><br>:param df: input pandas data frame<br>:param sig_wf_label: string for the waveform column name in df<br>:param sig_sample_rate_label: string for the sample rate in Hz column name in df<br>:param frequency_cut_low_hz: low cutoff frequency in Hz<br>:param frequency_cut_high_hz: high cutoff frequency in Hz<br>:param filter_order: filter order is doubled with filtfilt, nominal 4 -> 8<br>:param tukey_alpha: 0 = no taper, 1 = Hann taper. 0.25 is flat over 3/4 of sig, good for 75% overlap<br>:param new_column_label_sig_bandpass: string for new column with bandpassed signal data<br>:param new_column_label_frequency_low: string for new column<br>:param new_column_label_frequency_high: string for new column<br><br>:return: original df with added columns for band passed tapered signal, frequency high and low values</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -616,13 +604,7 @@ def highpass_butter_pandas(df: pd.DataFrame,
 <span>def <span class="ident">decimate_individual_station</span></span>(<span>sig_wf: <built-in function array>, sig_epoch_s: <built-in function array>, downsampling_factor: int, filter_order: int, sample_rate_hz: float) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Decimate data and timestamps for an individual station</p>
-<p>:param sig_wf: signal waveform
-:param sig_epoch_s: signal timestamps
-:param downsampling_factor: the downsampling factor
-:param filter_order: the order of the filter
-:param sample_rate_hz: sample rate in Hz
-:return: np.array decimated timestamps, np.array decimated data</p></div>
+<div class="desc">Decimate data and timestamps for an individual station<br><br>:param sig_wf: signal waveform<br>:param sig_epoch_s: signal timestamps<br>:param downsampling_factor: the downsampling factor<br>:param filter_order: the order of the filter<br>:param sample_rate_hz: sample rate in Hz<br>:return: np.array decimated timestamps, np.array decimated data</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -662,22 +644,8 @@ def highpass_butter_pandas(df: pd.DataFrame,
 <span>def <span class="ident">decimate_signal_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, downsample_frequency_hz: Union[str, int], sig_id_label: str, sig_wf_label: str, sig_timestamps_label: str, sample_rate_hz_label: str, filter_order: int = 8, new_column_label_decimated_sig: str = 'decimated_sig_data', new_column_label_decimated_sig_timestamps: str = 'decimated_sig_epoch', new_column_label_decimated_sample_rate_hz: str = 'decimated_sample_rate_hz', verbose: bool = True) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Decimate all signal data (via spicy.signal.decimate). Decimates to the smallest sample rate recorded in data frame
-or to custom frequency.</p>
-<p>:param df: input pandas data frame
-:param downsample_frequency_hz: frequency to downsample to in Hz. For minimum frequency found in df, 'Min',
-for other frequencies, integer
-:param sig_id_label: string for column name with station ids in df
-:param sig_wf_label:
-string for column name with the waveform data in df
-:param sig_timestamps_label: string for column name with the waveform timestamp data in df
-:param sample_rate_hz_label: string for column name with sample rate in Hz information in df
-:param filter_order: the order of the filter integer. Default is 2
-:param new_column_label_decimated_sig: label for new column containing signal decimated data
-:param new_column_label_decimated_sig_timestamps: label for new column containing signal decimated timestamps
-:param new_column_label_decimated_sample_rate_hz: label for new column containing signal decimated sample rate
-:param verbose: print statements. Default is True</p>
-<p>:return: original data frame with added columns for decimated signal, timestamps, and sample rate</p></div>
+<div class="desc">Decimate all signal data (via spicy.signal.decimate). Decimates to the smallest sample rate recorded in data frame<br>or to custom frequency.<br><br>:param df: input pandas data frame<br>:param downsample_frequency_hz: frequency to downsample to in Hz. For minimum frequency found in df, 'Min',<br>for other frequencies, integer<br>:param sig_id_label: string for column name with station ids in df<br>:param sig_wf_label:
+string for column name with the waveform data in df<br>:param sig_timestamps_label: string for column name with the waveform timestamp data in df<br>:param sample_rate_hz_label: string for column name with sample rate in Hz information in df<br>:param filter_order: the order of the filter integer. Default is 2<br>:param new_column_label_decimated_sig: label for new column containing signal decimated data<br>:param new_column_label_decimated_sig_timestamps: label for new column containing signal decimated timestamps<br>:param new_column_label_decimated_sample_rate_hz: label for new column containing signal decimated sample rate<br>:param verbose: print statements. Default is True<br><br>:return: original data frame with added columns for decimated signal, timestamps, and sample rate</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -816,18 +784,7 @@ string for column name with the waveform data in df
 <span>def <span class="ident">highpass_butter_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_sample_rate_label: str, frequency_cut_low_hz: float, frequency_cut_high_hz: float, filter_order: int = 4, tukey_alpha: float = 0.5, new_column_label_sig_highpass: str = 'highpass', new_column_label_frequency_low: str = 'frequency_low_hz', new_column_label_frequency_high: str = 'frequency_high_hz') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply a taper and a butterworth bandpass filter</p>
-<p>:param df: input pandas data frame
-:param sig_wf_label: string for the waveform column name in df
-:param sig_sample_rate_label: string for the sample rate column name in df
-:param frequency_cut_low_hz: low cutoff frequency in Hz
-:param frequency_cut_high_hz: high cutoff frequency in Hz
-:param filter_order: filter order is doubled with filtfilt, nominal 4 -&gt; 8
-:param tukey_alpha: 0 = no taper, 1 = Hann taper. 0.25 is flat over 3/4 of sig, good for 75% overlap
-:param new_column_label_sig_highpass: string for new column with highpass signal data
-:param new_column_label_frequency_low: string for new column
-:param new_column_label_frequency_high: string for new column</p>
-<p>:return: original df with added columns for band passed tapered signal, frequency high and low values</p></div>
+<div class="desc">Apply a taper and a butterworth bandpass filter<br><br>:param df: input pandas data frame<br>:param sig_wf_label: string for the waveform column name in df<br>:param sig_sample_rate_label: string for the sample rate column name in df<br>:param frequency_cut_low_hz: low cutoff frequency in Hz<br>:param frequency_cut_high_hz: high cutoff frequency in Hz<br>:param filter_order: filter order is doubled with filtfilt, nominal 4 -> 8<br>:param tukey_alpha: 0 = no taper, 1 = Hann taper. 0.25 is flat over 3/4 of sig, good for 75% overlap<br>:param new_column_label_sig_highpass: string for new column with highpass signal data<br>:param new_column_label_frequency_low: string for new column<br>:param new_column_label_frequency_high: string for new column<br><br>:return: original df with added columns for band passed tapered signal, frequency high and low values</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -913,14 +870,8 @@ string for column name with the waveform data in df
 <span>def <span class="ident">normalize_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, scaling: float = 1.0, norm_type: str = 'max', new_column_label: str = 'normalized') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Normalize all signals in df
-:param df: input pandas data frame
-:param sig_wf_label: string for column name with the waveform data in df
-:param scaling: scaling parameter, division
-:param norm_type: {'max', 'l1', 'l2'}, optional
-:param new_column_label:
-string for label for new column containing normalized signal data
-:return: original data frame with added column for normalized signal data</p></div>
+<div class="desc">Normalize all signals in df<br>:param df: input pandas data frame<br>:param sig_wf_label: string for column name with the waveform data in df<br>:param scaling: scaling parameter, division<br>:param norm_type: {'max', 'l1', 'l2'}, optional<br>:param new_column_label:
+string for label for new column containing normalized signal data<br>:return: original data frame with added column for normalized signal data</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -974,10 +925,7 @@ string for label for new column containing normalized signal data
 <span>def <span class="ident">prime_factors</span></span>(<span>n: int) ‑> List[int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Brute force code to find prime factors. Adapted from
-<a href="https://stackoverflow.com/questions/15347174/python-finding-prime-factors">https://stackoverflow.com/questions/15347174/python-finding-prime-factors</a></p>
-<p>:param n: number
-:return: list of prime factors</p></div>
+<div class="desc">Brute force code to find prime factors. Adapted from<br>https://stackoverflow.com/questions/15347174/python-finding-prime-factors<br><br>:param n: number<br>:return: list of prime factors</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1010,11 +958,7 @@ string for label for new column containing normalized signal data
 <span>def <span class="ident">signal_zero_mean_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, new_column_label: str = 'zero_mean') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Eliminate DC offset from all signals in df</p>
-<p>:param df: input pandas data frame
-:param sig_wf_label: string for column name with the waveform data in df
-:param new_column_label: string for new column containing zero mean signal data
-:return: original data frame with extra column containing zero mean signals</p></div>
+<div class="desc">Eliminate DC offset from all signals in df<br><br>:param df: input pandas data frame<br>:param sig_wf_label: string for column name with the waveform data in df<br>:param new_column_label: string for new column containing zero mean signal data<br>:return: original data frame with extra column containing zero mean signals</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1053,12 +997,7 @@ string for label for new column containing normalized signal data
 <span>def <span class="ident">taper_tukey_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, fraction_cosine: float, new_column_label_append: str = 'taper') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply taper to all signals in df</p>
-<p>:param df: input pandas data frame
-:param sig_wf_label: string for column name with the waveform data in df
-:param fraction_cosine: fraction of the window inside the cosine tapered window, shared between the head and tail
-:param new_column_label_append: sig_label + string for new column containing signal tapered data
-:return: original data frame with added column for signal values with taper window</p></div>
+<div class="desc">Apply taper to all signals in df<br><br>:param df: input pandas data frame<br>:param sig_wf_label: string for column name with the waveform data in df<br>:param fraction_cosine: fraction of the window inside the cosine tapered window, shared between the head and tail<br>:param new_column_label_append: sig_label + string for new column containing signal tapered data<br>:return: original data frame with added column for signal values with taper window</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1136,7 +1075,7 @@ string for label for new column containing normalized signal data
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

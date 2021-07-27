@@ -36,7 +36,7 @@ installed module and requires. An example is shown below:
 
 ```shell script
 Name: redvox-pandas
-Version: 1.1.4
+Version: 1.1.5
 Summary: Library to streamline preprocessing of RedVox API 900 and API 1000 data
 Home-page: https://github.com/RedVoxInc/redpandas
 Author: RedVox
@@ -48,4 +48,4 @@ Required-by:
 ```
 Return to _[Table of Contents](#table-of-contents)_.
 
-Return to _[main page](https://github.com/RedVoxInc/redpandas)_.
+Return to _[main page](https://github.com/RedVoxInc/redpandas#redpandas)_.

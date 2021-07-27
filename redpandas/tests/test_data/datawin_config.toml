@@ -1,0 +1,29 @@
+# Config file for data window
+# The only required field is input_directory.  Do not delete this field.
+# Remove any field if you are not setting a value for it
+
+input_directory = "test_data"      # input directory where all the files are.  Absolute paths recommended.  REQUIRED
+structured_layout = false           # if true, there are organized api900 and/or api1000 directories in input_directory
+apply_correction = false            # if true, timestamps will be adjusted before processing the data window
+# specific station ids to process; write ids as strings i.e. "1234567890"
+station_ids = ["1637610021"]
+start_year = 2020                  # year of start date
+start_month = 10                    # month of start year
+start_day = 27                       # day of start month
+start_hour = 13                      # hour of start day
+start_minute = 36                    # minute of start hour
+start_second = 29                   # second of start minute
+end_year = 2020                     # year of end date
+end_month = 10                       # month of end year
+end_day = 27                         # day of end month
+end_hour = 13                        # hour of end day
+end_minute = 37                      # minute of end hour
+end_second = 33                     # second of end minute
+start_padding_seconds = 120         # padding to include before start datetime when searching for data
+end_padding_seconds = 120           # padding to include after start datetime when searching for data
+drop_time_seconds = 0.2             # minimum number of seconds between data files that indicates a gap in data
+extensions = [".rdvxm", ".rdvxz"]   # specific file extensions to get; acceptable values: ".rdvxm", ".rdvxz"
+# specific api versions to get; acceptable values: "API_900", "API_1000", "UNKNOWN"
+api_versions = ["API_900", "API_1000"]
+edge_points_mode = "COPY"           # acceptable values: "NAN", "COPY", "INTERPOLATE"
+debug = true                        # if true, output extra information when processing the data window

@@ -3,7 +3,6 @@
 import os.path
 import matplotlib.pyplot as plt
 import pandas as pd
-import datetime as dtime
 import numpy as np
 
 # RedVox RedPandas and related RedVox modules
@@ -11,28 +10,17 @@ from redvox.common.data_window import DataWindow
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_plot as rpd_plot
-import redpandas.redpd_geospatial as rpd_geo
-from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
+from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
 
 if __name__ == "__main__":
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
     Last updated: 18 June 2021
     """
-
-    # TODO: same as loc_rpd
-    # Skyfall example exclusive variables (from Bounder)
-    ref_latitude_deg = 35.83728
-    ref_longitude_deg = -115.57234
-    ref_altitude_m = 1028.2
-    ref_epoch_s = 1603808160
-
     print('Let the sky fall')
 
     # Label columns in dataframe
@@ -73,13 +61,13 @@ if __name__ == "__main__":
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
         if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow ...", end=" ")
-            # rdvx_data = DataWindow(input_dir=skyfall_config.input_dir,
+            # rdvx_data = DataWindow(input=skyfall_config.input,
             #                        station_ids=skyfall_config.station_ids,
             #                        start_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.event_start_epoch_s),
             #                        end_datetime=dt.datetime_from_epoch_seconds_utc(skyfall_config.event_end_epoch_s),
             #                        apply_correction=True,
             #                        structured_layout=True)
-            rdvx_data = rpd_dw.dw_from_config_epoch(config=skyfall_config)
+            rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")

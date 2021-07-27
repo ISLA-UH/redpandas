@@ -10,7 +10,7 @@ from redvox.common.data_window import DataWindow
 import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_plot as rpd_plot
+import redpandas.redpd_plot.redpd_plot as rpd_plot
 import redpandas.redpd_geospatial as rpd_geo
 from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl

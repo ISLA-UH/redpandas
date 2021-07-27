@@ -5,7 +5,7 @@ Last updated: 17 June 2021
 """
 import os
 import enum
-from typing import List, Optional
+from typing import List, Optional, Dict, Union
 
 import pprint
 
@@ -108,3 +108,54 @@ class RedpdConfig:
     def pretty(self) -> str:
         # noinspection Mypy
         return pprint.pformat(vars(self))
+
+
+class TFRConfig:
+
+    def __init__(self, tfr_type: str,
+                 tfr_order_number_N: int,
+                 show_fig_titles: bool,
+                 mesh_color_scale: Optional[Union[Dict[str, str] or str]] = 'range',
+                 mesh_color_range: Optional[Union[Dict[str, float] or float]] = 18.,
+                 sensor_highpass: Optional[Union[Dict[str, bool] or bool]] = True,
+                 tfr_load_method: Optional[str] = "datawindow"):
+        """
+        Configuration parameters for skyfall_tfr_rpd
+
+        :param tfr_type: string, 'stft' or 'cwt'
+        :param tfr_order_number_N: int, order number of the transform
+        :param show_fig_titles: bool, display or hide figure titles
+        :param mesh_color_scale: string or dictionary of strings, color scale mode for spectrograms
+        :param mesh_color_range: float or dictionary of floats, color range for spectrograms
+        :param sensor_highpass: boolean or dictionary of booleans, use highpass of data if available
+        :param tfr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet"
+        """
+        self.tfr_type = tfr_type
+        self.tfr_order_number_N = tfr_order_number_N
+        self.show_fig_titles = show_fig_titles
+        self.tfr_load_method = DataLoadMethod.method_from_str(tfr_load_method)
+        self.sensor_labels = ['Audio', 'Bar', 'Acc', 'Gyr', 'Mag']
+        n = len(self.sensor_labels)
+
+        if type(mesh_color_scale) == str:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[mesh_color_scale]))
+        else:
+            self.mc_scale = dict(zip(self.sensor_labels, n*['range']))
+            for label in mesh_color_scale.keys():
+                self.mc_scale[label] = mesh_color_scale[label]
+
+        if type(mesh_color_range) == float:
+            self.mc_range = dict(zip(self.sensor_labels, n*[mesh_color_range]))
+        else:
+            self.mc_range = dict(zip(self.sensor_labels, n*[18.]))
+            for label in mesh_color_range.keys():
+                self.mc_range[label] = mesh_color_range[label]
+
+        if type(sensor_highpass) == bool:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[sensor_highpass]))
+        else:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[True]))
+            for label in sensor_highpass.keys():
+                self.sensor_hp[label] = sensor_highpass[label]
+
+        self.sensor_3d = dict(zip(['Audio', 'Bar', 'Acc', 'Gyr', 'Mag'], [False, False, True, True, True]))

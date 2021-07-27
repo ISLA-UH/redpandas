@@ -10,27 +10,22 @@ from redvox.common.data_window import DataWindow
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_plot as rpd_plot
+import redpandas.redpd_plot.redpd_plot as rpd_plot
 import redpandas.redpd_geospatial as rpd_geo
 from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE
+from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE,\
+    ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
+
 
 def main():
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
     Last updated: 18 June 2021
     """
-
-    # TODO: same as loc_rpd
-    # Skyfall example exclusive variables (from Bounder)
-    ref_latitude_deg = 35.83728
-    ref_longitude_deg = -115.57234
-    ref_altitude_m = 1028.2
-    ref_epoch_s = 1603808160
 
     print('Let the sky fall')
 
@@ -101,7 +96,7 @@ def main():
         if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow ...", end=" ")
 
-            rdvx_data = rpd_dw.dw_from_config_epoch(config=skyfall_config)
+            rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
@@ -429,33 +424,18 @@ def main():
                                           accelerometer_epoch_s_label, gyroscope_epoch_s_label,
                                           magnetometer_epoch_s_label]
 
-        sensor_sample_rate_column_label_list = [audio_fs_label, barometer_fs_label, accelerometer_fs_label,
-                                                gyroscope_fs_label, magnetometer_fs_label]
-
         sensor_ticklabels_list = ['Audio', 'Bar hp', 'Acc X hp', 'Acc Y hp',
                                   'Acc Z hp', 'Gyr X hp', 'Gyr Y hp', 'Gyr Z hp',
                                   'Mag X hp', 'Mag Y hp', 'Mag Z hp']
 
-        # rpd_plot.plot_sensor_wiggles_pandas(df=df_skyfall_data,
-        #                                     station_id_str='1637610021',
-        #                                     sensor_wf_label_list=sensor_column_label_list,
-        #                                     sensor_timestamps_label_list=sensor_epoch_column_label_list,
-        #                                     sig_id_label='station_id',
-        #                                     x_label='Time (s)',
-        #                                     y_label='Sensor',
-        #                                     fig_title_show=False,
-        #                                     fig_title='sensor waveforms',
-        #                                     wf_color='midnightblue',
-        #                                     sensor_yticks_label_list=sensor_ticklabels_list)
-
         rpd_plot.plot_wiggles_pandas(df=df_skyfall_data,
                                      sig_wf_label=sensor_column_label_list,
-                                     sig_sample_rate_label=sensor_sample_rate_column_label_list,
+                                     sig_timestamps_label=sensor_epoch_column_label_list,
                                      sig_id_label='station_id',
                                      station_id_str='1637610021',
                                      x_label="Time (s)",
                                      y_label='Sensor',
-                                     fig_title_show=False,
+                                     fig_title_show=True,
                                      fig_title='sensor waveforms',
                                      wf_color='midnightblue',
                                      custom_yticks=sensor_ticklabels_list)

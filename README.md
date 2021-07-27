@@ -1,5 +1,8 @@
 # RedPandas
 
+[![Current version on PyPI](https://img.shields.io/badge/pypi-1.1.6-blue)](https://pypi.org/project/redvox-pandas/)
+[![Python versions supported](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)]()
+
 ### Description
 
 This repository contains routines to streamline preprocessing of [RedVox API 900](https://bitbucket.org/redvoxhi/redvox-protobuf-api/src/master/) 
@@ -12,6 +15,7 @@ The RedVox Pandas (also known as RedPandas) pipeline is designed for integrabili
 
 ### Installation 
 
+To install with pip:
 ```shell
 pip install redvox-pandas
 ```
@@ -20,7 +24,7 @@ More installation instructions can be found in the [RedPandas Installation Docum
 
 ### Getting started
 
-Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md) to get started.
+Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md#how-to-use-redpandas) to get started.
 
 ### API Documentation
 
@@ -29,7 +33,7 @@ Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for more d
 
 ### Development
 
-- Please feel free to submit issues on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues).
+- Please feel free to submit issues and bugs on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues).
 - [Version History](https://github.com/RedVoxInc/redpandas/blob/master/docs/CHANGELOG.md)
 - [The Apache License](https://github.com/RedVoxInc/redpandas/blob/master/LICENSE)
 

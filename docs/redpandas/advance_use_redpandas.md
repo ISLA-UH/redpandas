@@ -74,38 +74,32 @@ plots signal waveforms stored in the [RedPandas DataFrame](using_redpandas.md#ba
  _Plotting audio for all stations example:_
 ```python
 import pandas as pd
-import redpandas.redpd_plot as rpd_plot
-import matplotlib.pyplot as plt
+import redpandas.redpd_plot.wiggles as rpd_plot
 
 df = pd.read_parquet("path/to/parquet/file_name.parquet")
 
-
 rpd_plot.plot_wiggles_pandas(df=df,
                              sig_wf_label="audio_wf",  # list if multiple signals waveforms
-                             sig_sample_rate_label="audio_sample_rate_nominal_hz",  # list if multiple signals waveforms
+                             sig_timestamps_label="audio_epoch_s",  # list if multiple signals waveforms
                              sig_id_label="station_id",
-                             x_label="Time (s)",  # Optional
-                             y_label="Signals",  # Optional
                              fig_title_show=True,  # Optional
                              fig_title="Audio",  # Optional
-                             sig_timestamps_label="audio_epoch_s",  # Optional but more accurate plots if included
-                             custom_yticks=["Station 1", "Station 2", "Station 3"])  # Optional
-
-plt.show()
-
+                             custom_yticks=["Station 1", "Station 2", "Station 3"],  # Optional   
+                             show_figure=True)           
 ```
 The resulting plot is shown below:
 
 ![](img/fig_audio.png)
 
-The function [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot.html#redpandas.redpd_plot.plot_wiggles_pandas) provides a quick visual check as shown in the example above, where ``Station 3`` has 
+The function [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) 
+provides a quick visual check as shown in the example above, where ``Station 3`` has 
 an incomplete audio record and therefore the signal might not be useful for further analysis. 
 
-Furthermore, [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot.html#redpandas.redpd_plot.plot_wiggles_pandas) can also plot multiple signals for all stations. 
-For example, the input in the following parameters in [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot.html#redpandas.redpd_plot.plot_wiggles_pandas) 
-would change to plot the accelerometer and the audio waveforms for all stations: ``sig_wf_label=["audio_wf", "accelerometer_wf_raw"]``, ``sig_sample_rate_label = ["audio_sample_rate_nominal_hz",
-"accelerometer_sample_rate_hz"]``, and optionally, ``fig_title="Audio and Accelerometer"``, ``sig_timestamps_label=["audio_epoch_s",
-"accelerometer_epoch_s"]``, and ``custom_yticks=["Station 1 Audio", "Station 1 AccX", "Station 1 AccY", "Station 1 AccZ",
+Furthermore, [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) can also plot multiple signals for all stations. 
+For example, the input in the following parameters in [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) 
+would change to plot the accelerometer and the audio waveforms for all stations: ``sig_wf_label=["audio_wf", "accelerometer_wf_raw"]``, 
+``sig_timestamps_label = ["audio_epoch_s","acceleroemter_epoch_s"]`` 
+and optionally, ``fig_title="Audio and Accelerometer"``, and ``custom_yticks=["Station 1 Audio", "Station 1 AccX", "Station 1 AccY", "Station 1 AccZ",
 "Station 2 Audio", "Station 2 AccX", "Station 2 AccY", "Station 2 AccZ", "Station 3 Audio", "Station 3 AccX", "Station 3 AccY", 
 "Station 3 AccZ"]`` (taking into account the X, Y, and Z components of the accelerometer). For more information on column names, 
 visit [RedPandas DataFrame Columns](columns_name.md). Do not forget to [unflatten](using_redpandas.md#opening-redpandas-parquet-files) 
@@ -114,21 +108,23 @@ the sensor data column for barometer / acceleration / gyroscope / magnetometer d
 Return to _[Table of Contents](#table-of-contents)_.
 
 #### Plotting signal waveforms for only one station
-Another application of [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot.html#redpandas.redpd_plot.plot_wiggles_pandas) 
+Another application of [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) 
 is plotting one station and multiple sensor channels as shown in the following example.
  
   _Plotting audio and barometer for one station example:_
  ```python
+import pandas as pd
+import redpandas.redpd_plot.wiggles as rpd_plot
+
+df = pd.read_parquet("path/to/parquet/file_name.parquet")
+
 rpd_plot.plot_wiggles_pandas(df=df,
                              sig_wf_label=["barometer_wf_raw", "audio_wf"],
-                             sig_sample_rate_label=["barometer_sample_rate_hz", "audio_sample_rate_nominal_hz"],
+                             sig_timestamps_label=["barometer_epoch_s", "audio_epoch_s"],
                              sig_id_label="station_id",
                              station_id_str="1637610012",  # Optional: station ID to plot as saved in df
-                             x_label="Time (s)",  # Optional
-                             y_label="Sensors",  # Optional
                              fig_title_show=True,  # Optional
                              fig_title="Signals for Station 2",  # Optional
-                             sig_timestamps_label=["barometer_epoch_s", "audio_epoch_s"],  # Optional but more accurate plots if included
                              custom_yticks=["Bar", "Aud"])  # Optional
 ```
 The resulting plot is shown below:
@@ -290,7 +286,7 @@ Once the TFR has been calculated, ``tfr_bits`` can be plotted with the function 
 
 _Plotting TFR for audio signal from a [previous example](#plotting-signal-waveforms-for-all-stations-stored-in-the-dataframe):_
 ```python
-import redpandas.redpd_plot as rpd_plot
+import redpandas.redpd_plot.redpd_plot as rpd_plot
 import matplotlib.pyplot as plt
 
 df = df.drop(index=2)  # eliminate Station 3 because it does not have a complete record as we saw in the previous example
@@ -316,3 +312,5 @@ for dynamic range adjustments. Visit [plot_mesh_pandas](https://redvoxinc.github
 for defaults and more options.
 
 Return to _[Table of Contents](#table-of-contents)_.
+
+Return to _[main page](https://github.com/RedVoxInc/redpandas#redpandas)_.

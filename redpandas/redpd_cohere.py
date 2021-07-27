@@ -1,14 +1,12 @@
 """
-This module contains function to calculate coherence.
-
-Last updated: 6 July 2021
+This module contains functions to calculate coherence.
 """
 
 import numpy as np
 import pandas as pd
 from scipy import signal
 from libquantum import utils
-import redpandas.redpd_plot as rpd_plt
+import redpandas.redpd_plot.coherence as rpd_plt
 
 
 def coherence_numpy(sig_in: np.ndarray,
@@ -73,9 +71,7 @@ def coherence_numpy(sig_in: np.ndarray,
                         noverlap=window_overlap_points)
     cross_spectrum_bits = 0.5 * np.log2(abs(Pxy))
 
-    # Coherence
-    # Original code had no overlap - fixed
-    # Same as coherence from PSD
+    # Coherence, same as from PSD
     f, Cxy = signal.coherence(x=sig,
                               y=sig_ref,
                               fs=sig_ref_sample_rate_hz,
@@ -204,14 +200,11 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
         sig_m = np.copy(df[sig_wf_label][m]) * sig_ref_calib
 
         for n in df.index:
-
-            #     # Skip itself
-            #     continue
             sample_rate_condition = np.abs(df[sig_sample_rate_label][m] - df[sig_sample_rate_label][n]) \
                                     > fs_fractional_tolerance*df[sig_sample_rate_label][m]
             if sample_rate_condition:
                 print("Sample rates out of tolerance")
-                return
+                continue
             else:
                 # Generalized sensor cross correlations, including unequal lengths
                 sig_n = np.copy(df[sig_wf_label][n]) * sig_calib
@@ -230,7 +223,6 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                                                 noverlap=window_overlap_points)
 
             # Compute cross-power spectral density with ref sample rate
-            # Original code had no overlap - fixed
             frequency_cross, cross_spectrum = signal.csd(x=sig_n,
                                                          y=sig_m,
                                                          fs=df[sig_sample_rate_label][m],
@@ -308,7 +300,6 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                                               f_min_hz=frequency_min_hz,
                                               f_max_hz=frequency_max_hz,
                                               f_scale='linear')
-                # Must plt.show() on main
 
         df[new_column_label_cohere_frequency] = coherence_frequency
         df[new_column_label_cohere_value] = coherence_value

@@ -23,9 +23,7 @@ before construction of RedPandas …" />
 <h1 class="title">Module <code>redpandas.redpd_preprocess</code></h1>
 </header>
 <section id="section-intro">
-<p>This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
-before construction of RedPandas DataFrame.</p>
-<p>Last updated: 6 July 2021</p>
+This module contains general utilities that can work with values containing nans. Mainly used for data manipulation<br>before construction of RedPandas DataFrame.<br><br>Last updated: 6 July 2021
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -405,12 +403,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">bandpass_butter_uneven</span></span>(<span>sig_wf: numpy.ndarray, sample_rate_hz: int, frequency_cut_low_hz: float, filter_order: int) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply butterworth filter to a 1D signal</p>
-<p>:param sig_wf: signal waveform
-:param sample_rate_hz: sampling rate in Hz
-:param frequency_cut_low_hz: filter corner frequency in Hz
-:param filter_order: filter corners / order
-:return: bandpassed signal</p></div>
+<div class="desc">Apply butterworth filter to a 1D signal<br><br>:param sig_wf: signal waveform<br>:param sample_rate_hz: sampling rate in Hz<br>:param frequency_cut_low_hz: filter corner frequency in Hz<br>:param filter_order: filter corners / order<br>:return: bandpassed signal</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -441,8 +434,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">datetime_now_epoch_micros</span></span>(<span>) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the invocation Unix time in microseconds</p>
-<p>:return: The current epoch timestamp as microseconds since the epoch UTC</p></div>
+<div class="desc">Returns the invocation Unix time in microseconds<br><br>:return: The current epoch timestamp as microseconds since the epoch UTC</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -460,8 +452,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">datetime_now_epoch_s</span></span>(<span>) ‑> float</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the invocation Unix time in seconds</p>
-<p>:return: The current epoch timestamp as seconds since the epoch UTC</p></div>
+<div class="desc">Returns the invocation Unix time in seconds<br><br>:return: The current epoch timestamp as seconds since the epoch UTC</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -479,9 +470,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">demean_nan</span></span>(<span>sig_wf: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Detrend and normalize a 1D time series</p>
-<p>:param sig_wf: signal waveform
-:return: Detrended and normalized time series</p></div>
+<div class="desc">Detrend and normalize a 1D time series<br><br>:param sig_wf: signal waveform<br>:return: Detrended and normalized time series</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -500,9 +489,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">demean_nan_matrix</span></span>(<span>sig_wf: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Detrend and normalize a matrix of time series</p>
-<p>:param sig_wf: signal waveform
-:return: The detrended and normalized signature</p></div>
+<div class="desc">Detrend and normalize a matrix of time series<br><br>:param sig_wf: signal waveform<br>:return: The detrended and normalized signature</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -521,11 +508,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">demean_nan_norm</span></span>(<span>sig_wf: numpy.ndarray, scaling: float = 1.0, norm_type: <a title="redpandas.redpd_preprocess.NormType" href="#redpandas.redpd_preprocess.NormType">NormType</a> = NormType.MAX) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Detrend and normalize a 1D time series</p>
-<p>:param sig_wf: signal waveform
-:param scaling: scaling parameter, division
-:param norm_type: {'max', l1, l2}, overrides scikit default of 'l2' by 'max'
-:return: The detrended and denormalized series.</p></div>
+<div class="desc">Detrend and normalize a 1D time series<br><br>:param sig_wf: signal waveform<br>:param scaling: scaling parameter, division<br>:param norm_type: {'max', l1, l2}, overrides scikit default of 'l2' by 'max'<br>:return: The detrended and denormalized series.</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -546,9 +529,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">detrend_nan</span></span>(<span>sig_wf: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Detrend and normalize a 1D time series</p>
-<p>:param sig_wf: signal waveform
-:return: Detrended and normalized time series</p></div>
+<div class="desc">Detrend and normalize a 1D time series<br><br>:param sig_wf: signal waveform<br>:return: Detrended and normalized time series</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -567,11 +548,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">df_column_unflatten</span></span>(<span>df: pandas.core.frame.DataFrame, col_wf_label: str, col_ndim_label: str) ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Restores original shape of elements in column. Used for loading columns in dataframe from parquet.</p>
-<p>:param df: pandas DataFrame
-:param col_wf_label: column label for data that needs reshaping, usually waveform arrays.
-:param col_ndim_label: column label with dimensions for reshaping. Elements in column need to be a numpy array.
-:return: original df, replaces column values with reshaped ones</p></div>
+<div class="desc">Restores original shape of elements in column. Used for loading columns in dataframe from parquet.<br><br>:param df: pandas DataFrame<br>:param col_wf_label: column label for data that needs reshaping, usually waveform arrays.<br>:param col_ndim_label: column label with dimensions for reshaping. Elements in column need to be a numpy array.<br>:return: original df, replaces column values with reshaped ones</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -598,11 +575,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">filter_reflection_highpass</span></span>(<span>sig_wf: numpy.ndarray, sample_rate_hz: int, filter_cutoff_hz: float) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply fold filter to input signal (edges reflected) and highpass</p>
-<p>:param sig_wf: signal waveform
-:param filter_cutoff_hz: filter corner frequency in Hz
-:param sample_rate_hz: sampling rate in Hz
-:return: signal folded and filtered</p></div>
+<div class="desc">Apply fold filter to input signal (edges reflected) and highpass<br><br>:param sig_wf: signal waveform<br>:param filter_cutoff_hz: filter corner frequency in Hz<br>:param sample_rate_hz: sampling rate in Hz<br>:return: signal folded and filtered</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -632,9 +605,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">height_asl_from_pressure_below10km</span></span>(<span>bar_waveform: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Simple model for troposphere</p>
-<p>:param bar_waveform: barometric pressure in kPa
-:return: height ASL in m</p></div>
+<div class="desc">Simple model for troposphere<br><br>:param bar_waveform: barometric pressure in kPa<br>:return: height ASL in m</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -653,19 +624,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">highpass_from_diff</span></span>(<span>sig_wf: numpy.ndarray, sig_epoch_s: numpy.ndarray, sample_rate_hz: int, fold_signal: bool = True, highpass_type: str = 'obspy', frequency_filter_low: float = 0.01, filter_order: int = 4) ‑> Tuple[numpy.ndarray, float]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Preprocess barometer data:
-- remove nans and DC offset by getting the differential pressure in kPa
-- apply highpass filter at 100 second periods
-- reconstruct Pressure in kPa from differential pressure: P(i) = dP(i) + P(i-1)</p>
-<p>:param sig_wf: signal waveform
-:param sig_epoch_s: signal time in epoch s
-:param sample_rate_hz: sampling rate in Hz
-:param fold_signal: apply reflection transformation and fold edges
-:param highpass_type: 'obspy', 'butter', 'rc'
-:param frequency_filter_low: apply highpass filter. Default is 100 second periods
-:param filter_order: filter corners / order. Default is 4.
-:zero phase filters are acausal
-:return: filtered signal waveform, frequency_filter_low value used</p></div>
+<div class="desc">Preprocess barometer data:<br>- remove nans and DC offset by getting the differential pressure in kPa<br>- apply highpass filter at 100 second periods<br>- reconstruct Pressure in kPa from differential pressure: P(i) = dP(i) + P(i-1)<br><br>:param sig_wf: signal waveform<br>:param sig_epoch_s: signal time in epoch s<br>:param sample_rate_hz: sampling rate in Hz<br>:param fold_signal: apply reflection transformation and fold edges<br>:param highpass_type: 'obspy', 'butter', 'rc'<br>:param frequency_filter_low: apply highpass filter. Default is 100 second periods<br>:param filter_order: filter corners / order. Default is 4.<br>:zero phase filters are acausal<br>:return: filtered signal waveform, frequency_filter_low value used</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -757,9 +716,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">model_height_from_pressure_skyfall</span></span>(<span>pressure_kpa: numpy.ndarray) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns empirical height in m from input pressure</p>
-<p>:param pressure_kpa: barometric pressure in kPa
-:return: height in m</p></div>
+<div class="desc">Returns empirical height in m from input pressure<br><br>:param pressure_kpa: barometric pressure in kPa<br>:return: height in m</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -783,11 +740,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">normalize</span></span>(<span>sig_wf: numpy.ndarray, scaling: float = 1.0, norm_type: <a title="redpandas.redpd_preprocess.NormType" href="#redpandas.redpd_preprocess.NormType">NormType</a> = NormType.MAX) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Scale a 1D time series</p>
-<p>:param sig_wf: signal waveform
-:param scaling: scaling parameter, division
-:param norm_type: {'max', l1, l2}, optional
-:return: The scaled series</p></div>
+<div class="desc">Scale a 1D time series<br><br>:param sig_wf: signal waveform<br>:param scaling: scaling parameter, division<br>:param norm_type: {'max', l1, l2}, optional<br>:return: The scaled series</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -815,9 +768,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">pad_reflection_symmetric</span></span>(<span>sig_wf: numpy.ndarray) ‑> Tuple[numpy.ndarray, int]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply reflection transformation</p>
-<p>:param sig_wf: signal waveform
-:return: input signal with reflected edges, numbers of points folded per edge</p></div>
+<div class="desc">Apply reflection transformation<br><br>:param sig_wf: signal waveform<br>:return: input signal with reflected edges, numbers of points folded per edge</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -841,11 +792,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">rc_high_pass_signal</span></span>(<span>sig_wf: numpy.ndarray, sample_rate_hz: int, highpass_cutoff: float) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Apply RC high pass filter to signal</p>
-<p>:param sig_wf: signal waveform
-:param sample_rate_hz: sampling rate in Hz
-:param highpass_cutoff: filter corner frequency in Hz
-:return: highpass signal</p></div>
+<div class="desc">Apply RC high pass filter to signal<br><br>:param sig_wf: signal waveform<br>:param sample_rate_hz: sampling rate in Hz<br>:param highpass_cutoff: filter corner frequency in Hz<br>:return: highpass signal</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -870,11 +817,7 @@ def df_column_unflatten(df: pd.DataFrame,
 <span>def <span class="ident">taper_tukey</span></span>(<span>sig_wf_or_time: numpy.ndarray, fraction_cosine: float) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Constructs a symmetric Tukey window with the same dimensions as a time or signal numpy array.
-fraction_cosine = 0 is a rectangular window, 1 is a Hann window</p>
-<p>:param sig_wf_or_time: input signal or time
-:param fraction_cosine: fraction of the window inside the cosine tapered window, shared between the head and tail
-:return: tukey taper window amplitude</p></div>
+<div class="desc">Constructs a symmetric Tukey window with the same dimensions as a time or signal numpy array.<br>fraction_cosine = 0 is a rectangular window, 1 is a Hann window<br><br>:param sig_wf_or_time: input signal or time<br>:param fraction_cosine: fraction of the window inside the cosine tapered window, shared between the head and tail<br>:return: tukey taper window amplitude</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -896,11 +839,7 @@ fraction_cosine = 0 is a rectangular window, 1 is a Hann window</p>
 <span>def <span class="ident">xcorr_uneven</span></span>(<span>sig_x: numpy.ndarray, sig_ref: numpy.ndarray)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Variation of cross-correlation function cross_stas.xcorr_all for unevenly sampled data
-with identical sampling and duration.</p>
-<p>:param sig_x: processed signal
-:param sig_ref: reference signal
-:return: cross-correlation metrics</p></div>
+<div class="desc">Variation of cross-correlation function cross_stas.xcorr_all for unevenly sampled data<br>with identical sampling and duration.<br><br>:param sig_x: processed signal<br>:param sig_ref: reference signal<br>:return: cross-correlation metrics</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -952,7 +891,7 @@ with identical sampling and duration.</p>
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Enumeration of normalization types.</p></div>
+<div class="desc">Enumeration of normalization types.</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1042,7 +981,7 @@ with identical sampling and duration.</p>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

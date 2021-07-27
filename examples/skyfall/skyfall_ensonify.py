@@ -7,7 +7,7 @@ import pandas as pd
 # RedVox RedPandas and related RedVox modules
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_ensonify as rpd_sound
-import redpandas.redpd_plot as rpd_plot
+import redpandas.redpd_plot.redpd_plot as rpd_plot
 
 # Configuration files
 from examples.skyfall.skyfall_config_file import skyfall_config

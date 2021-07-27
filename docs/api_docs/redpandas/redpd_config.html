@@ -22,8 +22,7 @@
 <h1 class="title">Module <code>redpandas.redpd_config</code></h1>
 </header>
 <section id="section-intro">
-<p>Configuration class for RedPandas.</p>
-<p>Last updated: 17 June 2021</p>
+Configuration class for RedPandas.<br><br>Last updated: 17 June 2021
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -35,7 +34,7 @@ Last updated: 17 June 2021
 &#34;&#34;&#34;
 import os
 import enum
-from typing import List, Optional
+from typing import List, Optional, Dict, Union
 
 import pprint
 
@@ -137,7 +136,58 @@ class RedpdConfig:
 
     def pretty(self) -&gt; str:
         # noinspection Mypy
-        return pprint.pformat(vars(self))</code></pre>
+        return pprint.pformat(vars(self))
+
+
+class TFRConfig:
+
+    def __init__(self, tfr_type: str,
+                 tfr_order_number_N: int,
+                 show_fig_titles: bool,
+                 mesh_color_scale: Optional[Union[Dict[str, str] or str]] = &#39;range&#39;,
+                 mesh_color_range: Optional[Union[Dict[str, float] or float]] = 18.,
+                 sensor_highpass: Optional[Union[Dict[str, bool] or bool]] = True,
+                 tfr_load_method: Optional[str] = &#34;datawindow&#34;):
+        &#34;&#34;&#34;
+        Configuration parameters for skyfall_tfr_rpd
+
+        :param tfr_type: string, &#39;stft&#39; or &#39;cwt&#39;
+        :param tfr_order_number_N: int, order number of the transform
+        :param show_fig_titles: bool, display or hide figure titles
+        :param mesh_color_scale: string or dictionary of strings, color scale mode for spectrograms
+        :param mesh_color_range: float or dictionary of floats, color range for spectrograms
+        :param sensor_highpass: boolean or dictionary of booleans, use highpass of data if available
+        :param tfr_load_method: optional string, chose loading data method: &#34;datawindow&#34;, &#34;pickle&#34;, or &#34;parquet&#34;
+        &#34;&#34;&#34;
+        self.tfr_type = tfr_type
+        self.tfr_order_number_N = tfr_order_number_N
+        self.show_fig_titles = show_fig_titles
+        self.tfr_load_method = DataLoadMethod.method_from_str(tfr_load_method)
+        self.sensor_labels = [&#39;Audio&#39;, &#39;Bar&#39;, &#39;Acc&#39;, &#39;Gyr&#39;, &#39;Mag&#39;]
+        n = len(self.sensor_labels)
+
+        if type(mesh_color_scale) == str:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[mesh_color_scale]))
+        else:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[&#39;range&#39;]))
+            for label in mesh_color_scale.keys():
+                self.mc_scale[label] = mesh_color_scale[label]
+
+        if type(mesh_color_range) == float:
+            self.mc_range = dict(zip(self.sensor_labels, n*[mesh_color_range]))
+        else:
+            self.mc_range = dict(zip(self.sensor_labels, n*[18.]))
+            for label in mesh_color_range.keys():
+                self.mc_range[label] = mesh_color_range[label]
+
+        if type(sensor_highpass) == bool:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[sensor_highpass]))
+        else:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[True]))
+            for label in sensor_highpass.keys():
+                self.sensor_hp[label] = sensor_highpass[label]
+
+        self.sensor_3d = dict(zip([&#39;Audio&#39;, &#39;Bar&#39;, &#39;Acc&#39;, &#39;Gyr&#39;, &#39;Mag&#39;], [False, False, True, True, True]))</code></pre>
 </details>
 </section>
 <section>
@@ -154,7 +204,7 @@ class RedpdConfig:
 <span>(</span><span>value, names=None, *, module=None, qualname=None, type=None, start=1)</span>
 </code></dt>
 <dd>
-<div class="desc"><p>An enumeration.</p></div>
+<div class="desc">An enumeration.</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -229,22 +279,8 @@ def method_from_str(method_str: str) -&gt; &#34;DataLoadMethod&#34;:
 <span>(</span><span>input_directory: str, event_name: str = 'Redvox', output_directory: Union[str, NoneType] = None, output_filename_pkl_pqt: Union[str, NoneType] = None, station_ids: Union[List[str], NoneType] = None, sensor_labels: Union[List[str], NoneType] = None, event_start_epoch_s: Union[float, NoneType] = None, duration_s: Union[int, NoneType] = None, start_buffer_minutes: Union[int, NoneType] = 3, end_buffer_minutes: Union[int, NoneType] = 3, tdr_load_method: Union[str, NoneType] = 'datawindow')</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Configuration parameters for RedPandas</p>
-<p>:param input_directory: string, directory that contains the files to read data from.
-REQUIRED
-:param event_name: optional string, name of event. Default is "Redvox"
-:param output_directory: optional string, directory to created save pickle/JSON/parquet
-:param output_filename_pkl_pqt: optional string, name of created parquet and pickle files
-:param station_ids: optional list of strings, list of station ids to filter on
-:param sensor_labels: optional list of strings, list of sensors. Default is "audio"
-:param event_start_epoch_s: optional float, start time in epoch s. Default is None
-:param duration_s: optional int, durtion of event in minutes. Default is None
-:param start_buffer_minutes: float representing the amount of minutes to include before the start datetime
-when filtering data. Default is 3
-:param end_buffer_minutes: float representing the amount of minutes to include before the end datetime
-when filtering data. Default is 3
-:param tdr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet".
-Default is "datawindow"</p></div>
+<div class="desc">Configuration parameters for RedPandas<br><br>:param input_directory: string, directory that contains the files to read data from.
+REQUIRED<br>:param event_name: optional string, name of event. Default is "Redvox"<br>:param output_directory: optional string, directory to created save pickle/JSON/parquet<br>:param output_filename_pkl_pqt: optional string, name of created parquet and pickle files<br>:param station_ids: optional list of strings, list of station ids to filter on<br>:param sensor_labels: optional list of strings, list of sensors. Default is "audio"<br>:param event_start_epoch_s: optional float, start time in epoch s. Default is None<br>:param duration_s: optional int, durtion of event in minutes. Default is None<br>:param start_buffer_minutes: float representing the amount of minutes to include before the start datetime<br> when filtering data. Default is 3<br>:param end_buffer_minutes: float representing the amount of minutes to include before the end datetime<br> when filtering data. Default is 3<br>:param tdr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet".<br> Default is "datawindow"</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -348,6 +384,67 @@ Default is "datawindow"</p></div>
 </dd>
 </dl>
 </dd>
+<dt id="redpandas.redpd_config.TFRConfig"><code class="flex name class">
+<span>class <span class="ident">TFRConfig</span></span>
+<span>(</span><span>tfr_type: str, tfr_order_number_N: int, show_fig_titles: bool, mesh_color_scale: Union[Dict[str, str], NoneType] = 'range', mesh_color_range: Union[Dict[str, float], NoneType] = 18.0, sensor_highpass: Union[Dict[str, bool], NoneType] = True, tfr_load_method: Union[str, NoneType] = 'datawindow')</span>
+</code></dt>
+<dd>
+<div class="desc">Configuration parameters for skyfall_tfr_rpd<br><br>:param tfr_type: string, 'stft' or 'cwt'<br>:param tfr_order_number_N: int, order number of the transform<br>:param show_fig_titles: bool, display or hide figure titles<br>:param mesh_color_scale: string or dictionary of strings, color scale mode for spectrograms<br>:param mesh_color_range: float or dictionary of floats, color range for spectrograms<br>:param sensor_highpass: boolean or dictionary of booleans, use highpass of data if available<br>:param tfr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet"</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class TFRConfig:
+
+    def __init__(self, tfr_type: str,
+                 tfr_order_number_N: int,
+                 show_fig_titles: bool,
+                 mesh_color_scale: Optional[Union[Dict[str, str] or str]] = &#39;range&#39;,
+                 mesh_color_range: Optional[Union[Dict[str, float] or float]] = 18.,
+                 sensor_highpass: Optional[Union[Dict[str, bool] or bool]] = True,
+                 tfr_load_method: Optional[str] = &#34;datawindow&#34;):
+        &#34;&#34;&#34;
+        Configuration parameters for skyfall_tfr_rpd
+
+        :param tfr_type: string, &#39;stft&#39; or &#39;cwt&#39;
+        :param tfr_order_number_N: int, order number of the transform
+        :param show_fig_titles: bool, display or hide figure titles
+        :param mesh_color_scale: string or dictionary of strings, color scale mode for spectrograms
+        :param mesh_color_range: float or dictionary of floats, color range for spectrograms
+        :param sensor_highpass: boolean or dictionary of booleans, use highpass of data if available
+        :param tfr_load_method: optional string, chose loading data method: &#34;datawindow&#34;, &#34;pickle&#34;, or &#34;parquet&#34;
+        &#34;&#34;&#34;
+        self.tfr_type = tfr_type
+        self.tfr_order_number_N = tfr_order_number_N
+        self.show_fig_titles = show_fig_titles
+        self.tfr_load_method = DataLoadMethod.method_from_str(tfr_load_method)
+        self.sensor_labels = [&#39;Audio&#39;, &#39;Bar&#39;, &#39;Acc&#39;, &#39;Gyr&#39;, &#39;Mag&#39;]
+        n = len(self.sensor_labels)
+
+        if type(mesh_color_scale) == str:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[mesh_color_scale]))
+        else:
+            self.mc_scale = dict(zip(self.sensor_labels, n*[&#39;range&#39;]))
+            for label in mesh_color_scale.keys():
+                self.mc_scale[label] = mesh_color_scale[label]
+
+        if type(mesh_color_range) == float:
+            self.mc_range = dict(zip(self.sensor_labels, n*[mesh_color_range]))
+        else:
+            self.mc_range = dict(zip(self.sensor_labels, n*[18.]))
+            for label in mesh_color_range.keys():
+                self.mc_range[label] = mesh_color_range[label]
+
+        if type(sensor_highpass) == bool:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[sensor_highpass]))
+        else:
+            self.sensor_hp = dict(zip(self.sensor_labels[1:], (n-1)*[True]))
+            for label in sensor_highpass.keys():
+                self.sensor_hp[label] = sensor_highpass[label]
+
+        self.sensor_3d = dict(zip([&#39;Audio&#39;, &#39;Bar&#39;, &#39;Acc&#39;, &#39;Gyr&#39;, &#39;Mag&#39;], [False, False, True, True, True]))</code></pre>
+</details>
+</dd>
 </dl>
 </section>
 </article>
@@ -380,13 +477,16 @@ Default is "datawindow"</p></div>
 <li><code><a title="redpandas.redpd_config.RedpdConfig.pretty" href="#redpandas.redpd_config.RedpdConfig.pretty">pretty</a></code></li>
 </ul>
 </li>
+<li>
+<h4><code><a title="redpandas.redpd_config.TFRConfig" href="#redpandas.redpd_config.TFRConfig">TFRConfig</a></code></h4>
+</li>
 </ul>
 </li>
 </ul>
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

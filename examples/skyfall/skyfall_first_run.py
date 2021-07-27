@@ -2,7 +2,7 @@ from skyfall_config_file import skyfall_config
 import examples.skyfall.skyfall_ensonify as skyfall_ensonify
 import examples.skyfall.skyfall_tdr_rpd as skyfall_tdr_rpd
 import examples.skyfall.skyfall_tfr_rpd as skyfall_tfr_rpd
-from redpandas.redpd_dw_to_parquet import redpd_dw_to_parquet_from_config
+from redpandas.redpd_dw_to_parquet import redpd_df_from_config
 
 import os
 
@@ -35,8 +35,8 @@ if __name__ == "__main__":
     print("\nFirst step: load the RedVox Skyfall data (.rdvxz) and convert it into a parquet.")
     print("Press enter to run redpd_dw_to_parquet. Note: this might take a few minutes.")
     input()
-    redpd_dw_to_parquet_from_config(config=skyfall_config,
-                                    show_raw_waveform_plots=False)
+    redpd_df_from_config(config=skyfall_config,
+                         show_raw_waveform_plots=False)
 
     print(f"\nYou can find the RedPandas parquet at {skyfall_config.output_dir + '/' + skyfall_config.pd_pqt_file}")
     print(f"You can also find a pickle file with the RedVox Datawindow at "

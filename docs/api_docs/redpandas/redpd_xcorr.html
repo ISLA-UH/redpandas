@@ -22,8 +22,7 @@
 <h1 class="title">Module <code>redpandas.redpd_xcorr</code></h1>
 </header>
 <section id="section-intro">
-<p>This module contains functions for calculating correlation.</p>
-<p>Last updated: 7 July 2021</p>
+This module contains functions for calculating correlation.<br><br>Last updated: 7 July 2021
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -482,10 +481,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
 <span>def <span class="ident">find_nearest</span></span>(<span>array: numpy.ndarray, value) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Find nearest value in numpy array</p>
-<p>:param array: a numpy array
-:param value: value to search for in array
-:return:</p></div>
+<div class="desc">Find nearest value in numpy array<br><br>:param array: a numpy array<br>:param value: value to search for in array<br>:return:</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -508,9 +504,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
 <span>def <span class="ident">most_similar_station_index</span></span>(<span>xnorm_max) ‑> Tuple[int, float]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Sums over column, subtract self xcorr (1), divides by number of stations - 1</p>
-<p>:param xnorm_max: normalized cross correlation
-:return: index of most self-similar station to the ensemble</p></div>
+<div class="desc">Sums over column, subtract self xcorr (1), divides by number of stations - 1<br><br>:param xnorm_max: normalized cross correlation<br>:return: index of most self-similar station to the ensemble</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -535,12 +529,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
 <span>def <span class="ident">plot_square</span></span>(<span>xnorm_max, xoffset_s, xoffset_points, sig_descriptor: str = 'Signal') ‑> NoneType</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Plot cross-correlation results</p>
-<p>:param xnorm_max: normalized cross correlation
-:param xoffset_s: offset cross correlation in seconds
-:param xoffset_points: offset points in cross correlation
-:param sig_descriptor: label to describe signal. Default is "Signal"
-:return: plot</p></div>
+<div class="desc">Plot cross-correlation results<br><br>:param xnorm_max: normalized cross correlation<br>:param xoffset_s: offset cross correlation in seconds<br>:param xoffset_points: offset points in cross correlation<br>:param sig_descriptor: label to describe signal. Default is "Signal"<br>:return: plot</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -579,24 +568,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
 <span>def <span class="ident">spectcorr_re_ref_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, ref_id_label: str, sig_id_label: str, sig_tfr_label: str, sig_tfr_frequency_label: str, sig_sample_rate_label: str, sig_tfr_frequency_low_hz_label: str, sig_tfr_frequency_high_hz_label: str, return_xcorr_full: bool = False, new_column_label_xcorr_offset_points: str = 'spectcorr_offset_points', new_column_label_xcorr_offset_seconds: str = 'spectcorr_offset_seconds', new_column_label_xcorr_normalized_max: str = 'spectcorr_normalized_max', new_column_label_xcorr_peak_frequency_hz: str = 'spectcorr_peak_frequency_hz', new_column_label_xcorr_full_array: str = 'spectcorr_full', new_column_label_xcorr_full_per_band: str = 'spectcorr_per_band_full', new_column_label_xcorr_full_frequency_hz: str = 'spectcorr_frequency_hz') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns new pandas columns per station with spectral correlation results relative to a reference station</p>
-<p>:param df: input pandas data frame
-:param ref_id_label: string for reference station id column name in df
-:param sig_id_label: string for station id column name in df
-:param sig_tfr_label: string for tfr column name in df
-:param sig_tfr_frequency_label: string for tfr frequency column name in df
-:param sig_sample_rate_label: string for sample rate in Hz column name in df
-:param sig_tfr_frequency_low_hz_label: string for tfr low frequency values column name in df
-:param sig_tfr_frequency_high_hz_label: string for tfr high frequency values column name in df
-:param return_xcorr_full: default is False
-:param new_column_label_xcorr_offset_points: label for new column with xcorr offset points
-:param new_column_label_xcorr_offset_seconds: label for new column with xcorr offset seconds
-:param new_column_label_xcorr_normalized_max: label for new column with xcorr normalized max
-:param new_column_label_xcorr_peak_frequency_hz: label for new column with xcorr peak frequency
-:param new_column_label_xcorr_full_array: label for new column with xcorr full array
-:param new_column_label_xcorr_full_per_band: label for new column with xcorr full per band
-:param new_column_label_xcorr_full_frequency_hz: label for new column with xcorr frequencies
-:return: input df with new columns</p></div>
+<div class="desc">Returns new pandas columns per station with spectral correlation results relative to a reference station<br><br>:param df: input pandas data frame<br>:param ref_id_label: string for reference station id column name in df<br>:param sig_id_label: string for station id column name in df<br>:param sig_tfr_label: string for tfr column name in df<br>:param sig_tfr_frequency_label: string for tfr frequency column name in df<br>:param sig_sample_rate_label: string for sample rate in Hz column name in df<br>:param sig_tfr_frequency_low_hz_label: string for tfr low frequency values column name in df<br>:param sig_tfr_frequency_high_hz_label: string for tfr high frequency values column name in df<br>:param return_xcorr_full: default is False<br>:param new_column_label_xcorr_offset_points: label for new column with xcorr offset points<br>:param new_column_label_xcorr_offset_seconds: label for new column with xcorr offset seconds<br>:param new_column_label_xcorr_normalized_max: label for new column with xcorr normalized max<br>:param new_column_label_xcorr_peak_frequency_hz: label for new column with xcorr peak frequency<br>:param new_column_label_xcorr_full_array: label for new column with xcorr full array<br>:param new_column_label_xcorr_full_per_band: label for new column with xcorr full per band<br>:param new_column_label_xcorr_full_frequency_hz: label for new column with xcorr frequencies<br>:return: input df with new columns</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -747,13 +719,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
 <span>def <span class="ident">xcorr_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_sample_rate_label: str, fs_fractional_tolerance: float = 0.02, abs_xcorr: bool = True) ‑> Tuple[numpy.ndarray, numpy.ndarray, numpy.ndarray]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns square matrix, a concise snapshot of the self-similarity of the input data set.</p>
-<p>:param df: input pandas data frame
-:param sig_wf_label: string for the waveform column name in df
-:param sig_sample_rate_label: string for the sample rate in Hz column name in df
-:param fs_fractional_tolerance: difference in sample rate (in Hz) tolerated. Default is 0.02
-:param abs_xcorr: Default is True
-:return: xcorr normalized, offset in seconds, and offset points</p></div>
+<div class="desc">Returns square matrix, a concise snapshot of the self-similarity of the input data set.<br><br>:param df: input pandas data frame<br>:param sig_wf_label: string for the waveform column name in df<br>:param sig_sample_rate_label: string for the sample rate in Hz column name in df<br>:param fs_fractional_tolerance: difference in sample rate (in Hz) tolerated. Default is 0.02<br>:param abs_xcorr: Default is True<br>:return: xcorr normalized, offset in seconds, and offset points</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -857,20 +823,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
 <span>def <span class="ident">xcorr_re_ref_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, ref_id_label: str, sig_id_label: str, sig_wf_label: str, sig_sample_rate_label: str, fs_fractional_tolerance: float = 0.02, abs_xcorr: bool = True, return_xcorr_full: bool = False, new_column_label_xcorr_offset_points: str = 'xcorr_offset_points', new_column_label_xcorr_offset_seconds: str = 'xcorr_offset_seconds', new_column_label_xcorr_normalized_max: str = 'xcorr_normalized_max', new_column_label_xcorr_full_array: str = 'xcorr_full') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns new pandas columns per station with cross-correlation results relative to a reference station</p>
-<p>:param df: input pandas data frame
-:param ref_id_label: string for reference station id column name in df
-:param sig_id_label: string for station id column name in df
-:param sig_wf_label: string for the waveform column name in df
-:param sig_sample_rate_label: string for the sample rate in Hz column name in df
-:param fs_fractional_tolerance: difference in sample rate (in Hz) tolerated. Default is 0.02
-:param abs_xcorr: Default is True
-:param return_xcorr_full: default is False
-:param new_column_label_xcorr_offset_points: label for new column with xcorr offset points
-:param new_column_label_xcorr_offset_seconds: label for new column with xcorr offset seconds
-:param new_column_label_xcorr_normalized_max: label for new column with xcorr normalized
-:param new_column_label_xcorr_full_array: label for new column with xcorr full array
-:return: input dataframe with new columns</p></div>
+<div class="desc">Returns new pandas columns per station with cross-correlation results relative to a reference station<br><br>:param df: input pandas data frame<br>:param ref_id_label: string for reference station id column name in df<br>:param sig_id_label: string for station id column name in df<br>:param sig_wf_label: string for the waveform column name in df<br>:param sig_sample_rate_label: string for the sample rate in Hz column name in df<br>:param fs_fractional_tolerance: difference in sample rate (in Hz) tolerated. Default is 0.02<br>:param abs_xcorr: Default is True<br>:param return_xcorr_full: default is False<br>:param new_column_label_xcorr_offset_points: label for new column with xcorr offset points<br>:param new_column_label_xcorr_offset_seconds: label for new column with xcorr offset seconds<br>:param new_column_label_xcorr_normalized_max: label for new column with xcorr normalized<br>:param new_column_label_xcorr_full_array: label for new column with xcorr full array<br>:return: input dataframe with new columns</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -1037,7 +990,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

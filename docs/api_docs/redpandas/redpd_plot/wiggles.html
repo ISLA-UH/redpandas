@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.9.2" />
+<title>redpandas.redpd_plot.wiggles API documentation</title>
+<meta name="description" content="Plot waveforms in dataframe" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>redpandas.redpd_plot.wiggles</code></h1>
+</header>
+<section id="section-intro">
+Plot waveforms in dataframe
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">&#34;&#34;&#34;
+Plot waveforms in dataframe
+&#34;&#34;&#34;
+import datetime as dt
+from typing import List, Union, Optional
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+import numpy as np
+import pandas as pd
+from redpandas.redpd_plot.parameters import FigureParameters as FigParam
+
+
+# PLOT_WIGGLES AUXILIARY FUNCTIONS
+def find_wiggle_num(df: pd.DataFrame,
+                    sig_wf_label: Union[List[str], str] = &#34;audio_wf&#34;,
+                    sig_id_label: str = &#34;station_id&#34;,
+                    station_id_str: str = None) -&gt; int:
+    &#34;&#34;&#34;
+    Determine number of wiggles to plot
+
+    :param df: input pandas dataframe. REQUIRED
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is &#34;audio_wf&#34;. For example, for
+        multiple sensor waveforms: sig_wf_label = [&#34;audio_wf&#34;, &#34;barometer_wf_highpass&#34;, &#34;accelerometer_wf_highpass&#34;]
+    :param sig_id_label: string for the station id column name in df. Default is &#34;station_id&#34;
+    :param station_id_str: optional string with name of one station to plot. Default is None
+    :return: int, number of wiggles
+    &#34;&#34;&#34;
+    # Assumes accelerometer, gyrsocope and magnetometer will have three channels
+    dict_wiggle_num = {&#34;audio_wf&#34;: 1,
+                       &#34;barometer_wf_raw&#34;: 1,
+                       &#34;barometer_wf_highpass&#34;: 1,
+                       &#34;accelerometer_wf_raw&#34;: 3,
+                       &#34;accelerometer_wf_highpass&#34;: 3,
+                       &#34;gyroscope_wf_raw&#34;: 3,
+                       &#34;gyroscope_wf_highpass&#34;: 3,
+                       &#34;magnetometer_wf_raw&#34;: 3,
+                       &#34;magnetometer_wf_highpass&#34;: 3}
+
+    wiggle_num_list = []  # number of wiggles
+    for index_n in df.index:
+        for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):
+            if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
+                # check column exists and not empty
+                if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
+                    # Get number of wiggles per sensor
+                    wiggle_num_list.append(dict_wiggle_num.get(sensor_in_list))
+
+                else:
+                    continue
+
+    wiggle_num = sum(wiggle_num_list)  # total number of signal that will be displayed
+    return wiggle_num
+
+
+def find_yticks(df: pd.DataFrame,
+                sig_wf_label: Union[List[str], str] = &#34;audio_wf&#34;,
+                sig_id_label: str = &#34;station_id&#34;,
+                station_id_str: Optional[str] = None,
+                custom_yticks: Optional[Union[List[str], str]] = None) -&gt; List:
+    &#34;&#34;&#34;
+    Determine ylabels that will be used
+
+    :param df: input pandas dataframe. REQUIRED
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is &#34;audio_wf&#34;. For example, for
+        multiple sensor waveforms: sig_wf_label = [&#34;audio_wf&#34;, &#34;barometer_wf_highpass&#34;, &#34;accelerometer_wf_highpass&#34;]
+    :param sig_id_label: optional string for the station id column name in df. Default is &#34;station_id&#34;
+    :param station_id_str: optional string with name of one station to plot. Default is None
+    :param custom_yticks:
+
+    :return: list of y tick labels
+    &#34;&#34;&#34;
+
+    dict_yticks = {&#34;audio_wf&#34;: [&#34;aud&#34;],
+                   &#34;barometer_wf_raw&#34;: [&#34;bar raw&#34;],
+                   &#34;barometer_wf_highpass&#34;: [&#34;bar hp&#34;],
+                   &#34;accelerometer_wf_raw&#34;: [&#34;acc X raw&#34;, &#34;acc Y raw&#34;, &#34;acc Z raw&#34;],
+                   &#34;accelerometer_wf_highpass&#34;: [&#34;acc X hp&#34;, &#34;acc Y hp&#34;, &#34;acc Z hp&#34;],
+                   &#34;gyroscope_wf_raw&#34;: [&#34;gyr X raw&#34;, &#34;gyr Y raw&#34;, &#34;gyr Z raw&#34;],
+                   &#34;gyroscope_wf_highpass&#34;: [&#34;gyr X hp&#34;, &#34;gyr Y hp&#34;, &#34;gyr Z hp&#34;],
+                   &#34;magnetometer_wf_raw&#34;: [&#34;mag X raw&#34;, &#34;mag Y raw&#34;, &#34;mag Z raw&#34;],
+                   &#34;magnetomer_wf_highpass&#34;: [&#34;mag X hp&#34;, &#34;mag Y hp&#34;, &#34;mag Z hp&#34;]}
+
+    # if custom_yticks provided, make that the yticks
+    if custom_yticks is not None and custom_yticks != &#34;index&#34;:
+        wiggle_yticklabel = custom_yticks
+
+    else:  # construct the yticks:
+        wiggle_yticklabel = []  # name/y label of wiggles
+
+        for index_n in df.index:  # loop for every station
+            for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):  # loop for every sensor
+
+                if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
+                    # check column exists and not empty
+                    if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
+                        # Get yticks
+                        if custom_yticks == &#34;index&#34;:  # if ylabel for wiggle is index station
+                            wiggle_yticklabel.append(df.index[index_n])
+
+                        elif custom_yticks is None:
+                            sensor_short = dict_yticks.get(sensor_in_list)
+                            if station_id_str is not None:
+                                # if only doing one station, yticks just name sensors
+                                wiggle_yticklabel += sensor_short
+                            elif len(sig_wf_label) == 1 and len(sig_wf_label) == 1:
+                                # if only doing one sensor, yticks just name station
+                                wiggle_yticklabel.append(f&#34;{df[sig_id_label][index_n]}&#34;)
+                            else:  # if multiple sensors and stations, yticks both station and sensors
+                                station_and_sensor = [f&#34;{df[sig_id_label][index_n]} &#34; + element for element in sensor_short]
+                                wiggle_yticklabel += station_and_sensor
+                    else:
+                        continue
+
+    return wiggle_yticklabel
+
+
+def determine_time_epoch_origin(df: pd.DataFrame,
+                                sig_id_label: str = &#34;station_id&#34;,
+                                sig_timestamps_label: Union[List[str], str] = &#34;audio_epoch_s&#34;,
+                                station_id_str: Optional[str] = None) -&gt; float:
+    &#34;&#34;&#34;
+    Get time epoch origin for all sensors for all stations to establish the earliest timestamp
+
+    :param df: input pandas dataframe. REQUIRED
+    :param sig_id_label: optional string for the station id column name in df. Default is &#34;station_id&#34;
+    :param sig_timestamps_label: optional string or list of strings for column label in df with epoch time. Default is &#34;audio_epoch_s&#34;
+    :param station_id_str: optional string with name of one station to plot. Default is None
+
+    :return: time_epoch_origin
+    &#34;&#34;&#34;
+
+    if type(sig_timestamps_label) == str:
+        sig_timestamps_label = [sig_timestamps_label]
+
+    # Establish min xlim aka min time
+    epoch_j = []
+    for index_station in df.index:
+        # No station indicated, or station indicated and found
+        if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
+
+            # loop though each sensor in station
+            for index_time_label, sensor_time_label in enumerate(sig_timestamps_label):
+                # check that the time column exists first
+                if sensor_time_label not in df.columns:  # check column exists
+                    raise ValueError(f&#34;the column name ({sensor_time_label}) was not found in the dataframe&#34;)
+
+                elif type(df[sensor_time_label][index_station]) == float:  # not an array, so a Nan
+                    continue  # skip cause entry for this station is empty
+
+                else:
+                    epoch_j.append(df[sensor_time_label][index_station].min())
+
+    epoch_j = np.array(epoch_j)
+    try:
+        time_epoch_origin = np.min(epoch_j[np.nonzero(epoch_j)])
+    except ValueError:  # unless it so happens all min values are 0
+        time_epoch_origin = 0.0
+
+    return time_epoch_origin
+
+
+# PLOT_WIGGLES
+def plot_wiggles_pandas(df: pd.DataFrame,
+                        sig_wf_label: Union[List[str], str] = &#34;audio_wf&#34;,
+                        sig_timestamps_label: Union[List[str], str] = &#34;audio_epoch_s&#34;,
+                        sig_id_label: str = &#34;station_id&#34;,
+                        station_id_str: Optional[str] = None,
+                        fig_title_show: bool = True,
+                        fig_title: str = &#39;Signals&#39;,
+                        custom_yticks: Optional[Union[List[str], str]] = None,
+                        show_figure: bool = True) -&gt; Figure:
+
+    &#34;&#34;&#34;
+    More nuanced plots with minimal distraction. Optimized for pandas input.
+    Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label parameters.
+    For more information on available columns in dataframe, visit:
+    https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
+
+    :param df: input pandas data frame. REQUIRED
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is &#34;audio_wf&#34;. For example, for
+        multiple sensor waveforms: sig_wf_label = [&#34;audio_wf&#34;, &#34;barometer_wf_highpass&#34;, &#34;accelerometer_wf_highpass&#34;]
+    :param sig_timestamps_label: string or list of strings for column label in df with epoch time. Default is &#34;audio_epoch_s&#34;. For example, for
+        multiple sensor timestamps: sig_timestamps_label = [&#34;audio_epoch_s&#34;, &#34;barometer_epoch_s&#34;, &#34;accelerometer_epoch_s&#34;]
+    :param sig_id_label: string for the station id column name in df. Default is &#34;station_id&#34;
+    :param station_id_str: string with name of one station to plot only that station. Default is None
+    :param fig_title_show: optional bool, include a title in the figure if True. Default is True
+    :param fig_title: optional string, &#39;Normalized&#39; + title label. Default is &#34;signals&#34;
+    :param custom_yticks: optional, provide custom names for yticks, list of strings (one label per channel component) or
+        &#34;index&#34; for station index in dataframe. For example, for multiple sensors: custom_y_ticks = [&#34;audio&#34;, &#34;bar&#34;, &#34;acc X&#34;, &#34;acc Y&#34;, &#34;acc Z&#34;].
+         Another example, for multiple stations with 1 sensor
+    :param show_figure: optional bool, show figure if True. Default is True
+
+    :return: matplotlib figure instance
+    &#34;&#34;&#34;
+    # Create List of signal channels to loop through later
+    # If given only one, aka a sting, make it a list of length 1
+    if type(sig_timestamps_label) == str:
+        sig_timestamps_label = [sig_timestamps_label]
+    if type(sig_wf_label) == str:
+        sig_wf_label = [sig_wf_label]
+
+    # Check same amount of waveform columns and timestamps provided
+    if len(sig_wf_label) != len(sig_timestamps_label):
+        raise ValueError(f&#34;The number of waveform columns provided in sig_wf_label ({len(sig_wf_label)}) must be the &#34;
+                         f&#34;same as the number of timestamps columns provided in sig_timestamps_label &#34;
+                         f&#34;({len(sig_timestamps_label)})&#34;)
+
+    if station_id_str is not None:  # check station input exists
+        if station_id_str in df[sig_id_label].unique() is False:
+            raise ValueError(f&#34;station_id_str parameter provided (&#39;{station_id_str}&#39;) &#34;
+                             f&#34;was not found in dataframe&#34;)
+
+    # Get wiggle number, yticks label
+    wiggle_num = find_wiggle_num(df=df,
+                                 sig_wf_label=sig_wf_label,
+                                 sig_id_label=sig_id_label,
+                                 station_id_str=station_id_str)
+
+    wiggle_yticklabel = find_yticks(df=df,
+                                    sig_wf_label=sig_wf_label,
+                                    sig_id_label=sig_id_label,
+                                    station_id_str=station_id_str,
+                                    custom_yticks=custom_yticks)
+
+    # Make sure wiggle_num and # of ylabels match to avoid problems later on
+    if len(wiggle_yticklabel) != wiggle_num:
+        raise ValueError(f&#34;The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) &#34;
+                         f&#34;does not match the number of signal channels provided in sig_wf_label &#34;
+                         f&#34;or the number of stations in dataframe ({wiggle_num}).&#34;
+                         f&#34;\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z components &#34;
+                         f&#34;so a label is required for each component.&#34;)
+
+    # Wiggle scaling
+    offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
+    wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
+    wiggle_yticks = wiggle_offset
+
+    # Set up figure
+    fig, ax1 = plt.subplots(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+    ax1.set_yticks(wiggle_yticks)
+    ax1.set_yticklabels(wiggle_yticklabel)
+    ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
+    ax1.tick_params(axis=&#39;both&#39;, which=&#39;both&#39;, labelsize=FigParam().text_size)
+
+    # Get first timestamps out of all the sensors for all stations to establish xlim min
+    time_epoch_origin = determine_time_epoch_origin(df=df,
+                                                    sig_timestamps_label=sig_timestamps_label,
+                                                    station_id_str=station_id_str,
+                                                    sig_id_label=sig_id_label)
+    # Set up xlim min and max arrays.
+    xlim_min = np.empty(wiggle_num)
+    xlim_max = np.empty(wiggle_num)
+
+    index_sensor_label_ticklabels_list = 0  # keep track of total sensor wf including x/y/z per station
+    for index_station in df.index:  # loop per station
+        for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
+
+            # first things first, check if column with data exists and if there is data in it:
+            if label not in df.columns or type(df[label][index_station]) == float:
+                print(f&#34;SensorMissingException: The column {label} was not found in DataFrame or no data available in &#34;
+                      f&#34;{label} for station {df[sig_id_label][index_station]}&#34;)
+                continue  # if not, skip this iteration
+
+            if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
+                sensor_timestamps_label = sig_timestamps_label[index_sensor_in_list]  # timestamps
+                time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin  # scrubbed clean time
+
+                for sensor_array in df[label][index_station]:  # Make a regular loop
+                    if label == &#34;audio_wf&#34;:
+                        sig_j = df[label][index_station] / np.max(df[label][index_station])
+                    else:
+                        sig_j = sensor_array / np.max(sensor_array)
+
+                    ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=&#39;midnightblue&#39;)
+                    xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
+                    xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+
+                    index_sensor_label_ticklabels_list += 1
+
+                    if label == &#34;audio_wf&#34;:
+                        break
+
+    ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
+    ax1.grid(True)
+    if fig_title_show:  # Set title
+        if station_id_str is None and len(sig_wf_label) &gt; 1:
+            ax1.set_title(f&#39;Normalized {fig_title}&#39;, size=FigParam().text_size)
+        elif station_id_str is None and len(sig_wf_label) == 1:
+            ax1.set_title(f&#39;Normalized {fig_title} for {sig_wf_label[0]}&#39;, size=FigParam().text_size)
+        else:
+            ax1.set_title(f&#39;Normalized {fig_title} for Station {station_id_str}&#39;, size=FigParam().text_size)
+
+    # Set ylabel
+    if station_id_str is None:
+        ax1.set_ylabel(&#34;Signals&#34;, size=FigParam().text_size)
+    else:
+        ax1.set_ylabel(&#34;Sensors&#34;, size=FigParam().text_size)
+
+    x_label = &#34;Time (s)&#34;
+    if time_epoch_origin &gt; 0:
+        x_label += &#34; relative to &#34; + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;)
+    ax1.set_xlabel(x_label, size=FigParam().text_size)
+    fig.tight_layout()
+
+    if show_figure is True:
+        plt.show()
+
+    return fig</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="redpandas.redpd_plot.wiggles.determine_time_epoch_origin"><code class="name flex">
+<span>def <span class="ident">determine_time_epoch_origin</span></span>(<span>df: pandas.core.frame.DataFrame, sig_id_label: str = 'station_id', sig_timestamps_label: Union[List[str], str] = 'audio_epoch_s', station_id_str: Union[str, NoneType] = None) ‑> float</span>
+</code></dt>
+<dd>
+<div class="desc">Get time epoch origin for all sensors for all stations to establish the earliest timestamp<br><br>:param df: input pandas dataframe. REQUIRED<br>:param sig_id_label: optional string for the station id column name in df. Default is "station_id"<br>:param sig_timestamps_label: optional string or list of strings for column label in df with epoch time. Default is "audio_epoch_s"<br>:param station_id_str: optional string with name of one station to plot. Default is None<br><br>:return: time_epoch_origin</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def determine_time_epoch_origin(df: pd.DataFrame,
+                                sig_id_label: str = &#34;station_id&#34;,
+                                sig_timestamps_label: Union[List[str], str] = &#34;audio_epoch_s&#34;,
+                                station_id_str: Optional[str] = None) -&gt; float:
+    &#34;&#34;&#34;
+    Get time epoch origin for all sensors for all stations to establish the earliest timestamp
+
+    :param df: input pandas dataframe. REQUIRED
+    :param sig_id_label: optional string for the station id column name in df. Default is &#34;station_id&#34;
+    :param sig_timestamps_label: optional string or list of strings for column label in df with epoch time. Default is &#34;audio_epoch_s&#34;
+    :param station_id_str: optional string with name of one station to plot. Default is None
+
+    :return: time_epoch_origin
+    &#34;&#34;&#34;
+
+    if type(sig_timestamps_label) == str:
+        sig_timestamps_label = [sig_timestamps_label]
+
+    # Establish min xlim aka min time
+    epoch_j = []
+    for index_station in df.index:
+        # No station indicated, or station indicated and found
+        if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
+
+            # loop though each sensor in station
+            for index_time_label, sensor_time_label in enumerate(sig_timestamps_label):
+                # check that the time column exists first
+                if sensor_time_label not in df.columns:  # check column exists
+                    raise ValueError(f&#34;the column name ({sensor_time_label}) was not found in the dataframe&#34;)
+
+                elif type(df[sensor_time_label][index_station]) == float:  # not an array, so a Nan
+                    continue  # skip cause entry for this station is empty
+
+                else:
+                    epoch_j.append(df[sensor_time_label][index_station].min())
+
+    epoch_j = np.array(epoch_j)
+    try:
+        time_epoch_origin = np.min(epoch_j[np.nonzero(epoch_j)])
+    except ValueError:  # unless it so happens all min values are 0
+        time_epoch_origin = 0.0
+
+    return time_epoch_origin</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_plot.wiggles.find_wiggle_num"><code class="name flex">
+<span>def <span class="ident">find_wiggle_num</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: Union[List[str], str] = 'audio_wf', sig_id_label: str = 'station_id', station_id_str: str = None) ‑> int</span>
+</code></dt>
+<dd>
+<div class="desc">Determine number of wiggles to plot<br><br>:param df: input pandas dataframe. REQUIRED<br>:param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for<br>
+multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]<br>:param sig_id_label: string for the station id column name in df. Default is "station_id"<br>:param station_id_str: optional string with name of one station to plot. Default is None<br>:return: int, number of wiggles</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_wiggle_num(df: pd.DataFrame,
+                    sig_wf_label: Union[List[str], str] = &#34;audio_wf&#34;,
+                    sig_id_label: str = &#34;station_id&#34;,
+                    station_id_str: str = None) -&gt; int:
+    &#34;&#34;&#34;
+    Determine number of wiggles to plot
+
+    :param df: input pandas dataframe. REQUIRED
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is &#34;audio_wf&#34;. For example, for
+        multiple sensor waveforms: sig_wf_label = [&#34;audio_wf&#34;, &#34;barometer_wf_highpass&#34;, &#34;accelerometer_wf_highpass&#34;]
+    :param sig_id_label: string for the station id column name in df. Default is &#34;station_id&#34;
+    :param station_id_str: optional string with name of one station to plot. Default is None
+    :return: int, number of wiggles
+    &#34;&#34;&#34;
+    # Assumes accelerometer, gyrsocope and magnetometer will have three channels
+    dict_wiggle_num = {&#34;audio_wf&#34;: 1,
+                       &#34;barometer_wf_raw&#34;: 1,
+                       &#34;barometer_wf_highpass&#34;: 1,
+                       &#34;accelerometer_wf_raw&#34;: 3,
+                       &#34;accelerometer_wf_highpass&#34;: 3,
+                       &#34;gyroscope_wf_raw&#34;: 3,
+                       &#34;gyroscope_wf_highpass&#34;: 3,
+                       &#34;magnetometer_wf_raw&#34;: 3,
+                       &#34;magnetometer_wf_highpass&#34;: 3}
+
+    wiggle_num_list = []  # number of wiggles
+    for index_n in df.index:
+        for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):
+            if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
+                # check column exists and not empty
+                if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
+                    # Get number of wiggles per sensor
+                    wiggle_num_list.append(dict_wiggle_num.get(sensor_in_list))
+
+                else:
+                    continue
+
+    wiggle_num = sum(wiggle_num_list)  # total number of signal that will be displayed
+    return wiggle_num</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_plot.wiggles.find_yticks"><code class="name flex">
+<span>def <span class="ident">find_yticks</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: Union[List[str], str] = 'audio_wf', sig_id_label: str = 'station_id', station_id_str: Union[str, NoneType] = None, custom_yticks: Union[List[str], str, NoneType] = None) ‑> List</span>
+</code></dt>
+<dd>
+<div class="desc">Determine ylabels that will be used<br><br>:param df: input pandas dataframe. REQUIRED<br>:param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for<br>
+multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]<br>:param sig_id_label: optional string for the station id column name in df. Default is "station_id"<br>:param station_id_str: optional string with name of one station to plot. Default is None<br>:param custom_yticks:<br><br>:return: list of y tick labels</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_yticks(df: pd.DataFrame,
+                sig_wf_label: Union[List[str], str] = &#34;audio_wf&#34;,
+                sig_id_label: str = &#34;station_id&#34;,
+                station_id_str: Optional[str] = None,
+                custom_yticks: Optional[Union[List[str], str]] = None) -&gt; List:
+    &#34;&#34;&#34;
+    Determine ylabels that will be used
+
+    :param df: input pandas dataframe. REQUIRED
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is &#34;audio_wf&#34;. For example, for
+        multiple sensor waveforms: sig_wf_label = [&#34;audio_wf&#34;, &#34;barometer_wf_highpass&#34;, &#34;accelerometer_wf_highpass&#34;]
+    :param sig_id_label: optional string for the station id column name in df. Default is &#34;station_id&#34;
+    :param station_id_str: optional string with name of one station to plot. Default is None
+    :param custom_yticks:
+
+    :return: list of y tick labels
+    &#34;&#34;&#34;
+
+    dict_yticks = {&#34;audio_wf&#34;: [&#34;aud&#34;],
+                   &#34;barometer_wf_raw&#34;: [&#34;bar raw&#34;],
+                   &#34;barometer_wf_highpass&#34;: [&#34;bar hp&#34;],
+                   &#34;accelerometer_wf_raw&#34;: [&#34;acc X raw&#34;, &#34;acc Y raw&#34;, &#34;acc Z raw&#34;],
+                   &#34;accelerometer_wf_highpass&#34;: [&#34;acc X hp&#34;, &#34;acc Y hp&#34;, &#34;acc Z hp&#34;],
+                   &#34;gyroscope_wf_raw&#34;: [&#34;gyr X raw&#34;, &#34;gyr Y raw&#34;, &#34;gyr Z raw&#34;],
+                   &#34;gyroscope_wf_highpass&#34;: [&#34;gyr X hp&#34;, &#34;gyr Y hp&#34;, &#34;gyr Z hp&#34;],
+                   &#34;magnetometer_wf_raw&#34;: [&#34;mag X raw&#34;, &#34;mag Y raw&#34;, &#34;mag Z raw&#34;],
+                   &#34;magnetomer_wf_highpass&#34;: [&#34;mag X hp&#34;, &#34;mag Y hp&#34;, &#34;mag Z hp&#34;]}
+
+    # if custom_yticks provided, make that the yticks
+    if custom_yticks is not None and custom_yticks != &#34;index&#34;:
+        wiggle_yticklabel = custom_yticks
+
+    else:  # construct the yticks:
+        wiggle_yticklabel = []  # name/y label of wiggles
+
+        for index_n in df.index:  # loop for every station
+            for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):  # loop for every sensor
+
+                if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
+                    # check column exists and not empty
+                    if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
+                        # Get yticks
+                        if custom_yticks == &#34;index&#34;:  # if ylabel for wiggle is index station
+                            wiggle_yticklabel.append(df.index[index_n])
+
+                        elif custom_yticks is None:
+                            sensor_short = dict_yticks.get(sensor_in_list)
+                            if station_id_str is not None:
+                                # if only doing one station, yticks just name sensors
+                                wiggle_yticklabel += sensor_short
+                            elif len(sig_wf_label) == 1 and len(sig_wf_label) == 1:
+                                # if only doing one sensor, yticks just name station
+                                wiggle_yticklabel.append(f&#34;{df[sig_id_label][index_n]}&#34;)
+                            else:  # if multiple sensors and stations, yticks both station and sensors
+                                station_and_sensor = [f&#34;{df[sig_id_label][index_n]} &#34; + element for element in sensor_short]
+                                wiggle_yticklabel += station_and_sensor
+                    else:
+                        continue
+
+    return wiggle_yticklabel</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_plot.wiggles.plot_wiggles_pandas"><code class="name flex">
+<span>def <span class="ident">plot_wiggles_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: Union[List[str], str] = 'audio_wf', sig_timestamps_label: Union[List[str], str] = 'audio_epoch_s', sig_id_label: str = 'station_id', station_id_str: Union[str, NoneType] = None, fig_title_show: bool = True, fig_title: str = 'Signals', custom_yticks: Union[List[str], str, NoneType] = None, show_figure: bool = True) ‑> matplotlib.figure.Figure</span>
+</code></dt>
+<dd>
+<div class="desc">More nuanced plots with minimal distraction. Optimized for pandas input.<br>Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label parameters.<br>For more information on available columns in dataframe, visit:<br>https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns<br><br>:param df: input pandas data frame. REQUIRED<br>:param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for<br>
+multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]<br>:param sig_timestamps_label: string or list of strings for column label in df with epoch time. Default is "audio_epoch_s". For example, for<br>
+multiple sensor timestamps: sig_timestamps_label = ["audio_epoch_s", "barometer_epoch_s", "accelerometer_epoch_s"]<br>:param sig_id_label: string for the station id column name in df. Default is "station_id"<br>:param station_id_str: string with name of one station to plot only that station. Default is None<br>:param fig_title_show: optional bool, include a title in the figure if True. Default is True<br>:param fig_title: optional string, 'Normalized' + title label. Default is "signals"<br>:param custom_yticks: optional, provide custom names for yticks, list of strings (one label per channel component) or<br>
+"index" for station index in dataframe. For example, for multiple sensors: custom_y_ticks = ["audio", "bar", "acc X", "acc Y", "acc Z"].<br>
+Another example, for multiple stations with 1 sensor<br>:param show_figure: optional bool, show figure if True. Default is True<br><br>:return: matplotlib figure instance</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def plot_wiggles_pandas(df: pd.DataFrame,
+                        sig_wf_label: Union[List[str], str] = &#34;audio_wf&#34;,
+                        sig_timestamps_label: Union[List[str], str] = &#34;audio_epoch_s&#34;,
+                        sig_id_label: str = &#34;station_id&#34;,
+                        station_id_str: Optional[str] = None,
+                        fig_title_show: bool = True,
+                        fig_title: str = &#39;Signals&#39;,
+                        custom_yticks: Optional[Union[List[str], str]] = None,
+                        show_figure: bool = True) -&gt; Figure:
+
+    &#34;&#34;&#34;
+    More nuanced plots with minimal distraction. Optimized for pandas input.
+    Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label parameters.
+    For more information on available columns in dataframe, visit:
+    https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
+
+    :param df: input pandas data frame. REQUIRED
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is &#34;audio_wf&#34;. For example, for
+        multiple sensor waveforms: sig_wf_label = [&#34;audio_wf&#34;, &#34;barometer_wf_highpass&#34;, &#34;accelerometer_wf_highpass&#34;]
+    :param sig_timestamps_label: string or list of strings for column label in df with epoch time. Default is &#34;audio_epoch_s&#34;. For example, for
+        multiple sensor timestamps: sig_timestamps_label = [&#34;audio_epoch_s&#34;, &#34;barometer_epoch_s&#34;, &#34;accelerometer_epoch_s&#34;]
+    :param sig_id_label: string for the station id column name in df. Default is &#34;station_id&#34;
+    :param station_id_str: string with name of one station to plot only that station. Default is None
+    :param fig_title_show: optional bool, include a title in the figure if True. Default is True
+    :param fig_title: optional string, &#39;Normalized&#39; + title label. Default is &#34;signals&#34;
+    :param custom_yticks: optional, provide custom names for yticks, list of strings (one label per channel component) or
+        &#34;index&#34; for station index in dataframe. For example, for multiple sensors: custom_y_ticks = [&#34;audio&#34;, &#34;bar&#34;, &#34;acc X&#34;, &#34;acc Y&#34;, &#34;acc Z&#34;].
+         Another example, for multiple stations with 1 sensor
+    :param show_figure: optional bool, show figure if True. Default is True
+
+    :return: matplotlib figure instance
+    &#34;&#34;&#34;
+    # Create List of signal channels to loop through later
+    # If given only one, aka a sting, make it a list of length 1
+    if type(sig_timestamps_label) == str:
+        sig_timestamps_label = [sig_timestamps_label]
+    if type(sig_wf_label) == str:
+        sig_wf_label = [sig_wf_label]
+
+    # Check same amount of waveform columns and timestamps provided
+    if len(sig_wf_label) != len(sig_timestamps_label):
+        raise ValueError(f&#34;The number of waveform columns provided in sig_wf_label ({len(sig_wf_label)}) must be the &#34;
+                         f&#34;same as the number of timestamps columns provided in sig_timestamps_label &#34;
+                         f&#34;({len(sig_timestamps_label)})&#34;)
+
+    if station_id_str is not None:  # check station input exists
+        if station_id_str in df[sig_id_label].unique() is False:
+            raise ValueError(f&#34;station_id_str parameter provided (&#39;{station_id_str}&#39;) &#34;
+                             f&#34;was not found in dataframe&#34;)
+
+    # Get wiggle number, yticks label
+    wiggle_num = find_wiggle_num(df=df,
+                                 sig_wf_label=sig_wf_label,
+                                 sig_id_label=sig_id_label,
+                                 station_id_str=station_id_str)
+
+    wiggle_yticklabel = find_yticks(df=df,
+                                    sig_wf_label=sig_wf_label,
+                                    sig_id_label=sig_id_label,
+                                    station_id_str=station_id_str,
+                                    custom_yticks=custom_yticks)
+
+    # Make sure wiggle_num and # of ylabels match to avoid problems later on
+    if len(wiggle_yticklabel) != wiggle_num:
+        raise ValueError(f&#34;The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) &#34;
+                         f&#34;does not match the number of signal channels provided in sig_wf_label &#34;
+                         f&#34;or the number of stations in dataframe ({wiggle_num}).&#34;
+                         f&#34;\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z components &#34;
+                         f&#34;so a label is required for each component.&#34;)
+
+    # Wiggle scaling
+    offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
+    wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
+    wiggle_yticks = wiggle_offset
+
+    # Set up figure
+    fig, ax1 = plt.subplots(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+    ax1.set_yticks(wiggle_yticks)
+    ax1.set_yticklabels(wiggle_yticklabel)
+    ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
+    ax1.tick_params(axis=&#39;both&#39;, which=&#39;both&#39;, labelsize=FigParam().text_size)
+
+    # Get first timestamps out of all the sensors for all stations to establish xlim min
+    time_epoch_origin = determine_time_epoch_origin(df=df,
+                                                    sig_timestamps_label=sig_timestamps_label,
+                                                    station_id_str=station_id_str,
+                                                    sig_id_label=sig_id_label)
+    # Set up xlim min and max arrays.
+    xlim_min = np.empty(wiggle_num)
+    xlim_max = np.empty(wiggle_num)
+
+    index_sensor_label_ticklabels_list = 0  # keep track of total sensor wf including x/y/z per station
+    for index_station in df.index:  # loop per station
+        for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
+
+            # first things first, check if column with data exists and if there is data in it:
+            if label not in df.columns or type(df[label][index_station]) == float:
+                print(f&#34;SensorMissingException: The column {label} was not found in DataFrame or no data available in &#34;
+                      f&#34;{label} for station {df[sig_id_label][index_station]}&#34;)
+                continue  # if not, skip this iteration
+
+            if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
+                sensor_timestamps_label = sig_timestamps_label[index_sensor_in_list]  # timestamps
+                time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin  # scrubbed clean time
+
+                for sensor_array in df[label][index_station]:  # Make a regular loop
+                    if label == &#34;audio_wf&#34;:
+                        sig_j = df[label][index_station] / np.max(df[label][index_station])
+                    else:
+                        sig_j = sensor_array / np.max(sensor_array)
+
+                    ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color=&#39;midnightblue&#39;)
+                    xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
+                    xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+
+                    index_sensor_label_ticklabels_list += 1
+
+                    if label == &#34;audio_wf&#34;:
+                        break
+
+    ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
+    ax1.grid(True)
+    if fig_title_show:  # Set title
+        if station_id_str is None and len(sig_wf_label) &gt; 1:
+            ax1.set_title(f&#39;Normalized {fig_title}&#39;, size=FigParam().text_size)
+        elif station_id_str is None and len(sig_wf_label) == 1:
+            ax1.set_title(f&#39;Normalized {fig_title} for {sig_wf_label[0]}&#39;, size=FigParam().text_size)
+        else:
+            ax1.set_title(f&#39;Normalized {fig_title} for Station {station_id_str}&#39;, size=FigParam().text_size)
+
+    # Set ylabel
+    if station_id_str is None:
+        ax1.set_ylabel(&#34;Signals&#34;, size=FigParam().text_size)
+    else:
+        ax1.set_ylabel(&#34;Sensors&#34;, size=FigParam().text_size)
+
+    x_label = &#34;Time (s)&#34;
+    if time_epoch_origin &gt; 0:
+        x_label += &#34; relative to &#34; + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;)
+    ax1.set_xlabel(x_label, size=FigParam().text_size)
+    fig.tight_layout()
+
+    if show_figure is True:
+        plt.show()
+
+    return fig</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="redpandas.redpd_plot" href="index.html">redpandas.redpd_plot</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="">
+<li><code><a title="redpandas.redpd_plot.wiggles.determine_time_epoch_origin" href="#redpandas.redpd_plot.wiggles.determine_time_epoch_origin">determine_time_epoch_origin</a></code></li>
+<li><code><a title="redpandas.redpd_plot.wiggles.find_wiggle_num" href="#redpandas.redpd_plot.wiggles.find_wiggle_num">find_wiggle_num</a></code></li>
+<li><code><a title="redpandas.redpd_plot.wiggles.find_yticks" href="#redpandas.redpd_plot.wiggles.find_yticks">find_yticks</a></code></li>
+<li><code><a title="redpandas.redpd_plot.wiggles.plot_wiggles_pandas" href="#redpandas.redpd_plot.wiggles.plot_wiggles_pandas">plot_wiggles_pandas</a></code></li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
+</footer>
+</body>
+</html>

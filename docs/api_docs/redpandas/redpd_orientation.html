@@ -22,8 +22,7 @@
 <h1 class="title">Module <code>redpandas.redpd_orientation</code></h1>
 </header>
 <section id="section-intro">
-<p>This module contains functions to integrate, and apply complimentary filters for phone orientation.</p>
-<p>Last updated: 24 June 2021</p>
+This module contains functions to integrate, and apply complimentary filters for phone orientation.<br><br>Last updated: 24 June 2021
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -232,15 +231,7 @@ def complimentary_filtering(gyroscope_time_s: np.ndarray, gyroscope_angle: np.nd
 <span>def <span class="ident">complimentary_filtering</span></span>(<span>gyroscope_time_s: numpy.ndarray, gyroscope_angle: numpy.ndarray, accelerometer_angle: numpy.ndarray, smoothing_factor: float) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Complimentary Filter for Accelereometer and Gyroscope.
-Returns filtered angle
-Based on the works from <a href="https://stackoverflow.com/questions/1586658/combine-gyroscope-and-accelerometer-data">https://stackoverflow.com/questions/1586658/combine-gyroscope-and-accelerometer-data</a> and
-<a href="http://blog.bitify.co.uk/2013/11/using-complementary-filter-to-combine.html">http://blog.bitify.co.uk/2013/11/using-complementary-filter-to-combine.html</a></p>
-<p>:param gyroscope_time_s: timestamps corresponding to the gyroscope data in seconds
-:param gyroscope_angle: the calculated angle from the gyroscope (roll, pitch, yaw)
-:param accelerometer_angle: the calculated angle from the accelerometer (roll, pitch, yaw)
-:param smoothing_factor: determines the sensitivity of the accelerometer
-:return: filtered angle</p></div>
+<div class="desc">Complimentary Filter for Accelereometer and Gyroscope.<br>Returns filtered angle<br>Based on the works from https://stackoverflow.com/questions/1586658/combine-gyroscope-and-accelerometer-data and<br>http://blog.bitify.co.uk/2013/11/using-complementary-filter-to-combine.html<br><br>:param gyroscope_time_s: timestamps corresponding to the gyroscope data in seconds<br>:param gyroscope_angle: the calculated angle from the gyroscope (roll, pitch, yaw)<br>:param accelerometer_angle: the calculated angle from the accelerometer (roll, pitch, yaw)<br>:param smoothing_factor: determines the sensitivity of the accelerometer<br>:return: filtered angle</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -277,12 +268,7 @@ Based on the works from <a href="https://stackoverflow.com/questions/1586658/com
 <span>def <span class="ident">get_roll_pitch</span></span>(<span>accel_x: float, accel_y: float, accel_z: float) ‑> Tuple[float, float]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the pitch (rotation around y axis) and roll (rotation around x axis) from accelerometer data
-<a href="http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/">http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/</a></p>
-<p>:param accel_x: x-axis acceleration value
-:param accel_y: y-axis acceleration value
-:param accel_z: z-axis acceleration value
-:return: pitch, roll</p></div>
+<div class="desc">Returns the pitch (rotation around y axis) and roll (rotation around x axis) from accelerometer data<br>http://www.geekmomprojects.com/gyroscopes-and-accelerometers-on-a-chip/<br><br>:param accel_x: x-axis acceleration value<br>:param accel_y: y-axis acceleration value<br>:param accel_z: z-axis acceleration value<br>:return: pitch, roll</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -309,10 +295,7 @@ Based on the works from <a href="https://stackoverflow.com/questions/1586658/com
 <span>def <span class="ident">get_roll_pitch_array</span></span>(<span>accelerometers: List) ‑> Tuple[numpy.ndarray, numpy.ndarray]</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the pitch (rotation around y axis) and roll (rotation around x axis) array from accelerometer data
-Loops through the get_pitch_and_roll function</p>
-<p>:param accelerometers: List of the xyz components of accelerometer data
-:return: pitch_array, roll_array</p></div>
+<div class="desc">Returns the pitch (rotation around y axis) and roll (rotation around x axis) array from accelerometer data<br>Loops through the get_pitch_and_roll function<br><br>:param accelerometers: List of the xyz components of accelerometer data<br>:return: pitch_array, roll_array</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -344,14 +327,7 @@ Loops through the get_pitch_and_roll function</p>
 <span>def <span class="ident">get_yaw</span></span>(<span>roll: float, pitch: float, mag_x: float, mag_y: float, mag_z: float) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns yaw based on roll / pitch data and the magnetometer data
-<a href="https://roboticsclubiitk.github.io/2017/12/21/Beginners-Guide-to-IMU.html">https://roboticsclubiitk.github.io/2017/12/21/Beginners-Guide-to-IMU.html</a></p>
-<p>:param roll: rotation around the x-axis
-:param pitch: rotation around the y-axis
-:param mag_x: x-axis magnetometer value
-:param mag_y: y-axis magnetometer value
-:param mag_z: z-axis magnetometer value
-:return: yaw</p></div>
+<div class="desc">Returns yaw based on roll / pitch data and the magnetometer data<br>https://roboticsclubiitk.github.io/2017/12/21/Beginners-Guide-to-IMU.html<br><br>:param roll: rotation around the x-axis<br>:param pitch: rotation around the y-axis<br>:param mag_x: x-axis magnetometer value<br>:param mag_y: y-axis magnetometer value<br>:param mag_z: z-axis magnetometer value<br>:return: yaw</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -378,11 +354,7 @@ Loops through the get_pitch_and_roll function</p>
 <span>def <span class="ident">get_yaw_array</span></span>(<span>roll_array: numpy.ndarray, pitch_array: numpy.ndarray, magnetometers: List) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Returns the yaw array from roll (rotation around x axis), pitch (rotation around y axis), and gyroscope data</p>
-<p>:param roll_array: roll (rotation around x axis) calculated from sensors
-:param pitch_array: pitch (rotation around y axis) calculated from sensors
-:param magnetometers: List of xyz components of magnetometer data
-:return: yaw_array</p></div>
+<div class="desc">Returns the yaw array from roll (rotation around x axis), pitch (rotation around y axis), and gyroscope data<br><br>:param roll_array: roll (rotation around x axis) calculated from sensors<br>:param pitch_array: pitch (rotation around y axis) calculated from sensors<br>:param magnetometers: List of xyz components of magnetometer data<br>:return: yaw_array</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -415,11 +387,7 @@ Loops through the get_pitch_and_roll function</p>
 <span>def <span class="ident">integrate_cumtrapz</span></span>(<span>timestamps_s: numpy.ndarray, sensor_wf: numpy.ndarray, initial_value: float = 0) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>cumulative trapazoid integration using scipy.integrate.cumulative_trapezoid</p>
-<p>:param timestamps_s: timestamps corresponding to the data in seconds
-:param sensor_wf: data to integrate using cumulative trapezoid
-:param initial_value: the value to add in the initial of the integrated data to match length of input (default is 0)
-:return: integrated data with the same length as the input</p></div>
+<div class="desc">cumulative trapazoid integration using scipy.integrate.cumulative_trapezoid<br><br>:param timestamps_s: timestamps corresponding to the data in seconds<br>:param sensor_wf: data to integrate using cumulative trapezoid<br>:param initial_value: the value to add in the initial of the integrated data to match length of input (default is 0)<br>:return: integrated data with the same length as the input</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -445,12 +413,7 @@ Loops through the get_pitch_and_roll function</p>
 <span>def <span class="ident">remove_dc_offset</span></span>(<span>sensor_wf: numpy.ndarray, start_loc: int = None, end_loc: int = None) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.
-If start and end location is None, it uses the whole array, if one is given it will take the other to the max.</p>
-<p>:param sensor_wf: data to remove the "DC offset"
-:param start_loc: location of the start of the DC offset subset
-:param end_loc: location of the end of the DC offset subset
-:return: data with DC offset removed</p></div>
+<div class="desc">removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.<br>If start and end location is None, it uses the whole array, if one is given it will take the other to the max.<br><br>:param sensor_wf: data to remove the "DC offset"<br>:param start_loc: location of the start of the DC offset subset<br>:param end_loc: location of the end of the DC offset subset<br>:return: data with DC offset removed</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -480,13 +443,7 @@ If start and end location is None, it uses the whole array, if one is given it w
 <span>def <span class="ident">remove_dc_offset_s</span></span>(<span>timestamps_s: numpy.ndarray, sensor_wf: numpy.ndarray, start_s: int = None, end_s: int = None) ‑> numpy.ndarray</span>
 </code></dt>
 <dd>
-<div class="desc"><p>removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.
-If start and end time is None, it uses the whole array, if one is given it will take the other to the max.</p>
-<p>:param timestamps_s: timestamps corresponding to the data in seconds
-:param sensor_wf: data to remove the "DC offset"
-:param start_s: seconds from the first timestamp to use as the start of the range for the DC offset subset
-:param end_s: seconds from the first timestamp to use as the end of the range for the DC offset subset
-:return: data with DC offset removed</p></div>
+<div class="desc">removes "DC offset" from the data by subtracting the mean of the specified subsection of the data.<br>If start and end time is None, it uses the whole array, if one is given it will take the other to the max.<br><br>:param timestamps_s: timestamps corresponding to the data in seconds<br>:param sensor_wf: data to remove the "DC offset"<br>:param start_s: seconds from the first timestamp to use as the start of the range for the DC offset subset<br>:param end_s: seconds from the first timestamp to use as the end of the range for the DC offset subset<br>:return: data with DC offset removed</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -556,7 +513,7 @@ If start and end time is None, it uses the whole array, if one is given it will 
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>

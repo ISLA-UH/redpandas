@@ -1,8 +1,6 @@
 """
-This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion
-to RedPandas DataFrames.
-
-Last updated: 2 July 2021
+This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion to
+RedPandas DataFrames.
 """
 from typing import List, Dict, Union, Tuple
 
@@ -26,13 +24,12 @@ def station_to_dict_from_dw(
         frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
         filter_order: int = 4) -> Dict[str, Union[str, None, float]]:
     """
-    converts information from a station object created by a data window into a dictionary easily converted into
-    a dataframe
+    converts information from a station object created by a data window into a dictionary easily converted into a dataframe
 
     :param station: RDVX station object
     :param sdk_version: version of Redvox SDK used to create the Station object
-    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer',
-        'gyroscope', 'magnetometer', 'health', 'location', 'image']
+    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer', 'gyroscope',
+        'magnetometer', 'health', 'location', 'image']
     :param highpass_type: obspy', 'butter', 'rc', default 'obspy'
     :param frequency_filter_low: apply highpass filter. Default is 100 second periods
     :param filter_order: the order of the filter integer. Default is 4
@@ -98,8 +95,9 @@ def build_station(station: Station,
 
     :param station: RDVX Station object
     :param sensor_label: one of: ['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer',
-    'health', 'location', 'image']
-    :param highpass_type: 'obspy', 'butter', 'rc', default 'obspy'
+        'health', 'location', 'best_location', 'image']
+    :param highpass_type: 'obspy', 'butter', or 'rc', default 'obspy'. Used for sensors barometer, acceleration,
+        gyroscope, magnetometer
     :param frequency_filter_low: apply highpass filter. Default is 100 second periods
     :param filter_order: the order of the filter integer. Default is 4
     :return: dictionary with sensor name, sample rate, timestamps, data (raw and highpassed)
@@ -156,7 +154,7 @@ def build_station(station: Station,
             return {}
 
 
-# Modules for specific sensors
+# Functions for specific sensors
 def audio_wf_time_build_station(station: Station,
                                 mean_type: str = "simple",
                                 raw: bool = False) -> dict:
@@ -332,7 +330,6 @@ def clock_build_station(station: Station) -> dict:
     clock number bins, clock number samples, clock offset slope, and clock offset model score.
     """
     if station.has_timesync_data():
-        print('App start time s:', station.start_timestamp)
         clock = station.timesync_analysis.offset_model
         return {'clock_start_time_epoch_s': clock.start_time * rpd_scales.MICROS_TO_S,
                 'clock_best_latency_ms': clock.mean_latency * rpd_scales.MICROS_TO_MILLIS,

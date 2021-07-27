@@ -5,16 +5,12 @@ import pandas as pd
 
 # RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindow
-import redvox.common.date_time_utils as dt
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_plot as rpd_plot
-import redpandas.redpd_geospatial as rpd_geo
+import redpandas.redpd_plot.redpd_plot as rpd_plot
 import redpandas.redpd_tfr as rpd_tfr
 import redpandas.redpd_datawin as rpd_dw
-from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
-from libquantum.spectra import stft_from_sig
 
 # Configuration file
 from redpandas.redpd_config import DataLoadMethod
@@ -27,7 +23,7 @@ axes = ["X", "Y", "Z"]
 def main():
     """
     RedVox RedPandas time-frequency representation of API900 data. Example: Skyfall.
-    Last updated: 29 June 2021
+    Last updated: 12 July 2021
     """
 
     print('Let the sky fall')
@@ -81,13 +77,13 @@ def main():
     magnetometer_tfr_time_s_label: str = "magnetometer_tfr_time_s"
 
     # Load data options
-    if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW or \
-            skyfall_config.tdr_load_method == DataLoadMethod.PICKLE:
+    if tfr_config.tfr_load_method == DataLoadMethod.DATAWINDOW or \
+            tfr_config.tfr_load_method == DataLoadMethod.PICKLE:
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
-        if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
+        if tfr_config.tfr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
             print("Constructing RedVox DataWindow...", end=" ")
 
-            rdvx_data = rpd_dw.dw_from_config_epoch(config=skyfall_config)
+            rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
 
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
@@ -103,7 +99,7 @@ def main():
                                         for station in rdvx_data.stations])
         df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
 
-    elif skyfall_config.tdr_load_method == DataLoadMethod.PARQUET:  # Option C: Open dataframe from parquet file
+    elif tfr_config.tfr_load_method == DataLoadMethod.PARQUET:  # Option C: Open dataframe from parquet file
         print("Loading existing RedPandas Parquet...", end=" ")
         df_skyfall_data = pd.read_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
         print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")

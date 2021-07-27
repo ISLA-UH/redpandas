@@ -22,8 +22,7 @@
 <h1 class="title">Module <code>redpandas.redpd_tfr</code></h1>
 </header>
 <section id="section-intro">
-<p>This module contains functions to calculate Time Representation Frequency.</p>
-<p>Last updated: 6 July 2021</p>
+This module contains functions to calculate Time Representation Frequency.<br><br>Last updated: 6 July 2021
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -224,16 +223,7 @@ def tfr_bits_panda(df: pd.DataFrame,
 <span>def <span class="ident">frame_panda</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_epoch_s_label: str, sig_epoch_s_start: float, sig_epoch_s_end: float, offset_seconds_label: str = 'xcorr_offset_seconds', new_column_aligned_wf: str = 'sig_aligned_wf', new_column_aligned_epoch: str = 'sig_aligned_epoch_s') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Align signals in dataframe (with seconds offset)</p>
-<p>:param df: input pandas data frame
-:param sig_wf_label: string for the waveform column name in df
-:param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df
-:param sig_epoch_s_start: first timestamp in epoch s
-:param sig_epoch_s_end: last timestamp in epoch s
-:param offset_seconds_label: time offset correction in seconds
-:param new_column_aligned_wf: label for new column containing aligned waveform
-:param new_column_aligned_epoch: label for new column containing aligned timestamps in epoch s
-:return: input df with new columns</p></div>
+<div class="desc">Align signals in dataframe (with seconds offset)<br><br>:param df: input pandas data frame<br>:param sig_wf_label: string for the waveform column name in df<br>:param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df<br>:param sig_epoch_s_start: first timestamp in epoch s<br>:param sig_epoch_s_end: last timestamp in epoch s<br>:param offset_seconds_label: time offset correction in seconds<br>:param new_column_aligned_wf: label for new column containing aligned waveform<br>:param new_column_aligned_epoch: label for new column containing aligned timestamps in epoch s<br>:return: input df with new columns</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -281,15 +271,7 @@ def tfr_bits_panda(df: pd.DataFrame,
 <span>def <span class="ident">frame_panda_no_offset</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_epoch_s_label: str, sig_epoch_s_start: float, sig_epoch_s_end: float, new_column_aligned_wf: str = 'sig_aligned_wf', new_column_aligned_epoch: str = 'sig_aligned_epoch_s') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Align signals in dataframe (no seconds offset)</p>
-<p>:param df: input pandas data frame
-:param sig_wf_label: string for the waveform column name in df
-:param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df
-:param sig_epoch_s_start: first timestamp in epoch s
-:param sig_epoch_s_end: last timestamp in epoch s
-:param new_column_aligned_wf: label for new column containing aligned waveform
-:param new_column_aligned_epoch: label for new column containing aligned timestamps in epoch s
-:return: input df with new columns</p></div>
+<div class="desc">Align signals in dataframe (no seconds offset)<br><br>:param df: input pandas data frame<br>:param sig_wf_label: string for the waveform column name in df<br>:param sig_epoch_s_label: string for column name with the waveform timestamp (in epoch s) in df<br>:param sig_epoch_s_start: first timestamp in epoch s<br>:param sig_epoch_s_end: last timestamp in epoch s<br>:param new_column_aligned_wf: label for new column containing aligned waveform<br>:param new_column_aligned_epoch: label for new column containing aligned timestamps in epoch s<br>:return: input df with new columns</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -335,16 +317,7 @@ def tfr_bits_panda(df: pd.DataFrame,
 <span>def <span class="ident">tfr_bits_panda</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_sample_rate_label: str, order_number_input: float = 3, tfr_type: str = 'cwt', new_column_tfr_bits: str = 'tfr_bits', new_column_tfr_time_s: str = 'tfr_time_s', new_column_tfr_frequency_hz: str = 'tfr_frequency_hz') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
-<div class="desc"><p>Calculate Time Frequency Representation for a signal</p>
-<p>:param df: input pandas data frame
-:param sig_wf_label: string for the waveform column name in df
-:param sig_sample_rate_label: string for column name with sample rate in Hz information in df
-:param order_number_input: band order Nth
-:param tfr_type: 'cwt' or 'stft'
-:param new_column_tfr_bits: label for new column containing tfr in bits
-:param new_column_tfr_time_s: label for new column containing tfr timestamps in epoch s
-:param new_column_tfr_frequency_hz: label for new column containing tfr frequency in Hz
-:return: input dataframe with new columns</p></div>
+<div class="desc">Calculate Time Frequency Representation for a signal<br><br>:param df: input pandas data frame<br>:param sig_wf_label: string for the waveform column name in df<br>:param sig_sample_rate_label: string for column name with sample rate in Hz information in df<br>:param order_number_input: band order Nth<br>:param tfr_type: 'cwt' or 'stft'<br>:param new_column_tfr_bits: label for new column containing tfr in bits<br>:param new_column_tfr_time_s: label for new column containing tfr timestamps in epoch s<br>:param new_column_tfr_frequency_hz: label for new column containing tfr frequency in Hz<br>:return: input dataframe with new columns</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -472,7 +445,7 @@ def tfr_bits_panda(df: pd.DataFrame,
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.9.2</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.9.2</a>.</p>
 </footer>
 </body>
 </html>
