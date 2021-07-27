@@ -207,7 +207,7 @@ class TestYticks(unittest.TestCase):
                                               sig_id_label=&#34;station_id&#34;,
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;2345678901 bar raw&#34;])
+        self.assertEqual(self.yticks, [&#39;1234567890 aud&#39;, &#39;1234567890 bar raw&#39;, &#39;2345678901 aud&#39;, &#39;2345678901 bar raw&#39;])
 
     def test_yticks_multiple_stations_multiple_sensors_with_3c_sensors(self):
         self.yticks = rpd_wiggles.find_yticks(df=self.df_data,
@@ -216,8 +216,8 @@ class TestYticks(unittest.TestCase):
                                               sig_id_label=&#34;station_id&#34;,
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;2345678901 bar raw&#34;,
-                                       &#34;1234567890 acc X raw&#34;, &#34;1234567890 acc Y raw&#34;, &#34;1234567890 acc Z raw&#34;,
+        self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;1234567890 acc X raw&#34;, &#34;1234567890 acc Y raw&#34;,
+                                       &#34;1234567890 acc Z raw&#34;, &#34;2345678901 aud&#34;, &#34;2345678901 bar raw&#34;,
                                        &#34;2345678901 acc X raw&#34;, &#34;2345678901 acc Y raw&#34;, &#34;2345678901 acc Z raw&#34;])
 
     def test_yticks_one_station_multiple_sensors(self):
@@ -433,7 +433,7 @@ class TestIrregularFindYticks(unittest.TestCase):
                                               sig_id_label=&#34;station_id&#34;,
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;])
+        self.assertEqual(self.yticks, [&#39;1234567890 aud&#39;, &#39;1234567890 bar raw&#39;, &#39;2345678901 aud&#39;])
 
     def test_irregular_yticks_one_station_multiple_sensors_with_3c_sensors(self):
         self.yticks = rpd_wiggles.find_yticks(df=self.df_data_irregular,
@@ -1308,7 +1308,7 @@ attribute so can be configured by individual tests if required.<br><br>Create an
                                               sig_id_label=&#34;station_id&#34;,
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;])
+        self.assertEqual(self.yticks, [&#39;1234567890 aud&#39;, &#39;1234567890 bar raw&#39;, &#39;2345678901 aud&#39;])
 
     def test_irregular_yticks_one_station_multiple_sensors_with_3c_sensors(self):
         self.yticks = rpd_wiggles.find_yticks(df=self.df_data_irregular,
@@ -1526,7 +1526,7 @@ attribute so can be configured by individual tests if required.<br><br>Create an
                                           sig_id_label=&#34;station_id&#34;,
                                           station_id_str=None,
                                           custom_yticks=None)
-    self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;])</code></pre>
+    self.assertEqual(self.yticks, [&#39;1234567890 aud&#39;, &#39;1234567890 bar raw&#39;, &#39;2345678901 aud&#39;])</code></pre>
 </details>
 </dd>
 <dt id="redpandas.tests.test_plot_wiggles.TestIrregularFindYticks.test_irregular_yticks_one_station_multiple_sensors"><code class="name flex">
@@ -2178,7 +2178,7 @@ attribute so can be configured by individual tests if required.<br><br>Create an
                                               sig_id_label=&#34;station_id&#34;,
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;2345678901 bar raw&#34;])
+        self.assertEqual(self.yticks, [&#39;1234567890 aud&#39;, &#39;1234567890 bar raw&#39;, &#39;2345678901 aud&#39;, &#39;2345678901 bar raw&#39;])
 
     def test_yticks_multiple_stations_multiple_sensors_with_3c_sensors(self):
         self.yticks = rpd_wiggles.find_yticks(df=self.df_data,
@@ -2187,8 +2187,8 @@ attribute so can be configured by individual tests if required.<br><br>Create an
                                               sig_id_label=&#34;station_id&#34;,
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;2345678901 bar raw&#34;,
-                                       &#34;1234567890 acc X raw&#34;, &#34;1234567890 acc Y raw&#34;, &#34;1234567890 acc Z raw&#34;,
+        self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;1234567890 acc X raw&#34;, &#34;1234567890 acc Y raw&#34;,
+                                       &#34;1234567890 acc Z raw&#34;, &#34;2345678901 aud&#34;, &#34;2345678901 bar raw&#34;,
                                        &#34;2345678901 acc X raw&#34;, &#34;2345678901 acc Y raw&#34;, &#34;2345678901 acc Z raw&#34;])
 
     def test_yticks_one_station_multiple_sensors(self):
@@ -2413,7 +2413,7 @@ attribute so can be configured by individual tests if required.<br><br>Create an
                                           sig_id_label=&#34;station_id&#34;,
                                           station_id_str=None,
                                           custom_yticks=None)
-    self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;2345678901 bar raw&#34;])</code></pre>
+    self.assertEqual(self.yticks, [&#39;1234567890 aud&#39;, &#39;1234567890 bar raw&#39;, &#39;2345678901 aud&#39;, &#39;2345678901 bar raw&#39;])</code></pre>
 </details>
 </dd>
 <dt id="redpandas.tests.test_plot_wiggles.TestYticks.test_yticks_multiple_stations_multiple_sensors_with_3c_sensors"><code class="name flex">
@@ -2432,8 +2432,8 @@ attribute so can be configured by individual tests if required.<br><br>Create an
                                           sig_id_label=&#34;station_id&#34;,
                                           station_id_str=None,
                                           custom_yticks=None)
-    self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;2345678901 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;2345678901 bar raw&#34;,
-                                   &#34;1234567890 acc X raw&#34;, &#34;1234567890 acc Y raw&#34;, &#34;1234567890 acc Z raw&#34;,
+    self.assertEqual(self.yticks, [&#34;1234567890 aud&#34;, &#34;1234567890 bar raw&#34;, &#34;1234567890 acc X raw&#34;, &#34;1234567890 acc Y raw&#34;,
+                                   &#34;1234567890 acc Z raw&#34;, &#34;2345678901 aud&#34;, &#34;2345678901 bar raw&#34;,
                                    &#34;2345678901 acc X raw&#34;, &#34;2345678901 acc Y raw&#34;, &#34;2345678901 acc Z raw&#34;])</code></pre>
 </details>
 </dd>
