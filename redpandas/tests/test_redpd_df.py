@@ -59,7 +59,7 @@ class TestRedpdDataframe(unittest.TestCase):
 
     def test_result_type(self):
         self.df = rpd_df.redpd_dataframe(input_dw=self.dw)
-        self.assertEqual(self.dw, pd.DataFrame)
+        self.assertEqual(type(self.df), pd.DataFrame)
 
     def test_with_dw_audio_only(self):
         self.df = rpd_df.redpd_dataframe(input_dw=self.dw)
@@ -97,7 +97,7 @@ class TestRedpdDataframe(unittest.TestCase):
         self.df = rpd_df.redpd_dataframe(input_dw=self.dw, sensor_labels=["clock"])
         self.assertEqual(len(self.df.columns), 14)
 
-    def test_with_dw_sensor_is_not_string(self):
+    def test_with_dw_sensor_is_not_string_then_do_audio_only(self):
         self.df = rpd_df.redpd_dataframe(input_dw=self.dw, sensor_labels="barometer")
         self.assertEqual(len(self.df.columns), 13)
 
