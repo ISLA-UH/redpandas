@@ -179,7 +179,7 @@ class TestYticks(unittest.TestCase):
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, ["1234567890 aud", "2345678901 aud", "1234567890 bar raw", "2345678901 bar raw"])
+        self.assertEqual(self.yticks, ['1234567890 aud', '1234567890 bar raw', '2345678901 aud', '2345678901 bar raw'])
 
     def test_yticks_multiple_stations_multiple_sensors_with_3c_sensors(self):
         self.yticks = rpd_wiggles.find_yticks(df=self.df_data,
@@ -188,8 +188,8 @@ class TestYticks(unittest.TestCase):
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, ["1234567890 aud", "2345678901 aud", "1234567890 bar raw", "2345678901 bar raw",
-                                       "1234567890 acc X raw", "1234567890 acc Y raw", "1234567890 acc Z raw",
+        self.assertEqual(self.yticks, ["1234567890 aud", "1234567890 bar raw", "1234567890 acc X raw", "1234567890 acc Y raw",
+                                       "1234567890 acc Z raw", "2345678901 aud", "2345678901 bar raw",
                                        "2345678901 acc X raw", "2345678901 acc Y raw", "2345678901 acc Z raw"])
 
     def test_yticks_one_station_multiple_sensors(self):
@@ -405,7 +405,7 @@ class TestIrregularFindYticks(unittest.TestCase):
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, ["1234567890 aud", "2345678901 aud", "1234567890 bar raw"])
+        self.assertEqual(self.yticks, ['1234567890 aud', '1234567890 bar raw', '2345678901 aud'])
 
     def test_irregular_yticks_one_station_multiple_sensors_with_3c_sensors(self):
         self.yticks = rpd_wiggles.find_yticks(df=self.df_data_irregular,

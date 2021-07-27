@@ -1,5 +1,5 @@
 """
-
+Plot TFR
 """
 import datetime as dt
 from typing import List, Union
@@ -12,15 +12,16 @@ import pandas as pd
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 import redpandas.redpd_scales as rpd_scales
+from redpandas.redpd_plot.parameters import FigureParameters as FigParam
 
-# Wiggle plot scaling
-scale = 1.25*1080/8
-figure_size_x = int(1920/scale)
-figure_size_y = int(1080/scale)
-text_size = int(2.9*1080/scale)
-
-# Colormap/
-color_map = "inferno"  # 'hot_r'  # 'afmhot_r' #colormap for plotting
+# # Wiggle plot scaling
+# scale = 1.25*1080/8
+# figure_size_x = int(1920/scale)
+# figure_size_y = int(1080/scale)
+# text_size = int(2.9*1080/scale)
+#
+# # Colormap/
+# color_map = "inferno"  # 'hot_r'  # 'afmhot_r' #colormap for plotting
 
 
 def plot_mesh_pandas(df: pd.DataFrame,
@@ -167,7 +168,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
         tfr_min_total = tfr_max_total - 18
 
     # start of figure
-    fig = plt.figure(figsize=(figure_size_x, figure_size_y))
+    fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
     if common_colorbar is True:  # for colorbar, two columns in fig
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
     else:
@@ -196,7 +197,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                             df[mesh_tfr_label_individual][index_signal],
                                             vmin=tfr_min_total,
                                             vmax=tfr_max_total,
-                                            cmap=color_map,
+                                            cmap=FigParam().color_map,
                                             edgecolor='face',
                                             shading="auto",
                                             snap=True)
@@ -217,7 +218,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                             df[mesh_tfr_label_individual][index_signal],
                                             vmin=mesh_color_min,
                                             vmax=mesh_color_max,
-                                            cmap=color_map,
+                                            cmap=FigParam().color_map,
                                             edgecolor='face',
                                             shading="auto",
                                             snap=True)
@@ -246,12 +247,12 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                 # Station Labels
                 ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=text_size)
+                ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=FigParam().text_size)
 
                 if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                     ax.set_xticks([])
 
-                ax.tick_params(axis='both', which='major', labelsize=text_size)
+                ax.tick_params(axis='both', which='major', labelsize=FigParam().text_size)
 
                 index_wiggle_yticklabels += 1
                 index_panel_order -= 1
@@ -268,7 +269,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                 df[mesh_tfr_label_individual][index_signal][index_dimension],
                                                 vmin=tfr_min_total,
                                                 vmax=tfr_max_total,
-                                                cmap=color_map,
+                                                cmap=FigParam().color_map,
                                                 edgecolor='face',
                                                 shading="auto",
                                                 snap=True)
@@ -289,7 +290,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                 df[mesh_tfr_label_individual][index_signal][index_dimension],
                                                 vmin=mesh_color_min,
                                                 vmax=mesh_color_max,
-                                                cmap=color_map,
+                                                cmap=FigParam().color_map,
                                                 edgecolor='face',
                                                 shading="auto",
                                                 snap=True)
@@ -318,12 +319,12 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                     # Station Labels
                     ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                    ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=text_size)
+                    ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
 
                     if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                         ax.set_xticks([])
 
-                    ax.tick_params(axis='both', which='major', labelsize=text_size)
+                    ax.tick_params(axis='both', which='major', labelsize=FigParam().text_size)
 
                     index_panel_order -= 1
                     index_mesh_color_scale_panel += 1
@@ -341,9 +342,9 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
     # Common x and y labels
     plt.xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
-               size=text_size, labelpad=10)
+               size=FigParam().text_size, labelpad=10)
     if fig_title_show:
-        plt.title(fig_title, size=text_size + 2, y=1.05)
+        plt.title(fig_title, size=FigParam().text_size + 2, y=1.05)
         # Adjust overall plot to maximize figure space for press if title on
         if common_colorbar is False:
             plt.subplots_adjust(left=0.1, right=0.97)
@@ -361,8 +362,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
     if common_colorbar is True:
         cax = fig.add_subplot(gs[:, 1])
         mesh_panel_cbar: Colorbar = fig.colorbar(mappable=plotted, cax=cax)
-        mesh_panel_cbar.ax.tick_params(labelsize=text_size-2)
-        mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=text_size, labelpad=25)
+        mesh_panel_cbar.ax.tick_params(labelsize=FigParam().text_size-2)
+        mesh_panel_cbar.set_label('bits relative to max', rotation=270, size=FigParam().text_size, labelpad=25)
 
     if show_figure is True:
         plt.show()

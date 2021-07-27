@@ -2,21 +2,12 @@
 Plot waveforms in dataframe
 """
 import datetime as dt
-from typing import List, Union, Optional, Tuple
-
+from typing import List, Union, Optional
 import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 import numpy as np
 import pandas as pd
-
-# Wiggle plot scaling
-scale = 1.25*1080/8
-figure_size_x = int(1920/scale)
-figure_size_y = int(1080/scale)
-text_size = int(2.9*1080/scale)
-
-# Colormap/
-color_map = "inferno"  # 'hot_r'  # 'afmhot_r' #colormap for plotting
+from redpandas.redpd_plot.parameters import FigureParameters as FigParam
 
 
 # PLOT_WIGGLES AUXILIARY FUNCTIONS
@@ -34,7 +25,7 @@ def find_wiggle_num(df: pd.DataFrame,
     :param station_id_str: optional string with name of one station to plot. Default is None
     :return: int, number of wiggles
     """
-
+    # Assumes accelerometer, gyrsocope and magnetometer will have three channels
     dict_wiggle_num = {"audio_wf": 1,
                        "barometer_wf_raw": 1,
                        "barometer_wf_highpass": 1,
@@ -46,8 +37,8 @@ def find_wiggle_num(df: pd.DataFrame,
                        "magnetometer_wf_highpass": 3}
 
     wiggle_num_list = []  # number of wiggles
-    for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):
-        for index_n in df.index:
+    for index_n in df.index:
+        for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):
             if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
                 # check column exists and not empty
                 if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
@@ -96,8 +87,8 @@ def find_yticks(df: pd.DataFrame,
     else:  # construct the yticks:
         wiggle_yticklabel = []  # name/y label of wiggles
 
-        for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):  # loop for every sensor
-            for index_n in df.index:  # loop for every station
+        for index_n in df.index:  # loop for every station
+            for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):  # loop for every sensor
 
                 if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
                     # check column exists and not empty
@@ -245,11 +236,11 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     wiggle_yticks = wiggle_offset
 
     # Set up figure
-    fig, ax1 = plt.subplots(figsize=(figure_size_x, figure_size_y))
+    fig, ax1 = plt.subplots(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
     ax1.set_yticks(wiggle_yticks)
     ax1.set_yticklabels(wiggle_yticklabel)
     ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
-    ax1.tick_params(axis='both', which='both', labelsize=text_size)
+    ax1.tick_params(axis='both', which='both', labelsize=FigParam().text_size)
 
     # Get first timestamps out of all the sensors for all stations to establish xlim min
     time_epoch_origin = determine_time_epoch_origin(df=df,
@@ -261,7 +252,6 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     xlim_max = np.empty(wiggle_num)
 
     index_sensor_label_ticklabels_list = 0  # keep track of total sensor wf including x/y/z per station
-
     for index_station in df.index:  # loop per station
         for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
 
@@ -275,7 +265,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                 sensor_timestamps_label = sig_timestamps_label[index_sensor_in_list]  # timestamps
                 time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin  # scrubbed clean time
 
-                for _, sensor_array in enumerate(df[label][index_station]):
+                for sensor_array in df[label][index_station]:  # Make a regular loop
                     if label == "audio_wf":
                         sig_j = df[label][index_station] / np.max(df[label][index_station])
                     else:
@@ -294,22 +284,22 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     ax1.grid(True)
     if fig_title_show:  # Set title
         if station_id_str is None and len(sig_wf_label) > 1:
-            ax1.set_title(f'Normalized {fig_title}', size=text_size)
+            ax1.set_title(f'Normalized {fig_title}', size=FigParam().text_size)
         elif station_id_str is None and len(sig_wf_label) == 1:
-            ax1.set_title(f'Normalized {fig_title} for {sig_wf_label[0]}', size=text_size)
+            ax1.set_title(f'Normalized {fig_title} for {sig_wf_label[0]}', size=FigParam().text_size)
         else:
-            ax1.set_title(f'Normalized {fig_title} for Station {station_id_str}', size=text_size)
+            ax1.set_title(f'Normalized {fig_title} for Station {station_id_str}', size=FigParam().text_size)
 
     # Set ylabel
     if station_id_str is None:
-        ax1.set_ylabel("Signals", size=text_size)
+        ax1.set_ylabel("Signals", size=FigParam().text_size)
     else:
-        ax1.set_ylabel("Sensors", size=text_size)
+        ax1.set_ylabel("Sensors", size=FigParam().text_size)
 
     x_label = "Time (s)"
     if time_epoch_origin > 0:
         x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
-    ax1.set_xlabel(x_label, size=text_size)
+    ax1.set_xlabel(x_label, size=FigParam().text_size)
     fig.tight_layout()
 
     if show_figure is True:

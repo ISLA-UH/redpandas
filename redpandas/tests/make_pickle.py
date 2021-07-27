@@ -7,11 +7,11 @@ from redpandas.redpd_df import redpd_dataframe
 
 if __name__ == '__main__':
 
-    # rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="./test_data",
-    #                                                   file_name="aud_bar_acc_mag_gyr_loc_soh_clock_sync")
+    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir="./test_data",
+                                                      file_name="aud_bar_acc_mag_gyr_loc_soh_clock_sync")
 
-    rdvx_data: DataWindow = DataWindow(input_dir="/Users/meritxell/Desktop/skyfall_dummy_test")
-
+    # rdvx_data: DataWindow = DataWindow(input_dir="/Users/meritxell/Desktop/skyfall_dummy_test")
+    #
     df = redpd_dataframe(input_dw=rdvx_data, sensor_labels=['audio',
                                                             'barometer',
                                                             'accelerometer',
@@ -23,11 +23,10 @@ if __name__ == '__main__':
                                                             'synchronization'])
 
     # print(df.columns)
-
+    #
     fig = plot_wiggles_pandas(df=df,
-                              sig_wf_label=['audio_wf', 'gyroscope_wf_highpass'],
-                              sig_timestamps_label=['audio_epoch_s', 'gyroscope_epoch_s'],
-                              station_id_str="1637610021")
+                              sig_wf_label=['audio_wf', 'accelerometer_wf_raw'],
+                              sig_timestamps_label=['audio_epoch_s', 'accelerometer_epoch_s'])
 
     # start_time = 0
     # end_time = 10
@@ -63,31 +62,26 @@ if __name__ == '__main__':
     #                             "barometer_sensor_name": "synch_barometer",
     #                             "barometer_sample_rate_nominal_hz": sample_rate_barometer,
     #                             "barometer_epoch_s": signal_time_barometer,
-    #                             "barometer_wf_raw": sinewave_barometer},
+    #                             "barometer_wf_raw": sinewave_barometer,
+    #                             "accelerometer_epoch_s": signal_time_acc,
+    #                             "accelerometer_wf_raw": sinewave_acc},
     #                         1: {"station_id": "2345678901",   # Add another station
     #                             "audio_sensor_name": "synch_audio",
     #                             "audio_sample_rate_nominal_hz": sample_rate_audio,
     #                             "audio_epoch_s": signal_time_audio,
     #                             "audio_wf": sinewave_audio,
     #                             "accelerometer_epoch_s": signal_time_acc,
-    #                             "accelerometer_wf_raw": sinewave_acc}}
+    #                             "accelerometer_wf_raw": sinewave_acc},
+    #                         2: {"station_id": "3456789012",
+    #                             "audio_epoch_s": signal_time_audio,
+    #                             "audio_wf": sinewave_audio}}
     #
     # df_data_irregular = pd.DataFrame(dict_to_df_irregular).T
     #
     # fig = plot_wiggles_pandas(df=df_data_irregular,
     #                           sig_wf_label=['audio_wf', 'accelerometer_wf_raw'],
-    #                           sig_timestamps_label=['audio_epoch_s', 'accelerometer_epoch_s'])
-
-    # a = ["a", "b"]
-    # b = ["v"]
-    #
-    # b = b + a
-    # # for element in a:
-    #
-    # # station_and_sensor = ["df[sig_id_label][index_n] "] * a
-    # station_and_sensor = ["df[sig_id_label][index_n] " + element for element in a]
-    # print(station_and_sensor)
-
+    #                           sig_timestamps_label=['audio_epoch_s', 'accelerometer_epoch_s'],
+    #                           station_id_str="1234567890")
 
 
 
