@@ -94,18 +94,20 @@ This approach is ideal for python newcomers, new RedVox users, and for a superfi
 _Opening RedVox files (.rdvxz, .rdvxm) example:_
 
 ```python
-from redpandas.redpd_dw_to_parquet import redpd_df
+from redpandas.redpd_df import redpd_dataframe
+from redvox.common.data_window import DataWindow
 
 """
 Extract RedVox data into a Pandas DataFrame
 """
 # Absolute path
 INPUT_DIR = "path/to/redvox/data"
+rdvx_data: DataWindow = DataWindow(input_dir=INPUT_DIR)
 
 # Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
-redpd_df(input_dir=INPUT_DIR)
+redpd_dataframe(input_dw=rdvx_data)
 ```
-Note that [redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet) 
+Note that [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet) 
 will create a folder named ``rpd_files`` in the path/to/file given in the 
 ``INPUT_DIR`` variable. A folder named ``dw``,  (short for [RedVox DataWindow](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/data_window#data-window))
 containing a compressed pickle (.pkl.lz4), a RedPandas parquet (named ``Redvox_df.parquet``), and a JSON file (.json) will 
