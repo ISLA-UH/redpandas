@@ -85,7 +85,7 @@ def redpd_dataframe(input_dw: DataWindow,
     print("Initiating conversion from RedVox DataWindow to RedPandas:")
     rdvx_data: DataWindow = input_dw
 
-    if sensor_labels is not list:
+    if type(sensor_labels) is not list:
         sensor_labels = ["audio"]
 
     # BEGIN RED PANDAS
