@@ -298,7 +298,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
     x_label = "Time (s)"
     if time_epoch_origin > 0:
-        x_label += " relative to " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
+        x_label += " relative to UTC " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
     ax1.set_xlabel(x_label, size=FigParam().text_size)
     fig.tight_layout()
 
