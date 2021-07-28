@@ -1,7 +1,5 @@
 """
 DQ/DA/UQ statistics/metrics.
-
-Last updated: 10 June 2021
 """
 from dataclasses import dataclass
 from dataclasses_json import dataclass_json

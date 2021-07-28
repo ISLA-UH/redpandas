@@ -78,7 +78,7 @@ def find_ylabel(df: pd.DataFrame,
                    "gyroscope_wf_raw": ["gyr X raw", "gyr Y raw", "gyr Z raw"],
                    "gyroscope_wf_highpass": ["gyr X hp", "gyr Y hp", "gyr Z hp"],
                    "magnetometer_wf_raw": ["mag X raw", "mag Y raw", "mag Z raw"],
-                   "magnetomer_wf_highpass": ["mag X hp", "mag Y hp", "mag Z hp"]}
+                   "magnetometer_wf_highpass": ["mag X hp", "mag Y hp", "mag Z hp"]}
 
     # if custom_yticks provided, make that the yticks
     if custom_yticks is not None and custom_yticks != "index":
@@ -89,13 +89,13 @@ def find_ylabel(df: pd.DataFrame,
 
         for index_n in df.index:  # loop for every station
             for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):  # loop for every sensor
-
                 if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
                     # check column exists and not empty
                     if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
                         # Get yticks
                         if custom_yticks == "index":  # if ylabel for wiggle is index station
-                            wiggle_yticklabel.append(df.index[index_n])
+                            list_index = [df.index[index_n]] * len(dict_yticks.get(sensor_in_list))
+                            wiggle_yticklabel += list_index
 
                         elif custom_yticks is None:
                             sensor_short = dict_yticks.get(sensor_in_list)

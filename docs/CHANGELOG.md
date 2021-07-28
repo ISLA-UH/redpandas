@@ -1,8 +1,9 @@
 ## RedVox Pandas (RedPandas) Version History
 
-## 1.1.7 (2021-07-27)
+## 1.1.7-8 (2021-07-27)
 
 - Fix Skyfall example
+- Fix ylabels in plot_wiggles_pandas where magnetometer highpass would not plot
 
 ## 1.1.6 (2021-07-27)
 

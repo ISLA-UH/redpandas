@@ -1,7 +1,5 @@
 """
 This module contains functions to calculate Time Representation Frequency.
-
-Last updated: 6 July 2021
 """
 
 import numpy as np

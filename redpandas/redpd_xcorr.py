@@ -1,7 +1,5 @@
 """
 This module contains functions for calculating correlation.
-
-Last updated: 7 July 2021
 """
 
 import numpy as np

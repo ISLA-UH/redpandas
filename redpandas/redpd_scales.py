@@ -1,7 +1,5 @@
 """
 This module contains scale conversions.
-
-Last updated: 10 June 2021
 """
 
 import numpy as np

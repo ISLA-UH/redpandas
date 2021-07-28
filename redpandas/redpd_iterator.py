@@ -1,7 +1,5 @@
 """
 This module contains iterators used in redpd_preprocess.
-
-Last updated: 6 July 2021
 """
 
 import numpy as np

@@ -23,6 +23,8 @@ def main():
     df_skyfall_data = rpd_df.redpd_dataframe(rdvx_data, skyfall_config.sensor_labels)
     print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
+    print(df_skyfall_data.columns)
+
     # Audio columns
     audio_data_label: str = "audio_wf"
     audio_epoch_s_label: str = "audio_epoch_s"
@@ -54,7 +56,7 @@ def main():
     sensor_column_label_list = [audio_data_label, barometer_data_highpass_label,
                                 accelerometer_data_highpass_label, gyroscope_data_highpass_label,
                                 magnetometer_data_highpass_label]
-    # sensor_channels = [1, 1, 3, 3, 3]
+
     sensor_fs_label_list = [audio_fs_label, barometer_fs_label,
                             accelerometer_fs_label, gyroscope_fs_label,
                             magnetometer_fs_label]
@@ -84,11 +86,6 @@ def main():
                                  sig_timestamps_label=sensor_epoch_column_label_list,
                                  sig_id_label='station_id',
                                  fig_title_show=True,
-                                 fig_title='sensor waveforms',
-                                 custom_yticks=sensor_name_key_list)
-
-    plt.show()
-
-
+                                 fig_title='sensor waveforms')
 if __name__ == "__main__":
     main()

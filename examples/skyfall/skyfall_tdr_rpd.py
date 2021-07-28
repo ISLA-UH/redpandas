@@ -420,18 +420,13 @@ def main():
                                           accelerometer_epoch_s_label, gyroscope_epoch_s_label,
                                           magnetometer_epoch_s_label]
 
-        sensor_ticklabels_list = ['Audio', 'Bar hp', 'Acc X hp', 'Acc Y hp',
-                                  'Acc Z hp', 'Gyr X hp', 'Gyr Y hp', 'Gyr Z hp',
-                                  'Mag X hp', 'Mag Y hp', 'Mag Z hp']
-
         rpd_plot.plot_wiggles_pandas(df=df_skyfall_data,
                                      sig_wf_label=sensor_column_label_list,
                                      sig_timestamps_label=sensor_epoch_column_label_list,
                                      sig_id_label='station_id',
                                      station_id_str='1637610021',
                                      fig_title_show=True,
-                                     fig_title='sensor waveforms',
-                                     custom_yticks=sensor_ticklabels_list)
+                                     fig_title='sensor waveforms')
 
         plt.show()
 
