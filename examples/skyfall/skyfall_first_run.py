@@ -2,7 +2,7 @@ from skyfall_config_file import skyfall_config
 import examples.skyfall.skyfall_ensonify as skyfall_ensonify
 import examples.skyfall.skyfall_tdr_rpd as skyfall_tdr_rpd
 import examples.skyfall.skyfall_tfr_rpd as skyfall_tfr_rpd
-from redpandas.redpd_dw_to_parquet import redpd_df_from_config
+from redpandas.redpd_df import redpd_dataframe
 
 import os
 
