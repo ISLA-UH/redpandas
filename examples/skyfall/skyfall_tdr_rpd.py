@@ -7,9 +7,9 @@ import datetime as dtime
 
 # RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindow
+import redpandas.redpd_df as rpd_df
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_preprocess as rpd_prep
-import redpandas.redpd_build_station as rpd_build_sta
 import redpandas.redpd_plot.wiggles as rpd_plot
 import redpandas.redpd_geospatial as rpd_geo
 from redpandas.redpd_scales import METERS_TO_KM
@@ -89,7 +89,7 @@ def main():
     bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
 
     # Load data options
-    # if use_datawindow_tdr is True or use_pickle_tdr is True:
+    # RECOMMENDED: tdr_load_method="datawindow" in config file
     if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW or \
             skyfall_config.tdr_load_method == DataLoadMethod.PICKLE:
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
@@ -103,16 +103,12 @@ def main():
 
             rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
                                                               file_name=skyfall_config.output_filename_pkl_pqt)
-
         print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
-        # For option A or B, begin RedPandas
+        # For option A or B, begin RedPandas, succinct
         print("\nInitiating RedVox Redpandas:")
-        df_skyfall_data = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
-                                                                              sdk_version=rdvx_data.sdk_version,
-                                                                              sensor_labels=skyfall_config.sensor_labels)
-                                        for station in rdvx_data.stations])
-        df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
+
+        df_skyfall_data = rpd_df.redpd_dataframe(rdvx_data, skyfall_config.sensor_labels)
 
     elif skyfall_config.tdr_load_method == DataLoadMethod.PARQUET:  # Option C: Open dataframe from parquet file
         print("Loading existing RedPandas Parquet...", end=" ")

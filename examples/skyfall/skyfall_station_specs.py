@@ -4,6 +4,7 @@ import csv
 # RedVox and Red Pandas modules
 from redvox.common.data_window import DataWindow
 
+import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
 from redvox.api1000.wrapped_redvox_packet.station_information import OsType
 import redvox.common.date_time_utils as dt
@@ -149,8 +150,9 @@ if __name__ == "__main__":
     print('Let the sky fall')
     print("Print and save station information")
 
-    rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
-                                                      file_name=skyfall_config.dw_file)
+    rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
+    # rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
+    #                                                   file_name=skyfall_config.dw_file)
     rpd_dq.station_metadata(rdvx_data)
 
     print("\nSave Station specs to file")
