@@ -1,11 +1,6 @@
-# todo: address possible invalid values in building plots section
-# Python libraries
-import os.path
 import matplotlib.pyplot as plt
-import pandas as pd
 
 # RedVox RedPandas and related RedVox modules
-import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_ensonify as rpd_sound
 import redpandas.redpd_plot.wiggles as rpd_plot
 import redpandas.redpd_datawin as rpd_dw
@@ -16,17 +11,16 @@ from examples.skyfall.skyfall_config_file import skyfall_config
 
 
 def main():
-
     """
     Station sonification
-    Load from parquet
+    Load from datawindow
+    todo: address possible invalid values in building plots section
     """
     # Refine loading checks; need hp and strings
     redvox_sdk_version_label: str = 'redvox_sdk_version'
     print("Create datawindow")
     rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
     df_skyfall_data = rpd_df.redpd_dataframe(rdvx_data, skyfall_config.sensor_labels)
-    # df_skyfall_data = pd.read_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
     print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
     # Audio columns
@@ -55,21 +49,6 @@ def main():
     magnetometer_data_highpass_label: str = "magnetometer_wf_highpass"
     magnetometer_epoch_s_label: str = "magnetometer_epoch_s"
     magnetometer_fs_label: str = "magnetometer_sample_rate_hz"
-
-    # Must unflatten barometer and 3C from parquet
-    # Unflattened numpy arrays inherit the same column label
-    # rpd_prep.df_column_unflatten(df=df_skyfall_data,
-    #                              col_wf_label=barometer_data_highpass_label,
-    #                              col_ndim_label=barometer_data_highpass_label + "_ndim")
-    # rpd_prep.df_column_unflatten(df=df_skyfall_data,
-    #                              col_wf_label=accelerometer_data_highpass_label,
-    #                              col_ndim_label=accelerometer_data_highpass_label + "_ndim")
-    # rpd_prep.df_column_unflatten(df=df_skyfall_data,
-    #                              col_wf_label=gyroscope_data_highpass_label,
-    #                              col_ndim_label=gyroscope_data_highpass_label + "_ndim")
-    # rpd_prep.df_column_unflatten(df=df_skyfall_data,
-    #                              col_wf_label=magnetometer_data_highpass_label,
-    #                              col_ndim_label=magnetometer_data_highpass_label + "_ndim")
 
     # Loop over a numbered list
     sensor_column_label_list = [audio_data_label, barometer_data_highpass_label,
