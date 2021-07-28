@@ -6,7 +6,7 @@ import pandas as pd
 # RedVox RedPandas and related RedVox modules
 from redvox.common.data_window import DataWindow
 import redpandas.redpd_preprocess as rpd_prep
-import redpandas.redpd_build_station as rpd_build_sta
+import redpandas.redpd_df as rpd_df
 import redpandas.redpd_plot.mesh as rpd_plot
 import redpandas.redpd_tfr as rpd_tfr
 import redpandas.redpd_datawin as rpd_dw
@@ -77,6 +77,7 @@ def main():
     magnetometer_tfr_time_s_label: str = "magnetometer_tfr_time_s"
 
     # Load data options
+    # RECOMMENDED: tfr_load_method="datawindow" in config file
     if tfr_config.tfr_load_method == DataLoadMethod.DATAWINDOW or \
             tfr_config.tfr_load_method == DataLoadMethod.PICKLE:
         print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
@@ -92,12 +93,7 @@ def main():
         print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         # For option A or B, begin RedPandas
-        print("\nInitiating RedVox Redpandas:")
-        df_skyfall_data = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
-                                                                              sdk_version=rdvx_data.sdk_version,
-                                                                              sensor_labels=skyfall_config.sensor_labels)
-                                        for station in rdvx_data.stations])
-        df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
+        df_skyfall_data = rpd_df.redpd_dataframe(rdvx_data, skyfall_config.sensor_labels)
 
     elif tfr_config.tfr_load_method == DataLoadMethod.PARQUET:  # Option C: Open dataframe from parquet file
         print("Loading existing RedPandas Parquet...", end=" ")

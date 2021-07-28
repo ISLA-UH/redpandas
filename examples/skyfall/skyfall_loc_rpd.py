@@ -10,10 +10,6 @@ import redpandas.redpd_geospatial as rpd_geo
 # Import constants
 from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 
-# Configuration file
-# from examples.skyfall.skyfall_config import EVENT_NAME, OUTPUT_DIR, PD_PQT_FILE, \
-#     OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, is_rerun_bounder
-
 from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, \
     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 skyfall_config.is_rerun_bounder = True

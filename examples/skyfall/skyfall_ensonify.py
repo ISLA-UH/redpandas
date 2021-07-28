@@ -7,7 +7,9 @@ import pandas as pd
 # RedVox RedPandas and related RedVox modules
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_ensonify as rpd_sound
-import redpandas.redpd_plot.redpd_plot as rpd_plot
+import redpandas.redpd_plot.wiggles as rpd_plot
+import redpandas.redpd_datawin as rpd_dw
+import redpandas.redpd_df as rpd_df
 
 # Configuration files
 from examples.skyfall.skyfall_config_file import skyfall_config
@@ -21,12 +23,11 @@ def main():
     """
     # Refine loading checks; need hp and strings
     redvox_sdk_version_label: str = 'redvox_sdk_version'
-    print("Loading existing RedPandas Parquet...", end=" ")
-    df_skyfall_data = pd.read_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
+    print("Create datawindow")
+    rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
+    df_skyfall_data = rpd_df.redpd_dataframe(rdvx_data, skyfall_config.sensor_labels)
+    # df_skyfall_data = pd.read_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
     print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
-
-    # Label columns in dataframe
-    station_label: str = "station_id"
 
     # Audio columns
     audio_data_label: str = "audio_wf"
@@ -57,18 +58,18 @@ def main():
 
     # Must unflatten barometer and 3C from parquet
     # Unflattened numpy arrays inherit the same column label
-    rpd_prep.df_column_unflatten(df=df_skyfall_data,
-                                 col_wf_label=barometer_data_highpass_label,
-                                 col_ndim_label=barometer_data_highpass_label + "_ndim")
-    rpd_prep.df_column_unflatten(df=df_skyfall_data,
-                                 col_wf_label=accelerometer_data_highpass_label,
-                                 col_ndim_label=accelerometer_data_highpass_label + "_ndim")
-    rpd_prep.df_column_unflatten(df=df_skyfall_data,
-                                 col_wf_label=gyroscope_data_highpass_label,
-                                 col_ndim_label=gyroscope_data_highpass_label + "_ndim")
-    rpd_prep.df_column_unflatten(df=df_skyfall_data,
-                                 col_wf_label=magnetometer_data_highpass_label,
-                                 col_ndim_label=magnetometer_data_highpass_label + "_ndim")
+    # rpd_prep.df_column_unflatten(df=df_skyfall_data,
+    #                              col_wf_label=barometer_data_highpass_label,
+    #                              col_ndim_label=barometer_data_highpass_label + "_ndim")
+    # rpd_prep.df_column_unflatten(df=df_skyfall_data,
+    #                              col_wf_label=accelerometer_data_highpass_label,
+    #                              col_ndim_label=accelerometer_data_highpass_label + "_ndim")
+    # rpd_prep.df_column_unflatten(df=df_skyfall_data,
+    #                              col_wf_label=gyroscope_data_highpass_label,
+    #                              col_ndim_label=gyroscope_data_highpass_label + "_ndim")
+    # rpd_prep.df_column_unflatten(df=df_skyfall_data,
+    #                              col_wf_label=magnetometer_data_highpass_label,
+    #                              col_ndim_label=magnetometer_data_highpass_label + "_ndim")
 
     # Loop over a numbered list
     sensor_column_label_list = [audio_data_label, barometer_data_highpass_label,
@@ -98,17 +99,14 @@ def main():
                                       accelerometer_epoch_s_label, gyroscope_epoch_s_label,
                                       magnetometer_epoch_s_label]
 
-    rpd_plot.plot_sensor_wiggles_pandas(df=df_skyfall_data,
-                                        station_id_str='1637610021',
-                                        sensor_wf_label_list=sensor_column_label_list,
-                                        sensor_timestamps_label_list=sensor_epoch_column_label_list,
-                                        sig_id_label='station_id',
-                                        x_label='Time (s)',
-                                        y_label='Sensor',
-                                        fig_title_show=True,
-                                        fig_title='sensor waveforms',
-                                        wf_color='midnightblue',
-                                        sensor_yticks_label_list=sensor_name_key_list)
+    rpd_plot.plot_wiggles_pandas(df=df_skyfall_data,
+                                 station_id_str='1637610021',
+                                 sig_wf_label=sensor_column_label_list,
+                                 sig_timestamps_label=sensor_epoch_column_label_list,
+                                 sig_id_label='station_id',
+                                 fig_title_show=True,
+                                 fig_title='sensor waveforms',
+                                 custom_yticks=sensor_name_key_list)
 
     plt.show()
 

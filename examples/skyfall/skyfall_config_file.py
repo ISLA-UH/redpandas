@@ -2,15 +2,14 @@ import os
 from redpandas.redpd_config import RedpdConfig, TFRConfig
 
 # Absolute path to the skyfall data.
-# INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
+INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 
 # See above for example of a well named directory
 # Avoid specifying /api900 directories if possible.
-# INPUT_DIR = '/Users/jmtobin/Desktop/skyfall'
 # INPUT_DIR = "/Users/spopen/redvox/data/skyfall_data"
 # INPUT_DIR = "/Users/tyler/Documents/skyfall_pipeline"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
-INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
+# INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
 
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
@@ -38,7 +37,7 @@ skyfall_config = RedpdConfig(input_directory=INPUT_DIR,
                              duration_s=30 * 60,
                              start_buffer_minutes=3,
                              end_buffer_minutes=3,
-                             tdr_load_method="parquet")
+                             tdr_load_method="datawindow")
 
 # TFR configuration
 tfr_config = TFRConfig(tfr_type='stft',
@@ -51,4 +50,4 @@ tfr_config = TFRConfig(tfr_type='stft',
                                          'Gyr': 18.,
                                          'Mag': 18.},
                        sensor_highpass=True,
-                       tfr_load_method="parquet")
+                       tfr_load_method="datawindow")
