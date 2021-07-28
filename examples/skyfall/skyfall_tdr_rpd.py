@@ -10,7 +10,7 @@ from redvox.common.data_window import DataWindow
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_plot.redpd_plot as rpd_plot
+import redpandas.redpd_plot.wiggles as rpd_plot
 import redpandas.redpd_geospatial as rpd_geo
 from redpandas.redpd_scales import METERS_TO_KM
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
@@ -433,11 +433,8 @@ def main():
                                      sig_timestamps_label=sensor_epoch_column_label_list,
                                      sig_id_label='station_id',
                                      station_id_str='1637610021',
-                                     x_label="Time (s)",
-                                     y_label='Sensor',
                                      fig_title_show=True,
                                      fig_title='sensor waveforms',
-                                     wf_color='midnightblue',
                                      custom_yticks=sensor_ticklabels_list)
 
         plt.show()

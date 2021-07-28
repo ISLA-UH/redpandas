@@ -52,7 +52,7 @@ def find_wiggle_num(df: pd.DataFrame,
     return wiggle_num
 
 
-def find_yticks(df: pd.DataFrame,
+def find_ylabel(df: pd.DataFrame,
                 sig_wf_label: Union[List[str], str] = "audio_wf",
                 sig_id_label: str = "station_id",
                 station_id_str: Optional[str] = None,
@@ -216,7 +216,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                                  sig_id_label=sig_id_label,
                                  station_id_str=station_id_str)
 
-    wiggle_yticklabel = find_yticks(df=df,
+    wiggle_yticklabel = find_ylabel(df=df,
                                     sig_wf_label=sig_wf_label,
                                     sig_id_label=sig_id_label,
                                     station_id_str=station_id_str,

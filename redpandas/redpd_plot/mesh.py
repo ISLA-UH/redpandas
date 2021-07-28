@@ -14,15 +14,6 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 import redpandas.redpd_scales as rpd_scales
 from redpandas.redpd_plot.parameters import FigureParameters as FigParam
 
-# # Wiggle plot scaling
-# scale = 1.25*1080/8
-# figure_size_x = int(1920/scale)
-# figure_size_y = int(1080/scale)
-# text_size = int(2.9*1080/scale)
-#
-# # Colormap/
-# color_map = "inferno"  # 'hot_r'  # 'afmhot_r' #colormap for plotting
-
 
 def plot_mesh_pandas(df: pd.DataFrame,
                      mesh_time_label: Union[str, List[str]],
