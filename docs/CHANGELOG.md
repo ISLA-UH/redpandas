@@ -1,5 +1,9 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.1.7 (2021-07-27)
+
+- Fix Skyfall example
+
 ## 1.1.6 (2021-07-27)
 
 - Renaming for clearness: redpd_dw_to_parquet module renamed to redpd_df and redpd_dw_to_parquet function renamed to redpd_dataframe. 
