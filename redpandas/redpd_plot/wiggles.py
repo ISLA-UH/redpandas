@@ -17,7 +17,7 @@ def find_wiggle_num(df: pd.DataFrame,
                     station_id_str: str = None) -> int:
     """
     Determine number of wiggles to plot
-    TODO: Remove unnecessary constraints
+    TODO: Fix overdetermined constraints. Wiggles should work with anything.
     :param df: input pandas dataframe. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
         multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
@@ -60,7 +60,7 @@ def find_ylabel(df: pd.DataFrame,
                 custom_yticks: Optional[Union[List[str], str]] = None) -> List:
     """
     Determine ylabels that will be used
-
+    TODO: Fix overdetermined constraints. Wiggles should work with anything
     :param df: input pandas dataframe. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
         multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
@@ -257,8 +257,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     xlim_min = np.empty(wiggle_num)
     xlim_max = np.empty(wiggle_num)
 
-    index_sensor_label_ticklabels_list = 0  # keep track of total sensor wf including x/y/z per station
-    for index_station in df.index:  # loop per station
+    for index_sensor_label_ticklabels_list, index_station in enumerate(df.index):  # loop per station
         for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
 
             # first things first, check if column with data exists and if there is data in it:
@@ -276,14 +275,12 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         sig_j = df[label][index_station] / np.max(df[label][index_station])
                     else:
                         sig_j = sensor_array / np.max(sensor_array)
-
                     ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color='midnightblue')
                     xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
                     xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
 
-                    index_sensor_label_ticklabels_list += 1
-
-                    if label == "audio_wf":
+                    # TODO: Resolve overdetermined labels
+                    if label == "audio_wf" or "sig_aligned_wf":
                         break
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
