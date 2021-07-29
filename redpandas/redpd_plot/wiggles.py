@@ -72,6 +72,7 @@ def find_ylabel(df: pd.DataFrame,
     """
 
     dict_yticks = {"audio_wf": ["aud"],
+                   'sig_aligned_wf': ["sig"],
                    "barometer_wf_raw": ["bar raw"],
                    "barometer_wf_highpass": ["bar hp"],
                    "accelerometer_wf_raw": ["acc X raw", "acc Y raw", "acc Z raw"],
