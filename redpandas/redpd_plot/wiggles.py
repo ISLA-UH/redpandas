@@ -271,7 +271,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                 time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin  # scrubbed clean time
 
                 for sensor_array in df[label][index_station]:  # Make a regular loop
-                    if label == "audio_wf":
+                    if label == "audio_wf" or "sig_aligned_wf":
                         sig_j = df[label][index_station] / np.max(df[label][index_station])
                     else:
                         sig_j = sensor_array / np.max(sensor_array)
