@@ -17,7 +17,7 @@ def find_wiggle_num(df: pd.DataFrame,
                     station_id_str: str = None) -> int:
     """
     Determine number of wiggles to plot
-
+    TODO: Remove unnecessary constraints
     :param df: input pandas dataframe. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
         multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
@@ -27,6 +27,7 @@ def find_wiggle_num(df: pd.DataFrame,
     """
     # Assumes accelerometer, gyrsocope and magnetometer will have three channels
     dict_wiggle_num = {"audio_wf": 1,
+                       'sig_aligned_wf': 1,
                        "barometer_wf_raw": 1,
                        "barometer_wf_highpass": 1,
                        "accelerometer_wf_raw": 3,
