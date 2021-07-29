@@ -236,7 +236,11 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     wiggle_yticks = wiggle_offset
 
     # Set up figure
-    fig, ax1 = plt.subplots(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+    if show_figure:
+        fig, ax1 = plt.subplots(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+    else:
+        fig: Figure = Figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+        ax1 = fig.subplots()
     ax1.set_yticks(wiggle_yticks)
     ax1.set_yticklabels(wiggle_yticklabel)
     ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
@@ -303,6 +307,6 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     fig.tight_layout()
 
     if show_figure is True:
-        plt.show()
+        fig.show()
 
     return fig
