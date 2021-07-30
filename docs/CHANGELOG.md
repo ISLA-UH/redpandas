@@ -1,5 +1,9 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.2.0
+
+- Add support for Python 3.9
+
 ## 1.1.7-8 (2021-07-27)
 
 - Fix Skyfall example
