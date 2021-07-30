@@ -58,8 +58,8 @@ def resample_factor_str(sig_sample_rate_hz: float,
         resample_str = '_upsample_' + str(int(10.*resample_factor)/10) + 'x_to'
     elif 1 > resample_factor > 0:
         resample_str = '_decimate_' + str(int(10./resample_factor)/10) + 'x_to'
-    else:
-        print("Resample factor is zero or negative, address")
+    elif resample_factor < 0:
+        print("Resample factor is negative: address")
     return resample_str
 
 
@@ -184,6 +184,7 @@ def pandas_to_resampled_wav(df: pd.DataFrame,
     :return: export to .wav
     """
 
+    # TODO: Implement directory check, write function - see ensonify_sensors_pandas.
     for n in df.index:
         if sig_id_label == "index":
             sig_id_str = str(df.index[n])
@@ -242,6 +243,7 @@ def pandas_to_elastic_wav(df: pd.DataFrame,
     :return: export to .wav
     """
 
+    # TODO: Implement directory check, write function - ensonify_sensors_pandas.
     for n in df.index:
         if sig_id_label == "index":
             sig_id_str = str(df.index[n])
