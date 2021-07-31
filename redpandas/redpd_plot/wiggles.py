@@ -217,12 +217,14 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                                  sig_wf_label=sig_wf_label,
                                  sig_id_label=sig_id_label,
                                  station_id_str=station_id_str)
-
     wiggle_yticklabel = find_ylabel(df=df,
                                     sig_wf_label=sig_wf_label,
                                     sig_id_label=sig_id_label,
                                     station_id_str=station_id_str,
                                     custom_yticks=custom_yticks)
+
+    print(wiggle_num)
+    print(wiggle_yticklabel)
 
     # Make sure wiggle_num and # of ylabels match to avoid problems later on
     if len(wiggle_yticklabel) != wiggle_num:
@@ -257,7 +259,9 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     xlim_min = np.empty(wiggle_num)
     xlim_max = np.empty(wiggle_num)
 
-    for index_sensor_label_ticklabels_list, index_station in enumerate(df.index):  # loop per station
+    index_sensor_label_ticklabels_list = 0
+    # for index_sensor_label_ticklabels_list, index_station in enumerate(df.index):  # loop per station
+    for index_station in df.index:  # loop per station
         for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
 
             # first things first, check if column with data exists and if there is data in it:
@@ -275,9 +279,19 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         sig_j = df[label][index_station] / np.max(df[label][index_station])
                     else:
                         sig_j = sensor_array / np.max(sensor_array)
-                    ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color='midnightblue')
+
+                    print(label)
+                    print(index_station)
+                    print(sig_j.shape)
+
+                    ax1.plot(time_s, np.squeeze(sig_j) + wiggle_offset[index_sensor_label_ticklabels_list],
+                             color='midnightblue')
+                    # ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list],
+                    #          color='midnightblue')
                     xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
                     xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
+
+                    index_sensor_label_ticklabels_list += 1
 
                     # TODO: Resolve overdetermined labels
                     if label == "audio_wf" or "sig_aligned_wf":

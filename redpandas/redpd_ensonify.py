@@ -167,32 +167,37 @@ def save_to_resampled_wav(sig_wf: np.ndarray,
 def pandas_to_resampled_wav(df: pd.DataFrame,
                             sig_wf_label: str,
                             sig_sample_rate_hz_label: str,
+                            output_wav_directory: str,
+                            output_wav_prefix: str = 'redvox',
                             sig_id_label: str = "index",
-                            wav_dir_prefix: str = "aud_",
                             wav_sample_rate_hz: float = 8000.,
                             sample_rate_tolerance_percent: float = 1.) -> None:
     """
     Ensonify a pandas data frame
-
+    Tested for REDVOX AUDIO
     :param df: data frame
     :param sig_wf_label: label of signal to be ensonified
     :param sig_sample_rate_hz_label: label of sample rate
     :param sig_id_label: label to be used to id the signal
-    :param wav_dir_prefix: export directory, and prefix for file
+    :param output_wav_directory: output directory where .wav files are stored
+    :param output_wav_prefix: output name prefix for .wav files
     :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
     :param sample_rate_tolerance_percent: percent of permitted difference in sig and wav sample rates
     :return: export to .wav
     """
 
-    # TODO: Implement directory check, write function - see ensonify_sensors_pandas.
+    wav_directory = os.path.join(output_wav_directory, "wav")
+    os.makedirs(wav_directory, exist_ok=True)
+
     for n in df.index:
+        sig_sample_rate_hz = df[sig_sample_rate_hz_label][n]
         if sig_id_label == "index":
             sig_id_str = str(df.index[n])
         else:
             sig_id_str = df[sig_id_label][n]
 
-        wav_pd_filename = wav_dir_prefix + sig_id_str
-        sig_sample_rate_hz = df[sig_sample_rate_hz_label][n]
+        wav_prefix = output_wav_prefix + sig_id_str
+        wav_pd_filename = os.path.join(wav_directory, wav_prefix)
 
         # Criteria to decimate to downsample or resample to upsample
         decimation_factor = int(np.round(sig_sample_rate_hz/wav_sample_rate_hz))
@@ -228,29 +233,35 @@ def pandas_to_resampled_wav(df: pd.DataFrame,
 def pandas_to_elastic_wav(df: pd.DataFrame,
                           sig_wf_label: str,
                           sig_sample_rate_hz_label: str,
+                          output_wav_directory: str,
+                          output_wav_prefix: str = 'redvox',
                           sig_id_label: str = "index",
-                          wav_dir_prefix: str = "aud_",
                           wav_sample_rate_hz: float = 8000.) -> None:
     """
     Ensonify a pandas data frame
-
+    Tested for REDVOX AUDIO
     :param df: data frame
     :param sig_wf_label: label of signal to be ensonified
     :param sig_sample_rate_hz_label: label of sample rate
     :param sig_id_label: label to be used to id the signal
-    :param wav_dir_prefix: export directory, and prefix for file
+    :param output_wav_directory: output directory where .wav files are stored
+    :param output_wav_prefix: output name prefix for .wav files
     :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
     :return: export to .wav
     """
 
-    # TODO: Implement directory check, write function - ensonify_sensors_pandas.
+    wav_directory = os.path.join(output_wav_directory, "wav")
+    os.makedirs(wav_directory, exist_ok=True)
+
     for n in df.index:
         if sig_id_label == "index":
             sig_id_str = str(df.index[n])
         else:
             sig_id_str = df[sig_id_label][n]
 
-        wav_pd_filename = wav_dir_prefix + sig_id_str
+        wav_prefix = output_wav_prefix + sig_id_str
+        wav_pd_filename = os.path.join(wav_directory, wav_prefix)
+
         save_to_elastic_wav(sig_wf=df[sig_wf_label][n],
                             sig_sample_rate_hz=df[sig_sample_rate_hz_label][n],
                             wav_filename=wav_pd_filename,
@@ -258,6 +269,10 @@ def pandas_to_elastic_wav(df: pd.DataFrame,
 
 
 def dual_tone_test():
+    """
+    Sound check
+    :return:
+    """
     dir_filename = "./test"
     # Test tone
     sample_rate = 48000.
@@ -313,7 +328,7 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
                             sensor_name_list: Optional[List[str]] = None) -> None:
     """
     Channel sensor data sonification
-
+    Tested for REDVOX SENSOR (API M)
     :param df: input pandas data frame
     :param sig_id_label: string for column name with station ids in df
     :param sensor_column_label_list: list of strings with column name with sensor waveform data in df
@@ -325,10 +340,9 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
     :return: .wav files, plot
     """
 
-    output_wav_directory = os.path.join(output_wav_directory, "wav")
-    if not os.path.exists(output_wav_directory):
-        os.mkdir(output_wav_directory)
-    print("Exporting wav files to " + output_wav_directory)
+    wav_directory = os.path.join(output_wav_directory, "wav")
+    os.makedirs(wav_directory, exist_ok=True)
+    print("Exporting wav files to " + wav_directory)
 
     # sensor_channel_index = 0
     for station in df.index:

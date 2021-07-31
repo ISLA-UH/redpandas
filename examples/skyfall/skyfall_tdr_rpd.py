@@ -420,13 +420,18 @@ def main():
                                           accelerometer_epoch_s_label, gyroscope_epoch_s_label,
                                           magnetometer_epoch_s_label]
 
+        print("Wiggle pandas ...")
+        print('Sensor labels: ', sensor_column_label_list)
+        print('Sensor epochs: ', sensor_epoch_column_label_list)
+
         rpd_plot.plot_wiggles_pandas(df=df_skyfall_data,
                                      sig_wf_label=sensor_column_label_list,
                                      sig_timestamps_label=sensor_epoch_column_label_list,
                                      sig_id_label='station_id',
                                      station_id_str='1637610021',
                                      fig_title_show=True,
-                                     fig_title='sensor waveforms')
+                                     fig_title='sensor waveforms',
+                                     show_figure=True)
 
         plt.show()
 
