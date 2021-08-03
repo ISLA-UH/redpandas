@@ -62,10 +62,11 @@ def plot_mesh_pandas(df: pd.DataFrame,
         mesh_frequency_label = [mesh_frequency_label]
 
     # Check mesh, time and frequency are the same length:
-    if len(mesh_tfr_label) != len(mesh_time_label) or len(mesh_tfr_label) != len(mesh_frequency_label) or \
-            len(mesh_time_label) != len(mesh_frequency_label):
-        print("mesh_time_label, mesh_tfr_label, or mesh_frequency_label do not have the same length. Please check.")
-        exit()
+    if len(mesh_tfr_label) != len(mesh_time_label) \
+            or len(mesh_tfr_label) != len(mesh_frequency_label) \
+            or len(mesh_time_label) != len(mesh_frequency_label):
+        raise ValueError("mesh_time_label, mesh_tfr_label, "
+                         "or mesh_frequency_label do not have the same length. Please check.")
 
     # Determine overall number of mesh panels in fig
     wiggle_num_list = []  # number of wiggles
