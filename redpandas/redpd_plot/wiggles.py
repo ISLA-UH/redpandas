@@ -60,7 +60,7 @@ def find_ylabel(df: pd.DataFrame,
                 custom_yticks: Optional[Union[List[str], str]] = None) -> List:
     """
     Determine ylabels that will be used
-    TODO: Fix overdetermined constraints. Wiggles should work with anything
+    TODO: Address overdetermined constraints.
     :param df: input pandas dataframe. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
         multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
@@ -201,7 +201,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     if type(sig_wf_label) == str:
         sig_wf_label = [sig_wf_label]
 
-    # Check same amount of waveform columns and timestamps provided
+    # Check same length of waveform columns and timestamps
     if len(sig_wf_label) != len(sig_timestamps_label):
         raise ValueError(f"The number of waveform columns provided in sig_wf_label ({len(sig_wf_label)}) must be the "
                          f"same as the number of timestamps columns provided in sig_timestamps_label "
@@ -222,11 +222,11 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                                     sig_id_label=sig_id_label,
                                     station_id_str=station_id_str,
                                     custom_yticks=custom_yticks)
+    # # For debugging
+    # print("Wiggle num:", wiggle_num)
+    # print("Wiggle ylabel:", wiggle_yticklabel)
 
-    print(wiggle_num)
-    print(wiggle_yticklabel)
-
-    # Make sure wiggle_num and # of ylabels match to avoid problems later on
+    # Check wiggle_num and # of ylabels match
     if len(wiggle_yticklabel) != wiggle_num:
         raise ValueError(f"The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) "
                          f"does not match the number of signal channels provided in sig_wf_label "
@@ -275,26 +275,24 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                 time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin  # scrubbed clean time
 
                 for sensor_array in df[label][index_station]:  # Make a regular loop
-                    if label == "audio_wf" or "sig_aligned_wf":
+                    if label == "audio_wf":  # or "sig_aligned_wf":
+                        sig_j = df[label][index_station] / np.max(df[label][index_station])
+                    elif label == "sig_aligned_wf":
                         sig_j = df[label][index_station] / np.max(df[label][index_station])
                     else:
                         sig_j = sensor_array / np.max(sensor_array)
 
-                    print(label)
-                    print(index_station)
-                    print(sig_j.shape)
-
-                    ax1.plot(time_s, np.squeeze(sig_j) + wiggle_offset[index_sensor_label_ticklabels_list],
+                    ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list],
                              color='midnightblue')
-                    # ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list],
-                    #          color='midnightblue')
                     xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
                     xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
 
                     index_sensor_label_ticklabels_list += 1
 
                     # TODO: Resolve overdetermined labels
-                    if label == "audio_wf" or "sig_aligned_wf":
+                    if label == "audio_wf":
+                        break
+                    if label == "sig_aligned_wf":
                         break
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
