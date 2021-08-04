@@ -14,7 +14,7 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
 is_rerun_bounder: bool = True  # If true, rerun and save as parquet
-OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder")
+OTHER_INPUT_PATH = os.path.join('.', "bounder")
 OTHER_INPUT_FILE = "skyfall_bounder.csv"
 OTHER_PD_PQT_FILE = "Skyfall_df_bounder.parquet"
 

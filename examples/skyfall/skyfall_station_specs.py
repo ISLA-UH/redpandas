@@ -25,8 +25,6 @@ def station_specs_to_csv(data_window: DataWindow,
     """
     station: Station
     with open(export_file, 'w', newline='') as csvfile:
-        # writer = csv.writer(csvfile, delimiter=' ',
-        #                         quotechar='|', quoting=csv.QUOTE_MINIMAL)
         writer = csv.writer(csvfile, delimiter=',')
 
         for station in data_window.stations:
