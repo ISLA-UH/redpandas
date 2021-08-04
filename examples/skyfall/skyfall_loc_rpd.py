@@ -14,6 +14,7 @@ from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PAT
     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 skyfall_config.is_rerun_bounder = True
 
+
 def bounder_specs_to_csv(df, csv_export_file):
 
     with open(csv_export_file, 'w', newline='') as csvfile:
@@ -33,7 +34,7 @@ def bounder_specs_to_csv(df, csv_export_file):
 
 
 if __name__ == '__main__':
-    # TODO MC: probs broken
+    # TODO: Access to bounder data in RedVox report
 
     """
     Paths from phone and bounder for NNSS Skyfall data set
