@@ -17,7 +17,7 @@ def find_wiggle_num(df: pd.DataFrame,
                     station_id_str: str = None) -> int:
     """
     Determine number of wiggles to plot
-    TODO: Fix overdetermined constraints. Wiggles should work with anything.
+
     :param df: input pandas dataframe. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
         multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
@@ -43,9 +43,17 @@ def find_wiggle_num(df: pd.DataFrame,
             if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
                 # check column exists and not empty
                 if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
-                    # Get number of wiggles per sensor
-                    wiggle_num_list.append(dict_wiggle_num.get(sensor_in_list))
 
+                    if dict_wiggle_num.get(sensor_in_list) is not None:
+                        # Get number of wiggles per sensor
+                        wiggle_num_list.append(dict_wiggle_num.get(sensor_in_list))
+                    else:
+                        # Get number of wiggles per sensor
+                        if df[sensor_in_list][index_n].ndim == 1:
+                            wiggle_num_list.append(1)
+                        else:
+                            # Assume if not audio related wf, it is 3c sensors
+                            wiggle_num_list.append(3)
                 else:
                     continue
 
@@ -60,7 +68,7 @@ def find_ylabel(df: pd.DataFrame,
                 custom_yticks: Optional[Union[List[str], str]] = None) -> List:
     """
     Determine ylabels that will be used
-    TODO: Address overdetermined constraints.
+
     :param df: input pandas dataframe. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
         multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
@@ -100,16 +108,25 @@ def find_ylabel(df: pd.DataFrame,
                             wiggle_yticklabel += list_index
 
                         elif custom_yticks is None:
+                            # try:
                             sensor_short = dict_yticks.get(sensor_in_list)
-                            if station_id_str is not None:
-                                # if only doing one station, yticks just name sensors
-                                wiggle_yticklabel += sensor_short
-                            elif len(sig_wf_label) == 1 and len(sig_wf_label) == 1:
-                                # if only doing one sensor, yticks just name station
-                                wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
-                            else:  # if multiple sensors and stations, yticks both station and sensors
-                                station_and_sensor = [f"{df[sig_id_label][index_n]} " + element for element in sensor_short]
-                                wiggle_yticklabel += station_and_sensor
+
+                            if sensor_short is not None:
+                                # if sensor_short is not None:
+                                if station_id_str is not None:
+                                    # if only doing one station, yticks just name sensors
+                                    wiggle_yticklabel += sensor_short
+                                elif len(sig_wf_label) == 1:
+                                    # if only doing one sensor, yticks just name station
+                                    wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
+                                else:  # if multiple sensors and stations, yticks both station and sensors
+                                    station_and_sensor = [f"{df[sig_id_label][index_n]} " + element for element in sensor_short]
+                                    wiggle_yticklabel += station_and_sensor
+                            else:
+                                if len(sig_wf_label) == 1:
+                                    wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
+                                else:
+                                    wiggle_yticklabel.append(f"{df[sig_id_label][index_n]} {sensor_in_list}")
                     else:
                         continue
 
@@ -279,6 +296,8 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         sig_j = df[label][index_station] / np.max(df[label][index_station])
                     elif label == "sig_aligned_wf":
                         sig_j = df[label][index_station] / np.max(df[label][index_station])
+                    elif df[label][index_station].ndim == 1:
+                        sig_j = df[label][index_station] / np.max(df[label][index_station])
                     else:
                         sig_j = sensor_array / np.max(sensor_array)
 
@@ -289,10 +308,11 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
                     index_sensor_label_ticklabels_list += 1
 
-                    # TODO: Resolve overdetermined labels
                     if label == "audio_wf":
                         break
                     if label == "sig_aligned_wf":
+                        break
+                    if df[label][index_station].ndim == 1:
                         break
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
@@ -321,3 +341,61 @@ def plot_wiggles_pandas(df: pd.DataFrame,
         plt.show()
 
     return fig
+
+
+if __name__ == "__main__":
+    import redpandas.redpd_preprocess as rpd_prep
+    # OUTPUT_DIR = "/Users/meritxell/Documents/skyfall/rpd_files/Skyfall_df.parquet"
+    # print('Load parquet...', end='')
+    # df = pd.read_parquet(OUTPUT_DIR)
+    # print('Done.')
+    #
+    # INPUT_DIR = '/Users/meritxell/Documents/api_m_pipeline_tests/20210617_Sweep_test_students'
+    # df = pd.read_parquet(INPUT_DIR + "/rpd_files/Redvox_df.parquet")
+    # print(df["station_id"])
+    # rpd_prep.df_column_unflatten(df=df,
+    #                              col_wf_label="barometer_wf_raw",
+    #                              col_ndim_label="barometer_wf_raw" + "_ndim")
+    # rpd_prep.df_column_unflatten(df=df,
+    #                              col_wf_label="accelerometer_wf_raw",
+    #                              col_ndim_label="accelerometer_wf_raw" + "_ndim")
+    # rpd_prep.df_column_unflatten(df=df,
+    #                              col_wf_label="gyroscope_wf_raw",
+    #                              col_ndim_label="gyroscope_wf_raw" + "_ndim")
+    # rpd_prep.df_column_unflatten(df=df,
+    #                              col_wf_label="magnetometer_wf_raw",
+    #                              col_ndim_label="magnetometer_wf_raw" + "_ndim")
+
+    # plot_wiggles_pandas(df=df,
+    #                     sig_wf_label=["barometer_wf_raw", "audio_wf"],
+    #                     # sig_wf_label=["barometer_wf_raw", "audio_wf", "accelerometer_wf_raw", "gyroscope_wf_raw",
+    #                     #               "magnetometer_wf_raw"],
+    #                     sig_id_label="station_id",
+    #                     sig_timestamps_label=["barometer_epoch_s", "audio_epoch_s"],
+    #                     # sig_timestamps_label=["barometer_epoch_s", "audio_epoch_s", "accelerometer_epoch_s", "gyroscope_epoch_s",
+    #                     #                       "magnetometer_epoch_s"],
+    #                     # custom_yticks=["a", "b", "c", "d", "e", "f"],
+    #                     custom_yticks=["a", "b"],
+    #                     station_id_str='1637610011')
+    # plt.show()
+
+    # Load pickled curated and STFT data
+    INPUT_DIR = '/Users/meritxell/IdeaProjects/redvox-projects/meritxell/obspy_signals/signal_pipelines/big_bird/'
+    pickle_file_name_dataframe_stft = 'big_bird_stft.pickle'
+    pickle_file_name_dataframe = 'big_bird_curated.pickle'
+
+    df_curated = pd.read_pickle(filepath_or_buffer=INPUT_DIR + pickle_file_name_dataframe, compression=None)
+    print(df_curated.columns)
+
+    # df_stft = pd.read_pickle(filepath_or_buffer=INPUT_DIR + pickle_file_name_dataframe_stft, compression=None)
+    # print(df_stft.columns)
+
+    # Load input signals
+    fig = plot_wiggles_pandas(df=df_curated,
+                        sig_wf_label='signal_raw',
+                        sig_id_label='station_id',
+                        fig_title='Signals',
+                        sig_timestamps_label='signal_epoch',
+                        show_figure=True)
+
+

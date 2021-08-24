@@ -102,8 +102,8 @@ Extract RedVox data into a Pandas DataFrame
 """
 # Absolute path
 INPUT_DIR = "path/to/redvox/data"
-#Make a RedVox DataWindow
 
+#Make a RedVox DataWindow
 rdvx_data: DataWindow = DataWindow(input_dir=INPUT_DIR)
 
 # Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
@@ -120,7 +120,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 #### More options
 
-The function [redpd_dw_to_parquet](https://redvoxinc.github.io/redpandas/redpd_dw_to_parquet.html#redpandas.redpd_dw_to_parquet.redpd_dw_to_parquet)
+The function [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpd_df.html#redpandas.redpd_df.redpd_dataframe)
  has a few optional variables to provide more flexibility when creating the RedPandas parquet.
 
 _Opening Redvox files (.rdvxz, .rdvxm) with more options example:_
