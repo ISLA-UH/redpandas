@@ -2,7 +2,8 @@ import pandas as pd
 import numpy as np
 from redvox.common.data_window import DataWindow
 from redpandas.redpd_plot.wiggles import plot_wiggles_pandas
-from redpandas.redpd_df import redpd_dataframe
+from redpandas.redpd_df import redpd_dataframe, export_df_to_parquet
+from redpandas.redpd_tfr import tfr_bits_panda
 
 
 if __name__ == '__main__':
@@ -12,21 +13,38 @@ if __name__ == '__main__':
 
     # rdvx_data: DataWindow = DataWindow(input_dir="/Users/meritxell/Desktop/skyfall_dummy_test")
     #
-    df = redpd_dataframe(input_dw=rdvx_data, sensor_labels=['audio',
-                                                            'barometer',
-                                                            'accelerometer',
-                                                            'gyroscope',
-                                                            'magnetometer',
-                                                            'health',
-                                                            'location',
-                                                            'clock',
-                                                            'synchronization'])
-
-    # print(df.columns)
+    # df = redpd_dataframe(input_dw=rdvx_data, sensor_labels=['audio',
+    #                                                         # 'barometer',
+    #                                                         'accelerometer',
+    #                                                         # 'gyroscope',
+    #                                                         # 'magnetometer',
+    #                                                         # 'health',
+    #                                                         # 'location',
+    #                                                         # 'clock',
+    #                                                         # 'synchronization']
+    #                                                         ])
     #
-    fig = plot_wiggles_pandas(df=df,
-                              sig_wf_label=['audio_wf', 'accelerometer_wf_raw'],
-                              sig_timestamps_label=['audio_epoch_s', 'accelerometer_epoch_s'])
+    # print(df.columns)
+    # tfr_bits_panda(df=df,
+    #                sig_wf_label="audio_wf",
+    #                sig_sample_rate_label="audio_sample_rate_nominal_hz",
+    #                tfr_type="stft",
+    #                new_column_tfr_bits="audio_tfr_bits",
+    #                new_column_tfr_time_s="audio_tfr_time_s",
+    #                new_column_tfr_frequency_hz="audio_tfr_frequency_hz")
+    # tfr_bits_panda(df=df,
+    #                sig_wf_label="accelerometer_wf_highpass",
+    #                sig_sample_rate_label="accelerometer_sample_rate_hz",
+    #                tfr_type="stft",
+    #                new_column_tfr_bits="accelerometer_tfr_bits",
+    #                new_column_tfr_time_s="accelerometer_tfr_time_s",
+    #                new_column_tfr_frequency_hz="accelerometer_tfr_frequency_hz")
+    # print(df.columns)
+    # export_df_to_parquet(df, "/Users/meritxell/Desktop", "test_tfr_aud_acc")
+
+    # fig = plot_wiggles_pandas(df=df,
+    #                           sig_wf_label=['audio_wf', 'accelerometer_wf_raw'],
+    #                           sig_timestamps_label=['audio_epoch_s', 'accelerometer_epoch_s'])
 
     # start_time = 0
     # end_time = 10
