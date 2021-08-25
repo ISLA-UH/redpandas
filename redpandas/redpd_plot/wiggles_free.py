@@ -51,6 +51,8 @@ def find_wiggle_num(df: pd.DataFrame,
                         # Get number of wiggles per sensor
                         if df[sensor_in_list][index_n].ndim == 1:
                             wiggle_num_list.append(1)
+                        elif df[sig_id_label][index_n].find("pressure") == 0 or df[sig_id_label][index_n].find("bar") == 0:
+                            wiggle_num_list.append(1)
                         else:
                             # Assume if not audio related wf, it is 3c sensors
                             wiggle_num_list.append(3)
@@ -392,10 +394,10 @@ if __name__ == "__main__":
 
     # Load input signals
     fig = plot_wiggles_pandas(df=df_curated,
-                        sig_wf_label='signal_raw',
-                        sig_id_label='station_id',
-                        fig_title='Signals',
-                        sig_timestamps_label='signal_epoch',
-                        show_figure=True)
+                              sig_wf_label='signal_raw',
+                              sig_id_label='station_id',
+                              fig_title='Signals',
+                              sig_timestamps_label='signal_epoch',
+                              show_figure=True)
 
 

@@ -1,6 +1,8 @@
 import unittest
 import numpy as np
+import pandas as pd
 from libquantum.spectra import stft_from_sig
+import redpandas.redpd_plot.mesh_free as rpd_mesh
 
 
 class TestFindWiggleNumTfr(unittest.TestCase):
@@ -13,7 +15,7 @@ class TestFindWiggleNumTfr(unittest.TestCase):
         self.frequency = 3
         self.amplitude = 1
         self.sinewave_audio = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_audio)
-
+        # Create audio mesh
         self.audio_STFT, self.audio_STFT_bits, self.audio_time_stft_s, self.audio_frequency_stft_hz = \
             stft_from_sig(sig_wf=self.sinewave_audio,
                           frequency_sample_rate_hz=self.sample_rate_audio,
@@ -26,53 +28,43 @@ class TestFindWiggleNumTfr(unittest.TestCase):
         self.sinewave_acc_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.length_for_signal)
         self.points_per_row = int(len(self.sinewave_acc_base)/3)
         self.sinewave_acc = self.sinewave_acc_base.reshape((3, self.points_per_row))
-
-        self.acc_stft_all = []
-        self.acc_stft_time_all = []
-        self.acc_stft_bits_all = []
-        self.acc_stft_frequency_all = []
+        # Create accelerometer mesh
+        acc_stft_all = []
+        acc_stft_time_all = []
+        acc_stft_bits_all = []
+        acc_stft_frequency_all = []
         for dimension in range(self.sinewave_acc.ndim):
             self.acc_STFT, self.acc_STFT_bits, self.acc_time_stft_s, self.acc_frequency_stft_hz = \
                 stft_from_sig(sig_wf=self.sinewave_acc[dimension],
                               frequency_sample_rate_hz=self.sample_rate_acc,
                               band_order_Nth=3)
-            self.acc_stft_all.append(self.acc_STFT)
-            self.acc_stft_bits_all.append(self.acc_STFT_bits)
-            self.acc_stft_time_all.append(self.acc_time_stft_s)
-            self.acc_stft_frequency_all.append(self.acc_frequency_stft_hz)
+            acc_stft_all.append(self.acc_STFT)
+            acc_stft_bits_all.append(self.acc_STFT_bits)
+            acc_stft_time_all.append(self.acc_time_stft_s)
+            acc_stft_frequency_all.append(self.acc_frequency_stft_hz)
 
+        print(acc_stft_all[0].ndim)
+        acc_stft_all_array = np.array(acc_stft_all)
+        acc_stft_time_all_array = np.array9self.acc_stft_time_all
+        acc_stft_bits_all_array = np.array(acc_stft_bits_all)
+        acc_stft_frequency_all_array = np.array(acc_stft_frequency_all)
+        print("y")
         # Create df
-        self.dict_to_df_single = {0: {"station_id": "1234567890",
-                                      "audio_sensor_name": "synch_audio",
-                                      "audio_sample_rate_nominal_hz": self.sample_rate_audio,
-                                      "audio_epoch_s": self.signal_time_audio,
-                                      "audio_wf": self.sinewave_audio,
-                                      "audio_stft":self.audio_STFT,
-                                      "audio_stft_bits":self.audio_STFT_bits,
-                                      "audio_stft_time_s":self.audio_time_stft_s,
-                                      "audio_stft_frequency_hz":self.audio_frequency_stft_hz,
-                                      "accelerometer_epoch_s": self.signal_time_acc,
-                                      "accelerometer_wf_raw": self.sinewave_acc,
-                                      "accelerometer_stft": self.acc_stft_frequency_all,
-                                      "accelerometer_stft_bits": self.acc_stft_bits_all,
-                                      "accelerometer_stft_time_s":self.acc_stft_time_all,
-                                      "accelerometer_stft_frequency_s": self.acc_stft_frequency_all}}
-
         self.dict_to_df_multiple = {0: {"station_id": "1234567890",
                                         "audio_sensor_name": "synch_audio",
                                         "audio_sample_rate_nominal_hz": self.sample_rate_audio,
                                         "audio_epoch_s": self.signal_time_audio,
                                         "audio_wf": self.sinewave_audio,
-                                        "audio_stft":self.audio_STFT,
-                                        "audio_stft_bits":self.audio_STFT_bits,
-                                        "audio_stft_time_s":self.audio_time_stft_s,
-                                        "audio_stft_frequency_hz":self.audio_frequency_stft_hz,
+                                        "audio_stft": self.audio_STFT,
+                                        "audio_stft_bits": self.audio_STFT_bits,
+                                        "audio_stft_time_s": self.audio_time_stft_s,
+                                        "audio_stft_frequency_hz": self.audio_frequency_stft_hz,
                                         "accelerometer_epoch_s": self.signal_time_acc,
                                         "accelerometer_wf_raw": self.sinewave_acc,
-                                        "accelerometer_stft": self.acc_stft_frequency_all,
-                                        "accelerometer_stft_bits": self.acc_stft_bits_all,
-                                        "accelerometer_stft_time_s":self.acc_stft_time_all,
-                                        "accelerometer_stft_frequency_s": self.acc_stft_frequency_all},
+                                        "accelerometer_stft": self.acc_stft_all_array,
+                                        "accelerometer_stft_bits": self.acc_stft_bits_all_array,
+                                        "accelerometer_stft_time_s": self.acc_stft_time_all_array,
+                                        "accelerometer_stft_frequency_s": self.acc_stft_frequency_all_array},
                                     1: {"station_id": "2345678901",   # Add another station
                                         "audio_sensor_name": "synch_audio",
                                         "audio_sample_rate_nominal_hz": self.sample_rate_audio,
@@ -84,10 +76,27 @@ class TestFindWiggleNumTfr(unittest.TestCase):
                                         "audio_stft_frequency_hz":self.audio_frequency_stft_hz,
                                         "accelerometer_epoch_s": self.signal_time_acc,
                                         "accelerometer_wf_raw": self.sinewave_acc,
-                                        "accelerometer_stft": self.acc_stft_frequency_all,
-                                        "accelerometer_stft_bits": self.acc_stft_bits_all,
-                                        "accelerometer_stft_time_s":self.acc_stft_time_all,
-                                        "accelerometer_stft_frequency_s": self.acc_stft_frequency_all}}
+                                        "accelerometer_stft": self.acc_stft_all_array,
+                                        "accelerometer_stft_bits": self.acc_stft_bits_all_array,
+                                        "accelerometer_stft_time_s":self.acc_stft_time_all_array,
+                                        "accelerometer_stft_frequency_s": self.acc_stft_frequency_all_array}}
+        self.df_data = pd.DataFrame(self.dict_to_df_multiple).T
+        print(self.df_data)
+
+    def test_wiggles_single_station_aud_is_2(self):
+        self.wiggle_num = rpd_mesh.find_wiggle_num_tfr(df=self.df_data,
+                                                       mesh_tfr_label="audio_stft_bits")
+        self.assertEqual(self.wiggle_num, 2)
+
+    def test_wiggles_single_station_acc_is_6(self):
+        self.wiggle_num = rpd_mesh.find_wiggle_num_tfr(df=self.df_data,
+                                                       mesh_tfr_label="accelerometer_stft_bits")
+        self.assertEqual(self.wiggle_num, 6)
+
+    def test_wiggles_single_station_aud_acc_is_8(self):
+        self.wiggle_num = rpd_mesh.find_wiggle_num_tfr(df=self.df_data,
+                                                       mesh_tfr_label=["accelerometer_stft_bits", "audio_stft_bits"])
+        self.assertEqual(self.wiggle_num, 8)
 
 
 
