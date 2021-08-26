@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import pandas as pd
 from libquantum.spectra import stft_from_sig
-import redpandas.redpd_plot.mesh_free as rpd_mesh
+import redpandas.redpd_plot.mesh as rpd_mesh
 
 
 class TestFindWiggleNumTfr(unittest.TestCase):
