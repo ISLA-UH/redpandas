@@ -124,19 +124,23 @@ class TestFindYlabelTfr(unittest.TestCase):
         self.df_data["accelerometer_stft_time_s"] = self.acc_stft_time_all_for_both_stations
         self.df_data["accelerometer_stft_frequency_s"] = self.acc_stft_frequency_all_for_both_stations
 
-    def yticks_for_1_sensor(self):
+        # print(self.df_data["accelerometer_stft"].ndim)
+        # print(self.df_data["accelerometer_stft"][0].ndim)
+
+    def test_yticks_for_1_sensor(self):
         self.yticks = rpd_mesh.find_ylabel_tfr(df=self.df_data,
                                                mesh_tfr_label=["audio_stft_bits"],
                                                sig_id_label="station_id")
 
         self.assertEqual(self.yticks, ["1234567890", "2345678901"])
 
-    def yticks_for_more_sensor(self):
+    def test_yticks_for_more_sensor(self):
         self.yticks = rpd_mesh.find_ylabel_tfr(df=self.df_data,
-                                               mesh_tfr_label=["audio_stft_bits", "accelerometer_stft_bits"],
+                                               mesh_tfr_label=["accelerometer_stft_bits"],
                                                sig_id_label="station_id")
-
-        self.assertEqual(self.yticks, ["1234567890", "2345678901"])
+        print(self.yticks)
+        self.assertEqual(self.yticks, ["1234567890", "2345678901", "1234567890", "1234567890", "1234567890",
+                                       "2345678901", "2345678901", "2345678901"])
 
     def tearDown(self):
         self.start_time = None
@@ -195,6 +199,7 @@ class TestFindYlabelTfr(unittest.TestCase):
         self.bar_stft_bits_all_for_both_stations = None
         self.bar_stft_time_all_for_both_stations = None
         self.bar_stft_frequency_all_for_both_stations = None
+
 
 if __name__ == '__main__':
     unittest.main()
