@@ -259,6 +259,15 @@ def plot_mesh_pandas(df: pd.DataFrame,
     wiggle_yticklabel = find_ylabel_tfr(df=df,
                                         mesh_tfr_label=mesh_tfr_label,
                                         sig_id_label=sig_id_label)
+
+    # Check wiggle_num and # of ylabels match
+    if len(wiggle_yticklabel) != wiggle_num:
+        raise ValueError(f"The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) "
+                         f"does not match the number of signal channels provided in sig_wf_label "
+                         f"or the number of stations in dataframe ({wiggle_num})."
+                         f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z components "
+                         f"so a label is required for each component.")
+
     # Get x limits
     x_lim_max_total, x_lim_min_total = find_x_max_min_lim(df=df,
                                                           wiggle_num=wiggle_num,

@@ -17,7 +17,7 @@ class TestFindWiggleNumTfr(unittest.TestCase):
         self.sinewave_audio = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_audio)
 
         # Create audio mesh
-        self.audio_STFT, self.audio_STFT_bits, self.audio_time_stft_s, self.audio_frequency_stft_hz = \
+        self.audio_STFT, self.audio_STFT_bits, _, _ = \
             stft_from_sig(sig_wf=self.sinewave_audio,
                           frequency_sample_rate_hz=self.sample_rate_audio,
                           band_order_Nth=3)
@@ -29,20 +29,16 @@ class TestFindWiggleNumTfr(unittest.TestCase):
 
         # Create barometer mesh
         self.bar_stft_all = []
-        self.bar_stft_time_all = []
         self.bar_stft_bits_all = []
-        self.bar_stft_frequency_all = []
 
         for dimension in range(len(self.sinewave_barometer)):
-            self.bar_STFT, self.bar_STFT_bits, self.bar_time_stft_s, self.bar_frequency_stft_hz = \
+            self.bar_STFT, self.bar_STFT_bits, _, _ = \
                 stft_from_sig(sig_wf=self.sinewave_barometer[dimension],
                               frequency_sample_rate_hz=self.sample_rate_barometer,
                               band_order_Nth=3)
 
             self.bar_stft_all.append(self.bar_STFT)
             self.bar_stft_bits_all.append(self.bar_STFT_bits)
-            self.bar_stft_time_all.append(self.bar_time_stft_s)
-            self.bar_stft_frequency_all.append(self.bar_frequency_stft_hz)
 
         # Create accelerometer
         self.sample_rate_acc = 30
@@ -54,75 +50,51 @@ class TestFindWiggleNumTfr(unittest.TestCase):
 
         # Create accelerometer mesh
         self.acc_stft_all = []
-        self.acc_stft_time_all = []
         self.acc_stft_bits_all = []
-        self.acc_stft_frequency_all = []
         for dimension in range(self.sinewave_acc.ndim):
-            self.acc_STFT, self.acc_STFT_bits, self.acc_time_stft_s, self.acc_frequency_stft_hz = \
+            self.acc_STFT, self.acc_STFT_bits, _, _ = \
                 stft_from_sig(sig_wf=self.sinewave_acc[dimension],
                               frequency_sample_rate_hz=self.sample_rate_acc,
                               band_order_Nth=3)
 
             self.acc_stft_all.append(self.acc_STFT)
             self.acc_stft_bits_all.append(self.acc_STFT_bits)
-            self.acc_stft_time_all.append(self.acc_time_stft_s)
-            self.acc_stft_frequency_all.append(self.acc_frequency_stft_hz)
 
         # Create df
         self.dict_to_df_multiple = {0: {"station_id": "1234567890",
                                         "audio_stft": self.audio_STFT,
-                                        "audio_stft_bits": self.audio_STFT_bits,
-                                        "audio_stft_time_s": self.audio_time_stft_s,
-                                        "audio_stft_frequency_hz": self.audio_frequency_stft_hz},
+                                        "audio_stft_bits": self.audio_STFT_bits},
                                     1: {"station_id": "2345678901",   # Add another station
                                         "audio_stft": self.audio_STFT,
-                                        "audio_stft_bits": self.audio_STFT_bits,
-                                        "audio_stft_time_s": self.audio_time_stft_s,
-                                        "audio_stft_frequency_hz": self.audio_frequency_stft_hz}}
+                                        "audio_stft_bits": self.audio_STFT_bits}}
         self.df_data = pd.DataFrame(self.dict_to_df_multiple).T
 
         # Make bar/acc mesh arrays, add them to lists, add column to df.
         self.bar_stft_array = np.array(self.bar_stft_all)
         self.bar_stft_bits_array = np.array(self.bar_stft_bits_all)
-        self.bar_stft_time_array = np.array(self.bar_stft_time_all)
-        self.bar_stft_frequency_array = np.array(self.bar_stft_frequency_all)
 
         self.bar_stft_all_for_both_stations = []
         self.bar_stft_bits_all_for_both_stations = []
-        self.bar_stft_time_all_for_both_stations = []
-        self.bar_stft_frequency_all_for_both_stations = []
 
         self.acc_stft_array = np.array(self.acc_stft_all)
         self.acc_stft_bits_array = np.array(self.acc_stft_bits_all)
-        self.acc_stft_time_array = np.array(self.acc_stft_time_all)
-        self.acc_stft_frequency_array = np.array(self.acc_stft_frequency_all)
 
         self.acc_stft_all_for_both_stations = []
         self.acc_stft_bits_all_for_both_stations = []
-        self.acc_stft_time_all_for_both_stations = []
-        self.acc_stft_frequency_all_for_both_stations = []
 
         for number_stations_is_2 in range(2):
             self.acc_stft_all_for_both_stations.append(self.acc_stft_array)
             self.acc_stft_bits_all_for_both_stations.append(self.acc_stft_bits_array)
-            self.acc_stft_time_all_for_both_stations.append(self.acc_stft_time_array)
-            self.acc_stft_frequency_all_for_both_stations.append(self.acc_stft_frequency_array)
 
             self.bar_stft_all_for_both_stations.append(self.bar_stft_array)
             self.bar_stft_bits_all_for_both_stations.append(self.bar_stft_bits_array)
-            self.bar_stft_time_all_for_both_stations.append(self.bar_stft_time_array)
-            self.bar_stft_frequency_all_for_both_stations.append(self.bar_stft_frequency_array)
 
         # Add columns with mesh
         self.df_data["barometer_stft"] = self.bar_stft_all_for_both_stations
         self.df_data["barometer_stft_bits"] = self.bar_stft_bits_all_for_both_stations
-        self.df_data["barometer_stft_time_s"] = self.bar_stft_time_all_for_both_stations
-        self.df_data["barometer_stft_frequency_s"] = self.bar_stft_frequency_all_for_both_stations
 
         self.df_data["accelerometer_stft"] = self.acc_stft_all_for_both_stations
         self.df_data["accelerometer_stft_bits"] = self.acc_stft_bits_all_for_both_stations
-        self.df_data["accelerometer_stft_time_s"] = self.acc_stft_time_all_for_both_stations
-        self.df_data["accelerometer_stft_frequency_s"] = self.acc_stft_frequency_all_for_both_stations
 
     def test_wiggles_aud_is_2(self):
         self.wiggle_num = rpd_mesh.find_wiggle_num_tfr(df=self.df_data,
@@ -160,8 +132,6 @@ class TestFindWiggleNumTfr(unittest.TestCase):
         self.sinewave_audio = None
         self.audio_STFT = None
         self.audio_STFT_bits = None
-        self.audio_time_stft_s = None
-        self.audio_frequency_stft_hz = None
         self.sample_rate_acc = None
         self.signal_time_acc = None
         self.length_for_signal = None
@@ -169,44 +139,28 @@ class TestFindWiggleNumTfr(unittest.TestCase):
         self.points_per_row = None
         self.sinewave_acc = None
         self.acc_stft_all = None
-        self.acc_stft_time_all = None
         self.acc_stft_bits_all = None
-        self.acc_stft_frequency_all = None
         self.acc_STFT = None
         self.acc_STFT_bits = None
-        self.acc_time_stft_s = None
-        self.acc_frequency_stft_hz = None
         self.dict_to_df_multiple = None
         self.df_data = None
         self.acc_stft_array = None
         self.acc_stft_bits_array = None
-        self.acc_stft_time_array = None
-        self.acc_stft_frequency_array = None
         self.acc_stft_all_for_both_stations = None
         self.acc_stft_bits_all_for_both_stations = None
-        self.acc_stft_time_all_for_both_stations = None
-        self.acc_stft_frequency_all_for_both_stations = None
         self.wiggle_num = None
         self.sample_rate_barometer = None
         self.signal_time_barometer = None
         self.sinewave_barometer_base = None
         self.sinewave_barometer = None
         self.bar_stft_all = None
-        self.bar_stft_time_all = None
         self.bar_stft_bits_all = None
-        self.bar_stft_frequency_all = None
         self.bar_STFT = None
         self.bar_STFT_bits = None
-        self.bar_time_stft_s = None
-        self.bar_frequency_stft_hz = None
         self.bar_stft_array = None
         self.bar_stft_bits_array = None
-        self.bar_stft_time_array = None
-        self.bar_stft_frequency_array = None
         self.bar_stft_all_for_both_stations = None
         self.bar_stft_bits_all_for_both_stations = None
-        self.bar_stft_time_all_for_both_stations = None
-        self.bar_stft_frequency_all_for_both_stations = None
 
 
 class TestFindWiggleNumTfrIrregular(unittest.TestCase):
@@ -221,7 +175,7 @@ class TestFindWiggleNumTfrIrregular(unittest.TestCase):
         self.sinewave_audio = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_audio)
 
         # Create audio mesh
-        self.audio_STFT, self.audio_STFT_bits, self.audio_time_stft_s, self.audio_frequency_stft_hz = \
+        self.audio_STFT, self.audio_STFT_bits, _, _ = \
             stft_from_sig(sig_wf=self.sinewave_audio,
                           frequency_sample_rate_hz=self.sample_rate_audio,
                           band_order_Nth=3)
@@ -233,20 +187,16 @@ class TestFindWiggleNumTfrIrregular(unittest.TestCase):
 
         # Create barometer mesh
         self.bar_stft_all = []
-        self.bar_stft_time_all = []
         self.bar_stft_bits_all = []
-        self.bar_stft_frequency_all = []
 
         for dimension in range(len(self.sinewave_barometer)):
-            self.bar_STFT, self.bar_STFT_bits, self.bar_time_stft_s, self.bar_frequency_stft_hz = \
+            self.bar_STFT, self.bar_STFT_bits, _, _ = \
                 stft_from_sig(sig_wf=self.sinewave_barometer[dimension],
                               frequency_sample_rate_hz=self.sample_rate_barometer,
                               band_order_Nth=3)
 
             self.bar_stft_all.append(self.bar_STFT)
             self.bar_stft_bits_all.append(self.bar_STFT_bits)
-            self.bar_stft_time_all.append(self.bar_time_stft_s)
-            self.bar_stft_frequency_all.append(self.bar_frequency_stft_hz)
 
         # Create accelerometer
         self.sample_rate_acc = 30
@@ -258,38 +208,29 @@ class TestFindWiggleNumTfrIrregular(unittest.TestCase):
 
         # Create accelerometer mesh
         self.acc_stft_all = []
-        self.acc_stft_time_all = []
         self.acc_stft_bits_all = []
-        self.acc_stft_frequency_all = []
-        for dimension in range(self.sinewave_acc.ndim):
-            self.acc_STFT, self.acc_STFT_bits, self.acc_time_stft_s, self.acc_frequency_stft_hz = \
+
+        for dimension in range(3):
+            self.acc_STFT, self.acc_STFT_bits, _, _ = \
                 stft_from_sig(sig_wf=self.sinewave_acc[dimension],
                               frequency_sample_rate_hz=self.sample_rate_acc,
                               band_order_Nth=3)
 
             self.acc_stft_all.append(self.acc_STFT)
             self.acc_stft_bits_all.append(self.acc_STFT_bits)
-            self.acc_stft_time_all.append(self.acc_time_stft_s)
-            self.acc_stft_frequency_all.append(self.acc_frequency_stft_hz)
 
         # Create df
         self.dict_to_df_multiple = {0: {"station_id": "1234567890",
                                         "audio_stft": self.audio_STFT,
-                                        "audio_stft_bits": self.audio_STFT_bits,
-                                        "audio_stft_time_s": self.audio_time_stft_s,
-                                        "audio_stft_frequency_hz": self.audio_frequency_stft_hz},
+                                        "audio_stft_bits": self.audio_STFT_bits},
                                     1: {"station_id": "2345678901",   # Add another station
                                         "audio_stft": self.audio_STFT,
-                                        "audio_stft_bits": self.audio_STFT_bits,
-                                        "audio_stft_time_s": self.audio_time_stft_s,
-                                        "audio_stft_frequency_hz": self.audio_frequency_stft_hz}}
+                                        "audio_stft_bits": self.audio_STFT_bits}}
         self.df_data = pd.DataFrame(self.dict_to_df_multiple).T
 
         # Make bar/acc mesh arrays, add them to lists, add column to df.
         self.bar_stft_array = np.array(self.bar_stft_all)
         self.bar_stft_bits_array = np.array(self.bar_stft_bits_all)
-        self.bar_stft_time_array = np.array(self.bar_stft_time_all)
-        self.bar_stft_frequency_array = np.array(self.bar_stft_frequency_all)
 
         self.bar_stft_all_for_both_stations = []
         self.bar_stft_bits_all_for_both_stations = []
@@ -298,26 +239,16 @@ class TestFindWiggleNumTfrIrregular(unittest.TestCase):
 
         self.acc_stft_array = np.array(self.acc_stft_all)
         self.acc_stft_bits_array = np.array(self.acc_stft_bits_all)
-        self.acc_stft_time_array = np.array(self.acc_stft_time_all)
-        self.acc_stft_frequency_array = np.array(self.acc_stft_frequency_all)
 
         self.acc_stft_all_for_both_stations = []
         self.acc_stft_bits_all_for_both_stations = []
-        self.acc_stft_time_all_for_both_stations = []
-        self.acc_stft_frequency_all_for_both_stations = []
 
-        # Only one station has accand bar data
+        # Only one station has acc and bar data
         self.acc_stft_all_for_both_stations.append(float("Nan"))
         self.acc_stft_all_for_both_stations.append(self.acc_stft_array)
 
         self.acc_stft_bits_all_for_both_stations.append(float("Nan"))
         self.acc_stft_bits_all_for_both_stations.append(self.acc_stft_bits_array)
-
-        self.acc_stft_time_all_for_both_stations.append(float("Nan"))
-        self.acc_stft_time_all_for_both_stations.append(self.acc_stft_time_array)
-
-        self.acc_stft_frequency_all_for_both_stations.append(float("Nan"))
-        self.acc_stft_frequency_all_for_both_stations.append(self.acc_stft_frequency_array)
 
         self.bar_stft_all_for_both_stations.append(float("Nan"))
         self.bar_stft_all_for_both_stations.append(self.bar_stft_array)
@@ -325,22 +256,12 @@ class TestFindWiggleNumTfrIrregular(unittest.TestCase):
         self.bar_stft_bits_all_for_both_stations.append(float("Nan"))
         self.bar_stft_bits_all_for_both_stations.append(self.bar_stft_bits_array)
 
-        self.bar_stft_time_all_for_both_stations.append(float("Nan"))
-        self.bar_stft_time_all_for_both_stations.append(self.bar_stft_time_array)
-
-        self.bar_stft_frequency_all_for_both_stations.append(float("Nan"))
-        self.bar_stft_frequency_all_for_both_stations.append(self.bar_stft_frequency_array)
-
         # Add columns with mesh
         self.df_data["barometer_stft"] = self.bar_stft_all_for_both_stations
         self.df_data["barometer_stft_bits"] = self.bar_stft_bits_all_for_both_stations
-        self.df_data["barometer_stft_time_s"] = self.bar_stft_time_all_for_both_stations
-        self.df_data["barometer_stft_frequency_s"] = self.bar_stft_frequency_all_for_both_stations
 
         self.df_data["accelerometer_stft"] = self.acc_stft_all_for_both_stations
         self.df_data["accelerometer_stft_bits"] = self.acc_stft_bits_all_for_both_stations
-        self.df_data["accelerometer_stft_time_s"] = self.acc_stft_time_all_for_both_stations
-        self.df_data["accelerometer_stft_frequency_s"] = self.acc_stft_frequency_all_for_both_stations
 
     def test_wiggles_acc_is_3(self):
         self.wiggle_num = rpd_mesh.find_wiggle_num_tfr(df=self.df_data,
@@ -363,8 +284,8 @@ class TestFindWiggleNumTfrIrregular(unittest.TestCase):
                                                                        "barometer_stft_bits"])
         self.assertEqual(self.wiggle_num, 6)
 
-        def tearDown(self):
-            self.start_time = None
+    def tearDown(self):
+        self.start_time = None
         self.end_time = None
         self.sample_rate_audio = None
         self.signal_time_audio = None
@@ -373,8 +294,6 @@ class TestFindWiggleNumTfrIrregular(unittest.TestCase):
         self.sinewave_audio = None
         self.audio_STFT = None
         self.audio_STFT_bits = None
-        self.audio_time_stft_s = None
-        self.audio_frequency_stft_hz = None
         self.sample_rate_acc = None
         self.signal_time_acc = None
         self.length_for_signal = None
@@ -382,44 +301,28 @@ class TestFindWiggleNumTfrIrregular(unittest.TestCase):
         self.points_per_row = None
         self.sinewave_acc = None
         self.acc_stft_all = None
-        self.acc_stft_time_all = None
         self.acc_stft_bits_all = None
-        self.acc_stft_frequency_all = None
         self.acc_STFT = None
         self.acc_STFT_bits = None
-        self.acc_time_stft_s = None
-        self.acc_frequency_stft_hz = None
         self.dict_to_df_multiple = None
         self.df_data = None
         self.acc_stft_array = None
         self.acc_stft_bits_array = None
-        self.acc_stft_time_array = None
-        self.acc_stft_frequency_array = None
         self.acc_stft_all_for_both_stations = None
         self.acc_stft_bits_all_for_both_stations = None
-        self.acc_stft_time_all_for_both_stations = None
-        self.acc_stft_frequency_all_for_both_stations = None
         self.wiggle_num = None
         self.sample_rate_barometer = None
         self.signal_time_barometer = None
         self.sinewave_barometer_base = None
         self.sinewave_barometer = None
         self.bar_stft_all = None
-        self.bar_stft_time_all = None
         self.bar_stft_bits_all = None
-        self.bar_stft_frequency_all = None
         self.bar_STFT = None
         self.bar_STFT_bits = None
-        self.bar_time_stft_s = None
-        self.bar_frequency_stft_hz = None
         self.bar_stft_array = None
         self.bar_stft_bits_array = None
-        self.bar_stft_time_array = None
-        self.bar_stft_frequency_array = None
         self.bar_stft_all_for_both_stations = None
         self.bar_stft_bits_all_for_both_stations = None
-        self.bar_stft_time_all_for_both_stations = None
-        self.bar_stft_frequency_all_for_both_stations = None
 
 
 if __name__ == '__main__':
