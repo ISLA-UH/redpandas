@@ -211,7 +211,6 @@ def main():
                             dot_size=scatter_dot_size, color_map=scatter_colormap,
                             azimuth_degrees=-80, elevation_degrees=25)
 
-
     # Overlay
     # title_str = "Skyfall Path, Phone and Bounder"
     title_str = ""
