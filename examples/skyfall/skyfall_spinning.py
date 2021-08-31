@@ -16,7 +16,7 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 from redpandas.redpd_config import DataLoadMethod
 from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
 
-if __name__ == "__main__":
+def main():
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
     Last updated: 18 June 2021
@@ -144,3 +144,7 @@ if __name__ == "__main__":
         # TODO: Add magnetometer spectrogram to illustrate match of frequency information
 
         plt.show()
+
+
+if __name__ == "__main__":
+    main()

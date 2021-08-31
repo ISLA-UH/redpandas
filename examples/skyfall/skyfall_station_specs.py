@@ -140,7 +140,7 @@ def station_specs_to_csv(data_window: DataWindow,
                                  station.location_sensor().sample_interval_std_s])
 
 
-if __name__ == "__main__":
+def main():
     """
     Beta workflow for API M pipeline
     Last updated: 17 May 2021
@@ -159,3 +159,6 @@ if __name__ == "__main__":
 
     station_specs_to_csv(rdvx_data, csv_station_full_path)
 
+
+if __name__ == "__main__":
+    main()

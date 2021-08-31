@@ -17,8 +17,9 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE,\
-    ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
+from examples.skyfall.skyfall_config_file import skyfall_config
+    # OTHER_INPUT_PATH, OTHER_PD_PQT_FILE,\
+    # ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 
 
 def main():
@@ -86,7 +87,7 @@ def main():
 
     # Load parquet with bounder data fields
     # TODO: clean up
-    bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
+    # bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
 
     # Load data options
     # RECOMMENDED: tdr_load_method="datawindow" in config file
@@ -101,8 +102,8 @@ def main():
         else:  # Option B: Load pickle with DataWindow object. Assume compressed
             print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
 
-            rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
-                                                              file_name=skyfall_config.output_filename_pkl_pqt)
+            rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.input_dir,
+                                                              file_name="skyfall2")
         print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
         # For option A or B, begin RedPandas, succinct
@@ -281,72 +282,74 @@ def main():
                                    label_panel_show=True,  # for press
                                    labels_fontweight='bold')
 
-        if location_latitude_label and location_longitude_label and location_altitude_label and location_speed_label \
-                in df_skyfall_data.columns:
+        # if location_latitude_label and location_longitude_label and location_altitude_label and location_speed_label \
+        #         in df_skyfall_data.columns:
 
-            print("Bounder End EPOCH:", ref_epoch_s)
-            print("Bounder End LAT LON ALT:", ref_latitude_deg, ref_longitude_deg, ref_altitude_m)
+            # print("Bounder End EPOCH:", ref_epoch_s)
+            # print("Bounder End LAT LON ALT:", ref_latitude_deg, ref_longitude_deg, ref_altitude_m)
 
             # Compute ENU projections
-            df_range_z_speed = \
-                rpd_geo.compute_t_r_z_speed(unix_s=df_skyfall_data[location_epoch_s_label][station],
-                                            lat_deg=df_skyfall_data[location_latitude_label][station],
-                                            lon_deg=df_skyfall_data[location_longitude_label][station],
-                                            alt_m=df_skyfall_data[location_altitude_label][station],
-                                            ref_unix_s=ref_epoch_s,
-                                            ref_lat_deg=ref_latitude_deg,
-                                            ref_lon_deg=ref_longitude_deg,
-                                            ref_alt_m=ref_altitude_m)
+            # df_range_z_speed = \
+            #     rpd_geo.compute_t_r_z_speed(unix_s=df_skyfall_data[location_epoch_s_label][station],
+            #                                 lat_deg=df_skyfall_data[location_latitude_label][station],
+            #                                 lon_deg=df_skyfall_data[location_longitude_label][station],
+            #                                 alt_m=df_skyfall_data[location_altitude_label][station],
+            #                                 ref_unix_s=ref_epoch_s,
+            #                                 ref_lat_deg=ref_latitude_deg,
+            #                                 ref_lon_deg=ref_longitude_deg,
+            #                                 ref_alt_m=ref_altitude_m)
 
             # Plot location framework
-            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=df_range_z_speed['Range_m']*METERS_TO_KM,
-                                   wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
-                                   wf_panel_1_sig=df_range_z_speed['Z_m']*METERS_TO_KM,
-                                   wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
-                                   wf_panel_0_sig=df_skyfall_data[location_speed_label][station],
-                                   wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
-                                   start_time_epoch=event_reference_time_epoch_s,
-                                   wf_panel_2_units="Range, km",
-                                   wf_panel_1_units="Altitude, km",
-                                   wf_panel_0_units="Speed, m/s",
-                                   figure_title=skyfall_config.event_name + ": Location Framework",
-                                   figure_title_show=False,
-                                   label_panel_show=True,  # for press
-                                   labels_fontweight='bold')
+            # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+            #                        wf_panel_2_sig=df_range_z_speed['Range_m']*METERS_TO_KM,
+            #                        wf_panel_2_time=df_skyfall_data[location_epoch_s_label][station],
+            #                        wf_panel_1_sig=df_range_z_speed['Z_m']*METERS_TO_KM,
+            #                        wf_panel_1_time=df_skyfall_data[location_epoch_s_label][station],
+            #                        wf_panel_0_sig=df_skyfall_data[location_speed_label][station],
+            #                        wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
+            #                        start_time_epoch=event_reference_time_epoch_s,
+            #                        wf_panel_2_units="Range, km",
+            #                        wf_panel_1_units="Altitude, km",
+            #                        wf_panel_0_units="Speed, m/s",
+            #                        figure_title=skyfall_config.event_name + ": Location Framework",
+            #                        figure_title_show=False,
+            #                        label_panel_show=True,  # for press
+            #                        labels_fontweight='bold')
 
-            if location_epoch_s_label and location_altitude_label and barometer_epoch_s_label and \
-                    barometer_data_raw_label in df_skyfall_data.columns:
-
-                plt.figure()
-                time_bar = df_skyfall_data[barometer_epoch_s_label][station] - skyfall_config.event_start_epoch_s
-                time_bounder = bounder_loc['Epoch_s'] - skyfall_config.event_start_epoch_s
-                time_loc = df_skyfall_data[location_epoch_s_label][station] - skyfall_config.event_start_epoch_s
-
-                ax1 = plt.subplot(211)
-                plt.semilogy(time_bar, df_skyfall_data[barometer_data_raw_label][station][0], 'midnightblue',
-                             label='Barometer kPa')
-                plt.semilogy(time_bounder, bounder_loc['Pres_kPa'], 'g', label='Bounder kPa')
-                plt.ylabel('Pressure, kPa')
-                plt.legend(loc='lower right')
-                plt.xlim([0, 1800])
-                plt.text(0.01, 0.9, "(b)", transform=ax1.transAxes,  fontweight='bold')
-                ax1.set_xticklabels([])
-                plt.grid(True)
-
-                ax2=plt.subplot(212)
-                plt.plot(time_loc, df_skyfall_data[location_altitude_label][station] * METERS_TO_KM, 'r',
-                         label='Location sensor')
-                plt.plot(time_bar, barometer_height_m * METERS_TO_KM, 'midnightblue', label='Barometer Z')
-                plt.plot(time_bounder, bounder_loc['Alt_m'] * METERS_TO_KM, 'g', label='Bounder Z')
-                plt.ylabel('Height, km')
-                plt.xlabel(f"Time (s) from UTC "
-                           f"{dtime.datetime.utcfromtimestamp(skyfall_config.event_start_epoch_s).strftime('%Y-%m-%d %H:%M:%S')}")
-                plt.legend(loc='upper right')
-                plt.xlim([0, 1800])
-                plt.text(0.01, 0.05, "(a)", transform=ax2.transAxes,  fontweight='bold')
-                plt.grid(True)
-                plt.tight_layout()
+            # if location_epoch_s_label and location_altitude_label and barometer_epoch_s_label and \
+            #         barometer_data_raw_label in df_skyfall_data.columns:
+            #
+            #     print(df_skyfall_data.columns)
+            #
+            #     plt.figure()
+            #     time_bar = df_skyfall_data[barometer_epoch_s_label][station] - skyfall_config.event_start_epoch_s
+            #     # time_bounder = bounder_loc['Epoch_s'] - skyfall_config.event_start_epoch_s
+            #     time_loc = df_skyfall_data[location_epoch_s_label][station] - skyfall_config.event_start_epoch_s
+            #
+            #     ax1 = plt.subplot(211)
+            #     plt.semilogy(time_bar, df_skyfall_data[barometer_data_raw_label][station][0], 'midnightblue',
+            #                  label='Barometer kPa')
+            #     # plt.semilogy(time_bounder, bounder_loc['Pres_kPa'], 'g', label='Bounder kPa')
+            #     plt.ylabel('Pressure, kPa')
+            #     plt.legend(loc='lower right')
+            #     plt.xlim([0, 1800])
+            #     plt.text(0.01, 0.9, "(b)", transform=ax1.transAxes,  fontweight='bold')
+            #     ax1.set_xticklabels([])
+            #     plt.grid(True)
+            #
+            #     ax2=plt.subplot(212)
+            #     plt.plot(time_loc, df_skyfall_data[location_altitude_label][station] * METERS_TO_KM, 'r',
+            #              label='Location sensor')
+            #     plt.plot(time_bar, barometer_height_m * METERS_TO_KM, 'midnightblue', label='Barometer Z')
+            #     # plt.plot(time_bounder, bounder_loc['Alt_m'] * METERS_TO_KM, 'g', label='Bounder Z')
+            #     plt.ylabel('Height, km')
+            #     plt.xlabel(f"Time (s) from UTC "
+            #                f"{dtime.datetime.utcfromtimestamp(skyfall_config.event_start_epoch_s).strftime('%Y-%m-%d %H:%M:%S')}")
+            #     plt.legend(loc='upper right')
+            #     plt.xlim([0, 1800])
+            #     plt.text(0.01, 0.05, "(a)", transform=ax2.transAxes,  fontweight='bold')
+            #     plt.grid(True)
+            #     plt.tight_layout()
 
         if health_battery_charge_label and health_internal_temp_deg_C_label and health_network_type_label \
                 and barometer_data_raw_label and location_provider_label in df_skyfall_data.columns:
@@ -395,21 +398,21 @@ def main():
                                    labels_fontweight='bold')
 
             # Plot synchronization framework
-            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=df_skyfall_data[synchronization_latency_label][station],
-                                   wf_panel_2_time=df_skyfall_data[synchronization_epoch_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[synchronization_offset_label][station],
-                                   wf_panel_1_time=df_skyfall_data[synchronization_epoch_label][station],
-                                   wf_panel_0_sig=df_skyfall_data[location_altitude_label][station] * METERS_TO_KM,
-                                   wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
-                                   start_time_epoch=event_reference_time_epoch_s,
-                                   wf_panel_2_units="Latency, ms",
-                                   wf_panel_1_units="Offset, s",
-                                   wf_panel_0_units="Height, km",
-                                   figure_title=skyfall_config.event_name + ": Synchronization Framework",
-                                   figure_title_show=False,
-                                   label_panel_show=True,  # for press
-                                   labels_fontweight='bold')
+            # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
+            #                        wf_panel_2_sig=df_skyfall_data[synchronization_latency_label][station],
+            #                        wf_panel_2_time=df_skyfall_data[synchronization_epoch_label][station],
+            #                        wf_panel_1_sig=df_skyfall_data[synchronization_offset_label][station],
+            #                        wf_panel_1_time=df_skyfall_data[synchronization_epoch_label][station],
+            #                        wf_panel_0_sig=df_skyfall_data[location_altitude_label][station] * METERS_TO_KM,
+            #                        wf_panel_0_time=df_skyfall_data[location_epoch_s_label][station],
+            #                        start_time_epoch=event_reference_time_epoch_s,
+            #                        wf_panel_2_units="Latency, ms",
+            #                        wf_panel_1_units="Offset, s",
+            #                        wf_panel_0_units="Height, km",
+            #                        figure_title=skyfall_config.event_name + ": Synchronization Framework",
+            #                        figure_title_show=False,
+            #                        label_panel_show=True,  # for press
+            #                        labels_fontweight='bold')
 
         # Plot sensor wiggles
         sensor_column_label_list = [audio_data_label, barometer_data_highpass_label,

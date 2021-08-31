@@ -34,7 +34,7 @@ def bounder_specs_to_csv(df, csv_export_file):
         writer.writerow(['Stop Altitude m  (WGS-84)', df['Alt_m'].iloc[-1]])
 
 
-if __name__ == '__main__':
+def main():
     """
     Paths from phone and bounder for Skyfall data set
     """
@@ -235,3 +235,6 @@ if __name__ == '__main__':
 
     plt.show()
 
+
+if __name__ == '__main__':
+    main()
