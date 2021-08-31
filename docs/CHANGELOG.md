@@ -5,12 +5,6 @@
 - Bump other RedVox deps that have been updated to Python 3.9
 
 ## 1.1.7-9 (2021-07-27)
-## 1.2.1
-
-- Add support for Python 3.9
-- Bump other RedVox deps that have been updated to Python 3.9
-
-## 1.1.7-8 (2021-07-27)
 
 - Fix Skyfall example
 - Fix ylabels in plot_wiggles_pandas where magnetometer highpass would not plot
