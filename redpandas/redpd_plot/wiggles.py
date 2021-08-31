@@ -118,9 +118,15 @@ def find_ylabel(df: pd.DataFrame,
                                 if station_id_str is not None:
                                     # if only doing one station, yticks just name sensors
                                     wiggle_yticklabel += sensor_short
-                                elif len(sig_wf_label) == 1:
-                                    # if only doing one sensor, yticks just name station
+                                # If only one 3c sensor, skip, but if only doing one 1c sensor, yticks just name station
+                                elif len(sig_wf_label) == 1 and sensor_in_list.find("acc") == -1 \
+                                        and sensor_in_list.find("gyr") == -1 \
+                                        and sensor_in_list.find("mag") == -1:
                                     wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
+                                # elif len(sig_wf_label) == 1 and sensor_in_list.find("gyr") == -1:
+                                #     wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
+                                # elif len(sig_wf_label) == 1 and sensor_in_list.find("mag") == -1:
+                                #     wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
                                 else:  # if multiple sensors and stations, yticks both station and sensors
                                     station_and_sensor = [f"{df[sig_id_label][index_n]} " + element for element in sensor_short]
                                     wiggle_yticklabel += station_and_sensor
@@ -244,7 +250,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     # # For debugging
     # print("Wiggle num:", wiggle_num)
     # print("Wiggle ylabel:", wiggle_yticklabel)
-
+    print(wiggle_yticklabel)
     # Check wiggle_num and # of ylabels match
     if len(wiggle_yticklabel) != wiggle_num:
         raise ValueError(f"The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) "
