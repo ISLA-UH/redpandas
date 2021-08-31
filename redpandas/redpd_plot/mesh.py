@@ -289,7 +289,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
     # Start plotting each sensor/station
     index_wiggle_yticklabels = 0  # index to keep track of which wiggle y label to apply
-    index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted
+    # index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted
+    index_panel_order = 0
     index_mesh_color_scale_panel = 0  # index to keep track of which mesh tfr color scale to apply if provided
 
     for mesh_n in range(len(mesh_tfr_label)):  # for each column label provided
@@ -370,7 +371,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
                     ax.tick_params(axis='both', which='major', labelsize=FigParam().text_size)
 
                     index_wiggle_yticklabels += 1
-                    index_panel_order -= 1
+                    # index_panel_order -= 1
+                    index_panel_order += 1
                     index_mesh_color_scale_panel += 1
 
                 else:
@@ -440,7 +442,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                         ax.tick_params(axis='both', which='major', labelsize=FigParam().text_size)
 
-                        index_panel_order -= 1
+                        # index_panel_order -= 1
+                        index_panel_order += 1
                         index_mesh_color_scale_panel += 1
                         index_wiggle_yticklabels += 1
             else:
