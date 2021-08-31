@@ -13,11 +13,12 @@ import redpandas.redpd_build_station as rpd_build_sta
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_gravity as rpd_grav
 import redpandas.redpd_preprocess as rpd_prep
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
+from examples.skyfall.skyfall_config_file import skyfall_config  # OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
 
-if __name__ == "__main__":
+
+def main():
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
     Last updated: 23 June 2021
@@ -68,7 +69,7 @@ if __name__ == "__main__":
 
     # Load parquet with bounder data fields
     # TODO: clean up
-    bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
+    # bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
 
     # Load data options
     # if use_datawindow_tdr is True or use_pickle_tdr is True:
@@ -211,3 +212,7 @@ if __name__ == "__main__":
                                    labels_fontweight='bold')
 
         plt.show()
+
+
+if __name__ == "__main__":
+    main()

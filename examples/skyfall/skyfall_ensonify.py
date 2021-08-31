@@ -14,7 +14,7 @@ def main():
     """
     Station sonification
     Load from datawindow
-    todo: address possible invalid values in building plots section
+
     """
     # Refine loading checks; need hp and strings
     redvox_sdk_version_label: str = 'redvox_sdk_version'
@@ -87,5 +87,7 @@ def main():
                                  sig_id_label='station_id',
                                  fig_title_show=True,
                                  fig_title='sensor waveforms')
+
+
 if __name__ == "__main__":
     main()

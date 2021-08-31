@@ -10,9 +10,11 @@ import redpandas.redpd_geospatial as rpd_geo
 # Import constants
 from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, \
+from examples.skyfall.skyfall_config_file import skyfall_config, \
+    OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, \
     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 skyfall_config.is_rerun_bounder = True
+
 
 def bounder_specs_to_csv(df, csv_export_file):
 
@@ -32,21 +34,12 @@ def bounder_specs_to_csv(df, csv_export_file):
         writer.writerow(['Stop Altitude m  (WGS-84)', df['Alt_m'].iloc[-1]])
 
 
-if __name__ == '__main__':
-    # TODO MC: probs broken
+def main():
+    """
+    Paths from phone and bounder for Skyfall data set
+    """
+    is_export_bounder_csv: bool = False  # If true, save only episode start to end as csv
 
-    """
-    Paths from phone and bounder for NNSS Skyfall data set
-    If true, rerun and save as parquet
-    """
-    # is_rerun_bounder = True
-    # is_rerun_bounder = False
-
-    """
-    Skyfall trajectory information
-    :param rerun_bounder:
-    :return:
-    """
     # Use configuration file to load rdvx parquet for the data window
     rdvx_path_pickle_df = os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file)
     # Concentrate on single station
@@ -98,12 +91,13 @@ if __name__ == '__main__':
     print('Bounder Ref Lon:', bounder_loc['Lon_deg'].iloc[-1])
     print('Bounder Ref Alt:', bounder_loc['Alt_m'].iloc[-1])
 
-    # Export Initial and Final states to CSV
-    print(f"Export Bounder initial and final states to CSV. Path: "
-          f"{os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name + '_bounder_start_end.csv')}")
-    file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name
-                                              + '_bounder_start_end.csv')
-    bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
+    if is_export_bounder_csv:
+        # Export Initial and Final states to CSV
+        print(f"Export Bounder initial and final states to CSV. Path: "
+              f"{os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name + '_bounder_start_end.csv')}")
+        file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name
+                                                  + '_bounder_start_end.csv')
+        bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
 
     # Compare to phone
     phone_datetime_start = dt.datetime_from_epoch_seconds_utc(phone_loc['location_epoch_s'][0])
@@ -241,3 +235,6 @@ if __name__ == '__main__':
 
     plt.show()
 
+
+if __name__ == '__main__':
+    main()
