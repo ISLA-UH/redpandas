@@ -1,5 +1,9 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.2.5 (2021-08-31)
+- Fixed bugs in mesh and wiggles plots
+- Optimized Skyfall examples
+
 ## 1.1.10-1.2.4 (2021-08-03)
 - Add support for Python 3.9
 - Bump other RedVox deps that have been updated to Python 3.9
