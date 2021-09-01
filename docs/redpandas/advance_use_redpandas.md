@@ -66,7 +66,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 ### Plot waveforms
 
-The function [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot.html#redpandas.redpd_plot.plot_wiggles_pandas) 
+The function [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) 
 plots signal waveforms stored in the [RedPandas DataFrame](using_redpandas.md#basic-definitions).
 
 

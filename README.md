@@ -22,6 +22,9 @@ pip install redvox-pandas
 
 More installation instructions can be found in the [RedPandas Installation Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/installation.md).
 
+### Examples 
+A full example can be found in [examples directory](https://github.com/RedVoxInc/redpandas/tree/master/examples/skyfall#skyfall).
+
 ### Getting started
 
 Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md#how-to-use-redpandas) to get started.
