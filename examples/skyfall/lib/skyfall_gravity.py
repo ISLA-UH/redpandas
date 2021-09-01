@@ -21,15 +21,7 @@ from redpandas.redpd_config import DataLoadMethod
 def main():
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
-    Last updated: 23 June 2021
     """
-
-    # Skyfall example exclusive variables (from Bounder)
-    ref_latitude_deg = 35.83728
-    ref_longitude_deg = -115.57234
-    ref_altitude_m = 1028.2
-    ref_epoch_s = 1603808160
-
     print('Let the sky fall')
 
     # Label columns in dataframe
@@ -41,35 +33,11 @@ def main():
     audio_epoch_s_label: str = "audio_epoch_s"
     audio_fs_label: str = "audio_sample_rate_nominal_hz"
 
-    # Barometer columns
-    barometer_data_raw_label: str = "barometer_wf_raw"
-    barometer_data_highpass_label: str = "barometer_wf_highpass"
-    barometer_epoch_s_label: str = "barometer_epoch_s"
-    barometer_fs_label: str = "barometer_sample_rate_hz"
-
     # Accelerometer columns
     accelerometer_data_raw_label: str = "accelerometer_wf_raw"
     accelerometer_data_highpass_label: str = "accelerometer_wf_highpass"
     accelerometer_epoch_s_label: str = "accelerometer_epoch_s"
     accelerometer_fs_label: str = "accelerometer_sample_rate_hz"
-
-    # Gyroscope columns
-    gyroscope_data_raw_label: str = "gyroscope_wf_raw"
-    gyroscope_data_highpass_label: str = "gyroscope_wf_highpass"
-    gyroscope_epoch_s_label: str = "gyroscope_epoch_s"
-    gyroscope_fs_label: str = "gyroscope_sample_rate_hz"
-
-    # Location columns
-    location_latitude_label: str = 'location_latitude'
-    location_longitude_label: str = 'location_longitude'
-    location_altitude_label: str = "location_altitude"
-    location_speed_label: str = 'location_speed'
-    location_epoch_s_label: str = 'location_epoch_s'
-    location_provider_label: str = 'location_provider'
-
-    # Load parquet with bounder data fields
-    # TODO: clean up
-    bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
 
     # Load data options
     # if use_datawindow_tdr is True or use_pickle_tdr is True:

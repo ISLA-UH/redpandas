@@ -4,7 +4,7 @@ Skyfall is an event where a smartphone fell from a high altitude and landed on t
 
 Using the data from this event, RedPandas is able to produce several products.
 
-To begin, download the skyfall data from [the Redvox website](http://redvox.io/@/3f3f)
+To begin, download the skyfall data from [the Redvox website](http://redvox.io/@/3f3f).
 
 Next, open `skyfall_config_file.py` and update the value of `INPUT_DIR` on line 5 to match the directory 
 where you downloaded the skyfall data (the directory will have a folder named "api900"). An example is below:
