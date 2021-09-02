@@ -1,6 +1,7 @@
 ## RedVox Pandas (RedPandas) Version History
 
-## 1.2.6 ()
+## 1.2.6 (2021-09-01)
+- Fix Skyfall example, added missing file
 
 
 ## 1.2.5 (2021-08-31)
