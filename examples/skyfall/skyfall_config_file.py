@@ -2,19 +2,20 @@ import os
 from redpandas.redpd_config import RedpdConfig, TFRConfig
 
 # Absolute path to the skyfall data.
-# INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
+INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 
 # See above for example of a well named directory
 # Avoid specifying /api900 directories if possible.
 # INPUT_DIR = "/Users/spopen/redvox/data/skyfall_data"
-INPUT_DIR = "/Users/tyler/Documents/skyfall_pipeline"
+# INPUT_DIR = "/Users/tyler/Documents/skyfall_pipeline"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
 # INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
 
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
 is_rerun_bounder: bool = True  # If true, rerun and save as parquet
-OTHER_INPUT_PATH = os.path.join(INPUT_DIR, "bounder")
+BOUNDER_DIR = "."
+OTHER_INPUT_PATH = os.path.join(BOUNDER_DIR, "bounder")
 OTHER_INPUT_FILE = "skyfall_bounder.csv"
 OTHER_PD_PQT_FILE = "Skyfall_df_bounder.parquet"
 
