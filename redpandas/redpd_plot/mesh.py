@@ -230,8 +230,10 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param frequency_hz_ymin: optional float, y axis min lim
      :param frequency_hz_ymax: optional float, y axis max lim
      :param common_colorbar: optional bool, display a colorbar for all mesh panels if True. Default is True
-     :param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'
-     :param mesh_color_range: optional, range of colorbar. Default is 15
+     :param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'. The parameter common_colorbar
+        needs to be set to False to apply mesh_color_scaling
+     :param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set
+        to False and mesh_color_scaling to "range "to apply mesh_color_range
      :param show_figure: optional bool, show figure if True. Default is True
 
      :return: matplotlib figure instance
@@ -267,7 +269,6 @@ def plot_mesh_pandas(df: pd.DataFrame,
                          f"or the number of stations in dataframe ({wiggle_num})."
                          f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z components "
                          f"so a label is required for each component.")
-
     # Get x limits
     x_lim_max_total, x_lim_min_total = find_x_max_min_lim(df=df,
                                                           wiggle_num=wiggle_num,
@@ -279,6 +280,21 @@ def plot_mesh_pandas(df: pd.DataFrame,
         tfr_max_total, tfr_min_total = find_tfr_max_min_lim(df=df,
                                                             wiggle_num=wiggle_num,
                                                             mesh_tfr_label=mesh_tfr_label)
+    else:
+        # Check wiggle_num and values provided for mesh scaling match (if common_colorbar is False)
+        if len(mesh_color_scaling) != wiggle_num:
+            raise ValueError(f"The number of strings provided in the mesh_color_scaling "
+                             f"parameter({len(mesh_color_scaling)}) does not match the number of signal channels "
+                             f"provided in sig_wf_label or the number of stations in dataframe ({wiggle_num})."
+                             f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z "
+                             f"components so a string is required for each component.")
+
+        if len(mesh_color_range) != wiggle_num:
+            raise ValueError(f"The number of values provided in the mesh_color_range parameter({len(mesh_color_range)})"
+                             f"does not match the number of signal channels provided in sig_wf_label or the number of "
+                             f"stations in dataframe ({wiggle_num})."
+                             f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z "
+                             f"components so a value is required for each component.")
 
     # Figure setup
     fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))

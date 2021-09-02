@@ -14,16 +14,15 @@ def main():
     """
     Station sonification
     Load from datawindow
-
     """
     # Refine loading checks; need hp and strings
     redvox_sdk_version_label: str = 'redvox_sdk_version'
-    print("Create datawindow")
+    print("Create RedVox DataWindow")
     rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
     df_skyfall_data = rpd_df.redpd_dataframe(rdvx_data, skyfall_config.sensor_labels)
     print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
-    print(df_skyfall_data.columns)
+    # print(df_skyfall_data.columns)
 
     # Audio columns
     audio_data_label: str = "audio_wf"

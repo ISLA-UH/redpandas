@@ -10,6 +10,7 @@ INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 # INPUT_DIR = "/Users/tyler/Documents/skyfall_pipeline"
 # INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
 # INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
+INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test_2"
 
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
