@@ -5,6 +5,6 @@ dist
 redvox_pandas.egg-info
 .mypy_cache
 .wav
-.parquet
+# .parquet
 .pickle
 .pkl
