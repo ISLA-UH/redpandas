@@ -81,10 +81,6 @@ def main():
     synchronization_offset_delta_label: str = 'synchronization_offset_delta_ms'
     synchronization_number_exchanges_label: str = 'synchronization_number_exchanges'
 
-    # Load parquet with bounder data fields
-    # TODO: clean up
-    # bounder_loc = pd.read_parquet(os.path.join(BOUNDER_PATH, BOUNDER_PQT_FILE))
-
     # Load data options
     # RECOMMENDED: tdr_load_method="datawindow" in config file
     df_skyfall_data = sf_dw.dw_main()
