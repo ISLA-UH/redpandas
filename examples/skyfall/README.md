@@ -21,6 +21,6 @@ INPUT_DIR = "/path_to/your/downloaded_data/"
 
 Now, run the `skyfall_intro.py` file.  This will create simple products for you to view.
 
-For more RedPandas products, run the `run_all.py` file.
+For more RedPandas products, run the `run_all.py` file in the `lib/` directory.
 
-You may view and run the specific example functions in the `lib/` directory.
+You may view and run the specific example functions (`skyfall_*.py`) in the `lib/` directory.

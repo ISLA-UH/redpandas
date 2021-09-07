@@ -2,23 +2,14 @@ import os
 from redpandas.redpd_config import RedpdConfig, TFRConfig
 
 # Absolute path to the skyfall data.
-INPUT_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
-
-# See above for example of a well named directory
-# Avoid specifying /api900 directories if possible.
-# INPUT_DIR = "/Users/spopen/redvox/data/skyfall_data"
-# INPUT_DIR = "/Users/tyler/Documents/skyfall_pipeline"
-# INPUT_DIR = "/Users/tokyok/Desktop/skyfall"
-# INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
-# INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test_2"
+SKYFALL_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
 
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
 is_rerun_bounder: bool = True  # If true, rerun and save as parquet
-BOUNDER_DIR = ".."
-OTHER_INPUT_PATH = os.path.join(BOUNDER_DIR, "bounder")
-OTHER_INPUT_FILE = "skyfall_bounder.csv"
-OTHER_PD_PQT_FILE = "Skyfall_df_bounder.parquet"
+BOUNDER_PATH = "../bounder"
+BOUNDER_FILE = "skyfall_bounder.csv"
+BOUNDER_PQT_FILE = "Skyfall_df_bounder.parquet"
 
 # For lines 24 and below, no need to change as they contain Skyfall example set parameters.
 
@@ -29,9 +20,9 @@ ref_altitude_m = 1028.2
 ref_epoch_s = 1603808160
 
 # Redpd Configuration
-skyfall_config = RedpdConfig(input_directory=INPUT_DIR,
+skyfall_config = RedpdConfig(input_directory=SKYFALL_DIR,
                              event_name="Skyfall",
-                             output_directory=os.path.join(INPUT_DIR, "rpd_files"),
+                             output_directory=os.path.join(SKYFALL_DIR, "rpd_files"),
                              station_ids=["1637610021"],
                              sensor_labels=['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
                                             'health', 'location', 'clock', 'synchronization'],

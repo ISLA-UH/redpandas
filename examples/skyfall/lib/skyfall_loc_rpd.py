@@ -12,7 +12,7 @@ import redpandas.redpd_geospatial as rpd_geo
 from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 
 from examples.skyfall.skyfall_config_file import skyfall_config, \
-    OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE, \
+    BOUNDER_PATH, BOUNDER_FILE, BOUNDER_PQT_FILE, \
     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
 skyfall_config.is_rerun_bounder = True
 
@@ -59,18 +59,18 @@ def main():
     print(f'Verify that balloon station selected matches # of columns: {phone_loc.shape}')
 
     # Bounder data is a standard rectangular matrix
-    if not os.path.exists(OTHER_INPUT_PATH):
+    if not os.path.exists(BOUNDER_PATH):
         print("Other input directory does not exist, check path:")
-        print(OTHER_INPUT_PATH)
+        print(BOUNDER_PATH)
         exit()
 
     if skyfall_config.is_rerun_bounder:
-        rpd_geo.bounder_data(OTHER_INPUT_PATH, OTHER_INPUT_FILE, OTHER_PD_PQT_FILE)
+        rpd_geo.bounder_data(BOUNDER_PATH, BOUNDER_FILE, BOUNDER_PQT_FILE)
         print('Constructing bounder parquet')
 
     # Load parquet with bounder data fields
     print('Load Bounder parquet:')
-    bounder_loc = pd.read_parquet(os.path.join(OTHER_INPUT_PATH, OTHER_PD_PQT_FILE))
+    bounder_loc = pd.read_parquet(os.path.join(BOUNDER_PATH, BOUNDER_PQT_FILE))
     print(f'Dimensions (# of rows, # of columns): {bounder_loc.shape}')
     print(f'Available columns: {bounder_loc.columns}')
 
@@ -103,8 +103,8 @@ def main():
     if is_export_bounder_csv:
         # Export Initial and Final states to CSV
         print(f"Export Bounder initial and final states to CSV. Path: "
-              f"{os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name + '_bounder_start_end.csv')}")
-        file_bounder_start_end_csv = os.path.join(OTHER_INPUT_PATH, skyfall_config.event_name
+              f"{os.path.join(BOUNDER_PATH, skyfall_config.event_name + '_bounder_start_end.csv')}")
+        file_bounder_start_end_csv = os.path.join(BOUNDER_PATH, skyfall_config.event_name
                                                   + '_bounder_start_end.csv')
         bounder_specs_to_csv(df=bounder_loc, csv_export_file=file_bounder_start_end_csv)
 

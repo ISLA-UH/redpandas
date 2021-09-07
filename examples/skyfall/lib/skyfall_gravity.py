@@ -1,20 +1,16 @@
 # todo: address possible invalid values in building plots section
 # Python libraries
-import os.path
-
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
-# RedVox RedPandas and related RedVox modules
-from redvox.common.data_window import DataWindow
 
-import redpandas.redpd_build_station as rpd_build_sta
-import redpandas.redpd_datawin as rpd_dw
+# RedVox RedPandas and related RedVox modules
+import examples.skyfall.lib.skyfall_dw as sf_dw
 import redpandas.redpd_gravity as rpd_grav
 import redpandas.redpd_preprocess as rpd_prep
-from examples.skyfall.skyfall_config_file import skyfall_config, OTHER_INPUT_PATH, OTHER_PD_PQT_FILE
+
 # Configuration files
+from examples.skyfall.skyfall_config_file import skyfall_config
 from redpandas.redpd_config import DataLoadMethod
 
 
@@ -26,7 +22,6 @@ def main():
 
     # Label columns in dataframe
     station_label: str = "station_id"
-    redvox_sdk_version_label: str = 'redvox_sdk_version'
 
     # Audio columns
     audio_data_label: str = "audio_wf"
@@ -40,37 +35,7 @@ def main():
     accelerometer_fs_label: str = "accelerometer_sample_rate_hz"
 
     # Load data options
-    # if use_datawindow_tdr is True or use_pickle_tdr is True:
-    if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW or \
-            skyfall_config.tdr_load_method == DataLoadMethod.PICKLE:
-        print("Initiating Conversion from RedVox DataWindow to RedVox RedPandas:")
-        if skyfall_config.tdr_load_method == DataLoadMethod.DATAWINDOW:  # Option A: Create DataWindow object
-            print("Constructing RedVox DataWindow ...", end=" ")
-            rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
-
-        else:  # Option B: Load pickle with DataWindow object. Assume compressed
-            print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
-
-            rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
-                                                              file_name=skyfall_config.output_filename_pkl_pqt)
-        print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
-
-        # For option A or B, begin RedPandas
-        print("\nInitiating RedVox Redpandas:")
-        df_skyfall_data = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
-                                                                              sdk_version=rdvx_data.sdk_version,
-                                                                              sensor_labels=skyfall_config.sensor_labels)
-                                        for station in rdvx_data.stations])
-        df_skyfall_data.sort_values(by="station_id", ignore_index=True, inplace=True)
-
-    elif skyfall_config.tdr_load_method == DataLoadMethod.PARQUET:  # Option C: Open dataframe from parquet file
-        print("Loading existing RedPandas Parquet...", end=" ")
-        df_skyfall_data = pd.read_parquet(os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file))
-        print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
-
-    else:
-        print('\nNo data loading method selected.')
-        exit()
+    df_skyfall_data = sf_dw.dw_main()
 
     # Start of building plots
     print("\nInitiating time-domain representation of Skyfall:")

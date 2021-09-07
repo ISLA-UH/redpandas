@@ -1,12 +1,9 @@
-import matplotlib.pyplot as plt
-
 # RedVox RedPandas and related RedVox modules
 import redpandas.redpd_ensonify as rpd_sound
 import redpandas.redpd_plot.wiggles as rpd_plot
-import redpandas.redpd_datawin as rpd_dw
-import redpandas.redpd_df as rpd_df
 
 # Configuration files
+import examples.skyfall.lib.skyfall_dw as sf_dw
 from examples.skyfall.skyfall_config_file import skyfall_config
 
 
@@ -18,8 +15,7 @@ def main():
     # Refine loading checks; need hp and strings
     redvox_sdk_version_label: str = 'redvox_sdk_version'
     print("Create RedVox DataWindow")
-    rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
-    df_skyfall_data = rpd_df.redpd_dataframe(rdvx_data, skyfall_config.sensor_labels)
+    df_skyfall_data = sf_dw.dw_main()
     print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
     # print(df_skyfall_data.columns)
