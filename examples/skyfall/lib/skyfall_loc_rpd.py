@@ -2,6 +2,7 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 import csv
+import numpy as np
 
 import redvox.common.date_time_utils as dt
 from libquantum.plot_templates import plot_geo_scatter_2d_3d as geo_scatter
@@ -90,6 +91,14 @@ def main():
     print('Bounder Ref Lat:', bounder_loc['Lat_deg'].iloc[-1])
     print('Bounder Ref Lon:', bounder_loc['Lon_deg'].iloc[-1])
     print('Bounder Ref Alt:', bounder_loc['Alt_m'].iloc[-1])
+
+    # Bounder sample interval and standard deviation
+    bounder_sample_interval_s = np.mean(np.diff(bounder_loc['Epoch_s']))
+    bounder_interval_std_s = np.std(np.diff(bounder_loc['Epoch_s']))
+    print('Bounder sample interval, s:', bounder_sample_interval_s)
+    print('Bounder standard dev, s:', bounder_interval_std_s)
+
+
 
     if is_export_bounder_csv:
         # Export Initial and Final states to CSV

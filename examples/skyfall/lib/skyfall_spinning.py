@@ -116,6 +116,10 @@ def main():
             print('gyroscope_sample_rate_hz:', df_skyfall_data[gyroscope_fs_label][station])
             print('gyroscope_epoch_s_0:', df_skyfall_data[gyroscope_epoch_s_label][station][0],
                   df_skyfall_data[gyroscope_epoch_s_label][station][-1])
+            print('gyroscope max rotation rate, rad/s:',
+                  np.max(df_skyfall_data[gyroscope_data_raw_label][station][2]))
+            print('gyroscope max rotation rate, Hz:',
+                  np.max(df_skyfall_data[gyroscope_data_raw_label][station][2] / (2*np.pi)))
             # Plot 3c raw gyroscope waveforms
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[gyroscope_data_raw_label][station][2] / (2*np.pi),
