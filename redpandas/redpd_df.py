@@ -127,31 +127,30 @@ def export_df_to_parquet(df: pd.DataFrame,
 
     key_sensors = {'barometer', 'accelerometer', 'gyroscope', 'magnetometer'}
     for label in key_sensors:
-
-        if f'{label}_wf_raw' in df.columns:  # make sure there is raw data first
+        # Create new columns with shape tuple for future unflattening/reshaping
+        if f'{label}_wf_raw' in df.columns:
             # Create new columns with shape tuple for future unflattening/reshaping
-            df[[f'{label}_wf_raw_ndim',
-                f'{label}_wf_highpass_ndim',
-                f'{label}_nans_ndim']] = \
-                df[[f'{label}_wf_raw',
-                    f'{label}_wf_highpass',
-                    f'{label}_nans']].applymap(np.shape)
-
+            df[[f'{label}_wf_raw_ndim']] = df[[f'{label}_wf_raw']].applymap(np.shape)
             # Change tuples to 1D np.array to save it to parquet
-            df[[f'{label}_wf_raw_ndim',
-                f'{label}_wf_highpass_ndim',
-                f'{label}_nans_ndim']] = \
-                df[[f'{label}_wf_raw_ndim',
-                    f'{label}_wf_highpass_ndim',
-                    f'{label}_nans_ndim']].applymap(np.asarray)
-
+            df[[f'{label}_wf_raw_ndim']] = df[[f'{label}_wf_raw_ndim']].applymap(np.asarray)
             # Flatten each row in wf columns
-            df[[f'{label}_wf_raw',
-                f'{label}_wf_highpass',
-                f'{label}_nans']] = \
-                df[[f'{label}_wf_raw',
-                    f'{label}_wf_highpass',
-                    f'{label}_nans']].applymap(np.ravel)
+            df[[f'{label}_wf_raw']] = df[[f'{label}_wf_raw']].applymap(np.ravel)
+
+        if f'{label}_wf_highpass' in df.columns:
+            # Create new columns with shape tuple for future unflattening/reshaping
+            df[[f'{label}_wf_highpass_ndim']] = df[[f'{label}_wf_highpass']].applymap(np.shape)
+            # Change tuples to 1D np.array to save it to parquet
+            df[[f'{label}_wf_highpass_ndim']] = df[[f'{label}_wf_highpass_ndim']].applymap(np.asarray)
+            # Flatten each row in wf columns
+            df[[f'{label}_wf_highpass']] = df[[f'{label}_wf_highpass']].applymap(np.ravel)
+
+        if f'{label}_nans' in df.columns:
+            # Create new columns with shape tuple for future unflattening/reshaping
+            df[[f'{label}_nans_ndim']] = df[[f'{label}_nans']].applymap(np.shape)
+            # Change tuples to 1D np.array to save it to parquet
+            df[[f'{label}_nans_ndim']] = df[[f'{label}_nans_ndim']].applymap(np.asarray)
+            # Flatten each row in wf columns
+            df[[f'{label}_nans']] = df[[f'{label}_nans']].applymap(np.ravel)
 
     # Make filename if non given
     if output_filename_pqt is None:

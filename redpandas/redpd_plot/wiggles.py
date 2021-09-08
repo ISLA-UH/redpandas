@@ -169,7 +169,7 @@ def determine_time_epoch_origin(df: pd.DataFrame,
             for index_time_label, sensor_time_label in enumerate(sig_timestamps_label):
                 # check that the time column exists first
                 if sensor_time_label not in df.columns:  # check column exists
-                    raise ValueError(f"the column name ({sensor_time_label}) was not found in the dataframe")
+                    raise ValueError(f"the column name {sensor_time_label} was not found in the dataframe")
 
                 elif type(df[sensor_time_label][index_station]) == float:  # not an array, so a Nan
                     continue  # skip cause entry for this station is empty
@@ -250,7 +250,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     # # For debugging
     # print("Wiggle num:", wiggle_num)
     # print("Wiggle ylabel:", wiggle_yticklabel)
-    print(wiggle_yticklabel)
+
     # Check wiggle_num and # of ylabels match
     if len(wiggle_yticklabel) != wiggle_num:
         raise ValueError(f"The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) "
