@@ -13,13 +13,18 @@ Using the data from this event, RedPandas is able to produce several products.
 To begin, download the skyfall data from [the Redvox website](http://redvox.io/@/3f3f).
 
 #### Running the Skyfall example
-Next, open `skyfall_config_file.py` and update the value of `INPUT_DIR` on line 5 to match the directory 
-where you downloaded the skyfall data (the directory will have a folder named "api900"). An example is below:
+Next, open `skyfall_config_file.py` and update the value of `SKYFALL_DIR` on line 5 to match the directory 
+where you downloaded the skyfall data (the directory will have a folder named "api900"). An example is below for Linux/Mac:
 ```python
-INPUT_DIR = "/path_to/your/downloaded_data/"
+SKYFALL_DIR = "/path_to/your/downloaded_data"
 ```
 
-Now, run the `skyfall_intro.py` file.  This will create simple products for you to view.
+An example path for Windows:
+```python
+SKYFALL_DIR = "\\path_to\\your\\downloaded_data"
+```
+
+Now, run the `skyfall_intro.py` file.  This will create sample products for you to view.
 
 For more RedPandas products, run the `run_all.py` file in the `lib/` directory.
 

@@ -3,8 +3,7 @@ from redpandas.redpd_config import RedpdConfig, TFRConfig
 
 # Absolute path to the skyfall data.
 # SKYFALL_DIR = "/Please/update/me/to/your/downloaded/data"
-SKYFALL_DIR = "/Users/tyler/Documents/skyfall_pipeline"
-
+SKYFALL_DIR = ""
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
 is_rerun_bounder: bool = True  # If true, rerun and save as parquet
