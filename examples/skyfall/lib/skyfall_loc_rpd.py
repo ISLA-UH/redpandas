@@ -36,6 +36,41 @@ def bounder_specs_to_csv(df, csv_export_file):
         writer.writerow(['Stop Altitude m  (WGS-84)', df['Alt_m'].iloc[-1]])
 
 
+def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parquet: str) -> None:
+    """
+    Load data from balloon-based Bounder platform
+
+    :param path_bounder_csv: path/to/bounder csv and parquet files
+    :param file_bounder_csv: name bounder csv file
+    :param file_bounder_parquet: name bounder parquet file
+    :return: save as parquet
+    """
+
+    # Event-specific start date and curated file
+    # Bounder Skyfall starts at 13:45:00, end at 14:16:00
+    yyyymmdd = "2020-10-27 "
+    rows = np.arange(5320, 7174)
+
+    input_path = os.path.join(path_bounder_csv, file_bounder_csv)
+    print('Input', input_path)
+    output_path = os.path.join(path_bounder_csv, file_bounder_parquet)
+
+    df = pd.read_csv(input_path, usecols=[5, 6, 7, 8, 9, 10, 11], skiprows=lambda x: x not in rows,
+                     names=['Pres_kPa', 'Temp_C', 'Batt_V', 'Lon_deg', 'Lat_deg', 'Alt_m', 'Time_hhmmss'])
+    dtime = pd.to_datetime(yyyymmdd + df['Time_hhmmss'], origin='unix')
+
+    # Convert datetime to unix nanoseconds, then to seconds
+    dtime_unix_s = dtime.view('int64')*rpd_geo.NANOS_TO_S  # Python 3.9
+
+    skyfall_bounder_loc = df.filter(['Lat_deg', 'Lon_deg', 'Alt_m', 'Pres_kPa', 'Temp_C', 'Batt_V'])
+    skyfall_bounder_loc.insert(0, 'Epoch_s', dtime_unix_s)
+    skyfall_bounder_loc.insert(1, 'Datetime', dtime)
+
+    print(skyfall_bounder_loc['Epoch_s'])
+    # Save to parquet
+    skyfall_bounder_loc.to_parquet(output_path)
+
+
 def main():
     """
     Paths from phone and bounder for Skyfall data set
@@ -64,17 +99,21 @@ def main():
     phone_loc = df_loc.iloc[m]
 
     # Verify
-    print(f'Verify that balloon station selected matches # of columns: {phone_loc.shape}')
+    if phone_loc.size != df_loc.shape[1]:
+        print(f"Error: Station selected does not match # of bounder columns; "
+              f"station({phone_loc.size}) != bounder({df_loc.shape[1]})")
+        raise ValueError("Station # columns does not match bounder # columns")
+    # print(f'Verify that balloon station selected matches # of columns: {phone_loc.shape}')
 
     # Bounder data is a standard rectangular matrix
     if not os.path.exists(BOUNDER_PATH):
-        print("Other input directory does not exist, check path:")
+        print("Bounder input directory does not exist, check path:")
         print(BOUNDER_PATH)
         exit()
 
     if skyfall_config.is_rerun_bounder:
-        rpd_geo.bounder_data(BOUNDER_PATH, BOUNDER_FILE, BOUNDER_PQT_FILE)
-        print('Constructing bounder parquet')
+        bounder_data(BOUNDER_PATH, BOUNDER_FILE, BOUNDER_PQT_FILE)
+        print('Constructing bounder.parquet file')
 
     # Load parquet with bounder data fields
     print('Load Bounder parquet:')

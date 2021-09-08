@@ -13,5 +13,7 @@ def main():
     path_export = rpd_df.export_df_to_parquet(df=df_skyfall,
                                               output_dir_pqt=skyfall_config.output_dir,
                                               output_filename_pqt=skyfall_config.pd_pqt_file)
+
+
 if __name__ == "__main__":
     main()
