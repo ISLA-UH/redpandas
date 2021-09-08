@@ -13,6 +13,7 @@ from redpandas.redpd_plot.parameters import FigureParameters as FigParam
 # PLOT_WIGGLES AUXILIARY FUNCTIONS
 def find_wiggle_num(df: pd.DataFrame,
                     sig_wf_label: Union[List[str], str] = "audio_wf",
+                    sig_timestamps_label: Union[List[str], str] = "audio_epoch_s",
                     sig_id_label: str = "station_id",
                     station_id_str: str = None) -> int:
     """
@@ -21,6 +22,7 @@ def find_wiggle_num(df: pd.DataFrame,
     :param df: input pandas dataframe. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
         multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
+    :param sig_timestamps_label: optional string or list of strings for column label in df with epoch time. Default is "audio_epoch_s"
     :param sig_id_label: string for the station id column name in df. Default is "station_id"
     :param station_id_str: optional string with name of one station to plot. Default is None
     :return: int, number of wiggles
@@ -42,7 +44,8 @@ def find_wiggle_num(df: pd.DataFrame,
         for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):
             if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
                 # check column exists and not empty
-                if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
+                if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float and \
+                        df[sig_timestamps_label[index_sensor_in_list]][index_n] is not None:
 
                     if dict_wiggle_num.get(sensor_in_list) is not None:
                         # Get number of wiggles per sensor
@@ -65,6 +68,7 @@ def find_wiggle_num(df: pd.DataFrame,
 
 def find_ylabel(df: pd.DataFrame,
                 sig_wf_label: Union[List[str], str] = "audio_wf",
+                sig_timestamps_label: Union[List[str], str] = "audio_epoch_s",
                 sig_id_label: str = "station_id",
                 station_id_str: Optional[str] = None,
                 custom_yticks: Optional[Union[List[str], str]] = None) -> List:
@@ -74,6 +78,7 @@ def find_ylabel(df: pd.DataFrame,
     :param df: input pandas dataframe. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
         multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
+    :param sig_timestamps_label: optional string or list of strings for column label in df with epoch time. Default is "audio_epoch_s"
     :param sig_id_label: optional string for the station id column name in df. Default is "station_id"
     :param station_id_str: optional string with name of one station to plot. Default is None
     :param custom_yticks:
@@ -103,7 +108,8 @@ def find_ylabel(df: pd.DataFrame,
             for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):  # loop for every sensor
                 if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
                     # check column exists and not empty
-                    if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float:
+                    if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float and \
+                            df[sig_timestamps_label[index_sensor_in_list]][index_n] is not None:
                         # Get yticks
                         if custom_yticks == "index":  # if ylabel for wiggle is index station
                             list_index = [df.index[index_n]] * len(dict_yticks.get(sensor_in_list))
@@ -123,10 +129,6 @@ def find_ylabel(df: pd.DataFrame,
                                         and sensor_in_list.find("gyr") == -1 \
                                         and sensor_in_list.find("mag") == -1:
                                     wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
-                                # elif len(sig_wf_label) == 1 and sensor_in_list.find("gyr") == -1:
-                                #     wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
-                                # elif len(sig_wf_label) == 1 and sensor_in_list.find("mag") == -1:
-                                #     wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
                                 else:  # if multiple sensors and stations, yticks both station and sensors
                                     station_and_sensor = [f"{df[sig_id_label][index_n]} " + element for element in sensor_short]
                                     wiggle_yticklabel += station_and_sensor
@@ -171,9 +173,8 @@ def determine_time_epoch_origin(df: pd.DataFrame,
                 if sensor_time_label not in df.columns:  # check column exists
                     raise ValueError(f"the column name {sensor_time_label} was not found in the dataframe")
 
-                elif type(df[sensor_time_label][index_station]) == float:  # not an array, so a Nan
+                elif type(df[sensor_time_label][index_station]) == float or df[sensor_time_label][index_station] is None:  # not an array, so a Nan
                     continue  # skip cause entry for this station is empty
-
                 else:
                     epoch_j.append(df[sensor_time_label][index_station].min())
 
@@ -240,10 +241,12 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     # Get wiggle number, yticks label
     wiggle_num = find_wiggle_num(df=df,
                                  sig_wf_label=sig_wf_label,
+                                 sig_timestamps_label=sig_timestamps_label,
                                  sig_id_label=sig_id_label,
                                  station_id_str=station_id_str)
     wiggle_yticklabel = find_ylabel(df=df,
                                     sig_wf_label=sig_wf_label,
+                                    sig_timestamps_label=sig_timestamps_label,
                                     sig_id_label=sig_id_label,
                                     station_id_str=station_id_str,
                                     custom_yticks=custom_yticks)
@@ -288,9 +291,9 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     # for index_sensor_label_ticklabels_list, index_station in enumerate(df.index):  # loop per station
     for index_station in df.index:  # loop per station
         for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
-
             # first things first, check if column with data exists and if there is data in it:
-            if label not in df.columns or type(df[label][index_station]) == float:
+            if label not in df.columns or type(df[label][index_station]) == float or \
+                    df[sig_timestamps_label[index_sensor_in_list]][index_station] is None:
                 print(f"SensorMissingException: The column {label} was not found in DataFrame or no data available in "
                       f"{label} for station {df[sig_id_label][index_station]}")
                 continue  # if not, skip this iteration

@@ -357,8 +357,7 @@ def df_column_unflatten(df: pd.DataFrame,
     """
 
     col_values = df[col_wf_label].to_numpy()
-    col_ndim = df[col_ndim_label].to_numpy()
     for index_array in df.index:
-        if len(col_ndim[index_array]) > 1:
-            col_values[index_array].shape = (df[col_ndim_label][index_array][0],
-                                             df[col_ndim_label][index_array][1])
+        if len(df[col_ndim_label][index_array]) > 1:
+            col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
+                                             int(df[col_ndim_label][index_array][1]))
