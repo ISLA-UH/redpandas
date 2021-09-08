@@ -1,4 +1,5 @@
 """
+Loads DataWindow from Redvox data files or compressed files
 This is a helper function for other skyfall example files
 """
 

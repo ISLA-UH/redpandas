@@ -2,7 +2,6 @@ import os
 from redpandas.redpd_config import RedpdConfig, TFRConfig
 
 # Absolute path to the skyfall data.
-# SKYFALL_DIR = "/Please/update/me/to/your/downloaded/data"
 SKYFALL_DIR = ""
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
@@ -11,9 +10,9 @@ BOUNDER_PATH = "../bounder"
 BOUNDER_FILE = "skyfall_bounder.csv"
 BOUNDER_PQT_FILE = "Skyfall_df_bounder.parquet"
 
-# For lines 24 and below, no need to change as they contain Skyfall example set parameters.
+# It is not recommended to change the lines below as they contain Skyfall example set parameters.
 
-# Reference lat, long, altitude and epoch s. Skyfall specific
+# Skyfall specific reference lat, long, altitude and epoch s.
 ref_latitude_deg = 35.83728
 ref_longitude_deg = -115.57234
 ref_altitude_m = 1028.2

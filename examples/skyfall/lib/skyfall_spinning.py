@@ -12,7 +12,7 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
-from examples.skyfall.skyfall_config_file import skyfall_config, BOUNDER_PATH, BOUNDER_PQT_FILE
+from examples.skyfall.skyfall_config_file import skyfall_config
 
 
 def main():
@@ -47,10 +47,6 @@ def main():
     magnetometer_data_highpass_label: str = "magnetometer_wf_highpass"
     magnetometer_epoch_s_label: str = "magnetometer_epoch_s"
     magnetometer_fs_label: str = "magnetometer_sample_rate_hz"
-
-    # Load parquet with bounder data fields
-    # TODO: clean up
-    bounder_loc = pd.read_parquet(os.path.join(BOUNDER_PATH, BOUNDER_PQT_FILE))
 
     # Load data options
     df_skyfall_data = sf_dw.dw_main(skyfall_config.tdr_load_method)

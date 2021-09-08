@@ -10,11 +10,13 @@ descent using the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app
 Using the data from this event, RedPandas is able to produce several products.
 
 #### Downloading the RedVox Skyfall data
-To begin, download the skyfall data from [the Redvox website](http://redvox.io/@/3f3f).
+To begin, download the Skyfall data from [the Redvox website](http://redvox.io/@/3f3f).
 
 #### Running the Skyfall example
 Next, open `skyfall_config_file.py` and update the value of `SKYFALL_DIR` on line 5 to match the directory 
-where you downloaded the skyfall data (the directory will have a folder named "api900"). An example is below for Linux/Mac:
+where you downloaded the Skyfall data (the directory will have a folder named "api900").
+
+An example for Linux/Mac:
 ```python
 SKYFALL_DIR = "/path_to/your/downloaded_data"
 ```
@@ -24,7 +26,7 @@ An example path for Windows:
 SKYFALL_DIR = "\\path_to\\your\\downloaded_data"
 ```
 
-Now, run the `skyfall_intro.py` file.  This will create sample products for you to view.
+Now, run the `skyfall_intro.py` file.  This will create some products for you to view.
 
 For more RedPandas products, run the `run_all.py` file in the `lib/` directory.
 

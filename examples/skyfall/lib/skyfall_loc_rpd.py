@@ -11,6 +11,7 @@ import redpandas.redpd_geospatial as rpd_geo
 # Import constants
 from redpandas.redpd_scales import METERS_TO_KM, SECONDS_TO_MINUTES
 
+import examples.skyfall.lib.skyfall_dw as sf_dw
 from examples.skyfall.skyfall_config_file import skyfall_config, \
     BOUNDER_PATH, BOUNDER_FILE, BOUNDER_PQT_FILE, \
     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
@@ -41,13 +42,20 @@ def main():
     """
     is_export_bounder_csv: bool = False  # If true, save only episode start to end as csv
 
-    # Use configuration file to load rdvx parquet for the data window
-    rdvx_path_pickle_df = os.path.join(skyfall_config.output_dir, skyfall_config.pd_pqt_file)
     # Concentrate on single station
     phone_id = "1637610021"
 
     # Load for all stations
-    df_loc = rpd_geo.redvox_loc(rdvx_path_pickle_df)
+    loc_fields = ['station_id',
+                  'location_epoch_s',
+                  'location_latitude',
+                  'location_longitude',
+                  'location_altitude',
+                  'location_speed',
+                  'location_horizontal_accuracy',
+                  'barometer_epoch_s',
+                  'barometer_wf_raw']
+    df_loc = sf_dw.dw_main(skyfall_config.tdr_load_method)[loc_fields]
     print(f'Dimensions (# of rows, # of columns): {df_loc.shape}')
 
     # Pick only the balloon station
