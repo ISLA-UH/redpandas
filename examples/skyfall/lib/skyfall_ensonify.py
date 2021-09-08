@@ -15,7 +15,7 @@ def main():
     # Refine loading checks; need hp and strings
     redvox_sdk_version_label: str = 'redvox_sdk_version'
     print("Create RedVox DataWindow")
-    df_skyfall_data = sf_dw.dw_main()
+    df_skyfall_data = sf_dw.dw_main(skyfall_config.tdr_load_method)
     print(f"Done. RedVox SDK version: {df_skyfall_data[redvox_sdk_version_label][0]}")
 
     # print(df_skyfall_data.columns)

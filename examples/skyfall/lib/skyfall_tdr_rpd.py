@@ -15,7 +15,6 @@ from redpandas.redpd_config import DataLoadMethod
 import examples.skyfall.lib.skyfall_dw as sf_dw
 from examples.skyfall.skyfall_config_file import skyfall_config, \
     ref_latitude_deg, ref_longitude_deg, ref_altitude_m, ref_epoch_s
-    # BOUNDER_PATH, BOUNDER_PQT_FILE
 
 
 def main():
@@ -28,7 +27,6 @@ def main():
 
     # Label columns in dataframe
     station_label: str = "station_id"
-    redvox_sdk_version_label: str = 'redvox_sdk_version'
 
     # Audio columns
     audio_data_label: str = "audio_wf"
@@ -83,7 +81,7 @@ def main():
 
     # Load data options
     # RECOMMENDED: tdr_load_method="datawindow" in config file
-    df_skyfall_data = sf_dw.dw_main()
+    df_skyfall_data = sf_dw.dw_main(skyfall_config.tdr_load_method)
 
     # Start of building plots
     print("\nInitiating time-domain representation of Skyfall:")

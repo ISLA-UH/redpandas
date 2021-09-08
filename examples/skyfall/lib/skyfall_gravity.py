@@ -35,7 +35,7 @@ def main():
     accelerometer_fs_label: str = "accelerometer_sample_rate_hz"
 
     # Load data options
-    df_skyfall_data = sf_dw.dw_main()
+    df_skyfall_data = sf_dw.dw_main(skyfall_config.tdr_load_method)
 
     # Start of building plots
     print("\nInitiating time-domain representation of Skyfall:")

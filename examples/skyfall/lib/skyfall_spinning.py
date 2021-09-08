@@ -53,7 +53,7 @@ def main():
     bounder_loc = pd.read_parquet(os.path.join(BOUNDER_PATH, BOUNDER_PQT_FILE))
 
     # Load data options
-    df_skyfall_data = sf_dw.dw_main()
+    df_skyfall_data = sf_dw.dw_main(skyfall_config.tdr_load_method)
 
     # Start of building plots
     print("\nInitiating time-domain representation of Skyfall:")

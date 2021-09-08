@@ -2,7 +2,8 @@ import os
 from redpandas.redpd_config import RedpdConfig, TFRConfig
 
 # Absolute path to the skyfall data.
-SKYFALL_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
+# SKYFALL_DIR = "/Please/update/me/to/your/downloaded/data"
+SKYFALL_DIR = "/Users/tyler/Documents/skyfall_pipeline"
 
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
