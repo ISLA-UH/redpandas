@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.2.9 (2021-09-09)
+- Fixed bug in wiggles and mesh with ylabels
+
 ## 1.2.7-8 (2021-09-08)
 - Fixed bug exporting and opening dataframes with empty values for certain columns
 - Fixed wiggles bug with plotting empty values in dataframe
