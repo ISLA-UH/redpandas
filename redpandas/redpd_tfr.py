@@ -76,8 +76,8 @@ def frame_panda(df: pd.DataFrame,
     aligned_epoch_s = []
     for n in df.index:
         if sig_wf_label not in df.columns or type(df[sig_wf_label][n]) == float:
-            aligned_wf.append(np.nan)
-            aligned_epoch_s.append(np.nan)
+            aligned_wf.append(float("NaN"))
+            aligned_epoch_s.append(float("NaN"))
             continue
 
         sig_wf, sig_epoch_s = \
@@ -124,9 +124,9 @@ def tfr_bits_panda(df: pd.DataFrame,
     for n in df.index:
 
         if sig_wf_label not in df.columns or type(df[sig_wf_label][n]) == float:
-            tfr_bits.append(np.nan)
-            tfr_time_s.append(np.nan)
-            tfr_frequency_hz.append(np.nan)
+            tfr_bits.append(float("NaN"))
+            tfr_time_s.append(float("NaN"))
+            tfr_frequency_hz.append(float("NaN"))
             continue
 
         if df[sig_wf_label][n].ndim == 1:  # audio basically

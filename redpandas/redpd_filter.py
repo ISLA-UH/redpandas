@@ -228,6 +228,12 @@ def decimate_signal_pandas(df: pd.DataFrame,
 
     for row in range(len(df)):  # for row in df
 
+        if type(df[sig_wf_label][row]) == float or type(df[sample_rate_hz_label][row])==float:
+            list_all_decimated_timestamps.append(float("NaN"))
+            list_all_decimated_data.append(float("NaN"))
+            list_all_decimated_sample_rate_hz.append(float("NaN"))
+            continue
+
         if df[sample_rate_hz_label][row] != min_sample_rate:
             # calculate downsampling factor to reach downsampled frequency
             downsampling_factor = int(df[sample_rate_hz_label][row]/min_sample_rate)
