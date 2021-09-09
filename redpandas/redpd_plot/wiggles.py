@@ -112,7 +112,6 @@ def find_ylabel(df: pd.DataFrame,
                     if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float and \
                             df[sig_timestamps_label[index_sensor_in_list]][index_n] is not None:
                         # Get yticks
-                        print(sensor_in_list)
                         if custom_yticks == "index":  # if ylabel for wiggle is index station
                             list_index = [df.index[index_n]] * len(dict_yticks.get(sensor_in_list))
                             wiggle_yticklabel += list_index
