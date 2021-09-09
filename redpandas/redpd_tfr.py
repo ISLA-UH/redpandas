@@ -32,8 +32,8 @@ def frame_panda_no_offset(df: pd.DataFrame,
     aligned_epoch_s = []
     for n in df.index:
         if sig_wf_label not in df.columns or type(df[sig_wf_label][n]) == float:
-            aligned_wf.append(np.nan)
-            aligned_epoch_s.append(np.nan)
+            aligned_wf.append(float("NaN"))
+            aligned_epoch_s.append(float("NaN"))
             continue
 
         sig_wf, sig_epoch_s = \

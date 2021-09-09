@@ -65,6 +65,7 @@ def find_ylabel_tfr(df: pd.DataFrame,
 
     if sig_id_label == "index" or (type(sig_id_label) == str and sig_id_label in df.columns):
         wiggle_yticklabel = []  # name/y label of wiggles
+
         for mesh_n in range(len(mesh_tfr_label)):
             mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
             for n in df.index:
@@ -111,11 +112,9 @@ def find_x_max_min_lim(df: pd.DataFrame,
 
     index_wiggle_num_total = 0  # index to keep track of which wiggle
     for mesh_n in range(len(mesh_tfr_label)):
-
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-        mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
-
         for index_element in df.index:
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
+            mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_element]) != float:
@@ -162,11 +161,11 @@ def find_tfr_max_min_lim(df: pd.DataFrame,
     tfr_max = np.empty(wiggle_num)
 
     index_wiggle_num_total = 0  # index to keep track of which wiggle
-    for mesh_n in range(len(mesh_tfr_label)):
 
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-
-        for index_element in df.index:
+    # for mesh_n in range(len(mesh_tfr_label)):
+    for index_element in df.index:
+        for mesh_n in range(len(mesh_tfr_label)):
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_element]) != float:
@@ -303,24 +302,20 @@ def plot_mesh_pandas(df: pd.DataFrame,
     else:
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
 
-    # Start plotting each sensor/station
     index_wiggle_yticklabels = 0  # index to keep track of which wiggle y label to apply
-    # index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted
-    index_panel_order = 0
+    index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted, -1 cause index 0
     index_mesh_color_scale_panel = 0  # index to keep track of which mesh tfr color scale to apply if provided
 
+    # loop to plot column label provided per station, reversed to match plot_wiggles
     for mesh_n in range(len(mesh_tfr_label)):  # for each column label provided
-
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-        mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
-        mesh_frequency_label_individual = mesh_frequency_label[mesh_n]  # individual mesh label from list
-
-        # loop to plot column label provided per station, reversed to match plot_wiggles
-        for _, index_signal in enumerate(reversed(df.index)):
+        for index_signal in df.index:
+            # Start plotting each sensor/station
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
+            mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
+            mesh_frequency_label_individual = mesh_frequency_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_signal]) != float:
-
                 if df[mesh_tfr_label_individual][index_signal].ndim == 2:  # aka audio wiggle
 
                     if common_colorbar is True:
@@ -377,7 +372,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                     # Plot yticks
                     ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                    ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=FigParam().text_size)
+                    ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
 
                     # Set up ax limits
                     plt.xlim(x_lim_min_total, x_lim_max_total)
@@ -387,8 +382,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                     ax.tick_params(axis='both', which='major', labelsize=FigParam().text_size)
 
                     index_wiggle_yticklabels += 1
-                    # index_panel_order -= 1
-                    index_panel_order += 1
+                    index_panel_order -= 1
                     index_mesh_color_scale_panel += 1
 
                 else:
@@ -458,8 +452,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                         ax.tick_params(axis='both', which='major', labelsize=FigParam().text_size)
 
-                        # index_panel_order -= 1
-                        index_panel_order += 1
+                        index_panel_order -= 1
                         index_mesh_color_scale_panel += 1
                         index_wiggle_yticklabels += 1
             else:
