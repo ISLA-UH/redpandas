@@ -26,7 +26,6 @@ def main():
     audio_fs_label: str = "audio_sample_rate_nominal_hz"
 
     # All the sensor channels to be ensonified have 100 Hz highpass
-
     # Barometer columns
     barometer_data_highpass_label: str = "barometer_wf_highpass"
     barometer_epoch_s_label: str = "barometer_epoch_s"

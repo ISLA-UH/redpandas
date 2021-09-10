@@ -1,8 +1,5 @@
-# todo: address possible invalid values in building plots section
 # Python libraries
-import os.path
 import matplotlib.pyplot as plt
-import pandas as pd
 import numpy as np
 
 # RedVox RedPandas and related RedVox modules
@@ -18,9 +15,7 @@ from examples.skyfall.skyfall_config_file import skyfall_config
 def main():
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
-    Last updated: 18 June 2021
     """
-    print('Let the sky fall')
 
     # Label columns in dataframe
     station_label: str = "station_id"
@@ -30,23 +25,11 @@ def main():
     audio_epoch_s_label: str = "audio_epoch_s"
     audio_fs_label: str = "audio_sample_rate_nominal_hz"
 
-    # Accelerometer columns
-    accelerometer_data_raw_label: str = "accelerometer_wf_raw"
-    accelerometer_data_highpass_label: str = "accelerometer_wf_highpass"
-    accelerometer_epoch_s_label: str = "accelerometer_epoch_s"
-    accelerometer_fs_label: str = "accelerometer_sample_rate_hz"
-
     # Gyroscope columns
     gyroscope_data_raw_label: str = "gyroscope_wf_raw"
     gyroscope_data_highpass_label: str = "gyroscope_wf_highpass"
     gyroscope_epoch_s_label: str = "gyroscope_epoch_s"
     gyroscope_fs_label: str = "gyroscope_sample_rate_hz"
-
-    # Magnetometer columns
-    magnetometer_data_raw_label: str = "magnetometer_wf_raw"
-    magnetometer_data_highpass_label: str = "magnetometer_wf_highpass"
-    magnetometer_epoch_s_label: str = "magnetometer_epoch_s"
-    magnetometer_fs_label: str = "magnetometer_sample_rate_hz"
 
     # Load data options
     df_skyfall_data = sf_dw.dw_main(skyfall_config.tdr_load_method)
@@ -100,8 +83,6 @@ def main():
                                    figure_title_show=False,
                                    label_panel_show=True,  # for press
                                    labels_fontweight='bold')
-
-        # TODO: Add magnetometer spectrogram to illustrate match of frequency information
 
         plt.show()
 

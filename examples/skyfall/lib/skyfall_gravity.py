@@ -16,9 +16,8 @@ from redpandas.redpd_config import DataLoadMethod
 
 def main():
     """
-    RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
+    RedVox RedPandas time-domain representation of API900 data.
     """
-    print('Let the sky fall')
 
     # Label columns in dataframe
     station_label: str = "station_id"
@@ -111,9 +110,9 @@ def main():
                                    wf_panel_0_sig=gravity_x,
                                    wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station],
                                    start_time_epoch=event_reference_time_epoch_s,
-                                   wf_panel_2_units="Grav Z, m/$s^2$",
-                                   wf_panel_1_units="Grav Y, m/$s^2$",
-                                   wf_panel_0_units="Grav X, m/$s^2$",
+                                   wf_panel_2_units="LP Acc Z, m/$s^2$",
+                                   wf_panel_1_units="LP Acc Y, m/$s^2$",
+                                   wf_panel_0_units="LP Acc X, m/$s^2$",
                                    figure_title=skyfall_config.event_name + ": Gravity",
                                    figure_title_show=False,  # for press
                                    label_panel_show=True,  # for press

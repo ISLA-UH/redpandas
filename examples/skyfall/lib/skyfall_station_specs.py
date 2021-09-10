@@ -143,14 +143,11 @@ def station_specs_to_csv(data_window: DataWindow,
 def main():
     """
     Beta workflow for API M pipeline
-    Last updated: 17 May 2021
     """
-    print('Let the sky fall')
+
     print("Print and save station information")
 
     rdvx_data = rpd_dw.dw_from_redpd_config(config=skyfall_config)
-    # rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
-    #                                                   file_name=skyfall_config.dw_file)
     rpd_dq.station_metadata(rdvx_data)
 
     print("\nSave Station specs to file")

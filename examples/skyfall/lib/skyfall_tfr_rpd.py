@@ -13,16 +13,13 @@ from redpandas.redpd_config import DataLoadMethod
 from examples.skyfall.skyfall_config_file import skyfall_config, tfr_config
 
 axes = ["X", "Y", "Z"]
-# TODO: build spectrogram version of libquantum's plot_wf_wf_wf_vert to match TDR plots?
 
 
 def main():
     """
     RedVox RedPandas time-frequency representation of API900 data. Example: Skyfall.
-    Last updated: 12 July 2021
+    Last updated: 20210909
     """
-
-    print('Let the sky fall')
 
     # Label columns in dataframe
     station_label: str = "station_id"
@@ -127,11 +124,6 @@ def main():
             print('barometer_sample_rate_hz:', df_skyfall_data[barometer_fs_label][station])
             print('barometer_epoch_s_0:', df_skyfall_data[barometer_epoch_s_label][station][0])
 
-            # baro height not currently used
-            # barometer_height_m = \
-            #    rpd_geo.bounder_model_height_from_pressure(df_skyfall_data[barometer_data_raw_label][station][0])
-            # baro_height_from_bounder_km = barometer_height_m * METERS_TO_KM
-
             barometer_tfr_start_epoch: float = df_skyfall_data[barometer_epoch_s_label][0][0]
             if tfr_config.sensor_hp['Bar']:
                 bar_sig_label, bar_hp_raw = barometer_data_highpass_label, 'hp'
@@ -176,24 +168,6 @@ def main():
             print('accelerometer_sample_rate_hz:', df_skyfall_data[accelerometer_fs_label][station])
             print('accelerometer_epoch_s_0:', df_skyfall_data[accelerometer_epoch_s_label][station][0],
                   df_skyfall_data[accelerometer_epoch_s_label][station][-1])
-
-            # time-domain plots in skyfall_tdr_rpd.py
-            # # Plot 3c acceleration highpass waveforms
-            # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-            #                        wf_panel_2_sig=df_skyfall_data[accelerometer_data_highpass_label][station][2],
-            #                        wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-            #                        wf_panel_1_sig=df_skyfall_data[accelerometer_data_highpass_label][station][1],
-            #                        wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-            #                        wf_panel_0_sig=df_skyfall_data[accelerometer_data_highpass_label][station][0],
-            #                        wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-            #                        start_time_epoch=event_reference_time_epoch_s,
-            #                        wf_panel_2_units="Acc Z, m/$s^2$",
-            #                        wf_panel_1_units="Acc Y, m/$s^2$",
-            #                        wf_panel_0_units="Acc X, m/$s^2$",
-            #                        figure_title=EVENT_NAME + ": Accelerometer highpass",
-            #                        figure_title_show=True,
-            #                        label_panel_show=False,
-            #                        labels_fontweight='bold')
 
             acceleromter_tfr_start_epoch: float = df_skyfall_data[accelerometer_epoch_s_label][0][0]
             if tfr_config.sensor_hp['Acc']:
@@ -243,24 +217,6 @@ def main():
             print('gyroscope_epoch_s_0:', df_skyfall_data[gyroscope_epoch_s_label][station][0],
                   df_skyfall_data[gyroscope_epoch_s_label][station][-1])
 
-            # time-domain plots in skyfall_tdr_rpd.py
-            # # Plot 3c gyroscope highpass waveforms
-            # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-            #                        wf_panel_2_sig=df_skyfall_data[gyroscope_data_highpass_label][station][2],
-            #                        wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-            #                        wf_panel_1_sig=df_skyfall_data[gyroscope_data_highpass_label][station][1],
-            #                        wf_panel_1_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-            #                        wf_panel_0_sig=df_skyfall_data[gyroscope_data_highpass_label][station][0],
-            #                        wf_panel_0_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-            #                        start_time_epoch=event_reference_time_epoch_s,
-            #                        wf_panel_2_units="Gyr Z, rad/s$",
-            #                        wf_panel_1_units="Gyr Y, rad/s$",
-            #                        wf_panel_0_units="Gyr X, rad/s$",
-            #                        figure_title=EVENT_NAME + ": Gyroscope highpass",
-            #                        figure_title_show=True,
-            #                        label_panel_show=False,
-            #                        labels_fontweight='bold')
-
             gyroscope_tfr_start_epoch: float = df_skyfall_data[gyroscope_epoch_s_label][0][0]
             if tfr_config.sensor_hp['Gyr']:
                 gyr_sig_label, gyr_hp_raw = gyroscope_data_highpass_label, 'hp'
@@ -306,24 +262,6 @@ def main():
             print('magnetometer_epoch_s_0:', df_skyfall_data[magnetometer_epoch_s_label][station][0],
                   df_skyfall_data[magnetometer_epoch_s_label][station][-1])
 
-            # time-domain plots in skyfall_tdr_rpd.py
-            # # Plot 3c magnetometer highpass waveforms
-            # pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-            #                        wf_panel_2_sig=df_skyfall_data[magnetometer_data_highpass_label][station][2],
-            #                        wf_panel_2_time=df_skyfall_data[magnetometer_epoch_s_label][station],
-            #                        wf_panel_1_sig=df_skyfall_data[magnetometer_data_highpass_label][station][1],
-            #                        wf_panel_1_time=df_skyfall_data[magnetometer_epoch_s_label][station],
-            #                        wf_panel_0_sig=df_skyfall_data[magnetometer_data_highpass_label][station][0],
-            #                        wf_panel_0_time=df_skyfall_data[magnetometer_epoch_s_label][station],
-            #                        start_time_epoch=event_reference_time_epoch_s,
-            #                        wf_panel_2_units="Mag Z, $\mu$T",
-            #                        wf_panel_1_units="Mag Y, $\mu$T",
-            #                        wf_panel_0_units="Mag X, $\mu$T",
-            #                        figure_title=skyfall_config.event_name + ": Magnetometer highpass",
-            #                        figure_title_show=True,
-            #                        label_panel_show=False,
-            #                        labels_fontweight='bold')
-
             magnetometer_tfr_start_epoch: float = df_skyfall_data[magnetometer_epoch_s_label][0][0]
             if tfr_config.sensor_hp['Mag']:
                 mag_sig_label, mag_hp_raw = magnetometer_data_highpass_label, 'hp'
@@ -353,34 +291,6 @@ def main():
                                       start_time_epoch=magnetometer_tfr_start_epoch,
                                       figure_title_show=tfr_config.show_fig_titles,
                                       wf_panel_2_units=f"Mag {axes[ax_n]} {mag_hp_raw}, $\mu$T")
-
-        # ALL-SENSOR PLOTS:
-
-        # time-domain plots in skyfall_tdr_rpd.py
-        # Plot TDR sensor wiggles
-        # sensor_column_label_list = [audio_data_label, barometer_data_highpass_label,
-        #                             accelerometer_data_highpass_label, gyroscope_data_highpass_label,
-        #                             magnetometer_data_highpass_label]
-        #
-        # sensor_epoch_column_label_list = [audio_epoch_s_label, barometer_epoch_s_label,
-        #                                   accelerometer_epoch_s_label, gyroscope_epoch_s_label,
-        #                                   magnetometer_epoch_s_label]
-        #
-        # sensor_ticklabels_list = ['Audio', 'Bar hp', 'Acc X hp', 'Acc Y hp',
-        #                           'Acc Z hp', 'Gyr X hp', 'Gyr Y hp', 'Gyr Z hp',
-        #                           'Mag X hp', 'Mag Y hp', 'Mag Z hp']
-        #
-        # rpd_plot.plot_sensor_wiggles_pandas(df=df_skyfall_data,
-        #                                     station_id_str='1637610021',
-        #                                     sensor_wf_label_list=sensor_column_label_list,
-        #                                     sensor_timestamps_label_list=sensor_epoch_column_label_list,
-        #                                     sig_id_label='station_id',
-        #                                     x_label='Time (s)',
-        #                                     y_label='Sensor',
-        #                                     fig_title_show=False,
-        #                                     fig_title='sensor waveforms',
-        #                                     wf_color='midnightblue',
-        #                                     sensor_yticks_label_list=sensor_ticklabels_list)
 
         # Plot TFR sensor wiggles
         rpd_plot.plot_mesh_pandas(df=df_skyfall_data,
