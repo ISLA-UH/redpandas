@@ -204,7 +204,7 @@ def decimate_signal_pandas(df: pd.DataFrame,
                            new_column_label_decimated_sig: str = 'decimated_sig_data',
                            new_column_label_decimated_sig_timestamps: str = 'decimated_sig_epoch',
                            new_column_label_decimated_sample_rate_hz: str = 'decimated_sample_rate_hz',
-                           verbose: bool = True) -> pd.DataFrame:
+                           verbose: bool = False) -> pd.DataFrame:
     """
     Decimate all signal data (via spicy.signal.decimate). Decimates to the smallest sample rate recorded in data frame
     or to custom frequency.
