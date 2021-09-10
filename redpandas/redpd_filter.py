@@ -82,6 +82,11 @@ def signal_zero_mean_pandas(df: pd.DataFrame,
 
     list_zero_mean_data = []  # list that will be converted to a column
     for n in df.index:
+
+        if type(df[sig_wf_label][n]) == float:
+            list_zero_mean_data.append(float("NaN"))
+            continue
+
         if df[sig_wf_label][n].ndim == 1:
             list_zero_mean_data.append(df[sig_wf_label][n] - np.nanmean(df[sig_wf_label][n]))
         else:
@@ -115,6 +120,10 @@ def taper_tukey_pandas(df: pd.DataFrame,
     list_taper = []
 
     for row in df.index:
+        if type(df[sig_wf_label][row]) == float:
+            list_taper.append(float("NaN"))
+            continue
+
         if df[sig_wf_label][row].ndim == 1:
             sig_data_window = (df[sig_wf_label][row] * signal.windows.tukey(M=len(df[sig_wf_label][row]),
                                                                             alpha=fraction_cosine,
@@ -163,6 +172,9 @@ def normalize_pandas(df: pd.DataFrame,
 
     list_normalized_signals = []  # list that will be converted to a column
     for row in range(len(df)):
+        if type(df[sig_wf_label][row]) == float:
+            list_normalized_signals.append(float("NaN"))
+            continue
 
         if df[sig_wf_label][row].ndim == 1:
             # use libquantum utils normalize module
@@ -192,7 +204,7 @@ def decimate_signal_pandas(df: pd.DataFrame,
                            new_column_label_decimated_sig: str = 'decimated_sig_data',
                            new_column_label_decimated_sig_timestamps: str = 'decimated_sig_epoch',
                            new_column_label_decimated_sample_rate_hz: str = 'decimated_sample_rate_hz',
-                           verbose: bool = True) -> pd.DataFrame:
+                           verbose: bool = False) -> pd.DataFrame:
     """
     Decimate all signal data (via spicy.signal.decimate). Decimates to the smallest sample rate recorded in data frame
     or to custom frequency.
@@ -227,6 +239,12 @@ def decimate_signal_pandas(df: pd.DataFrame,
     list_all_decimated_sample_rate_hz = []
 
     for row in range(len(df)):  # for row in df
+
+        if type(df[sig_wf_label][row]) == float or type(df[sample_rate_hz_label][row])==float:
+            list_all_decimated_timestamps.append(float("NaN"))
+            list_all_decimated_data.append(float("NaN"))
+            list_all_decimated_sample_rate_hz.append(float("NaN"))
+            continue
 
         if df[sample_rate_hz_label][row] != min_sample_rate:
             # calculate downsampling factor to reach downsampled frequency
@@ -346,6 +364,13 @@ def bandpass_butter_pandas(df: pd.DataFrame,
 
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
+
+        if type(df[sig_wf_label][j]) == float or type(df[sig_sample_rate_label][j]) == float:
+            list_all_signal_bandpass_data.append(float("NaN"))
+            list_all_frequency_low_hz.append(float("NaN"))
+            list_all_frequency_high_hz.append(float("NaN"))
+            continue
+
         if df[sig_wf_label][j].ndim == 1:
             nyquist = 0.5 * df[sig_sample_rate_label][j]
             edge_low = frequency_cut_low_hz / nyquist
@@ -428,6 +453,12 @@ def highpass_butter_pandas(df: pd.DataFrame,
 
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
+        if type(df[sig_wf_label][j]) == float or type(df[sig_sample_rate_label][j]) == float:
+            list_all_signal_highpass_data.append(float("NaN"))
+            list_all_frequency_low_hz.append(float("NaN"))
+            list_all_frequency_high_hz.append(float("NaN"))
+            continue
+
         if df[sig_wf_label][j].ndim == 1:
             nyquist = 0.5 * df[sig_sample_rate_label][j]
             edge_low = frequency_cut_low_hz / nyquist
