@@ -1,4 +1,4 @@
-### Skyfall
+### Examples: Skyfall
 
 The Skyfall data is a high-quality dataset that showcases the RedPandas library for processing smartphone data collected 
 with the [RedVox Infrasound Recorder app](https://www.redvoxsound.com).
@@ -10,13 +10,14 @@ descent using the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app
 Using the data from this event, RedPandas is able to produce several products.
 
 #### Downloading the RedVox Skyfall data
-To begin, download the Skyfall data from [the Redvox website](http://redvox.io/@/3f3f).
+To begin, download the Skyfall data from [the Redvox website](http://redvox.io/@/3f3f). Under "RedVox Report", you will 
+find "Download Report Data" towards the end.
 
 #### Running the Skyfall example
 Next, open `skyfall_config_file.py` and update the value of `SKYFALL_DIR` on line 5 to match the directory 
 where you downloaded the Skyfall data (the directory will have a folder named "api900").
 
-An example for Linux/Mac:
+An example path for Linux/Mac:
 ```python
 SKYFALL_DIR = "/path_to/your/downloaded_data"
 ```
