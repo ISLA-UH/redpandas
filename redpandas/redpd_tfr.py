@@ -36,13 +36,26 @@ def frame_panda_no_offset(df: pd.DataFrame,
             aligned_epoch_s.append(float("NaN"))
             continue
 
-        sig_wf, sig_epoch_s = \
-            utils.sig_frame(sig=df[sig_wf_label][n],
-                            time_epoch_s=df[sig_epoch_s_label][n],
-                            epoch_s_start=sig_epoch_s_start,
-                            epoch_s_stop=sig_epoch_s_end)
-        aligned_wf.append(sig_wf)
-        aligned_epoch_s.append(sig_epoch_s)
+        if df[sig_wf_label][n].ndim == 1:
+            sig_wf, sig_epoch_s = \
+                utils.sig_frame(sig=df[sig_wf_label][n],
+                                time_epoch_s=df[sig_epoch_s_label][n],
+                                epoch_s_start=sig_epoch_s_start,
+                                epoch_s_stop=sig_epoch_s_end)
+            aligned_wf.append(sig_wf)
+            aligned_epoch_s.append(sig_epoch_s)
+        else:
+            aligned_wf_3c = []
+            for index_sensor_array, _ in enumerate(df[sig_wf_label][n]):
+                sig_wf, sig_epoch_s = \
+                    utils.sig_frame(sig=df[sig_wf_label][n][index_sensor_array],
+                                    time_epoch_s=df[sig_epoch_s_label][n],
+                                    epoch_s_start=sig_epoch_s_start,
+                                    epoch_s_stop=sig_epoch_s_end)
+                aligned_wf_3c.append(sig_wf)
+
+            aligned_wf.append(np.array(aligned_wf_3c))
+            aligned_epoch_s.append(sig_epoch_s)
 
     df[new_column_aligned_wf] = aligned_wf
     df[new_column_aligned_epoch] = aligned_epoch_s
