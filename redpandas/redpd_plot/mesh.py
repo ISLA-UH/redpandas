@@ -208,6 +208,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      frequency_hz_ymin: float = rpd_scales.Slice.FU,
                      frequency_hz_ymax: float = rpd_scales.Slice.F0,
                      common_colorbar: bool = True,
+                     ytick_values_show: bool = False,
                      mesh_color_scaling: Union[List[str], str] = 'auto',
                      mesh_color_range: Union[List[float], float] = 15,
                      show_figure: bool = True) -> Figure:
@@ -229,6 +230,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param frequency_hz_ymin: optional float, y axis min lim
      :param frequency_hz_ymax: optional float, y axis max lim
      :param common_colorbar: optional bool, display a colorbar for all mesh panels if True. Default is True
+     :param ytick_values_show: optional bool, display ytick values. Default is False
      :param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'. The parameter common_colorbar
         needs to be set to False to apply mesh_color_scaling
      :param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set
@@ -297,8 +299,10 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
     # Figure setup
     fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
-    if common_colorbar is True:  # for colorbar, two columns in fig
+    if common_colorbar is True and ytick_values_show is False:  # for colorbar, two columns in fig
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
+    elif common_colorbar is True and ytick_values_show is True:
+        gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.15)
     else:
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
 
@@ -371,15 +375,36 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
 
                     # Plot yticks
-                    ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                    ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                    if ytick_values_show is True:
+                        # Plot primary ticks with values
+                        ytick_min = float("{:.2f}".format(frequency_fix_ymin))
+                        ytick_max = float("{:.2f}".format(frequency_fix_ymax))
+                        ax.yaxis.tick_right()
+                        ax.set_yticks([ytick_min, ytick_max])
+                        ax.set_yticklabels([ytick_min, ytick_max],  size=FigParam().text_size_minor_yaxis)
+
+                        # Plot secondary ticks with name station
+                        secax = ax.secondary_yaxis("left")
+                        secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                        secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        secax.minorticks_off()
+
+                    else:
+                        # Plot yticks only name station
+                        ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                        ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
 
                     # Set up ax limits
                     plt.xlim(x_lim_min_total, x_lim_max_total)
                     if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                         ax.set_xticks([])
 
-                    ax.tick_params(axis='both', which='major', labelsize=FigParam().text_size)
+                    ax.tick_params(axis='x', which='major', labelsize=FigParam().text_size)
+
+                    # Set up ax limits
+                    plt.xlim(x_lim_min_total, x_lim_max_total)
+                    if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
+                        ax.set_xticks([])
 
                     index_wiggle_yticklabels += 1
                     index_panel_order -= 1
@@ -442,15 +467,31 @@ def plot_mesh_pandas(df: pd.DataFrame,
                             middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
 
                         # Plot yticks
-                        ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                        ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        if ytick_values_show is True:
+                            # Plot primary ticks with values
+                            ytick_min = float("{:.2f}".format(frequency_fix_ymin))
+                            ytick_max = float("{:.2f}".format(frequency_fix_ymax))
+                            ax.yaxis.tick_right()
+                            ax.set_yticks([ytick_min, ytick_max])
+                            ax.set_yticklabels([ytick_min, ytick_max], size=FigParam().text_size_minor_yaxis)
+
+                            # Plot secondary ticks with name station
+                            secax = ax.secondary_yaxis("left")
+                            secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                            secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                            secax.minorticks_off()
+
+                        else:
+                            # Plot yticks only name station
+                            ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                            ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
 
                         # Set up ax limits
                         plt.xlim(x_lim_min_total, x_lim_max_total)
                         if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                             ax.set_xticks([])
 
-                        ax.tick_params(axis='both', which='major', labelsize=FigParam().text_size)
+                        ax.tick_params(axis='x', which='major', labelsize=FigParam().text_size)
 
                         index_panel_order -= 1
                         index_mesh_color_scale_panel += 1
@@ -467,6 +508,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
     # Hide axes for common x and y labels
     plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
     plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    if ytick_values_show is True:
+        plt.text(1.02, 1.07, "Hz", fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
 
     # Common x and y labels
     if t0_sig_epoch_s is None:
@@ -477,16 +520,24 @@ def plot_mesh_pandas(df: pd.DataFrame,
     if fig_title_show:
         plt.title(fig_title, size=FigParam().text_size + 2, y=1.05)
         # Adjust overall plot to maximize figure space for press if title on
-        if common_colorbar is False:
-            plt.subplots_adjust(left=0.1, right=0.97)
-        else:
+        if common_colorbar is True and ytick_values_show is True:
+            plt.subplots_adjust(top=0.92, hspace=0.25)
+        elif common_colorbar is True and ytick_values_show is False:
             plt.subplots_adjust(top=0.92)
+        elif common_colorbar is False and ytick_values_show is True:
+            plt.subplots_adjust(left=0.1, right=0.94, hspace=0.25, top=0.92)
+        else:
+            plt.subplots_adjust(left=0.1, right=0.97, top=0.92)
 
     else:
         # Adjust overall plot to maximize figure space for press if title off
-        if common_colorbar is False:
+        if common_colorbar is False and ytick_values_show is False:
             plt.subplots_adjust(left=0.1, top=0.95, right=0.97)
-        else:
+        elif common_colorbar is False and ytick_values_show is True:
+            plt.subplots_adjust(left=0.1, top=0.95, right=0.94, hspace=0.25)
+        elif common_colorbar is True and ytick_values_show is True:
+            plt.subplots_adjust(top=0.95, hspace=0.25)
+        else:  # if common bar true
             plt.subplots_adjust(top=0.95)
 
     # Format colorbar
