@@ -1,6 +1,6 @@
 ## RedVox Pandas (RedPandas) Version History
 
-## 1.2.11 (2021-09-17)
+## 1.2.11-2 (2021-09-17)
 - Added show y ticks value to mesh plot 
 
 ## 1.2.9-10 (2021-09-09)

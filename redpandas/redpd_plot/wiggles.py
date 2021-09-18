@@ -140,12 +140,10 @@ def find_ylabel(df: pd.DataFrame,
                                 if len(sig_wf_label) == 1:
                                     wiggle_yticklabel.append(f"{df[sig_id_label][index_n]}")
                                 else:
-                                    print('here')
                                     wiggle_yticklabel.append(f"{df[sig_id_label][index_n]} {sensor_in_list}")
                     else:
                         continue
 
-    print(wiggle_yticklabel)
     return wiggle_yticklabel
 
 
