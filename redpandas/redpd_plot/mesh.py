@@ -7,12 +7,22 @@ from typing import List, Union
 import matplotlib.pyplot as plt
 from matplotlib.colorbar import Colorbar
 from matplotlib.figure import Figure
+import matplotlib.ticker as mticker
 import numpy as np
 import pandas as pd
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 import redpandas.redpd_scales as rpd_scales
 from redpandas.redpd_plot.parameters import FigureParameters as FigParam
+
+
+def sci_format(x,lim):
+    """
+    Ticks formatter scientific notation with base 10. Adapted from https://www.py4u.net/discuss/140199
+    """
+    a, b = '{:.0e}'.format(x).split('e')
+    b = int(b)
+    return r'${} \times 10^{{{}}}$'.format(a, b)
 
 
 def find_wiggle_num_tfr(df: pd.DataFrame,
@@ -376,12 +386,13 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                     # Plot yticks
                     if ytick_values_show is True:
-                        # Plot primary ticks with values
+                        # Plot primary ticks with y values
                         ytick_min = float("{:.2f}".format(frequency_fix_ymin))
                         ytick_max = float("{:.2f}".format(frequency_fix_ymax))
                         ax.yaxis.tick_right()
                         ax.set_yticks([ytick_min, ytick_max])
-                        ax.set_yticklabels([ytick_min, ytick_max],  size=FigParam().text_size_minor_yaxis)
+                        major_formatter = mticker.FuncFormatter(sci_format)  # format ticks to scientific notation
+                        ax.yaxis.set_major_formatter(major_formatter)
 
                         # Plot secondary ticks with name station
                         secax = ax.secondary_yaxis("left")
@@ -400,6 +411,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         ax.set_xticks([])
 
                     ax.tick_params(axis='x', which='major', labelsize=FigParam().text_size)
+                    ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size_minor_yaxis)
 
                     # Set up ax limits
                     plt.xlim(x_lim_min_total, x_lim_max_total)
@@ -468,12 +480,13 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                         # Plot yticks
                         if ytick_values_show is True:
-                            # Plot primary ticks with values
+                            # Plot primary ticks with y values
                             ytick_min = float("{:.2f}".format(frequency_fix_ymin))
                             ytick_max = float("{:.2f}".format(frequency_fix_ymax))
                             ax.yaxis.tick_right()
                             ax.set_yticks([ytick_min, ytick_max])
-                            ax.set_yticklabels([ytick_min, ytick_max], size=FigParam().text_size_minor_yaxis)
+                            major_formatter = mticker.FuncFormatter(sci_format)  # format ticks to scientific notation
+                            ax.yaxis.set_major_formatter(major_formatter)
 
                             # Plot secondary ticks with name station
                             secax = ax.secondary_yaxis("left")
@@ -492,6 +505,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                             ax.set_xticks([])
 
                         ax.tick_params(axis='x', which='major', labelsize=FigParam().text_size)
+                        ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size_minor_yaxis)
 
                         index_panel_order -= 1
                         index_mesh_color_scale_panel += 1
@@ -509,7 +523,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
     plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
     plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     if ytick_values_show is True:
-        plt.text(1.02, 1.07, "Hz", fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
+        plt.text(1.02, 1.085, "Hz", fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
 
     # Common x and y labels
     if t0_sig_epoch_s is None:
@@ -517,7 +531,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
     else:
         plt.xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
                    size=FigParam().text_size, labelpad=10)
-    if fig_title_show:
+    if fig_title_show is True:
         plt.title(fig_title, size=FigParam().text_size + 2, y=1.05)
         # Adjust overall plot to maximize figure space for press if title on
         if common_colorbar is True and ytick_values_show is True:
@@ -534,7 +548,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
         if common_colorbar is False and ytick_values_show is False:
             plt.subplots_adjust(left=0.1, top=0.95, right=0.97)
         elif common_colorbar is False and ytick_values_show is True:
-            plt.subplots_adjust(left=0.1, top=0.95, right=0.94, hspace=0.25)
+            plt.subplots_adjust(left=0.1, top=0.95, right=0.93, hspace=0.25)
         elif common_colorbar is True and ytick_values_show is True:
             plt.subplots_adjust(top=0.95, hspace=0.25)
         else:  # if common bar true
