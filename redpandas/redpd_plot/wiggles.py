@@ -333,7 +333,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
     ax1.grid(True)
-    if fig_title_show:  # Set title
+    if fig_title_show is True:  # Set title
         if station_id_str is None and len(sig_wf_label) > 1:
             ax1.set_title(f'Normalized {fig_title}', size=FigParam().text_size)
         elif station_id_str is None and len(sig_wf_label) == 1:
