@@ -11,7 +11,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # RedVox and Red Pandas modules
-from redvox.common.data_window import DataWindow
+# from redvox.common.data_window import DataWindow
+from redvox.common.data_window_wpa import DataWindowArrow
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
 import redpandas.redpd_build_station as rpd_build_sta
@@ -64,7 +65,7 @@ import redvox.common.date_time_utils as dt_utils
 #     return df_all_sensors_all_stations, full_path_parquet, full_path_pickle
 
 
-def redpd_dataframe(input_dw: DataWindow,
+def redpd_dataframe(input_dw: DataWindowArrow,
                     sensor_labels: Optional[List[str]] = ["audio"],
                     highpass_type: Optional[str] = 'obspy',
                     frequency_filter_low: Optional[float] = 1./rpd_scales.Slice.T100S,
@@ -83,7 +84,7 @@ def redpd_dataframe(input_dw: DataWindow,
     :return: pd.DataFrame
     """
     print("Initiating conversion from RedVox DataWindow to RedPandas:")
-    rdvx_data: DataWindow = input_dw
+    rdvx_data: DataWindowArrow = input_dw
 
     if type(sensor_labels) is not list:
         sensor_labels = ["audio"]
@@ -96,7 +97,7 @@ def redpd_dataframe(input_dw: DataWindow,
                                                                                       highpass_type=highpass_type,
                                                                                       frequency_filter_low=frequency_filter_low,
                                                                                       filter_order=filter_order)
-                                                for station in rdvx_data.stations])
+                                                for station in rdvx_data.stations()])
     df_all_sensors_all_stations.sort_values(by="station_id", ignore_index=True, inplace=True)
 
     # Offer glimpse of what the DataFrame contains

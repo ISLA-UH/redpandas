@@ -7,10 +7,12 @@ from dataclasses_json import dataclass_json
 import numpy as np
 
 # RedVox modules
-from redvox.common.data_window import DataWindow
+# from redvox.common.data_window import DataWindow
+from redvox.common.data_window_wpa import DataWindowArrow
 from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
 import redvox.common.date_time_utils as dt
-from redvox.common.station import Station
+# from redvox.common.station import Station
+from redvox.common.data_window_wpa import StationPa
 from redvox.api1000.wrapped_redvox_packet.station_information import OsType
 
 
@@ -33,16 +35,16 @@ class StationDq:
     # etc
 
 
-def mic_sync(data_window: DataWindow) -> None:
+def mic_sync(data_window: DataWindowArrow) -> None:
     """
     Print Audio Sensor information
     :param data_window: RedVox DataWindow object
     :return: print statements with Mic and Clock specs
     """
-    station: Station
-    for station in data_window.stations:
+    station: StationPa
+    for station in data_window.stations():
         if station.has_audio_data():
-            print(f"{station.id} Audio Sensor (All timestamps are in microseconds since epoch UTC):\n"
+            print(f"{station.get_id()} Audio Sensor (All timestamps are in microseconds since epoch UTC):\n"
                   f"mic sample rate in hz: {station.audio_sensor().sample_rate_hz}\n"
                   f"is mic sample rate constant: {station.audio_sensor().is_sample_rate_fixed}\n"
                   f"mic sample interval in seconds: {station.audio_sensor().sample_interval_s}\n"
@@ -62,7 +64,7 @@ def mic_sync(data_window: DataWindow) -> None:
             mic_corrected_time_s = \
                 station.audio_sensor().data_timestamps() / MICROSECONDS_IN_SECOND
 
-            print("\nMIC AND CLOCK SPECS: Station ID", station.id)
+            print("\nMIC AND CLOCK SPECS: Station ID", station.get_id())
             if any(np.isnan(mic_corrected_time_s)) > 0:
                 print('SYNCH WARNING: Have nans in data_timestamps')
                 print('Number Indices:', np.count_nonzero(np.isnan(mic_corrected_time_s)))
@@ -72,22 +74,22 @@ def mic_sync(data_window: DataWindow) -> None:
                 print('Nans in unaltered_data_timestamps')
                 print('Number Indices:', np.count_nonzero(np.isnan(mic_unaltered_time_s)))
 
-            print('App start time:', station.start_timestamp)
-            print('Clock model start time:', station.timesync_analysis.offset_model.start_time)
-            if np.abs(station.timesync_analysis.offset_model.intercept) == 0:
+            print('App start time:', station.get_start_date())
+            print('Clock model start time:', station.timesync_data.offset_model.start_time)
+            if np.abs(station.timesync_data.offset_model.intercept) == 0:
                 print('ZERO OFFSET, NO CORRECTION')
             else:
-                print('Offset, microseconds:', station.timesync_analysis.offset_model.intercept)
-                print('Mean best latency:', station.timesync_analysis.offset_model.mean_latency)
-                print('Best latency std dev:', station.timesync_analysis.offset_model.std_dev_latency)
-                print('Number bins:', station.timesync_analysis.offset_model.k_bins)
-                print('Min number of samples:', station.timesync_analysis.offset_model.n_samples)
+                print('Offset, microseconds:', station.timesync_data.offset_model.intercept)
+                print('Mean best latency:', station.timesync_data.offset_model.mean_latency)
+                print('Best latency std dev:', station.timesync_data.offset_model.std_dev_latency)
+                print('Number bins:', station.timesync_data.offset_model.k_bins)
+                print('Min number of samples:', station.timesync_data.offset_model.n_samples)
 
-            if np.abs(station.timesync_analysis.offset_model.slope) == 0:
+            if np.abs(station.timesync_data.offset_model.slope) == 0:
                 print('NO SLOPE, CONSTANT OFFSET')
             else:
-                print('Slope:', station.timesync_analysis.offset_model.slope)
-                print('Regression score:', station.timesync_analysis.offset_model.score)
+                print('Slope:', station.timesync_data.offset_model.slope)
+                print('Regression score:', station.timesync_data.offset_model.score)
 
             print('Nominal sample rate, Hz:', mic_sample_rate_nominal_hz)
             print('Corrected sample rate, Hz:', mic_sample_rate_hz)
@@ -103,23 +105,23 @@ def mic_sync(data_window: DataWindow) -> None:
             print("Percent sample rate computation error: {0:.2E} %".format(sample_rate_percent_error))
         else:
             # There should ALWAYS be mic data.
-            print(f'NO MIC DATA IN STATION {station.id}, SOMETHING IS AMISS')
+            print(f'NO MIC DATA IN STATION {station.get_id()}, SOMETHING IS AMISS')
             continue
 
 
-def station_channel_timing(data_window: DataWindow) -> None:
+def station_channel_timing(data_window: DataWindowArrow) -> None:
     """
     Print RedVox DataWindow Station channel time information for Audio, Barometer, Accelerometer, Gyroscope and
     Magnetometer sensors.
     :param data_window: RedVox DataWindow object
     :return: print statement with Station timing and sensors specs
     """
-    station: Station
-    for station in data_window.stations:
-        print("STATION CHANNEL TIMING FOR ID", station.id)
-        if station.start_timestamp > 0:
+    station: StationPa
+    for station in data_window.stations():
+        print("STATION CHANNEL TIMING FOR ID", station.get_id())
+        if station.first_data_timestamp > 0:
             print('App start time:',
-                  dt.datetime_from_epoch_microseconds_utc(station.start_timestamp))
+                  dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp))
         else:
             print('App start time not available')
         print('Station first time stamp:',
@@ -183,26 +185,26 @@ def station_channel_timing(data_window: DataWindow) -> None:
                   f"{gyroscope_last_timestamp_delta}\n")
 
 
-def station_metadata(data_window: DataWindow) -> None:
+def station_metadata(data_window: DataWindowArrow) -> None:
     """
     Print RedVox DataWindow Station metadata
     :param data_window: RedVox DataWindow object
     :return: print statements with Station specs
     """
-    station: Station
-    for station in data_window.stations:
-        if station.start_timestamp > 0:
+    station: StationPa
+    for station in data_window.stations():
+        if station.first_data_timestamp > 0:
             print(f"STATION SPECS FOR ID: " 
-                  f"{station.id}\n"
+                  f"{station.get_id()}\n"
                   f"App start time: "
-                  f"{dt.datetime_from_epoch_microseconds_utc(station.start_timestamp)}\n"
+                  f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"
                   f"Station first time stamp: "
                   f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"
                   f"Station last time stamp: "
                   f"{dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp)}\n")
         else:
             print(f"STATION SPECS FOR ID: "
-                  f"{station.id}\n"
+                  f"{station.get_id()}\n"
                   f"App start time not available\n"
                   f"Station first time stamp: "
                   f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"

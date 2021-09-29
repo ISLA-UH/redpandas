@@ -5,7 +5,8 @@ RedPandas DataFrames.
 from typing import List, Dict, Union, Tuple
 
 import numpy as np
-from redvox.common.station import Station
+# from redvox.common.station import Station
+from redvox.common.station_wpa import StationPa
 
 # RedPandas library
 import redpandas.redpd_preprocess as rpd_prep
@@ -17,7 +18,7 @@ import redpandas.redpd_scales as rpd_scales
 
 
 def station_to_dict_from_dw(
-        station: Station,
+        station: StationPa,
         sdk_version: str,
         sensor_labels: List[str],
         highpass_type: str = 'obspy',
@@ -35,14 +36,14 @@ def station_to_dict_from_dw(
     :param filter_order: the order of the filter integer. Default is 4
     :return: a dictionary ready for conversion into a dataframe
     """
-    sensors = {"station_id": station.id,
-               'station_start_date_epoch_micros': station.start_timestamp,
+    sensors = {"station_id": station.get_id(),
+               'station_start_date_epoch_micros': station.first_data_timestamp,
                'station_make': station.metadata.make,
                'station_model': station.metadata.model,
                'station_app_version': station.metadata.app_version,
                'redvox_sdk_version': sdk_version}
 
-    print(f"Prep Station {station.id}...", end=" ")
+    print(f"Prep Station {station.get_id()}...", end=" ")
     for label in sensor_labels:
         print(f"{label} sensor...", end=" ")
         df_sensor = build_station(station=station,
@@ -56,7 +57,7 @@ def station_to_dict_from_dw(
     return sensors
 
 
-def sensor_uneven(station: Station, sensor_label: str) -> Tuple[Union[None, float], Union[None, np.ndarray],
+def sensor_uneven(station: StationPa, sensor_label: str) -> Tuple[Union[None, float], Union[None, np.ndarray],
                                                                 Union[None, np.ndarray], Union[None, np.ndarray]]:
     """
     ID nans, sample rate, epoch, raw of uneven sensor
@@ -79,13 +80,13 @@ def sensor_uneven(station: Station, sensor_label: str) -> Tuple[Union[None, floa
         sensor_raw = sensor_dw.samples()
         sensor_nans = np.argwhere(np.isnan(sensor_raw))
     else:
-        print(f'Station {station.id} has no {sensor_label} data.')
+        print(f'Station {station.get_id()} has no {sensor_label} data.')
 
     return sensor_sample_rate_hz, sensor_epoch_s, sensor_raw, sensor_nans
 
 
 # Build station modules
-def build_station(station: Station,
+def build_station(station: StationPa,
                   sensor_label: str,
                   highpass_type: str = 'obspy',
                   frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
@@ -150,12 +151,11 @@ def build_station(station: Station,
                     f'{sensor_label}_wf_highpass': np.array(list_sensor_highpass),
                     f'{sensor_label}_nans': sensor_nans}
         else:
-            print(f"{sensor_label} doesn't exist in the station.")
             return {}
 
 
 # Functions for specific sensors
-def audio_wf_time_build_station(station: Station,
+def audio_wf_time_build_station(station: StationPa,
                                 mean_type: str = "simple",
                                 raw: bool = False) -> dict:
     """
@@ -189,11 +189,11 @@ def audio_wf_time_build_station(station: Station,
                 'audio_wf': mic_wf,
                 'audio_nans': mic_nans.tolist()}
     else:
-        print(f'Station {station.id} has no audio data.')
+        print(f'Station {station.get_id()} has no audio data.')
         return {}
 
 
-def location_build_station(station: Station) -> dict:
+def location_build_station(station: StationPa) -> dict:
     """
     Obtains location data from RedVox station if it exists
 
@@ -219,11 +219,11 @@ def location_build_station(station: Station) -> dict:
                 'location_speed_accuracy': station.location_sensor().get_data_channel("speed_accuracy"),
                 'location_provider': station.location_sensor().get_data_channel("location_provider")}
     else:
-        print(f'Station {station.id} has no location data.')
+        print(f'Station {station.get_id()} has no location data.')
         return {}
 
 
-def best_location_build_station(station: Station) -> dict:
+def best_location_build_station(station: StationPa) -> dict:
     """
     Obtains best location data from RedVox station if it exists
 
@@ -249,11 +249,11 @@ def best_location_build_station(station: Station) -> dict:
                 'best-location_speed_accuracy': station.best_location_sensor().get_data_channel("speed_accuracy"),
                 'best_location_provider': station.best_location_sensor().get_data_channel("location_provider")}
     else:
-        print(f'Station {station.id} has no best location data.')
+        print(f'Station {station.get_id()} has no best location data.')
         return {}
 
 
-def state_of_health_build_station(station: Station) -> dict:
+def state_of_health_build_station(station: StationPa) -> dict:
     """
     Obtains state of health data from RedVox station if it exists
 
@@ -277,11 +277,11 @@ def state_of_health_build_station(station: Station) -> dict:
                 'available_disk_byte': station.health_sensor().get_data_channel('avail_disk'),
                 'cell_service_state': station.health_sensor().get_data_channel('cell_service')}
     else:
-        print(f'Station {station.id} has no health data.')
+        print(f'Station {station.get_id()} has no health data.')
         return {}
 
 
-def image_build_station(station: Station) -> dict:
+def image_build_station(station: StationPa) -> dict:
     """
     Obtains images from RedVox station if it exists
 
@@ -295,11 +295,11 @@ def image_build_station(station: Station) -> dict:
                 'image_bytes': station.image_sensor().get_data_channel('image'),
                 'image_codec': station.image_sensor().get_data_channel('image_codec')}
     else:
-        print(f'Station {station.id} has no image data.')
+        print(f'Station {station.get_id()} has no image data.')
         return {}
 
 
-def synchronization_build_station(station: Station) -> dict:
+def synchronization_build_station(station: StationPa) -> dict:
     """
     Obtains time sync data from RedVox station if it exists
 
@@ -308,7 +308,7 @@ def synchronization_build_station(station: Station) -> dict:
     synchronization best offset (ms), synchronization offset delta (ms), and synchronization number exchanges.
     """
     if station.has_timesync_data():
-        synchronization = station.timesync_analysis
+        synchronization = station.timesync_data
         return {'synchronization_epoch_s': synchronization.get_start_times() * rpd_scales.MICROS_TO_S,
                 'synchronization_latency_ms': synchronization.get_latencies() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_offset_ms': synchronization.get_offsets() * rpd_scales.MICROS_TO_MILLIS,
@@ -317,11 +317,11 @@ def synchronization_build_station(station: Station) -> dict:
                                                    synchronization.get_best_offset() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_number_exchanges': synchronization.timesync_data[0].num_tri_messages()}
     else:
-        print(f'Station {station.id} has no time sync data.')
+        print(f'Station {station.get_id()} has no timesync data.')
         return {}
 
 
-def clock_build_station(station: Station) -> dict:
+def clock_build_station(station: StationPa) -> dict:
     """
     Obtains clock model data from the station if it exists
 
@@ -330,7 +330,7 @@ def clock_build_station(station: Station) -> dict:
     clock number bins, clock number samples, clock offset slope, and clock offset model score.
     """
     if station.has_timesync_data():
-        clock = station.timesync_analysis.offset_model
+        clock = station.timesync_data.offset_model
         return {'clock_start_time_epoch_s': clock.start_time * rpd_scales.MICROS_TO_S,
                 'clock_best_latency_ms': clock.mean_latency * rpd_scales.MICROS_TO_MILLIS,
                 'clock_best_latency_std_ms': clock.std_dev_latency * rpd_scales.MICROS_TO_MILLIS,
@@ -340,11 +340,11 @@ def clock_build_station(station: Station) -> dict:
                 'clock_offset_slope': clock.slope,
                 'clock_offset_model_score': clock.score}
     else:
-        print(f'Station {station.id} has no timesync analysis.')
+        print(f'Station {station.get_id()} has no timesync analysis.')
         return {}
 
 
-def light_build_station(station: Station) -> dict:
+def light_build_station(station: StationPa) -> dict:
     """
     Obtains luminosity data from RedVox station if it exists
 
@@ -358,5 +358,5 @@ def light_build_station(station: Station) -> dict:
                 'light_epoch_s': station.light_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
                 'light_lux': station.light_sensor().get_data_channel('light')}
     else:
-        print(f'Station {station.id} has no luminosity data.')
+        print(f'Station {station.get_id()} has no luminosity data.')
         return {}
