@@ -8,7 +8,7 @@ from redpandas.redpd_plot.mesh import plot_mesh_pandas
 import redpandas.redpd_dq as rpd_dq
 
 # from redvox.common.data_window import DataWindow
-from redvox.common.data_window_wpa import DataWindowArrow
+from redvox.common.data_window_wpa import DataWindowArrow, DataWindowOutputType, DataWindowOrigin
 from redvox.common.data_window_wpa import DataWindowConfigWpa
 import redvox.common.date_time_utils as dt
 
@@ -32,44 +32,49 @@ if __name__ == '__main__':
                                     start_datetime=dt.datetime_from_epoch_seconds_utc(1632006000),
                                     end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
 
-    rdvx_data: DataWindowArrow = DataWindowArrow(  # event_name="dw",
-                                                    # event_location=dwo,
+    DWOrigin = DataWindowOrigin(provider="CELL")
+
+    rdvx_data: DataWindowArrow = DataWindowArrow(   event_name="dw",
+                                                    event_location=DWOrigin,
                                                     config=DWAConfig,
                                                     out_dir="/Users/meritxell/Desktop/test",
-                                                    # out_type=DataWindowOutputType.NONE,
+                                                    out_type=DataWindowOutputType["NONE"],
                                                     debug=True)
 
-    df0 = redpd_dataframe(input_dw=rdvx_data,
-                          sensor_labels=["audio",
-                                         "barometer",
-                                         "accelerometer",
-                                         "gyroscope",
-                                         "magnetometer"])
-    # Check audio wiggles ok
-    fig_wiggles = plot_wiggles_pandas(df=df0,
-                                      sig_wf_label=["audio_wf"],
-                                      sig_timestamps_label=["audio_epoch_s"],
-                                      sig_id_label="station_id",
-                                      show_figure=False)
+    # df0 = redpd_dataframe(input_dw=rdvx_data,
+    #                       sensor_labels=["audio",
+    #                                      "barometer",
+    #                                      "accelerometer",
+    #                                      "gyroscope",
+    #                                      "magnetometer"])
+    # # Check audio wiggles ok
+    # fig_wiggles = plot_wiggles_pandas(df=df0,
+    #                                   sig_wf_label=["audio_wf"],
+    #                                   sig_timestamps_label=["audio_epoch_s"],
+    #                                   sig_id_label="station_id",
+    #                                   show_figure=False)
+    #
+    # # TFR
+    # sensors_to_tfr = ["audio", "barometer", "accelerometer", "magnetometer", "gyroscope"]
+    # for sensor in sensors_to_tfr:
+    #     if sensor == "audio":
+    #         sensor_wf = "audio_wf"
+    #         sensor_fs = "audio_sample_rate_nominal_hz"
+    #     else:
+    #         sensor_wf = f"{sensor}_wf_highpass"
+    #         sensor_fs = f"{sensor}_sample_rate_hz"
+    #
+    #     df0 = rpd_tfr.tfr_bits_panda(df=df0,
+    #                                  sig_wf_label=sensor_wf,
+    #                                  sig_sample_rate_label=sensor_fs,
+    #                                  order_number_input=24,
+    #                                  tfr_type='stft',
+    #                                  new_column_tfr_bits=f"{sensor}_tfr_bits",
+    #                                  new_column_tfr_frequency_hz=f"{sensor}_tfr_frequency_hz",
+    #                                  new_column_tfr_time_s=f"{sensor}_tfr_time_s")
 
-    # TFR
-    sensors_to_tfr = ["audio", "barometer", "accelerometer", "magnetometer", "gyroscope"]
-    for sensor in sensors_to_tfr:
-        if sensor == "audio":
-            sensor_wf = "audio_wf"
-            sensor_fs = "audio_sample_rate_nominal_hz"
-        else:
-            sensor_wf = f"{sensor}_wf_highpass"
-            sensor_fs = f"{sensor}_sample_rate_hz"
-
-        df0 = rpd_tfr.tfr_bits_panda(df=df0,
-                                     sig_wf_label=sensor_wf,
-                                     sig_sample_rate_label=sensor_fs,
-                                     order_number_input=24,
-                                     tfr_type='stft',
-                                     new_column_tfr_bits=f"{sensor}_tfr_bits",
-                                     new_column_tfr_frequency_hz=f"{sensor}_tfr_frequency_hz",
-                                     new_column_tfr_time_s=f"{sensor}_tfr_time_s")
+    print(rdvx_data.event_name)
+    print(rdvx_data)
 
     # rpd_dq.mic_sync(rdvx_data)
     # rpd_dq.station_channel_timing(rdvx_data)
