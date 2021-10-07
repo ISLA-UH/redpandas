@@ -8,7 +8,7 @@ from redpandas.redpd_plot.mesh import plot_mesh_pandas
 import redpandas.redpd_dq as rpd_dq
 
 # from redvox.common.data_window import DataWindow
-from redvox.common.data_window_wpa import DataWindowArrow, DataWindowOutputType, DataWindowOrigin
+from redvox.common.data_window_wpa import DataWindowArrow, DataWindowOutputType, EventOrigin
 from redvox.common.data_window_wpa import DataWindowConfigWpa
 import redvox.common.date_time_utils as dt
 
@@ -32,7 +32,7 @@ if __name__ == '__main__':
                                     start_datetime=dt.datetime_from_epoch_seconds_utc(1632006000),
                                     end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
 
-    DWOrigin = DataWindowOrigin(provider="CELL")
+    DWOrigin = EventOrigin(provider="CELL")
 
     rdvx_data: DataWindowArrow = DataWindowArrow(   event_name="dw",
                                                     event_location=DWOrigin,
@@ -153,4 +153,4 @@ if __name__ == '__main__':
     #                                wf_panel_1_units="Bar hp, kPa",
     #                                wf_panel_0_units="Acc Z hp, m/$s^2$")
 
-    plt.show()
+    # plt.show()
