@@ -10,9 +10,10 @@ import redvox.common.date_time_utils as dt_utils
 
 if __name__ == "__main__":
     # TODO:
-    #  1. fit ids inside graph,
+    #  1. fit ids inside graph - DONE
     #  2. deal with range/scaling maybe make it such that input can be only 1 value
-    #  3. fix yticks scaling
+    #  3. fix yticks scaling spacing
+    #  4. consider putting limit to 13 signals at one time - think about how to limit it
 
     INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
 
@@ -46,7 +47,7 @@ if __name__ == "__main__":
                            mesh_tfr_label="audio_tfr_bits",
                            sig_id_label="station_id",
                            frequency_hz_ymax=400,
-                           common_colorbar=False,
+                           common_colorbar=True,
                            mesh_color_scaling=["range", "range", "range", "range", "range",
                                                "range", "range", "range", "range", "range",
                                                "range", "range", "range"],
