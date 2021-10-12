@@ -220,7 +220,7 @@ def decimate_signal_pandas(df: pd.DataFrame,
     :param new_column_label_decimated_sig: label for new column containing signal decimated data
     :param new_column_label_decimated_sig_timestamps: label for new column containing signal decimated timestamps
     :param new_column_label_decimated_sample_rate_hz: label for new column containing signal decimated sample rate
-    :param verbose: print statements. Default is True
+    :param verbose: print statements. Default is False
 
     :return: original data frame with added columns for decimated signal, timestamps, and sample rate
     """
