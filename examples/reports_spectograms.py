@@ -14,7 +14,7 @@ if __name__ == "__main__":
     # TODO:
     #  1. fit ids inside graph - DONE
     #  2. deal with range/scaling maybe make it such that input can be only 1 value - DONE
-    #  3. fix yticks scaling spacing
+    #  3. fix yticks scaling spacing - DONE
     #  4. consider putting limit to 13 signals at one time - think about how to limit it - DONE
 
     # INPUT_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"  # 13 stations
@@ -47,7 +47,7 @@ if __name__ == "__main__":
                          new_column_tfr_frequency_hz="audio_tfr_frequency_hz",
                          new_column_tfr_time_s="audio_tfr_time_s")
 
-    # Split dataframe into 13 station dataframes
+    # Split dataframe into 13 stations long dataframes
     list_of_dfs = [df0.loc[i:i+13-1, :] for i in range(0, len(df0), 13)]
 
     # Plot wiggles and mesh for each sub-dataframe
@@ -64,6 +64,6 @@ if __name__ == "__main__":
                                       common_colorbar=False,
                                       mesh_color_scaling="range",
                                       mesh_color_range=15,
-                                      ytick_values_show=True, show_figure=False) for df_in_list in list_of_dfs]
+                                      ytick_values_show=True, show_figure=True) for df_in_list in list_of_dfs]
 
-    print(f"Sanity check wiggles figs:{len(fig_wiggles_list)}, mesh figs: {len(fig_mesh_list)}")
+    print(f"Sanity check-wiggles figs:{len(fig_wiggles_list)}, mesh figs:{len(fig_mesh_list)}")

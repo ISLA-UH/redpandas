@@ -335,9 +335,6 @@ def plot_mesh_pandas(df: pd.DataFrame,
                              f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z "
                              f"components so a value is required for each component.")
 
-
-
-
     # Figure setup
     fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
     if common_colorbar is True and ytick_values_show is False:  # for colorbar, two columns in fig
@@ -553,8 +550,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
     # Hide axes for common x and y labels
     plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
     plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-    if ytick_values_show is True:
-        plt.text(1.02, 1.085, "Hz", fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
+    # if ytick_values_show is True:
+    #     plt.text(1.02, 1.085, "Hz", fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
 
     # Common x and y labels
     if t0_sig_epoch_s is None:
