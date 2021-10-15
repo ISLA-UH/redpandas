@@ -41,37 +41,37 @@ if __name__ == '__main__':
                                                     out_type=DataWindowOutputType["NONE"],
                                                     debug=True)
 
-    # df0 = redpd_dataframe(input_dw=rdvx_data,
-    #                       sensor_labels=["audio",
-    #                                      "barometer",
-    #                                      "accelerometer",
-    #                                      "gyroscope",
-    #                                      "magnetometer"])
-    # # Check audio wiggles ok
-    # fig_wiggles = plot_wiggles_pandas(df=df0,
-    #                                   sig_wf_label=["audio_wf"],
-    #                                   sig_timestamps_label=["audio_epoch_s"],
-    #                                   sig_id_label="station_id",
-    #                                   show_figure=False)
-    #
-    # # TFR
-    # sensors_to_tfr = ["audio", "barometer", "accelerometer", "magnetometer", "gyroscope"]
-    # for sensor in sensors_to_tfr:
-    #     if sensor == "audio":
-    #         sensor_wf = "audio_wf"
-    #         sensor_fs = "audio_sample_rate_nominal_hz"
-    #     else:
-    #         sensor_wf = f"{sensor}_wf_highpass"
-    #         sensor_fs = f"{sensor}_sample_rate_hz"
-    #
-    #     df0 = rpd_tfr.tfr_bits_panda(df=df0,
-    #                                  sig_wf_label=sensor_wf,
-    #                                  sig_sample_rate_label=sensor_fs,
-    #                                  order_number_input=24,
-    #                                  tfr_type='stft',
-    #                                  new_column_tfr_bits=f"{sensor}_tfr_bits",
-    #                                  new_column_tfr_frequency_hz=f"{sensor}_tfr_frequency_hz",
-    #                                  new_column_tfr_time_s=f"{sensor}_tfr_time_s")
+    df0 = redpd_dataframe(input_dw=rdvx_data,
+                          sensor_labels=["audio",
+                                         "barometer",
+                                         "accelerometer",
+                                         "gyroscope",
+                                         "magnetometer"])
+    # Check audio wiggles ok
+    fig_wiggles = plot_wiggles_pandas(df=df0,
+                                      sig_wf_label=["audio_wf"],
+                                      sig_timestamps_label=["audio_epoch_s"],
+                                      sig_id_label="station_id",
+                                      show_figure=False)
+
+    # TFR
+    sensors_to_tfr = ["audio", "barometer", "accelerometer", "magnetometer", "gyroscope"]
+    for sensor in sensors_to_tfr:
+        if sensor == "audio":
+            sensor_wf = "audio_wf"
+            sensor_fs = "audio_sample_rate_nominal_hz"
+        else:
+            sensor_wf = f"{sensor}_wf_highpass"
+            sensor_fs = f"{sensor}_sample_rate_hz"
+
+        df0 = rpd_tfr.tfr_bits_panda(df=df0,
+                                     sig_wf_label=sensor_wf,
+                                     sig_sample_rate_label=sensor_fs,
+                                     order_number_input=24,
+                                     tfr_type='stft',
+                                     new_column_tfr_bits=f"{sensor}_tfr_bits",
+                                     new_column_tfr_frequency_hz=f"{sensor}_tfr_frequency_hz",
+                                     new_column_tfr_time_s=f"{sensor}_tfr_time_s")
 
     print(rdvx_data.event_name)
     print(rdvx_data)
