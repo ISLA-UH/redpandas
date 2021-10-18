@@ -335,8 +335,12 @@ def plot_mesh_pandas(df: pd.DataFrame,
                              f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z "
                              f"components so a value is required for each component.")
 
-    # Figure setup
-    fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+    # Set up figure
+    if show_figure:
+        fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+    else:
+        fig: Figure = Figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+
     if common_colorbar is True and ytick_values_show is False:  # for colorbar, two columns in fig
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
     elif common_colorbar is True and ytick_values_show is True:
@@ -401,7 +405,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                       frequency_ymax=frequency_hz_ymax,
                                                       frequency_scaling=frequency_scaling)
 
-                    plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+                    ax.set_ylim(frequency_fix_ymin, frequency_fix_ymax)
 
                     # Set up ytick labels and y scale
                     if frequency_scaling == "log":
@@ -434,7 +438,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
 
                     # Set up ax limits
-                    plt.xlim(x_lim_min_total, x_lim_max_total)
+                    ax.set_xlim(x_lim_min_total, x_lim_max_total)
                     if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                         ax.set_xticks([])
 
@@ -495,7 +499,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                           frequency_ymax=frequency_hz_ymax,
                                                           frequency_scaling=frequency_scaling)
 
-                        plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+                        ax.set_ylim(frequency_fix_ymin, frequency_fix_ymax)
 
                         # Set up ytick labels and y scale
                         if frequency_scaling == "log":
@@ -528,7 +532,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                             ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
 
                         # Set up ax limits
-                        plt.xlim(x_lim_min_total, x_lim_max_total)
+                        ax.set_xlim(x_lim_min_total, x_lim_max_total)
                         if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                             ax.set_xticks([])
 
@@ -548,39 +552,40 @@ def plot_mesh_pandas(df: pd.DataFrame,
     y1 = max([ax.get_position().y1 for ax in fig.axes])
 
     # Hide axes for common x and y labels
-    plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
-    plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
+    axes = fig.add_axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
+    axes.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
     # if ytick_values_show is True:
     #     plt.text(1.02, 1.085, "Hz", fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
 
     # Common x and y labels
     if t0_sig_epoch_s is None:
-        plt.xlabel("Time (s)", size=FigParam().text_size, labelpad=10)
+        axes.set_xlabel("Time (s)", size=FigParam().text_size, labelpad=10)
     else:
-        plt.xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
-                   size=FigParam().text_size, labelpad=10)
+        axes.set_xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
+                        size=FigParam().text_size, labelpad=10)
+
     if fig_title_show is True:
-        plt.title(fig_title, size=FigParam().text_size + 2, y=1.05)
+        axes.set_title(fig_title, size=FigParam().text_size + 2, y=1.05)
         # Adjust overall plot to maximize figure space for press if title on
         if common_colorbar is True and ytick_values_show is True:
-            plt.subplots_adjust(left=0.17, top=0.92, hspace=0.25)
+            fig.subplots_adjust(left=0.17, top=0.92, hspace=0.25)
         elif common_colorbar is True and ytick_values_show is False:
-            plt.subplots_adjust(left=0.17, top=0.92)
+            fig.subplots_adjust(left=0.17, top=0.92)
         elif common_colorbar is False and ytick_values_show is True:
-            plt.subplots_adjust(left=0.17, right=0.94, top=0.92, hspace=0.32)
+            fig.subplots_adjust(left=0.17, right=0.94, top=0.92, hspace=0.32)
         else:
-            plt.subplots_adjust(left=0.17, right=0.97, top=0.92)
+            fig.subplots_adjust(left=0.17, right=0.97, top=0.92)
 
     else:
         # Adjust overall plot to maximize figure space for press if title off
         if common_colorbar is False and ytick_values_show is False:
-            plt.subplots_adjust(left=0.17, top=0.95, right=0.97)
+            fig.subplots_adjust(left=0.17, top=0.95, right=0.97)
         elif common_colorbar is False and ytick_values_show is True:
-            plt.subplots_adjust(left=0.17, top=0.95, right=0.94, hspace=0.25)
+            fig.subplots_adjust(left=0.17, top=0.95, right=0.94, hspace=0.25)
         elif common_colorbar is True and ytick_values_show is True:
-            plt.subplots_adjust(left=0.17, top=0.95, hspace=0.25)
+            fig.subplots_adjust(left=0.17, top=0.95, hspace=0.25)
         else:  # if common bar true
-            plt.subplots_adjust(left=0.17, top=0.95)
+            fig.subplots_adjust(left=0.17, top=0.95)
 
     # Format colorbar
     if common_colorbar is True:
