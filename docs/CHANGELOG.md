@@ -1,7 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
-## 1.2.13-14 (2021-10-28)
-- Minor changes to mesh plot and decimating functions.
+## 1.2.13-15 (2021-10-28)
+- Minor changes to mesh plot and decimating functions
+- Changes to mesh to avoid memory leaks
 
 ## 1.2.11-2 (2021-09-17)
 - Added show y ticks value to mesh plot 
