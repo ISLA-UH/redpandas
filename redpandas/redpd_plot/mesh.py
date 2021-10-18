@@ -206,6 +206,30 @@ def find_tfr_max_min_lim(df: pd.DataFrame,
     return tfr_max_total, tfr_min_total
 
 
+def find_mesh_color_and_scaling(wiggle_num: int,
+                                mesh_color_scaling: Union[List[str], str] = 'auto',
+                                mesh_color_range: Union[List[float], float] = 15.0):
+    """
+    Find number of mesh color and scaling values if input is only int and string. Coded to avoid retyping same values
+    over and over in cases where stations have only one type of sensor.
+
+    :param wiggle_num: number of wiggles in df
+    :param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'. The parameter common_colorbar
+        needs to be set to False to apply mesh_color_scaling
+    :param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set
+        to False and mesh_color_scaling to "range "to apply mesh_color_range
+    :return:
+    """
+
+    if (isinstance(mesh_color_range, float) is True or isinstance(mesh_color_range, int) is True) and isinstance(mesh_color_scaling, str):
+        list_mesh_color_range = [mesh_color_range] * wiggle_num
+        list_mesh_color_scaling = [mesh_color_scaling] * wiggle_num
+        return list_mesh_color_scaling, list_mesh_color_range
+
+    else:
+        return mesh_color_scaling, mesh_color_range
+
+
 def plot_mesh_pandas(df: pd.DataFrame,
                      mesh_time_label: Union[str, List[str]],
                      mesh_frequency_label: Union[str, List[str]],
@@ -220,7 +244,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      common_colorbar: bool = True,
                      ytick_values_show: bool = False,
                      mesh_color_scaling: Union[List[str], str] = 'auto',
-                     mesh_color_range: Union[List[float], float] = 15,
+                     mesh_color_range: Union[List[float], float] = 15.0,
                      show_figure: bool = True) -> Figure:
 
     """
@@ -243,8 +267,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param ytick_values_show: optional bool, display ytick values. Default is False
      :param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'. The parameter common_colorbar
         needs to be set to False to apply mesh_color_scaling
-     :param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set
-        to False and mesh_color_scaling to "range "to apply mesh_color_range
+     :param mesh_color_range: optional, range of colorbar. Default is 15.0. The parameter common_colorbar needs to be set
+        to False and mesh_color_scaling to "range" to apply mesh_color_range
      :param show_figure: optional bool, show figure if True. Default is True
 
      :return: matplotlib figure instance
@@ -292,6 +316,10 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                             wiggle_num=wiggle_num,
                                                             mesh_tfr_label=mesh_tfr_label)
     else:
+        mesh_color_scaling, mesh_color_range = find_mesh_color_and_scaling(wiggle_num=wiggle_num,
+                                                                           mesh_color_scaling=mesh_color_scaling,
+                                                                           mesh_color_range=mesh_color_range)
+
         # Check wiggle_num and values provided for mesh scaling match (if common_colorbar is False)
         if len(mesh_color_scaling) != wiggle_num:
             raise ValueError(f"The number of strings provided in the mesh_color_scaling "
@@ -522,8 +550,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
     # Hide axes for common x and y labels
     plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
     plt.tick_params(labelcolor='none', top=False, bottom=False, left=False, right=False)
-    if ytick_values_show is True:
-        plt.text(1.02, 1.085, "Hz", fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
+    # if ytick_values_show is True:
+    #     plt.text(1.02, 1.085, "Hz", fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
 
     # Common x and y labels
     if t0_sig_epoch_s is None:
@@ -535,24 +563,24 @@ def plot_mesh_pandas(df: pd.DataFrame,
         plt.title(fig_title, size=FigParam().text_size + 2, y=1.05)
         # Adjust overall plot to maximize figure space for press if title on
         if common_colorbar is True and ytick_values_show is True:
-            plt.subplots_adjust(top=0.92, hspace=0.25)
+            plt.subplots_adjust(left=0.17, top=0.92, hspace=0.25)
         elif common_colorbar is True and ytick_values_show is False:
-            plt.subplots_adjust(top=0.92)
+            plt.subplots_adjust(left=0.17, top=0.92)
         elif common_colorbar is False and ytick_values_show is True:
-            plt.subplots_adjust(left=0.1, right=0.94, hspace=0.25, top=0.92)
+            plt.subplots_adjust(left=0.17, right=0.94, top=0.92, hspace=0.32)
         else:
-            plt.subplots_adjust(left=0.1, right=0.97, top=0.92)
+            plt.subplots_adjust(left=0.17, right=0.97, top=0.92)
 
     else:
         # Adjust overall plot to maximize figure space for press if title off
         if common_colorbar is False and ytick_values_show is False:
-            plt.subplots_adjust(left=0.1, top=0.95, right=0.97)
+            plt.subplots_adjust(left=0.17, top=0.95, right=0.97)
         elif common_colorbar is False and ytick_values_show is True:
-            plt.subplots_adjust(left=0.1, top=0.95, right=0.93, hspace=0.25)
+            plt.subplots_adjust(left=0.17, top=0.95, right=0.94, hspace=0.25)
         elif common_colorbar is True and ytick_values_show is True:
-            plt.subplots_adjust(top=0.95, hspace=0.25)
+            plt.subplots_adjust(left=0.17, top=0.95, hspace=0.25)
         else:  # if common bar true
-            plt.subplots_adjust(top=0.95)
+            plt.subplots_adjust(left=0.17, top=0.95)
 
     # Format colorbar
     if common_colorbar is True:
