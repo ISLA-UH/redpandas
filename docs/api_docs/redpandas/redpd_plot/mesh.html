@@ -36,12 +36,22 @@ from typing import List, Union
 import matplotlib.pyplot as plt
 from matplotlib.colorbar import Colorbar
 from matplotlib.figure import Figure
+import matplotlib.ticker as mticker
 import numpy as np
 import pandas as pd
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
 
 import redpandas.redpd_scales as rpd_scales
 from redpandas.redpd_plot.parameters import FigureParameters as FigParam
+
+
+def sci_format(x,lim):
+    &#34;&#34;&#34;
+    Ticks formatter scientific notation with base 10. Adapted from https://www.py4u.net/discuss/140199
+    &#34;&#34;&#34;
+    a, b = &#39;{:.0e}&#39;.format(x).split(&#39;e&#39;)
+    b = int(b)
+    return r&#39;${} \times 10^{{{}}}$&#39;.format(a, b)
 
 
 def find_wiggle_num_tfr(df: pd.DataFrame,
@@ -94,6 +104,7 @@ def find_ylabel_tfr(df: pd.DataFrame,
 
     if sig_id_label == &#34;index&#34; or (type(sig_id_label) == str and sig_id_label in df.columns):
         wiggle_yticklabel = []  # name/y label of wiggles
+
         for mesh_n in range(len(mesh_tfr_label)):
             mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
             for n in df.index:
@@ -140,11 +151,9 @@ def find_x_max_min_lim(df: pd.DataFrame,
 
     index_wiggle_num_total = 0  # index to keep track of which wiggle
     for mesh_n in range(len(mesh_tfr_label)):
-
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-        mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
-
         for index_element in df.index:
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
+            mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_element]) != float:
@@ -191,11 +200,11 @@ def find_tfr_max_min_lim(df: pd.DataFrame,
     tfr_max = np.empty(wiggle_num)
 
     index_wiggle_num_total = 0  # index to keep track of which wiggle
-    for mesh_n in range(len(mesh_tfr_label)):
 
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-
-        for index_element in df.index:
+    # for mesh_n in range(len(mesh_tfr_label)):
+    for index_element in df.index:
+        for mesh_n in range(len(mesh_tfr_label)):
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_element]) != float:
@@ -226,6 +235,30 @@ def find_tfr_max_min_lim(df: pd.DataFrame,
     return tfr_max_total, tfr_min_total
 
 
+def find_mesh_color_and_scaling(wiggle_num: int,
+                                mesh_color_scaling: Union[List[str], str] = &#39;auto&#39;,
+                                mesh_color_range: Union[List[float], float] = 15.0):
+    &#34;&#34;&#34;
+    Find number of mesh color and scaling values if input is only int and string. Coded to avoid retyping same values
+    over and over in cases where stations have only one type of sensor.
+
+    :param wiggle_num: number of wiggles in df
+    :param mesh_color_scaling: optional, colorbar scaling, &#34;auto&#34; or &#34;range&#34;. Default is &#39;auto&#39;. The parameter common_colorbar
+        needs to be set to False to apply mesh_color_scaling
+    :param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set
+        to False and mesh_color_scaling to &#34;range &#34;to apply mesh_color_range
+    :return:
+    &#34;&#34;&#34;
+
+    if (isinstance(mesh_color_range, float) is True or isinstance(mesh_color_range, int) is True) and isinstance(mesh_color_scaling, str):
+        list_mesh_color_range = [mesh_color_range] * wiggle_num
+        list_mesh_color_scaling = [mesh_color_scaling] * wiggle_num
+        return list_mesh_color_scaling, list_mesh_color_range
+
+    else:
+        return mesh_color_scaling, mesh_color_range
+
+
 def plot_mesh_pandas(df: pd.DataFrame,
                      mesh_time_label: Union[str, List[str]],
                      mesh_frequency_label: Union[str, List[str]],
@@ -238,8 +271,9 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      frequency_hz_ymin: float = rpd_scales.Slice.FU,
                      frequency_hz_ymax: float = rpd_scales.Slice.F0,
                      common_colorbar: bool = True,
+                     ytick_values_show: bool = False,
                      mesh_color_scaling: Union[List[str], str] = &#39;auto&#39;,
-                     mesh_color_range: Union[List[float], float] = 15,
+                     mesh_color_range: Union[List[float], float] = 15.0,
                      show_figure: bool = True) -&gt; Figure:
 
     &#34;&#34;&#34;
@@ -259,10 +293,11 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param frequency_hz_ymin: optional float, y axis min lim
      :param frequency_hz_ymax: optional float, y axis max lim
      :param common_colorbar: optional bool, display a colorbar for all mesh panels if True. Default is True
+     :param ytick_values_show: optional bool, display ytick values. Default is False
      :param mesh_color_scaling: optional, colorbar scaling, &#34;auto&#34; or &#34;range&#34;. Default is &#39;auto&#39;. The parameter common_colorbar
         needs to be set to False to apply mesh_color_scaling
-     :param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set
-        to False and mesh_color_scaling to &#34;range &#34;to apply mesh_color_range
+     :param mesh_color_range: optional, range of colorbar. Default is 15.0. The parameter common_colorbar needs to be set
+        to False and mesh_color_scaling to &#34;range&#34; to apply mesh_color_range
      :param show_figure: optional bool, show figure if True. Default is True
 
      :return: matplotlib figure instance
@@ -310,6 +345,10 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                             wiggle_num=wiggle_num,
                                                             mesh_tfr_label=mesh_tfr_label)
     else:
+        mesh_color_scaling, mesh_color_range = find_mesh_color_and_scaling(wiggle_num=wiggle_num,
+                                                                           mesh_color_scaling=mesh_color_scaling,
+                                                                           mesh_color_range=mesh_color_range)
+
         # Check wiggle_num and values provided for mesh scaling match (if common_colorbar is False)
         if len(mesh_color_scaling) != wiggle_num:
             raise ValueError(f&#34;The number of strings provided in the mesh_color_scaling &#34;
@@ -325,31 +364,33 @@ def plot_mesh_pandas(df: pd.DataFrame,
                              f&#34;\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z &#34;
                              f&#34;components so a value is required for each component.&#34;)
 
-    # Figure setup
-    fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
-    if common_colorbar is True:  # for colorbar, two columns in fig
+    # Set up figure
+    if show_figure:
+        fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+    else:
+        fig: Figure = Figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+
+    if common_colorbar is True and ytick_values_show is False:  # for colorbar, two columns in fig
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
+    elif common_colorbar is True and ytick_values_show is True:
+        gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.15)
     else:
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
 
-    # Start plotting each sensor/station
     index_wiggle_yticklabels = 0  # index to keep track of which wiggle y label to apply
-    # index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted
-    index_panel_order = 0
+    index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted, -1 cause index 0
     index_mesh_color_scale_panel = 0  # index to keep track of which mesh tfr color scale to apply if provided
 
+    # loop to plot column label provided per station, reversed to match plot_wiggles
     for mesh_n in range(len(mesh_tfr_label)):  # for each column label provided
-
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-        mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
-        mesh_frequency_label_individual = mesh_frequency_label[mesh_n]  # individual mesh label from list
-
-        # loop to plot column label provided per station, reversed to match plot_wiggles
-        for _, index_signal in enumerate(reversed(df.index)):
+        for index_signal in df.index:
+            # Start plotting each sensor/station
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
+            mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
+            mesh_frequency_label_individual = mesh_frequency_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_signal]) != float:
-
                 if df[mesh_tfr_label_individual][index_signal].ndim == 2:  # aka audio wiggle
 
                     if common_colorbar is True:
@@ -393,7 +434,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                       frequency_ymax=frequency_hz_ymax,
                                                       frequency_scaling=frequency_scaling)
 
-                    plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+                    ax.set_ylim(frequency_fix_ymin, frequency_fix_ymax)
 
                     # Set up ytick labels and y scale
                     if frequency_scaling == &#34;log&#34;:
@@ -405,19 +446,36 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
 
                     # Plot yticks
-                    ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                    ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=FigParam().text_size)
+                    if ytick_values_show is True:
+                        # Plot primary ticks with y values
+                        ytick_min = float(&#34;{:.2f}&#34;.format(frequency_fix_ymin))
+                        ytick_max = float(&#34;{:.2f}&#34;.format(frequency_fix_ymax))
+                        ax.yaxis.tick_right()
+                        ax.set_yticks([ytick_min, ytick_max])
+                        major_formatter = mticker.FuncFormatter(sci_format)  # format ticks to scientific notation
+                        ax.yaxis.set_major_formatter(major_formatter)
+
+                        # Plot secondary ticks with name station
+                        secax = ax.secondary_yaxis(&#34;left&#34;)
+                        secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                        secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        secax.minorticks_off()
+                        ax.tick_params(axis=&#39;y&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size_minor_yaxis)
+
+                    else:
+                        # Plot yticks only name station
+                        ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                        ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        ax.tick_params(axis=&#39;y&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
 
                     # Set up ax limits
-                    plt.xlim(x_lim_min_total, x_lim_max_total)
+                    ax.set_xlim(x_lim_min_total, x_lim_max_total)
+                    ax.tick_params(axis=&#39;x&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
                     if index_panel_order &lt; (wiggle_num - 1):  # plot x ticks for only last subplot
                         ax.set_xticks([])
 
-                    ax.tick_params(axis=&#39;both&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
-
                     index_wiggle_yticklabels += 1
-                    # index_panel_order -= 1
-                    index_panel_order += 1
+                    index_panel_order -= 1
                     index_mesh_color_scale_panel += 1
 
                 else:
@@ -465,7 +523,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                           frequency_ymax=frequency_hz_ymax,
                                                           frequency_scaling=frequency_scaling)
 
-                        plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+                        ax.set_ylim(frequency_fix_ymin, frequency_fix_ymax)
 
                         # Set up ytick labels and y scale
                         if frequency_scaling == &#34;log&#34;:
@@ -477,18 +535,36 @@ def plot_mesh_pandas(df: pd.DataFrame,
                             middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
 
                         # Plot yticks
-                        ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                        ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        if ytick_values_show is True:
+                            # Plot primary ticks with y values
+                            ytick_min = float(&#34;{:.2f}&#34;.format(frequency_fix_ymin))
+                            ytick_max = float(&#34;{:.2f}&#34;.format(frequency_fix_ymax))
+                            ax.yaxis.tick_right()
+                            ax.set_yticks([ytick_min, ytick_max])
+                            major_formatter = mticker.FuncFormatter(sci_format)  # format ticks to scientific notation
+                            ax.yaxis.set_major_formatter(major_formatter)
+
+                            # Plot secondary ticks with name station
+                            secax = ax.secondary_yaxis(&#34;left&#34;)
+                            secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                            secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                            secax.minorticks_off()
+                            ax.tick_params(axis=&#39;y&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size_minor_yaxis)
+
+                        else:
+                            # Plot yticks only name station
+                            ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                            ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                            ax.tick_params(axis=&#39;y&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
 
                         # Set up ax limits
-                        plt.xlim(x_lim_min_total, x_lim_max_total)
+                        ax.set_xlim(x_lim_min_total, x_lim_max_total)
+                        ax.tick_params(axis=&#39;x&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
+
                         if index_panel_order &lt; (wiggle_num - 1):  # plot x ticks for only last subplot
                             ax.set_xticks([])
 
-                        ax.tick_params(axis=&#39;both&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
-
-                        # index_panel_order -= 1
-                        index_panel_order += 1
+                        index_panel_order -= 1
                         index_mesh_color_scale_panel += 1
                         index_wiggle_yticklabels += 1
             else:
@@ -501,29 +577,47 @@ def plot_mesh_pandas(df: pd.DataFrame,
     y1 = max([ax.get_position().y1 for ax in fig.axes])
 
     # Hide axes for common x and y labels
-    plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
-    plt.tick_params(labelcolor=&#39;none&#39;, top=False, bottom=False, left=False, right=False)
+    axes = fig.add_axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
+    axes.tick_params(labelcolor=&#39;none&#39;, top=False, bottom=False, left=False, right=False)
+    # if ytick_values_show is True:
+    #     plt.text(1.02, 1.085, &#34;Hz&#34;, fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
 
     # Common x and y labels
     if t0_sig_epoch_s is None:
-        plt.xlabel(&#34;Time (s)&#34;, size=FigParam().text_size, labelpad=10)
+        axes.set_xlabel(&#34;Time (s)&#34;, size=FigParam().text_size, labelpad=10)
     else:
-        plt.xlabel(&#34;Time (s) relative to &#34; + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;),
-                   size=FigParam().text_size, labelpad=10)
-    if fig_title_show:
-        plt.title(fig_title, size=FigParam().text_size + 2, y=1.05)
+        axes.set_xlabel(&#34;Time (s) relative to &#34; + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;),
+                        size=FigParam().text_size, labelpad=10)
+
+    # Format spacing in figure
+    if isinstance(sig_id_label, str) is True:
+        # Assumes Station IDs are ylabels
+        left_spacing = 0.17
+    else:
+        left_spacing = 0.12
+
+    if fig_title_show is True:
+        axes.set_title(fig_title, size=FigParam().text_size + 2, y=1.05)
         # Adjust overall plot to maximize figure space for press if title on
-        if common_colorbar is False:
-            plt.subplots_adjust(left=0.1, right=0.97)
+        if common_colorbar is True and ytick_values_show is True:
+            fig.subplots_adjust(left=left_spacing, top=0.92, hspace=0.25)
+        elif common_colorbar is True and ytick_values_show is False:
+            fig.subplots_adjust(left=left_spacing, top=0.92)
+        elif common_colorbar is False and ytick_values_show is True:
+            fig.subplots_adjust(left=left_spacing, right=0.94, top=0.92, hspace=0.32)
         else:
-            plt.subplots_adjust(top=0.92)
+            fig.subplots_adjust(left=left_spacing, right=0.97, top=0.92)
 
     else:
         # Adjust overall plot to maximize figure space for press if title off
-        if common_colorbar is False:
-            plt.subplots_adjust(left=0.1, top=0.95, right=0.97)
-        else:
-            plt.subplots_adjust(top=0.95)
+        if common_colorbar is False and ytick_values_show is False:
+            fig.subplots_adjust(left=left_spacing, top=0.95, right=0.97)
+        elif common_colorbar is False and ytick_values_show is True:
+            fig.subplots_adjust(left=left_spacing, top=0.95, right=0.94, hspace=0.25)
+        elif common_colorbar is True and ytick_values_show is True:
+            fig.subplots_adjust(left=left_spacing, top=0.95, hspace=0.25)
+        else:  # if common bar true
+            fig.subplots_adjust(left=left_spacing, top=0.95)
 
     # Format colorbar
     if common_colorbar is True:
@@ -545,8 +639,43 @@ def plot_mesh_pandas(df: pd.DataFrame,
 <section>
 <h2 class="section-title" id="header-functions">Functions</h2>
 <dl>
+<dt id="redpandas.redpd_plot.mesh.find_mesh_color_and_scaling"><code class="name flex">
+<span>def <span class="ident">find_mesh_color_and_scaling</span></span>(<span>wiggle_num: int, mesh_color_scaling: Union[List[str], str] = 'auto', mesh_color_range: Union[List[float], float] = 15.0)</span>
+</code></dt>
+<dd>
+<div class="desc">Find number of mesh color and scaling values if input is only int and string. Coded to avoid retyping same values<br>over and over in cases where stations have only one type of sensor.<br><br>:param wiggle_num: number of wiggles in df<br>:param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'. The parameter common_colorbar<br>
+needs to be set to False to apply mesh_color_scaling<br>:param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set<br>
+to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:return:</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def find_mesh_color_and_scaling(wiggle_num: int,
+                                mesh_color_scaling: Union[List[str], str] = &#39;auto&#39;,
+                                mesh_color_range: Union[List[float], float] = 15.0):
+    &#34;&#34;&#34;
+    Find number of mesh color and scaling values if input is only int and string. Coded to avoid retyping same values
+    over and over in cases where stations have only one type of sensor.
+
+    :param wiggle_num: number of wiggles in df
+    :param mesh_color_scaling: optional, colorbar scaling, &#34;auto&#34; or &#34;range&#34;. Default is &#39;auto&#39;. The parameter common_colorbar
+        needs to be set to False to apply mesh_color_scaling
+    :param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set
+        to False and mesh_color_scaling to &#34;range &#34;to apply mesh_color_range
+    :return:
+    &#34;&#34;&#34;
+
+    if (isinstance(mesh_color_range, float) is True or isinstance(mesh_color_range, int) is True) and isinstance(mesh_color_scaling, str):
+        list_mesh_color_range = [mesh_color_range] * wiggle_num
+        list_mesh_color_scaling = [mesh_color_scaling] * wiggle_num
+        return list_mesh_color_scaling, list_mesh_color_range
+
+    else:
+        return mesh_color_scaling, mesh_color_range</code></pre>
+</details>
+</dd>
 <dt id="redpandas.redpd_plot.mesh.find_tfr_max_min_lim"><code class="name flex">
-<span>def <span class="ident">find_tfr_max_min_lim</span></span>(<span>df: pandas.core.frame.DataFrame, wiggle_num: int, mesh_tfr_label: Union[str, List[str]])</span>
+<span>def <span class="ident">find_tfr_max_min_lim</span></span>(<span>df: pandas.core.frame.DataFrame, wiggle_num: int, mesh_tfr_label: Union[List[str], str])</span>
 </code></dt>
 <dd>
 <div class="desc">Find max/min limits TFR bits<br><br>:param df: input pandas data frame<br>:param wiggle_num: int, number of signals that will be plotted<br>:param mesh_tfr_label: string for the mesh tfr column name in df. List of strings for multiple columns<br>:return: values for tfr max and tfr min</div>
@@ -571,11 +700,11 @@ def plot_mesh_pandas(df: pd.DataFrame,
     tfr_max = np.empty(wiggle_num)
 
     index_wiggle_num_total = 0  # index to keep track of which wiggle
-    for mesh_n in range(len(mesh_tfr_label)):
 
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-
-        for index_element in df.index:
+    # for mesh_n in range(len(mesh_tfr_label)):
+    for index_element in df.index:
+        for mesh_n in range(len(mesh_tfr_label)):
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_element]) != float:
@@ -607,7 +736,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
 </details>
 </dd>
 <dt id="redpandas.redpd_plot.mesh.find_wiggle_num_tfr"><code class="name flex">
-<span>def <span class="ident">find_wiggle_num_tfr</span></span>(<span>df: pandas.core.frame.DataFrame, mesh_tfr_label: Union[str, List[str]]) ‑> int</span>
+<span>def <span class="ident">find_wiggle_num_tfr</span></span>(<span>df: pandas.core.frame.DataFrame, mesh_tfr_label: Union[List[str], str]) ‑> int</span>
 </code></dt>
 <dd>
 <div class="desc">Find number of signals to plot<br><br>:param df: input pandas data frame<br>:param mesh_tfr_label: string for the mesh tfr column name in df. List of strings for multiple columns<br>:return: int, number of signals</div>
@@ -649,7 +778,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
 </details>
 </dd>
 <dt id="redpandas.redpd_plot.mesh.find_x_max_min_lim"><code class="name flex">
-<span>def <span class="ident">find_x_max_min_lim</span></span>(<span>df: pandas.core.frame.DataFrame, wiggle_num: int, mesh_tfr_label: Union[str, List[str]], mesh_time_label: Union[str, List[str]])</span>
+<span>def <span class="ident">find_x_max_min_lim</span></span>(<span>df: pandas.core.frame.DataFrame, wiggle_num: int, mesh_tfr_label: Union[List[str], str], mesh_time_label: Union[List[str], str])</span>
 </code></dt>
 <dd>
 <div class="desc">Find max/min x-axis limit<br><br>:param df: input pandas data frame<br>:param wiggle_num: int, number of signals that will be plotted<br>:param mesh_tfr_label: string for the mesh tfr column name in df. List of strings for multiple columns<br>:param mesh_time_label: string for the mesh time column name in df. List of strings for multiple columns<br><br>:return: values for x max and x min</div>
@@ -677,11 +806,9 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
     index_wiggle_num_total = 0  # index to keep track of which wiggle
     for mesh_n in range(len(mesh_tfr_label)):
-
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-        mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
-
         for index_element in df.index:
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
+            mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_element]) != float:
@@ -712,7 +839,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
 </details>
 </dd>
 <dt id="redpandas.redpd_plot.mesh.find_ylabel_tfr"><code class="name flex">
-<span>def <span class="ident">find_ylabel_tfr</span></span>(<span>df: pandas.core.frame.DataFrame, mesh_tfr_label: Union[str, List[str]], sig_id_label: Union[str, List[str]]) ‑> List</span>
+<span>def <span class="ident">find_ylabel_tfr</span></span>(<span>df: pandas.core.frame.DataFrame, mesh_tfr_label: Union[List[str], str], sig_id_label: Union[List[str], str]) ‑> List</span>
 </code></dt>
 <dd>
 <div class="desc">Find ylabels<br><br>:param df: input pandas data frame<br>:param mesh_tfr_label: string for the mesh tfr column name in df. List of strings for multiple columns<br>:param sig_id_label: string for column name with station ids in df. Alternatively, you can also provide a<br>
@@ -739,6 +866,7 @@ provided needs to match the number of stations and signals in df.<br><br>:return
 
     if sig_id_label == &#34;index&#34; or (type(sig_id_label) == str and sig_id_label in df.columns):
         wiggle_yticklabel = []  # name/y label of wiggles
+
         for mesh_n in range(len(mesh_tfr_label)):
             mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
             for n in df.index:
@@ -766,14 +894,14 @@ provided needs to match the number of stations and signals in df.<br><br>:return
 </details>
 </dd>
 <dt id="redpandas.redpd_plot.mesh.plot_mesh_pandas"><code class="name flex">
-<span>def <span class="ident">plot_mesh_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, mesh_time_label: Union[str, List[str]], mesh_frequency_label: Union[str, List[str]], mesh_tfr_label: Union[str, List[str]], sig_id_label: Union[str, List[str]], t0_sig_epoch_s: float = None, fig_title_show: bool = True, fig_title: str = 'STFT', frequency_scaling: str = 'log', frequency_hz_ymin: float = 3.469446951953614e-18, frequency_hz_ymax: float = 1e+42, common_colorbar: bool = True, mesh_color_scaling: Union[str, List[str]] = 'auto', mesh_color_range: Union[List[float], float] = 15, show_figure: bool = True) ‑> matplotlib.figure.Figure</span>
+<span>def <span class="ident">plot_mesh_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, mesh_time_label: Union[List[str], str], mesh_frequency_label: Union[List[str], str], mesh_tfr_label: Union[List[str], str], sig_id_label: Union[List[str], str], t0_sig_epoch_s: float = None, fig_title_show: bool = True, fig_title: str = 'STFT', frequency_scaling: str = 'log', frequency_hz_ymin: float = 3.469446951953614e-18, frequency_hz_ymax: float = 1e+42, common_colorbar: bool = True, ytick_values_show: bool = False, mesh_color_scaling: Union[List[str], str] = 'auto', mesh_color_range: Union[List[float], float] = 15.0, show_figure: bool = True) ‑> matplotlib.figure.Figure</span>
 </code></dt>
 <dd>
 <div class="desc">Plots spectrogram for all signals in df<br><br>:param df: input pandas data frame. REQUIRED<br>:param mesh_time_label: string for the mesh time column name in df. List of strings for multiple columns. REQUIRED<br>:param mesh_frequency_label: string for the mesh frequency column name in df. List of strings for multiple columns. REQUIRED<br>:param mesh_tfr_label: string for the mesh tfr column name in df. List of strings for multiple columns. REQUIRED<br>:param sig_id_label: string for column name with station ids in df. REQUIRED. Alternatively, you can also provide a<br>
 list of strings with custom labels, for example: ["Audio", "Acc X", "Acc Y", "Acc Z"]. The number of custom labels<br>
-provided needs to match the number of stations and signals in df.<br>:param t0_sig_epoch_s: optional float, epoch time in seconds of first timestamp. Default is None<br>:param fig_title_show: optional bool, include a title in the figure if True. Default is True<br>:param fig_title: optional string, figure title label. Default is "STFT"<br>:param frequency_scaling: optional string, determine frequency scaling "log" or "lin". Default is "log"<br>:param frequency_hz_ymin: optional float, y axis min lim<br>:param frequency_hz_ymax: optional float, y axis max lim<br>:param common_colorbar: optional bool, display a colorbar for all mesh panels if True. Default is True<br>:param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'. The parameter common_colorbar<br>
-needs to be set to False to apply mesh_color_scaling<br>:param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set<br>
-to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param show_figure: optional bool, show figure if True. Default is True<br><br>:return: matplotlib figure instance</div>
+provided needs to match the number of stations and signals in df.<br>:param t0_sig_epoch_s: optional float, epoch time in seconds of first timestamp. Default is None<br>:param fig_title_show: optional bool, include a title in the figure if True. Default is True<br>:param fig_title: optional string, figure title label. Default is "STFT"<br>:param frequency_scaling: optional string, determine frequency scaling "log" or "lin". Default is "log"<br>:param frequency_hz_ymin: optional float, y axis min lim<br>:param frequency_hz_ymax: optional float, y axis max lim<br>:param common_colorbar: optional bool, display a colorbar for all mesh panels if True. Default is True<br>:param ytick_values_show: optional bool, display ytick values. Default is False<br>:param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'. The parameter common_colorbar<br>
+needs to be set to False to apply mesh_color_scaling<br>:param mesh_color_range: optional, range of colorbar. Default is 15.0. The parameter common_colorbar needs to be set<br>
+to False and mesh_color_scaling to "range" to apply mesh_color_range<br>:param show_figure: optional bool, show figure if True. Default is True<br><br>:return: matplotlib figure instance</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -790,8 +918,9 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
                      frequency_hz_ymin: float = rpd_scales.Slice.FU,
                      frequency_hz_ymax: float = rpd_scales.Slice.F0,
                      common_colorbar: bool = True,
+                     ytick_values_show: bool = False,
                      mesh_color_scaling: Union[List[str], str] = &#39;auto&#39;,
-                     mesh_color_range: Union[List[float], float] = 15,
+                     mesh_color_range: Union[List[float], float] = 15.0,
                      show_figure: bool = True) -&gt; Figure:
 
     &#34;&#34;&#34;
@@ -811,10 +940,11 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
      :param frequency_hz_ymin: optional float, y axis min lim
      :param frequency_hz_ymax: optional float, y axis max lim
      :param common_colorbar: optional bool, display a colorbar for all mesh panels if True. Default is True
+     :param ytick_values_show: optional bool, display ytick values. Default is False
      :param mesh_color_scaling: optional, colorbar scaling, &#34;auto&#34; or &#34;range&#34;. Default is &#39;auto&#39;. The parameter common_colorbar
         needs to be set to False to apply mesh_color_scaling
-     :param mesh_color_range: optional, range of colorbar. Default is 15. The parameter common_colorbar needs to be set
-        to False and mesh_color_scaling to &#34;range &#34;to apply mesh_color_range
+     :param mesh_color_range: optional, range of colorbar. Default is 15.0. The parameter common_colorbar needs to be set
+        to False and mesh_color_scaling to &#34;range&#34; to apply mesh_color_range
      :param show_figure: optional bool, show figure if True. Default is True
 
      :return: matplotlib figure instance
@@ -862,6 +992,10 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
                                                             wiggle_num=wiggle_num,
                                                             mesh_tfr_label=mesh_tfr_label)
     else:
+        mesh_color_scaling, mesh_color_range = find_mesh_color_and_scaling(wiggle_num=wiggle_num,
+                                                                           mesh_color_scaling=mesh_color_scaling,
+                                                                           mesh_color_range=mesh_color_range)
+
         # Check wiggle_num and values provided for mesh scaling match (if common_colorbar is False)
         if len(mesh_color_scaling) != wiggle_num:
             raise ValueError(f&#34;The number of strings provided in the mesh_color_scaling &#34;
@@ -877,31 +1011,33 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
                              f&#34;\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z &#34;
                              f&#34;components so a value is required for each component.&#34;)
 
-    # Figure setup
-    fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
-    if common_colorbar is True:  # for colorbar, two columns in fig
+    # Set up figure
+    if show_figure:
+        fig = plt.figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+    else:
+        fig: Figure = Figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
+
+    if common_colorbar is True and ytick_values_show is False:  # for colorbar, two columns in fig
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.03)
+    elif common_colorbar is True and ytick_values_show is True:
+        gs = fig.add_gridspec(nrows=wiggle_num, ncols=2, figure=fig, width_ratios=[10., 0.1], wspace=0.15)
     else:
         gs = fig.add_gridspec(nrows=wiggle_num, ncols=1, figure=fig)
 
-    # Start plotting each sensor/station
     index_wiggle_yticklabels = 0  # index to keep track of which wiggle y label to apply
-    # index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted
-    index_panel_order = 0
+    index_panel_order = wiggle_num - 1  # index to keep track of which wiggle is being plotted, -1 cause index 0
     index_mesh_color_scale_panel = 0  # index to keep track of which mesh tfr color scale to apply if provided
 
+    # loop to plot column label provided per station, reversed to match plot_wiggles
     for mesh_n in range(len(mesh_tfr_label)):  # for each column label provided
-
-        mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
-        mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
-        mesh_frequency_label_individual = mesh_frequency_label[mesh_n]  # individual mesh label from list
-
-        # loop to plot column label provided per station, reversed to match plot_wiggles
-        for _, index_signal in enumerate(reversed(df.index)):
+        for index_signal in df.index:
+            # Start plotting each sensor/station
+            mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
+            mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
+            mesh_frequency_label_individual = mesh_frequency_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
             if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_signal]) != float:
-
                 if df[mesh_tfr_label_individual][index_signal].ndim == 2:  # aka audio wiggle
 
                     if common_colorbar is True:
@@ -945,7 +1081,7 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
                                                       frequency_ymax=frequency_hz_ymax,
                                                       frequency_scaling=frequency_scaling)
 
-                    plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+                    ax.set_ylim(frequency_fix_ymin, frequency_fix_ymax)
 
                     # Set up ytick labels and y scale
                     if frequency_scaling == &#34;log&#34;:
@@ -957,19 +1093,36 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
                         middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
 
                     # Plot yticks
-                    ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                    ax.set_yticklabels([wiggle_yticklabel[index_signal]], size=FigParam().text_size)
+                    if ytick_values_show is True:
+                        # Plot primary ticks with y values
+                        ytick_min = float(&#34;{:.2f}&#34;.format(frequency_fix_ymin))
+                        ytick_max = float(&#34;{:.2f}&#34;.format(frequency_fix_ymax))
+                        ax.yaxis.tick_right()
+                        ax.set_yticks([ytick_min, ytick_max])
+                        major_formatter = mticker.FuncFormatter(sci_format)  # format ticks to scientific notation
+                        ax.yaxis.set_major_formatter(major_formatter)
+
+                        # Plot secondary ticks with name station
+                        secax = ax.secondary_yaxis(&#34;left&#34;)
+                        secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                        secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        secax.minorticks_off()
+                        ax.tick_params(axis=&#39;y&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size_minor_yaxis)
+
+                    else:
+                        # Plot yticks only name station
+                        ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                        ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        ax.tick_params(axis=&#39;y&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
 
                     # Set up ax limits
-                    plt.xlim(x_lim_min_total, x_lim_max_total)
+                    ax.set_xlim(x_lim_min_total, x_lim_max_total)
+                    ax.tick_params(axis=&#39;x&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
                     if index_panel_order &lt; (wiggle_num - 1):  # plot x ticks for only last subplot
                         ax.set_xticks([])
 
-                    ax.tick_params(axis=&#39;both&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
-
                     index_wiggle_yticklabels += 1
-                    # index_panel_order -= 1
-                    index_panel_order += 1
+                    index_panel_order -= 1
                     index_mesh_color_scale_panel += 1
 
                 else:
@@ -1017,7 +1170,7 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
                                                           frequency_ymax=frequency_hz_ymax,
                                                           frequency_scaling=frequency_scaling)
 
-                        plt.ylim((frequency_fix_ymin, frequency_fix_ymax))
+                        ax.set_ylim(frequency_fix_ymin, frequency_fix_ymax)
 
                         # Set up ytick labels and y scale
                         if frequency_scaling == &#34;log&#34;:
@@ -1029,18 +1182,36 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
                             middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
 
                         # Plot yticks
-                        ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
-                        ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        if ytick_values_show is True:
+                            # Plot primary ticks with y values
+                            ytick_min = float(&#34;{:.2f}&#34;.format(frequency_fix_ymin))
+                            ytick_max = float(&#34;{:.2f}&#34;.format(frequency_fix_ymax))
+                            ax.yaxis.tick_right()
+                            ax.set_yticks([ytick_min, ytick_max])
+                            major_formatter = mticker.FuncFormatter(sci_format)  # format ticks to scientific notation
+                            ax.yaxis.set_major_formatter(major_formatter)
+
+                            # Plot secondary ticks with name station
+                            secax = ax.secondary_yaxis(&#34;left&#34;)
+                            secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                            secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                            secax.minorticks_off()
+                            ax.tick_params(axis=&#39;y&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size_minor_yaxis)
+
+                        else:
+                            # Plot yticks only name station
+                            ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
+                            ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                            ax.tick_params(axis=&#39;y&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
 
                         # Set up ax limits
-                        plt.xlim(x_lim_min_total, x_lim_max_total)
+                        ax.set_xlim(x_lim_min_total, x_lim_max_total)
+                        ax.tick_params(axis=&#39;x&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
+
                         if index_panel_order &lt; (wiggle_num - 1):  # plot x ticks for only last subplot
                             ax.set_xticks([])
 
-                        ax.tick_params(axis=&#39;both&#39;, which=&#39;major&#39;, labelsize=FigParam().text_size)
-
-                        # index_panel_order -= 1
-                        index_panel_order += 1
+                        index_panel_order -= 1
                         index_mesh_color_scale_panel += 1
                         index_wiggle_yticklabels += 1
             else:
@@ -1053,29 +1224,47 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
     y1 = max([ax.get_position().y1 for ax in fig.axes])
 
     # Hide axes for common x and y labels
-    plt.axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
-    plt.tick_params(labelcolor=&#39;none&#39;, top=False, bottom=False, left=False, right=False)
+    axes = fig.add_axes([x0, y0, x1 - x0, y1 - y0], frameon=False)
+    axes.tick_params(labelcolor=&#39;none&#39;, top=False, bottom=False, left=False, right=False)
+    # if ytick_values_show is True:
+    #     plt.text(1.02, 1.085, &#34;Hz&#34;, fontsize=FigParam().text_size_minor_yaxis, transform=ax.transAxes)
 
     # Common x and y labels
     if t0_sig_epoch_s is None:
-        plt.xlabel(&#34;Time (s)&#34;, size=FigParam().text_size, labelpad=10)
+        axes.set_xlabel(&#34;Time (s)&#34;, size=FigParam().text_size, labelpad=10)
     else:
-        plt.xlabel(&#34;Time (s) relative to &#34; + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;),
-                   size=FigParam().text_size, labelpad=10)
-    if fig_title_show:
-        plt.title(fig_title, size=FigParam().text_size + 2, y=1.05)
+        axes.set_xlabel(&#34;Time (s) relative to &#34; + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime(&#39;%Y-%m-%d %H:%M:%S&#39;),
+                        size=FigParam().text_size, labelpad=10)
+
+    # Format spacing in figure
+    if isinstance(sig_id_label, str) is True:
+        # Assumes Station IDs are ylabels
+        left_spacing = 0.17
+    else:
+        left_spacing = 0.12
+
+    if fig_title_show is True:
+        axes.set_title(fig_title, size=FigParam().text_size + 2, y=1.05)
         # Adjust overall plot to maximize figure space for press if title on
-        if common_colorbar is False:
-            plt.subplots_adjust(left=0.1, right=0.97)
+        if common_colorbar is True and ytick_values_show is True:
+            fig.subplots_adjust(left=left_spacing, top=0.92, hspace=0.25)
+        elif common_colorbar is True and ytick_values_show is False:
+            fig.subplots_adjust(left=left_spacing, top=0.92)
+        elif common_colorbar is False and ytick_values_show is True:
+            fig.subplots_adjust(left=left_spacing, right=0.94, top=0.92, hspace=0.32)
         else:
-            plt.subplots_adjust(top=0.92)
+            fig.subplots_adjust(left=left_spacing, right=0.97, top=0.92)
 
     else:
         # Adjust overall plot to maximize figure space for press if title off
-        if common_colorbar is False:
-            plt.subplots_adjust(left=0.1, top=0.95, right=0.97)
-        else:
-            plt.subplots_adjust(top=0.95)
+        if common_colorbar is False and ytick_values_show is False:
+            fig.subplots_adjust(left=left_spacing, top=0.95, right=0.97)
+        elif common_colorbar is False and ytick_values_show is True:
+            fig.subplots_adjust(left=left_spacing, top=0.95, right=0.94, hspace=0.25)
+        elif common_colorbar is True and ytick_values_show is True:
+            fig.subplots_adjust(left=left_spacing, top=0.95, hspace=0.25)
+        else:  # if common bar true
+            fig.subplots_adjust(left=left_spacing, top=0.95)
 
     # Format colorbar
     if common_colorbar is True:
@@ -1088,6 +1277,24 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
         plt.show()
 
     return fig</code></pre>
+</details>
+</dd>
+<dt id="redpandas.redpd_plot.mesh.sci_format"><code class="name flex">
+<span>def <span class="ident">sci_format</span></span>(<span>x, lim)</span>
+</code></dt>
+<dd>
+<div class="desc">Ticks formatter scientific notation with base 10. Adapted from https://www.py4u.net/discuss/140199</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def sci_format(x,lim):
+    &#34;&#34;&#34;
+    Ticks formatter scientific notation with base 10. Adapted from https://www.py4u.net/discuss/140199
+    &#34;&#34;&#34;
+    a, b = &#39;{:.0e}&#39;.format(x).split(&#39;e&#39;)
+    b = int(b)
+    return r&#39;${} \times 10^{{{}}}$&#39;.format(a, b)</code></pre>
 </details>
 </dd>
 </dl>
@@ -1108,11 +1315,13 @@ to False and mesh_color_scaling to "range "to apply mesh_color_range<br>:param s
 </li>
 <li><h3><a href="#header-functions">Functions</a></h3>
 <ul class="">
+<li><code><a title="redpandas.redpd_plot.mesh.find_mesh_color_and_scaling" href="#redpandas.redpd_plot.mesh.find_mesh_color_and_scaling">find_mesh_color_and_scaling</a></code></li>
 <li><code><a title="redpandas.redpd_plot.mesh.find_tfr_max_min_lim" href="#redpandas.redpd_plot.mesh.find_tfr_max_min_lim">find_tfr_max_min_lim</a></code></li>
 <li><code><a title="redpandas.redpd_plot.mesh.find_wiggle_num_tfr" href="#redpandas.redpd_plot.mesh.find_wiggle_num_tfr">find_wiggle_num_tfr</a></code></li>
 <li><code><a title="redpandas.redpd_plot.mesh.find_x_max_min_lim" href="#redpandas.redpd_plot.mesh.find_x_max_min_lim">find_x_max_min_lim</a></code></li>
 <li><code><a title="redpandas.redpd_plot.mesh.find_ylabel_tfr" href="#redpandas.redpd_plot.mesh.find_ylabel_tfr">find_ylabel_tfr</a></code></li>
 <li><code><a title="redpandas.redpd_plot.mesh.plot_mesh_pandas" href="#redpandas.redpd_plot.mesh.plot_mesh_pandas">plot_mesh_pandas</a></code></li>
+<li><code><a title="redpandas.redpd_plot.mesh.sci_format" href="#redpandas.redpd_plot.mesh.sci_format">sci_format</a></code></li>
 </ul>
 </li>
 </ul>

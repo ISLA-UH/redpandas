@@ -431,22 +431,17 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                         secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
                         secax.minorticks_off()
+                        ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size_minor_yaxis)
 
                     else:
                         # Plot yticks only name station
                         ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                         ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                        ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size)
 
                     # Set up ax limits
                     ax.set_xlim(x_lim_min_total, x_lim_max_total)
-                    if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
-                        ax.set_xticks([])
-
                     ax.tick_params(axis='x', which='major', labelsize=FigParam().text_size)
-                    ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size_minor_yaxis)
-
-                    # Set up ax limits
-                    plt.xlim(x_lim_min_total, x_lim_max_total)
                     if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                         ax.set_xticks([])
 
@@ -525,19 +520,20 @@ def plot_mesh_pandas(df: pd.DataFrame,
                             secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                             secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
                             secax.minorticks_off()
+                            ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size_minor_yaxis)
 
                         else:
                             # Plot yticks only name station
                             ax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                             ax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
+                            ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size)
 
                         # Set up ax limits
                         ax.set_xlim(x_lim_min_total, x_lim_max_total)
+                        ax.tick_params(axis='x', which='major', labelsize=FigParam().text_size)
+
                         if index_panel_order < (wiggle_num - 1):  # plot x ticks for only last subplot
                             ax.set_xticks([])
-
-                        ax.tick_params(axis='x', which='major', labelsize=FigParam().text_size)
-                        ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size_minor_yaxis)
 
                         index_panel_order -= 1
                         index_mesh_color_scale_panel += 1
@@ -564,28 +560,35 @@ def plot_mesh_pandas(df: pd.DataFrame,
         axes.set_xlabel("Time (s) relative to " + dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S'),
                         size=FigParam().text_size, labelpad=10)
 
+    # Format spacing in figure
+    if isinstance(sig_id_label, str) is True:
+        # Assumes Station IDs are ylabels
+        left_spacing = 0.17
+    else:
+        left_spacing = 0.12
+
     if fig_title_show is True:
         axes.set_title(fig_title, size=FigParam().text_size + 2, y=1.05)
         # Adjust overall plot to maximize figure space for press if title on
         if common_colorbar is True and ytick_values_show is True:
-            fig.subplots_adjust(left=0.17, top=0.92, hspace=0.25)
+            fig.subplots_adjust(left=left_spacing, top=0.92, hspace=0.25)
         elif common_colorbar is True and ytick_values_show is False:
-            fig.subplots_adjust(left=0.17, top=0.92)
+            fig.subplots_adjust(left=left_spacing, top=0.92)
         elif common_colorbar is False and ytick_values_show is True:
-            fig.subplots_adjust(left=0.17, right=0.94, top=0.92, hspace=0.32)
+            fig.subplots_adjust(left=left_spacing, right=0.94, top=0.92, hspace=0.32)
         else:
-            fig.subplots_adjust(left=0.17, right=0.97, top=0.92)
+            fig.subplots_adjust(left=left_spacing, right=0.97, top=0.92)
 
     else:
         # Adjust overall plot to maximize figure space for press if title off
         if common_colorbar is False and ytick_values_show is False:
-            fig.subplots_adjust(left=0.17, top=0.95, right=0.97)
+            fig.subplots_adjust(left=left_spacing, top=0.95, right=0.97)
         elif common_colorbar is False and ytick_values_show is True:
-            fig.subplots_adjust(left=0.17, top=0.95, right=0.94, hspace=0.25)
+            fig.subplots_adjust(left=left_spacing, top=0.95, right=0.94, hspace=0.25)
         elif common_colorbar is True and ytick_values_show is True:
-            fig.subplots_adjust(left=0.17, top=0.95, hspace=0.25)
+            fig.subplots_adjust(left=left_spacing, top=0.95, hspace=0.25)
         else:  # if common bar true
-            fig.subplots_adjust(left=0.17, top=0.95)
+            fig.subplots_adjust(left=left_spacing, top=0.95)
 
     # Format colorbar
     if common_colorbar is True:

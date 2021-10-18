@@ -111,6 +111,11 @@ def signal_zero_mean_pandas(df: pd.DataFrame,
 
     list_zero_mean_data = []  # list that will be converted to a column
     for n in df.index:
+
+        if type(df[sig_wf_label][n]) == float:
+            list_zero_mean_data.append(float(&#34;NaN&#34;))
+            continue
+
         if df[sig_wf_label][n].ndim == 1:
             list_zero_mean_data.append(df[sig_wf_label][n] - np.nanmean(df[sig_wf_label][n]))
         else:
@@ -144,6 +149,10 @@ def taper_tukey_pandas(df: pd.DataFrame,
     list_taper = []
 
     for row in df.index:
+        if type(df[sig_wf_label][row]) == float:
+            list_taper.append(float(&#34;NaN&#34;))
+            continue
+
         if df[sig_wf_label][row].ndim == 1:
             sig_data_window = (df[sig_wf_label][row] * signal.windows.tukey(M=len(df[sig_wf_label][row]),
                                                                             alpha=fraction_cosine,
@@ -192,6 +201,9 @@ def normalize_pandas(df: pd.DataFrame,
 
     list_normalized_signals = []  # list that will be converted to a column
     for row in range(len(df)):
+        if type(df[sig_wf_label][row]) == float:
+            list_normalized_signals.append(float(&#34;NaN&#34;))
+            continue
 
         if df[sig_wf_label][row].ndim == 1:
             # use libquantum utils normalize module
@@ -221,7 +233,7 @@ def decimate_signal_pandas(df: pd.DataFrame,
                            new_column_label_decimated_sig: str = &#39;decimated_sig_data&#39;,
                            new_column_label_decimated_sig_timestamps: str = &#39;decimated_sig_epoch&#39;,
                            new_column_label_decimated_sample_rate_hz: str = &#39;decimated_sample_rate_hz&#39;,
-                           verbose: bool = True) -&gt; pd.DataFrame:
+                           verbose: bool = False) -&gt; pd.DataFrame:
     &#34;&#34;&#34;
     Decimate all signal data (via spicy.signal.decimate). Decimates to the smallest sample rate recorded in data frame
     or to custom frequency.
@@ -237,7 +249,7 @@ def decimate_signal_pandas(df: pd.DataFrame,
     :param new_column_label_decimated_sig: label for new column containing signal decimated data
     :param new_column_label_decimated_sig_timestamps: label for new column containing signal decimated timestamps
     :param new_column_label_decimated_sample_rate_hz: label for new column containing signal decimated sample rate
-    :param verbose: print statements. Default is True
+    :param verbose: print statements. Default is False
 
     :return: original data frame with added columns for decimated signal, timestamps, and sample rate
     &#34;&#34;&#34;
@@ -256,6 +268,14 @@ def decimate_signal_pandas(df: pd.DataFrame,
     list_all_decimated_sample_rate_hz = []
 
     for row in range(len(df)):  # for row in df
+
+        if type(df[sig_wf_label][row]) == float:
+            list_all_decimated_timestamps.append(float(&#34;NaN&#34;))
+            list_all_decimated_data.append(float(&#34;NaN&#34;))
+            list_all_decimated_sample_rate_hz.append(float(&#34;NaN&#34;))
+            if verbose == True:
+                print(f&#39;No data found for {df[sig_id_label][row]} {sig_wf_label}&#39;)
+            continue
 
         if df[sample_rate_hz_label][row] != min_sample_rate:
             # calculate downsampling factor to reach downsampled frequency
@@ -341,6 +361,58 @@ def decimate_signal_pandas(df: pd.DataFrame,
     return df
 
 
+def decimate_signal_pandas_audio_rdvx(df: pd.DataFrame,
+                                      sig_wf_label: str = &#34;audio_wf&#34;,
+                                      sig_timestamps_label: str = &#34;audio_epoch_s&#34;,
+                                      sample_rate_hz_label: str = &#34;audio_sample_rate_nominal_hz&#34;):
+    &#34;&#34;&#34;
+    Decimates signal data to 8kHz. Makes columns &#34;decimated_audio_wf&#34;, &#34;decimated_audio_epoch_s&#34; and
+    &#34;decimated_audio_sample_rate_hz&#34;
+
+    :param df: input pandas dataframe
+    :param sig_wf_label: Default is &#34;audio_wf&#34;
+    :param sig_timestamps_label: Default is &#34;audio_epoch_s&#34;
+    :param sample_rate_hz_label: Default is &#34;audio_sample_rate_nominal_hz&#34;
+
+    :return: original df with new columns with decimated data
+    &#34;&#34;&#34;
+
+    list_all_decimated_data = []
+    list_all_decimated_timestamps = []
+    list_all_decimated_sample_rate_hz = []
+    for row in df.index:
+        if df[sample_rate_hz_label][row] == 48000:
+            decimated_timestamp, decimated_data = decimate_individual_station(downsampling_factor=6,
+                                                                              filter_order=8,
+                                                                              sig_epoch_s=df[sig_timestamps_label][row],
+                                                                              sig_wf=df[sig_wf_label][row],
+                                                                              sample_rate_hz=df[sample_rate_hz_label][row])
+            new_sample_rate_hz = df[sample_rate_hz_label][row]/6
+
+        elif df[sample_rate_hz_label][row] == 16000:
+            decimated_timestamp, decimated_data = decimate_individual_station(downsampling_factor=2,
+                                                                              filter_order=8,
+                                                                              sig_epoch_s=df[sig_timestamps_label][row],
+                                                                              sig_wf=df[sig_wf_label][row],
+                                                                              sample_rate_hz=df[sample_rate_hz_label][row])
+            new_sample_rate_hz = df[sample_rate_hz_label][row]/2
+
+        else:
+            decimated_timestamp = df[sig_timestamps_label][row]
+            decimated_data = df[sig_wf_label][row]
+            new_sample_rate_hz = df[sample_rate_hz_label][row]
+
+        list_all_decimated_data.append(decimated_data)
+        list_all_decimated_timestamps.append(decimated_timestamp)
+        list_all_decimated_sample_rate_hz.append(new_sample_rate_hz)
+
+    df[&#34;decimated_audio_wf&#34;] = list_all_decimated_data
+    df[&#34;decimaated_audio_epoch_s&#34;] = list_all_decimated_timestamps
+    df[&#34;decimated_audio_sample_rate_hz&#34;] = list_all_decimated_sample_rate_hz
+
+    return df
+
+
 def bandpass_butter_pandas(df: pd.DataFrame,
                            sig_wf_label: str,
                            sig_sample_rate_label: str,
@@ -375,6 +447,13 @@ def bandpass_butter_pandas(df: pd.DataFrame,
 
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
+
+        if type(df[sig_wf_label][j]) == float or type(df[sig_sample_rate_label][j]) == float:
+            list_all_signal_bandpass_data.append(float(&#34;NaN&#34;))
+            list_all_frequency_low_hz.append(float(&#34;NaN&#34;))
+            list_all_frequency_high_hz.append(float(&#34;NaN&#34;))
+            continue
+
         if df[sig_wf_label][j].ndim == 1:
             nyquist = 0.5 * df[sig_sample_rate_label][j]
             edge_low = frequency_cut_low_hz / nyquist
@@ -457,6 +536,12 @@ def highpass_butter_pandas(df: pd.DataFrame,
 
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
+        if type(df[sig_wf_label][j]) == float or type(df[sig_sample_rate_label][j]) == float:
+            list_all_signal_highpass_data.append(float(&#34;NaN&#34;))
+            list_all_frequency_low_hz.append(float(&#34;NaN&#34;))
+            list_all_frequency_high_hz.append(float(&#34;NaN&#34;))
+            continue
+
         if df[sig_wf_label][j].ndim == 1:
             nyquist = 0.5 * df[sig_sample_rate_label][j]
             edge_low = frequency_cut_low_hz / nyquist
@@ -550,6 +635,13 @@ def highpass_butter_pandas(df: pd.DataFrame,
 
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
+
+        if type(df[sig_wf_label][j]) == float or type(df[sig_sample_rate_label][j]) == float:
+            list_all_signal_bandpass_data.append(float(&#34;NaN&#34;))
+            list_all_frequency_low_hz.append(float(&#34;NaN&#34;))
+            list_all_frequency_high_hz.append(float(&#34;NaN&#34;))
+            continue
+
         if df[sig_wf_label][j].ndim == 1:
             nyquist = 0.5 * df[sig_sample_rate_label][j]
             edge_low = frequency_cut_low_hz / nyquist
@@ -639,11 +731,11 @@ def highpass_butter_pandas(df: pd.DataFrame,
 </details>
 </dd>
 <dt id="redpandas.redpd_filter.decimate_signal_pandas"><code class="name flex">
-<span>def <span class="ident">decimate_signal_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, downsample_frequency_hz: Union[str, int], sig_id_label: str, sig_wf_label: str, sig_timestamps_label: str, sample_rate_hz_label: str, filter_order: int = 8, new_column_label_decimated_sig: str = 'decimated_sig_data', new_column_label_decimated_sig_timestamps: str = 'decimated_sig_epoch', new_column_label_decimated_sample_rate_hz: str = 'decimated_sample_rate_hz', verbose: bool = True) ‑> pandas.core.frame.DataFrame</span>
+<span>def <span class="ident">decimate_signal_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, downsample_frequency_hz: Union[str, int], sig_id_label: str, sig_wf_label: str, sig_timestamps_label: str, sample_rate_hz_label: str, filter_order: int = 8, new_column_label_decimated_sig: str = 'decimated_sig_data', new_column_label_decimated_sig_timestamps: str = 'decimated_sig_epoch', new_column_label_decimated_sample_rate_hz: str = 'decimated_sample_rate_hz', verbose: bool = False) ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
 <dd>
 <div class="desc">Decimate all signal data (via spicy.signal.decimate). Decimates to the smallest sample rate recorded in data frame<br>or to custom frequency.<br><br>:param df: input pandas data frame<br>:param downsample_frequency_hz: frequency to downsample to in Hz. For minimum frequency found in df, 'Min',<br>for other frequencies, integer<br>:param sig_id_label: string for column name with station ids in df<br>:param sig_wf_label:
-string for column name with the waveform data in df<br>:param sig_timestamps_label: string for column name with the waveform timestamp data in df<br>:param sample_rate_hz_label: string for column name with sample rate in Hz information in df<br>:param filter_order: the order of the filter integer. Default is 2<br>:param new_column_label_decimated_sig: label for new column containing signal decimated data<br>:param new_column_label_decimated_sig_timestamps: label for new column containing signal decimated timestamps<br>:param new_column_label_decimated_sample_rate_hz: label for new column containing signal decimated sample rate<br>:param verbose: print statements. Default is True<br><br>:return: original data frame with added columns for decimated signal, timestamps, and sample rate</div>
+string for column name with the waveform data in df<br>:param sig_timestamps_label: string for column name with the waveform timestamp data in df<br>:param sample_rate_hz_label: string for column name with sample rate in Hz information in df<br>:param filter_order: the order of the filter integer. Default is 2<br>:param new_column_label_decimated_sig: label for new column containing signal decimated data<br>:param new_column_label_decimated_sig_timestamps: label for new column containing signal decimated timestamps<br>:param new_column_label_decimated_sample_rate_hz: label for new column containing signal decimated sample rate<br>:param verbose: print statements. Default is False<br><br>:return: original data frame with added columns for decimated signal, timestamps, and sample rate</div>
 <details class="source">
 <summary>
 <span>Expand source code</span>
@@ -658,7 +750,7 @@ string for column name with the waveform data in df<br>:param sig_timestamps_lab
                            new_column_label_decimated_sig: str = &#39;decimated_sig_data&#39;,
                            new_column_label_decimated_sig_timestamps: str = &#39;decimated_sig_epoch&#39;,
                            new_column_label_decimated_sample_rate_hz: str = &#39;decimated_sample_rate_hz&#39;,
-                           verbose: bool = True) -&gt; pd.DataFrame:
+                           verbose: bool = False) -&gt; pd.DataFrame:
     &#34;&#34;&#34;
     Decimate all signal data (via spicy.signal.decimate). Decimates to the smallest sample rate recorded in data frame
     or to custom frequency.
@@ -674,7 +766,7 @@ string for column name with the waveform data in df<br>:param sig_timestamps_lab
     :param new_column_label_decimated_sig: label for new column containing signal decimated data
     :param new_column_label_decimated_sig_timestamps: label for new column containing signal decimated timestamps
     :param new_column_label_decimated_sample_rate_hz: label for new column containing signal decimated sample rate
-    :param verbose: print statements. Default is True
+    :param verbose: print statements. Default is False
 
     :return: original data frame with added columns for decimated signal, timestamps, and sample rate
     &#34;&#34;&#34;
@@ -693,6 +785,14 @@ string for column name with the waveform data in df<br>:param sig_timestamps_lab
     list_all_decimated_sample_rate_hz = []
 
     for row in range(len(df)):  # for row in df
+
+        if type(df[sig_wf_label][row]) == float:
+            list_all_decimated_timestamps.append(float(&#34;NaN&#34;))
+            list_all_decimated_data.append(float(&#34;NaN&#34;))
+            list_all_decimated_sample_rate_hz.append(float(&#34;NaN&#34;))
+            if verbose == True:
+                print(f&#39;No data found for {df[sig_id_label][row]} {sig_wf_label}&#39;)
+            continue
 
         if df[sample_rate_hz_label][row] != min_sample_rate:
             # calculate downsampling factor to reach downsampled frequency
@@ -778,6 +878,67 @@ string for column name with the waveform data in df<br>:param sig_timestamps_lab
     return df</code></pre>
 </details>
 </dd>
+<dt id="redpandas.redpd_filter.decimate_signal_pandas_audio_rdvx"><code class="name flex">
+<span>def <span class="ident">decimate_signal_pandas_audio_rdvx</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str = 'audio_wf', sig_timestamps_label: str = 'audio_epoch_s', sample_rate_hz_label: str = 'audio_sample_rate_nominal_hz')</span>
+</code></dt>
+<dd>
+<div class="desc">Decimates signal data to 8kHz. Makes columns "decimated_audio_wf", "decimated_audio_epoch_s" and<br>"decimated_audio_sample_rate_hz"<br><br>:param df: input pandas dataframe<br>:param sig_wf_label: Default is "audio_wf"<br>:param sig_timestamps_label: Default is "audio_epoch_s"<br>:param sample_rate_hz_label: Default is "audio_sample_rate_nominal_hz"<br><br>:return: original df with new columns with decimated data</div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def decimate_signal_pandas_audio_rdvx(df: pd.DataFrame,
+                                      sig_wf_label: str = &#34;audio_wf&#34;,
+                                      sig_timestamps_label: str = &#34;audio_epoch_s&#34;,
+                                      sample_rate_hz_label: str = &#34;audio_sample_rate_nominal_hz&#34;):
+    &#34;&#34;&#34;
+    Decimates signal data to 8kHz. Makes columns &#34;decimated_audio_wf&#34;, &#34;decimated_audio_epoch_s&#34; and
+    &#34;decimated_audio_sample_rate_hz&#34;
+
+    :param df: input pandas dataframe
+    :param sig_wf_label: Default is &#34;audio_wf&#34;
+    :param sig_timestamps_label: Default is &#34;audio_epoch_s&#34;
+    :param sample_rate_hz_label: Default is &#34;audio_sample_rate_nominal_hz&#34;
+
+    :return: original df with new columns with decimated data
+    &#34;&#34;&#34;
+
+    list_all_decimated_data = []
+    list_all_decimated_timestamps = []
+    list_all_decimated_sample_rate_hz = []
+    for row in df.index:
+        if df[sample_rate_hz_label][row] == 48000:
+            decimated_timestamp, decimated_data = decimate_individual_station(downsampling_factor=6,
+                                                                              filter_order=8,
+                                                                              sig_epoch_s=df[sig_timestamps_label][row],
+                                                                              sig_wf=df[sig_wf_label][row],
+                                                                              sample_rate_hz=df[sample_rate_hz_label][row])
+            new_sample_rate_hz = df[sample_rate_hz_label][row]/6
+
+        elif df[sample_rate_hz_label][row] == 16000:
+            decimated_timestamp, decimated_data = decimate_individual_station(downsampling_factor=2,
+                                                                              filter_order=8,
+                                                                              sig_epoch_s=df[sig_timestamps_label][row],
+                                                                              sig_wf=df[sig_wf_label][row],
+                                                                              sample_rate_hz=df[sample_rate_hz_label][row])
+            new_sample_rate_hz = df[sample_rate_hz_label][row]/2
+
+        else:
+            decimated_timestamp = df[sig_timestamps_label][row]
+            decimated_data = df[sig_wf_label][row]
+            new_sample_rate_hz = df[sample_rate_hz_label][row]
+
+        list_all_decimated_data.append(decimated_data)
+        list_all_decimated_timestamps.append(decimated_timestamp)
+        list_all_decimated_sample_rate_hz.append(new_sample_rate_hz)
+
+    df[&#34;decimated_audio_wf&#34;] = list_all_decimated_data
+    df[&#34;decimaated_audio_epoch_s&#34;] = list_all_decimated_timestamps
+    df[&#34;decimated_audio_sample_rate_hz&#34;] = list_all_decimated_sample_rate_hz
+
+    return df</code></pre>
+</details>
+</dd>
 <dt id="redpandas.redpd_filter.highpass_butter_pandas"><code class="name flex">
 <span>def <span class="ident">highpass_butter_pandas</span></span>(<span>df: pandas.core.frame.DataFrame, sig_wf_label: str, sig_sample_rate_label: str, frequency_cut_low_hz: float, frequency_cut_high_hz: float, filter_order: int = 4, tukey_alpha: float = 0.5, new_column_label_sig_highpass: str = 'highpass', new_column_label_frequency_low: str = 'frequency_low_hz', new_column_label_frequency_high: str = 'frequency_high_hz') ‑> pandas.core.frame.DataFrame</span>
 </code></dt>
@@ -821,6 +982,12 @@ string for column name with the waveform data in df<br>:param sig_timestamps_lab
 
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     for j in df.index:
+        if type(df[sig_wf_label][j]) == float or type(df[sig_sample_rate_label][j]) == float:
+            list_all_signal_highpass_data.append(float(&#34;NaN&#34;))
+            list_all_frequency_low_hz.append(float(&#34;NaN&#34;))
+            list_all_frequency_high_hz.append(float(&#34;NaN&#34;))
+            continue
+
         if df[sig_wf_label][j].ndim == 1:
             nyquist = 0.5 * df[sig_sample_rate_label][j]
             edge_low = frequency_cut_low_hz / nyquist
@@ -900,6 +1067,9 @@ string for label for new column containing normalized signal data<br>:return: or
 
     list_normalized_signals = []  # list that will be converted to a column
     for row in range(len(df)):
+        if type(df[sig_wf_label][row]) == float:
+            list_normalized_signals.append(float(&#34;NaN&#34;))
+            continue
 
         if df[sig_wf_label][row].ndim == 1:
             # use libquantum utils normalize module
@@ -977,6 +1147,11 @@ string for label for new column containing normalized signal data<br>:return: or
 
     list_zero_mean_data = []  # list that will be converted to a column
     for n in df.index:
+
+        if type(df[sig_wf_label][n]) == float:
+            list_zero_mean_data.append(float(&#34;NaN&#34;))
+            continue
+
         if df[sig_wf_label][n].ndim == 1:
             list_zero_mean_data.append(df[sig_wf_label][n] - np.nanmean(df[sig_wf_label][n]))
         else:
@@ -1019,6 +1194,10 @@ string for label for new column containing normalized signal data<br>:return: or
     list_taper = []
 
     for row in df.index:
+        if type(df[sig_wf_label][row]) == float:
+            list_taper.append(float(&#34;NaN&#34;))
+            continue
+
         if df[sig_wf_label][row].ndim == 1:
             sig_data_window = (df[sig_wf_label][row] * signal.windows.tukey(M=len(df[sig_wf_label][row]),
                                                                             alpha=fraction_cosine,
@@ -1062,6 +1241,7 @@ string for label for new column containing normalized signal data<br>:return: or
 <li><code><a title="redpandas.redpd_filter.bandpass_butter_pandas" href="#redpandas.redpd_filter.bandpass_butter_pandas">bandpass_butter_pandas</a></code></li>
 <li><code><a title="redpandas.redpd_filter.decimate_individual_station" href="#redpandas.redpd_filter.decimate_individual_station">decimate_individual_station</a></code></li>
 <li><code><a title="redpandas.redpd_filter.decimate_signal_pandas" href="#redpandas.redpd_filter.decimate_signal_pandas">decimate_signal_pandas</a></code></li>
+<li><code><a title="redpandas.redpd_filter.decimate_signal_pandas_audio_rdvx" href="#redpandas.redpd_filter.decimate_signal_pandas_audio_rdvx">decimate_signal_pandas_audio_rdvx</a></code></li>
 <li><code><a title="redpandas.redpd_filter.highpass_butter_pandas" href="#redpandas.redpd_filter.highpass_butter_pandas">highpass_butter_pandas</a></code></li>
 <li><code><a title="redpandas.redpd_filter.normalize_pandas" href="#redpandas.redpd_filter.normalize_pandas">normalize_pandas</a></code></li>
 <li><code><a title="redpandas.redpd_filter.prime_factors" href="#redpandas.redpd_filter.prime_factors">prime_factors</a></code></li>
