@@ -220,7 +220,7 @@ def decimate_signal_pandas(df: pd.DataFrame,
     :param new_column_label_decimated_sig: label for new column containing signal decimated data
     :param new_column_label_decimated_sig_timestamps: label for new column containing signal decimated timestamps
     :param new_column_label_decimated_sample_rate_hz: label for new column containing signal decimated sample rate
-    :param verbose: print statements. Default is True
+    :param verbose: print statements. Default is False
 
     :return: original data frame with added columns for decimated signal, timestamps, and sample rate
     """
@@ -328,6 +328,58 @@ def decimate_signal_pandas(df: pd.DataFrame,
     df[new_column_label_decimated_sig] = list_all_decimated_data
     df[new_column_label_decimated_sig_timestamps] = list_all_decimated_timestamps
     df[new_column_label_decimated_sample_rate_hz] = list_all_decimated_sample_rate_hz
+
+    return df
+
+
+def decimate_signal_pandas_audio_rdvx(df: pd.DataFrame,
+                                      sig_wf_label: str = "audio_wf",
+                                      sig_timestamps_label: str = "audio_epoch_s",
+                                      sample_rate_hz_label: str = "audio_sample_rate_nominal_hz"):
+    """
+    Decimates signal data to 8kHz. Makes columns "decimated_audio_wf", "decimated_audio_epoch_s" and
+    "decimated_audio_sample_rate_hz"
+
+    :param df: input pandas dataframe
+    :param sig_wf_label: Default is "audio_wf"
+    :param sig_timestamps_label: Default is "audio_epoch_s"
+    :param sample_rate_hz_label: Default is "audio_sample_rate_nominal_hz"
+
+    :return: original df with new columns with decimated data
+    """
+
+    list_all_decimated_data = []
+    list_all_decimated_timestamps = []
+    list_all_decimated_sample_rate_hz = []
+    for row in df.index:
+        if df[sample_rate_hz_label][row] == 48000:
+            decimated_timestamp, decimated_data = decimate_individual_station(downsampling_factor=6,
+                                                                              filter_order=8,
+                                                                              sig_epoch_s=df[sig_timestamps_label][row],
+                                                                              sig_wf=df[sig_wf_label][row],
+                                                                              sample_rate_hz=df[sample_rate_hz_label][row])
+            new_sample_rate_hz = df[sample_rate_hz_label][row]/6
+
+        elif df[sample_rate_hz_label][row] == 16000:
+            decimated_timestamp, decimated_data = decimate_individual_station(downsampling_factor=2,
+                                                                              filter_order=8,
+                                                                              sig_epoch_s=df[sig_timestamps_label][row],
+                                                                              sig_wf=df[sig_wf_label][row],
+                                                                              sample_rate_hz=df[sample_rate_hz_label][row])
+            new_sample_rate_hz = df[sample_rate_hz_label][row]/2
+
+        else:
+            decimated_timestamp = df[sig_timestamps_label][row]
+            decimated_data = df[sig_wf_label][row]
+            new_sample_rate_hz = df[sample_rate_hz_label][row]
+
+        list_all_decimated_data.append(decimated_data)
+        list_all_decimated_timestamps.append(decimated_timestamp)
+        list_all_decimated_sample_rate_hz.append(new_sample_rate_hz)
+
+    df["decimated_audio_wf"] = list_all_decimated_data
+    df["decimaated_audio_epoch_s"] = list_all_decimated_timestamps
+    df["decimated_audio_sample_rate_hz"] = list_all_decimated_sample_rate_hz
 
     return df
 

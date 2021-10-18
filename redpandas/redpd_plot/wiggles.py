@@ -147,6 +147,44 @@ def find_ylabel(df: pd.DataFrame,
     return wiggle_yticklabel
 
 
+# def valid_timestamp(station_id_str,
+#                     df,
+#                     sig_id_label,
+#                     index_station,
+#                     sensor_time_label):
+#     if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
+#         # check that the time column exists first
+#         if sensor_time_label not in df.columns:  # check column exists
+#             raise ValueError(f"the column name {sensor_time_label} was not found in the dataframe")
+#
+#         elif type(df[sensor_time_label][index_station]) == float or df[sensor_time_label][index_station] is None:  # not an array, so a Nan
+#             pass
+#         else:
+#             return df[sensor_time_label][index_station].min()
+#
+#
+# def new_determine_time_epoch_origin(df: pd.DataFrame,
+#                                 sig_id_label: str = "station_id",
+#                                 sig_timestamps_label: Union[List[str], str] = "audio_epoch_s",
+#                                 station_id_str: Optional[str] = None) -> float:
+#
+#     epoch_j = [valid_timestamp(station_id_str=station_id_str,
+#                                df=df,
+#                                sig_id_label=sig_id_label,
+#                                index_station=index_station,
+#                                sensor_time_label=sensor_time_label)
+#                for sensor_time_label in sig_timestamps_label
+#                for index_station in df.index]
+#
+#     epoch_j = np.array(epoch_j)
+#     try:
+#         time_epoch_origin = np.min(epoch_j[np.nonzero(epoch_j)])
+#     except ValueError:  # unless it so happens all min values are 0
+#         time_epoch_origin = 0.0
+#
+#     return time_epoch_origin
+
+
 def determine_time_epoch_origin(df: pd.DataFrame,
                                 sig_id_label: str = "station_id",
                                 sig_timestamps_label: Union[List[str], str] = "audio_epoch_s",
@@ -169,7 +207,8 @@ def determine_time_epoch_origin(df: pd.DataFrame,
     epoch_j = []
 
     # loop though each sensor in station
-    for index_time_label, sensor_time_label in enumerate(sig_timestamps_label):
+
+    for _, sensor_time_label in enumerate(sig_timestamps_label):
         for index_station in df.index:
             # No station indicated, or station indicated and found
             if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
@@ -262,7 +301,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     if len(wiggle_yticklabel) != wiggle_num:
         raise ValueError(f"The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) "
                          f"does not match the number of signal channels provided in sig_wf_label "
-                         f"or the number of stations in dataframe ({wiggle_num})."
+                         f"or t0000he number of stations in dataframe ({wiggle_num})."
                          f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z components "
                          f"so a label is required for each component.")
 
@@ -333,7 +372,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
     ax1.grid(True)
-    if fig_title_show:  # Set title
+    if fig_title_show is True:  # Set title
         if station_id_str is None and len(sig_wf_label) > 1:
             ax1.set_title(f'Normalized {fig_title}', size=FigParam().text_size)
         elif station_id_str is None and len(sig_wf_label) == 1:

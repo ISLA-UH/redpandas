@@ -1,6 +1,6 @@
 # RedPandas
 
-[![Current version on PyPI](https://img.shields.io/badge/pypi-v1.2.12-blue)](https://pypi.org/project/redvox-pandas/)
+[![Current version on PyPI](https://img.shields.io/badge/pypi-v1.2.13-blue)](https://pypi.org/project/redvox-pandas/)
 [![Python versions supported](https://img.shields.io/badge/python-3.7+%20-blue)]()
 
 ### Description
@@ -23,7 +23,7 @@ pip install redvox-pandas
 More installation instructions can be found in the [RedPandas Installation Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/installation.md).
 
 ### Examples 
-A full example can be found in [examples directory](https://github.com/RedVoxInc/redpandas/tree/master/examples/skyfall#skyfall).
+A full example can be found in [examples directory](https://github.com/RedVoxInc/redpandas/tree/master/examples/skyfall#examples-skyfall).
 
 ### Getting started
 
