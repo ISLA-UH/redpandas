@@ -8,7 +8,7 @@ from redpandas.redpd_plot.mesh import plot_mesh_pandas
 import redpandas.redpd_dq as rpd_dq
 
 # from redvox.common.data_window import DataWindow
-from redvox.common.data_window_wpa import DataWindowArrow, DataWindowOutputType, EventOrigin
+from redvox.common.data_window_wpa import DataWindowArrow, EventOrigin
 from redvox.common.data_window_wpa import DataWindowConfigWpa
 import redvox.common.date_time_utils as dt
 
@@ -38,7 +38,7 @@ if __name__ == '__main__':
                                                     event_location=DWOrigin,
                                                     config=DWAConfig,
                                                     out_dir="/Users/meritxell/Desktop/test",
-                                                    out_type=DataWindowOutputType["NONE"],
+                                                    out_type="NONE",
                                                     debug=True)
 
     df0 = redpd_dataframe(input_dw=rdvx_data,
