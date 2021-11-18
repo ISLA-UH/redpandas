@@ -34,12 +34,15 @@ if __name__ == '__main__':
 
     DWOrigin = EventOrigin(provider="CELL")
 
-    rdvx_data: DataWindowArrow = DataWindowArrow(   event_name="dw",
-                                                    event_location=DWOrigin,
-                                                    config=DWAConfig,
-                                                    out_dir="/Users/meritxell/Desktop/test",
-                                                    out_type="NONE",
-                                                    debug=True)
+    rdvx_data: DataWindowArrow = DataWindowArrow(event_name="dw",
+                                                 event_location=DWOrigin,
+                                                 config=DWAConfig,
+                                                 out_dir="/Users/meritxell/Desktop/test",
+                                                 out_type="lz4",
+                                                 debug=True)
+    path = rdvx_data.save()
+    print(path)
+    rdvx_data.stations().
 
     df0 = redpd_dataframe(input_dw=rdvx_data,
                           sensor_labels=["audio",
