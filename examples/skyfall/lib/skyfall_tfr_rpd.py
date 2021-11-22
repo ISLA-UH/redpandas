@@ -331,7 +331,8 @@ def main():
                                                     tfr_config.mc_range["Gyr"], tfr_config.mc_range["Gyr"],
                                                     tfr_config.mc_range["Gyr"],
                                                     tfr_config.mc_range["Mag"], tfr_config.mc_range["Mag"],
-                                                    tfr_config.mc_range["Mag"]])
+                                                    tfr_config.mc_range["Mag"]],
+                                  ytick_values_show=True)
 
         plt.show()
 
