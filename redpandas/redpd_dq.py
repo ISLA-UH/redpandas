@@ -118,16 +118,16 @@ def station_channel_timing(data_window: DataWindowArrow) -> None:
     """
     station: StationPa
     for station in data_window.stations():
-        print("STATION CHANNEL TIMING FOR ID", station.get_id())
-        if station.first_data_timestamp > 0:
+        print("STATION CHANNEL TIMING FOR ID", station.id())
+        if station.first_data_timestamp() > 0:
             print('App start time:',
-                  dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp))
+                  dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp()))
         else:
             print('App start time not available')
         print('Station first time stamp:',
-              dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp))
+              dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp()))
         print('Station last time stamp:',
-              dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp))
+              dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp()))
 
         if station.has_audio_data():
             print(f"\naudio Sensor:\n"
@@ -193,95 +193,95 @@ def station_metadata(data_window: DataWindowArrow) -> None:
     """
     station: StationPa
     for station in data_window.stations():
-        if station.first_data_timestamp > 0:
+        if station.first_data_timestamp() > 0:
             print(f"STATION SPECS FOR ID: " 
-                  f"{station.get_id()}\n"
+                  f"{station.id()}\n"
                   f"App start time: "
-                  f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"
+                  f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp())}\n"
                   f"Station first time stamp: "
-                  f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"
+                  f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp())}\n"
                   f"Station last time stamp: "
-                  f"{dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp)}\n")
+                  f"{dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp())}\n")
         else:
             print(f"STATION SPECS FOR ID: "
-                  f"{station.get_id()}\n"
+                  f"{station.id()}\n"
                   f"App start time not available\n"
                   f"Station first time stamp: "
-                  f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp)}\n"
+                  f"{dt.datetime_from_epoch_microseconds_utc(station.first_data_timestamp())}\n"
                   f"Station last time stamp: "
-                  f"{dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp)}\n")
+                  f"{dt.datetime_from_epoch_microseconds_utc(station.last_data_timestamp())}\n")
 
         print(f"Station Metadata:\n"
               f"Make: "
-              f"{station.metadata.make}\n"
+              f"{station.metadata().make}\n"
               f"Model: "
-              f"{station.metadata.model}\n"
+              f"{station.metadata().model}\n"
               f"OS: "
-              f"{OsType(station.metadata.os).name}\n"
+              f"{OsType(station.metadata().os).name}\n"
               f"OS version: "
-              f"{station.metadata.os_version}\n"
+              f"{station.metadata().os_version}\n"
               f"App Version: "
-              f"{station.metadata.app_version}\n")
+              f"{station.metadata().app_version}\n")
 
         if station.has_audio_data():
             print(f"\nAudio Sensor:\n"
                   f"Model: "
                   f"{station.audio_sensor().name}\n"
                   f"Sample rate, Hz: "
-                  f"{station.audio_sensor().sample_rate_hz}\n"
+                  f"{station.audio_sensor().sample_rate_hz()}\n"
                   f"Sample interval, seconds: "
-                  f"{station.audio_sensor().sample_interval_s}\n"
+                  f"{station.audio_sensor().sample_interval_s()}\n"
                   f"Sample interval standard dev, seconds: "
-                  f"{station.audio_sensor().sample_interval_std_s}\n")
+                  f"{station.audio_sensor().sample_interval_std_s()}\n")
         if station.has_barometer_data():
             print(f"Barometer Sensor:\n"
                   f"Model: "
                   f"{station.barometer_sensor().name}\n"
                   f"Sample rate, Hz: "
-                  f"{station.barometer_sensor().sample_rate_hz}\n"
+                  f"{station.barometer_sensor().sample_rate_hz()}\n"
                   f"Sample interval, seconds: "
-                  f"{station.barometer_sensor().sample_interval_s}\n"
+                  f"{station.barometer_sensor().sample_interval_s()}\n"
                   f"Sample interval standard dev, seconds: "
-                  f"{station.barometer_sensor().sample_interval_std_s}\n")
+                  f"{station.barometer_sensor().sample_interval_std_s()}\n")
         if station.has_accelerometer_data():
             print(f"Accelerometer Sensor:\n"
                   f"Model: "
                   f"{station.accelerometer_sensor().name}\n"
                   f"Sample rate, Hz: "
-                  f"{station.accelerometer_sensor().sample_rate_hz}\n"
+                  f"{station.accelerometer_sensor().sample_rate_hz()}\n"
                   f"Sample interval, seconds: "
-                  f"{station.accelerometer_sensor().sample_interval_s}\n"
+                  f"{station.accelerometer_sensor().sample_interval_s()}\n"
                   f"Sample interval standard dev, seconds: "
-                  f"{station.accelerometer_sensor().sample_interval_std_s}\n")
+                  f"{station.accelerometer_sensor().sample_interval_std_s()}\n")
         if station.has_magnetometer_data():
             print(f"Magnetometer Sensor:\n"
                   f"Model: "
                   f"{station.magnetometer_sensor().name}\n"
                   f"Sample rate, Hz: "
-                  f"{station.magnetometer_sensor().sample_rate_hz}\n"
+                  f"{station.magnetometer_sensor().sample_rate_hz()}\n"
                   f"Sample interval, seconds: "
-                  f"{station.magnetometer_sensor().sample_interval_s}\n"
+                  f"{station.magnetometer_sensor().sample_interval_s()}\n"
                   f"Sample interval standard dev, seconds: "
-                  f"{station.magnetometer_sensor().sample_interval_std_s}\n")
+                  f"{station.magnetometer_sensor().sample_interval_std_s()}\n")
         if station.has_gyroscope_data():
             print(f"Gyroscope Sensor:\n"
                   f"Model: "
                   f"{station.gyroscope_sensor().name}\n"
                   f"Sample rate, Hz: "
-                  f"{station.gyroscope_sensor().sample_rate_hz}\n"
+                  f"{station.gyroscope_sensor().sample_rate_hz()}\n"
                   f"Sample interval, seconds: "
-                  f"{station.gyroscope_sensor().sample_interval_s}\n"
+                  f"{station.gyroscope_sensor().sample_interval_s()}\n"
                   f"Sample interval standard dev, seconds: "
-                  f"{station.gyroscope_sensor().sample_interval_std_s}\n")
+                  f"{station.gyroscope_sensor().sample_interval_std_s()}\n")
         if station.has_location_sensor():
             print(f"Location Sensor:\n"
                   f"Model: "
                   f"{station.location_sensor().name}\n"
                   f"Sample rate, Hz: "
-                  f"{station.location_sensor().sample_rate_hz}\n"
+                  f"{station.location_sensor().sample_rate_hz()}\n"
                   f"Sample interval, seconds: "
-                  f"{station.location_sensor().sample_interval_s}\n"
+                  f"{station.location_sensor().sample_interval_s()}\n"
                   f"Sample interval standard dev, seconds: "
-                  f"{station.location_sensor().sample_interval_std_s}\n"
+                  f"{station.location_sensor().sample_interval_std_s()}\n"
                   f"Number of GPS Points, Samples: "
                   f"{station.location_sensor().num_samples()}\n")
