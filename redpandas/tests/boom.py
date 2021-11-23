@@ -42,7 +42,6 @@ if __name__ == '__main__':
                                                  debug=True)
     path = rdvx_data.save()
     print(path)
-    rdvx_data.stations().
 
     df0 = redpd_dataframe(input_dw=rdvx_data,
                           sensor_labels=["audio",
@@ -141,7 +140,7 @@ if __name__ == '__main__':
     #                                       sig_timestamps_label=["accelerometer_epoch_s"],
     #                                       sig_id_label="station_id",
     #                                       show_figure=False)
-
+    #
     # for station in df0.index:
     #     if type(df0["accelerometer_wf_highpass"][station]) != float:
     #         pnl.plot_wf_wf_wf_vert(redvox_id=df0["station_id"][station],
@@ -155,5 +154,5 @@ if __name__ == '__main__':
     #                                wf_panel_2_units="Mic, Norm",
     #                                wf_panel_1_units="Bar hp, kPa",
     #                                wf_panel_0_units="Acc Z hp, m/$s^2$")
-
+    #
     # plt.show()
