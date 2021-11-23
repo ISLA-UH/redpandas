@@ -44,19 +44,19 @@ def mic_sync(data_window: DataWindowArrow) -> None:
     station: StationPa
     for station in data_window.stations():
         if station.has_audio_data():
-            print(f"{station.get_id()} Audio Sensor (All timestamps are in microseconds since epoch UTC):\n"
-                  f"mic sample rate in hz: {station.audio_sensor().sample_rate_hz}\n"
-                  f"is mic sample rate constant: {station.audio_sensor().is_sample_rate_fixed}\n"
-                  f"mic sample interval in seconds: {station.audio_sensor().sample_interval_s}\n"
-                  f"mic sample interval std dev: {station.audio_sensor().sample_interval_std_s}\n"
+            print(f"{station.id()} Audio Sensor (All timestamps are in microseconds since epoch UTC):\n"
+                  f"mic sample rate in hz: {station.audio_sensor().sample_rate_hz()}\n"
+                  f"is mic sample rate constant: {station.audio_sensor().is_sample_rate_fixed()}\n"
+                  f"mic sample interval in seconds: {station.audio_sensor().sample_interval_s()}\n"
+                  f"mic sample interval std dev: {station.audio_sensor().sample_interval_std_s()}\n"
                   f"the first data timestamp: {station.audio_sensor().first_data_timestamp()}\n"
                   f"the last data timestamp:  {station.audio_sensor().last_data_timestamp()}\n"
                   f"the data as an ndarray: {station.audio_sensor().samples()}\n"
                   f"the number of data samples: {station.audio_sensor().num_samples()}\n"
                   f"the names of the dataframe columns: {station.audio_sensor().data_channels()}\n")
 
-            mic_sample_rate_nominal_hz = station.audio_sample_rate_nominal_hz
-            mic_sample_rate_hz = station.audio_sensor().sample_rate_hz
+            mic_sample_rate_nominal_hz = station.audio_sample_rate_nominal_hz()
+            mic_sample_rate_hz = station.audio_sensor().sample_rate_hz()
             # Unaltered time can have nans if packets missing or edges are truncated
             mic_unaltered_time_s = \
                 station.audio_sensor().unaltered_data_timestamps() / MICROSECONDS_IN_SECOND
@@ -64,7 +64,7 @@ def mic_sync(data_window: DataWindowArrow) -> None:
             mic_corrected_time_s = \
                 station.audio_sensor().data_timestamps() / MICROSECONDS_IN_SECOND
 
-            print("\nMIC AND CLOCK SPECS: Station ID", station.get_id())
+            print("\nMIC AND CLOCK SPECS: Station ID", station.id())
             if any(np.isnan(mic_corrected_time_s)) > 0:
                 print('SYNCH WARNING: Have nans in data_timestamps')
                 print('Number Indices:', np.count_nonzero(np.isnan(mic_corrected_time_s)))
@@ -74,22 +74,22 @@ def mic_sync(data_window: DataWindowArrow) -> None:
                 print('Nans in unaltered_data_timestamps')
                 print('Number Indices:', np.count_nonzero(np.isnan(mic_unaltered_time_s)))
 
-            print('App start time:', station.get_start_date())
-            print('Clock model start time:', station.timesync_data.offset_model.start_time)
-            if np.abs(station.timesync_data.offset_model.intercept) == 0:
+            print('App start time:', station.start_date())
+            print('Clock model start time:', station.timesync_data().offset_model().start_time)
+            if np.abs(station.timesync_data().offset_model().intercept) == 0:
                 print('ZERO OFFSET, NO CORRECTION')
             else:
-                print('Offset, microseconds:', station.timesync_data.offset_model.intercept)
-                print('Mean best latency:', station.timesync_data.offset_model.mean_latency)
-                print('Best latency std dev:', station.timesync_data.offset_model.std_dev_latency)
-                print('Number bins:', station.timesync_data.offset_model.k_bins)
-                print('Min number of samples:', station.timesync_data.offset_model.n_samples)
+                print('Offset, microseconds:', station.timesync_data().offset_model().intercept)
+                print('Mean best latency:', station.timesync_data().offset_model().mean_latency)
+                print('Best latency std dev:', station.timesync_data().offset_model().std_dev_latency)
+                print('Number bins:', station.timesync_data().offset_model().k_bins)
+                print('Min number of samples:', station.timesync_data().offset_model().n_samples)
 
-            if np.abs(station.timesync_data.offset_model.slope) == 0:
+            if np.abs(station.timesync_data().offset_model().slope) == 0:
                 print('NO SLOPE, CONSTANT OFFSET')
             else:
-                print('Slope:', station.timesync_data.offset_model.slope)
-                print('Regression score:', station.timesync_data.offset_model.score)
+                print('Slope:', station.timesync_data().offset_model().slope)
+                print('Regression score:', station.timesync_data().offset_model().score)
 
             print('Nominal sample rate, Hz:', mic_sample_rate_nominal_hz)
             print('Corrected sample rate, Hz:', mic_sample_rate_hz)
@@ -105,7 +105,7 @@ def mic_sync(data_window: DataWindowArrow) -> None:
             print("Percent sample rate computation error: {0:.2E} %".format(sample_rate_percent_error))
         else:
             # There should ALWAYS be mic data.
-            print(f'NO MIC DATA IN STATION {station.get_id()}, SOMETHING IS AMISS')
+            print(f'NO MIC DATA IN STATION {station.id()}, SOMETHING IS AMISS')
             continue
 
 
