@@ -1,7 +1,10 @@
-numpy == 1.19.5
-pandas >= 1.3.1
+# numpy == 1.19.5, crashes on M1
+numpy >= 1.21.4  # M1Pro
+# pandas >= 1.3.1
+pandas >= 1.16.0 # M1Pro
 redvox >= 3.0.7
-scipy >= 1.5.1
+# scipy >= 1.5.1
+scipy >= 1.21.4 # M1 Pro
 obspy
 
 # SDK
