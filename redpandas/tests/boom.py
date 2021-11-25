@@ -95,7 +95,7 @@ if __name__ == '__main__':
     #                             mesh_color_scaling=["range", "range", "range", "range", "range"],
     #
     #                             mesh_color_range=[16.0, 16.0, 16.0, 16.0, 16.0],
-    #                             show_figure=False,
+    #                             show_figure=True,
     #                             ytick_values_show=True)
     # for station in df0.index:
     #     if df0["station_id"][station] == "0872266036":
