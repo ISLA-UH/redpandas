@@ -8,11 +8,11 @@ import numpy as np
 
 # RedVox modules
 # from redvox.common.data_window import DataWindow
-from redvox.common.data_window_wpa import DataWindowArrow
+from redvox.common.data_window import DataWindow
 from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
 import redvox.common.date_time_utils as dt
 # from redvox.common.station import Station
-from redvox.common.data_window_wpa import StationPa
+from redvox.common.data_window import Station
 from redvox.api1000.wrapped_redvox_packet.station_information import OsType
 
 
@@ -35,13 +35,13 @@ class StationDq:
     # etc
 
 
-def mic_sync(data_window: DataWindowArrow) -> None:
+def mic_sync(data_window: DataWindow) -> None:
     """
     Print Audio Sensor information
     :param data_window: RedVox DataWindow object
     :return: print statements with Mic and Clock specs
     """
-    station: StationPa
+    station: Station
     for station in data_window.stations():
         if station.has_audio_data():
             print(f"{station.id()} Audio Sensor (All timestamps are in microseconds since epoch UTC):\n"
@@ -109,14 +109,14 @@ def mic_sync(data_window: DataWindowArrow) -> None:
             continue
 
 
-def station_channel_timing(data_window: DataWindowArrow) -> None:
+def station_channel_timing(data_window: DataWindow) -> None:
     """
     Print RedVox DataWindow Station channel time information for Audio, Barometer, Accelerometer, Gyroscope and
     Magnetometer sensors.
     :param data_window: RedVox DataWindow object
     :return: print statement with Station timing and sensors specs
     """
-    station: StationPa
+    station: Station
     for station in data_window.stations():
         print("STATION CHANNEL TIMING FOR ID", station.id())
         if station.first_data_timestamp() > 0:
@@ -185,13 +185,13 @@ def station_channel_timing(data_window: DataWindowArrow) -> None:
                   f"{gyroscope_last_timestamp_delta}\n")
 
 
-def station_metadata(data_window: DataWindowArrow) -> None:
+def station_metadata(data_window: DataWindow) -> None:
     """
     Print RedVox DataWindow Station metadata
     :param data_window: RedVox DataWindow object
     :return: print statements with Station specs
     """
-    station: StationPa
+    station: Station
     for station in data_window.stations():
         if station.first_data_timestamp() > 0:
             print(f"STATION SPECS FOR ID: " 

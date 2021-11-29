@@ -6,7 +6,7 @@ from typing import List, Dict, Union, Tuple
 
 import numpy as np
 # from redvox.common.station import Station
-from redvox.common.station_wpa import StationPa
+from redvox.common.station import Station
 
 # RedPandas library
 import redpandas.redpd_preprocess as rpd_prep
@@ -18,7 +18,7 @@ import redpandas.redpd_scales as rpd_scales
 
 
 def station_to_dict_from_dw(
-        station: StationPa,
+        station: Station,
         sdk_version: str,
         sensor_labels: List[str],
         highpass_type: str = 'obspy',
@@ -57,7 +57,7 @@ def station_to_dict_from_dw(
     return sensors
 
 
-def sensor_uneven(station: StationPa, sensor_label: str) -> Tuple[Union[None, float], Union[None, np.ndarray],
+def sensor_uneven(station: Station, sensor_label: str) -> Tuple[Union[None, float], Union[None, np.ndarray],
                                                                 Union[None, np.ndarray], Union[None, np.ndarray]]:
     """
     ID nans, sample rate, epoch, raw of uneven sensor
@@ -86,7 +86,7 @@ def sensor_uneven(station: StationPa, sensor_label: str) -> Tuple[Union[None, fl
 
 
 # Build station modules
-def build_station(station: StationPa,
+def build_station(station: Station,
                   sensor_label: str,
                   highpass_type: str = 'obspy',
                   frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
@@ -153,7 +153,7 @@ def build_station(station: StationPa,
 
 
 # Functions for specific sensors
-def audio_wf_time_build_station(station: StationPa,
+def audio_wf_time_build_station(station: Station,
                                 mean_type: str = "simple",
                                 raw: bool = False) -> dict:
     """
@@ -191,7 +191,7 @@ def audio_wf_time_build_station(station: StationPa,
         return {}
 
 
-def location_build_station(station: StationPa) -> dict:
+def location_build_station(station: Station) -> dict:
     """
     Obtains location data from RedVox station if it exists
 
@@ -221,7 +221,7 @@ def location_build_station(station: StationPa) -> dict:
         return {}
 
 
-def best_location_build_station(station: StationPa) -> dict:
+def best_location_build_station(station: Station) -> dict:
     """
     Obtains best location data from RedVox station if it exists
 
@@ -251,7 +251,7 @@ def best_location_build_station(station: StationPa) -> dict:
         return {}
 
 
-def state_of_health_build_station(station: StationPa) -> dict:
+def state_of_health_build_station(station: Station) -> dict:
     """
     Obtains state of health data from RedVox station if it exists
 
@@ -279,7 +279,7 @@ def state_of_health_build_station(station: StationPa) -> dict:
         return {}
 
 
-def image_build_station(station: StationPa) -> dict:
+def image_build_station(station: Station) -> dict:
     """
     Obtains images from RedVox station if it exists
 
@@ -297,7 +297,7 @@ def image_build_station(station: StationPa) -> dict:
         return {}
 
 
-def synchronization_build_station(station: StationPa) -> dict:
+def synchronization_build_station(station: Station) -> dict:
     """
     Obtains time sync data from RedVox station if it exists
 
@@ -320,7 +320,7 @@ def synchronization_build_station(station: StationPa) -> dict:
         return {}
 
 
-def clock_build_station(station: StationPa) -> dict:
+def clock_build_station(station: Station) -> dict:
     """
     Obtains clock model data from the station if it exists
 
@@ -343,7 +343,7 @@ def clock_build_station(station: StationPa) -> dict:
         return {}
 
 
-def light_build_station(station: StationPa) -> dict:
+def light_build_station(station: Station) -> dict:
     """
     Obtains luminosity data from RedVox station if it exists
 

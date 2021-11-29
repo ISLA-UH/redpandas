@@ -21,33 +21,33 @@ import redvox.common.date_time_utils as dt_utils
 from redpandas.redpd_config import RedpdConfig
 
 
-def dw_from_redpd_config(config: RedpdConfig) -> DataWindow:
-    """
-    Create RedVox DataWindow object from RedPandas configuration file with start/end times in epoch s
-
-    :param config: RedpdConfig. REQUIRED
-
-    :return: RedVox DataWindow object
-    """
-
-    api_input_directory: str = config.input_dir
-    redvox_station_ids: List[str] = config.station_ids
-    start_epoch_s: float = config.event_start_epoch_s
-    end_epoch_s: float = config.event_end_epoch_s
-    start_buffer_minutes: int = config.start_buffer_minutes
-    end_buffer_minutes: int = config.end_buffer_minutes
-
-    # Load RedVox Datawindow
-    rdvx_data: DataWindow = DataWindow(input_dir=api_input_directory,
-                                       structured_layout=True,
-                                       start_datetime=dt_utils.datetime_from_epoch_seconds_utc(start_epoch_s),
-                                       end_datetime=dt_utils.datetime_from_epoch_seconds_utc(end_epoch_s),
-                                       station_ids=redvox_station_ids,
-                                       start_buffer_td=dt_utils.timedelta(minutes=start_buffer_minutes),
-                                       end_buffer_td=dt_utils.timedelta(minutes=end_buffer_minutes),
-                                       apply_correction=True,
-                                       debug=False)
-    return rdvx_data
+# def dw_from_redpd_config(config: RedpdConfig) -> DataWindow:
+#     """
+#     Create RedVox DataWindow object from RedPandas configuration file with start/end times in epoch s
+#
+#     :param config: RedpdConfig. REQUIRED
+#
+#     :return: RedVox DataWindow object
+#     """
+#
+#     api_input_directory: str = config.input_dir
+#     redvox_station_ids: List[str] = config.station_ids
+#     start_epoch_s: float = config.event_start_epoch_s
+#     end_epoch_s: float = config.event_end_epoch_s
+#     start_buffer_minutes: int = config.start_buffer_minutes
+#     end_buffer_minutes: int = config.end_buffer_minutes
+#
+#     # Load RedVox Datawindow
+#     rdvx_data: DataWindow = DataWindow(input_dir=api_input_directory,
+#                                        structured_layout=True,
+#                                        start_datetime=dt_utils.datetime_from_epoch_seconds_utc(start_epoch_s),
+#                                        end_datetime=dt_utils.datetime_from_epoch_seconds_utc(end_epoch_s),
+#                                        station_ids=redvox_station_ids,
+#                                        start_buffer_td=dt_utils.timedelta(minutes=start_buffer_minutes),
+#                                        end_buffer_td=dt_utils.timedelta(minutes=end_buffer_minutes),
+#                                        apply_correction=True,
+#                                        debug=False)
+#     return rdvx_data
 
 
 # def export_dw_to_pickle(dw: DataWindow,
