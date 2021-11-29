@@ -8,8 +8,8 @@ from redpandas.redpd_plot.mesh import plot_mesh_pandas
 import redpandas.redpd_dq as rpd_dq
 
 # from redvox.common.data_window import DataWindow
-from redvox.common.data_window_wpa import DataWindowArrow, EventOrigin
-from redvox.common.data_window_wpa import DataWindowConfigWpa
+from redvox.common.data_window import DataWindow, EventOrigin
+from redvox.common.data_window import DataWindowConfig
 import redvox.common.date_time_utils as dt
 
 from libquantum.plot_templates import plot_time_frequency_reps as pnl
@@ -22,24 +22,24 @@ INPUT_DIR = "/Users/meritxell/Documents/20210916_spacex/boom"
 
 if __name__ == '__main__':
 
-    DWAConfig = DataWindowConfigWpa(input_dir=INPUT_DIR,
-                                    station_ids={"1637610012",
-                                                 "2551278155",
-                                                 "1637610001",
-                                                 "1637610015",
-                                                 "1637610014",
-                                                 "872266036"},
-                                    start_datetime=dt.datetime_from_epoch_seconds_utc(1632006000),
-                                    end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
+    DWAConfig = DataWindowConfig(input_dir=INPUT_DIR,
+                                 station_ids={"1637610012",
+                                              "2551278155",
+                                              "1637610001",
+                                              "1637610015",
+                                              "1637610014",
+                                              "872266036"},
+                                 start_datetime=dt.datetime_from_epoch_seconds_utc(1632006000),
+                                 end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
 
     DWOrigin = EventOrigin(provider="CELL")
 
-    rdvx_data: DataWindowArrow = DataWindowArrow(event_name="dw",
-                                                 event_location=DWOrigin,
-                                                 config=DWAConfig,
-                                                 out_dir="/Users/meritxell/Desktop/test",
-                                                 out_type="lz4",
-                                                 debug=True)
+    rdvx_data: DataWindow = DataWindow(event_name="dw",
+                                       event_origin=DWOrigin,
+                                       config=DWAConfig,
+                                       out_dir="/Users/meritxell/Desktop/test",
+                                       out_type="lz4",
+                                       debug=True)
     path = rdvx_data.save()
     print(path)
 
