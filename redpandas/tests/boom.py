@@ -23,12 +23,12 @@ INPUT_DIR = "/Users/meritxell/Documents/20210916_spacex/boom"
 if __name__ == '__main__':
 
     DWAConfig = DataWindowConfig(input_dir=INPUT_DIR,
-                                 station_ids={"1637610012",
+                                 station_ids=["1637610012",
                                               "2551278155",
                                               "1637610001",
                                               "1637610015",
                                               "1637610014",
-                                              "872266036"},
+                                              "872266036"],
                                  start_datetime=dt.datetime_from_epoch_seconds_utc(1632006000),
                                  end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
 
@@ -75,13 +75,13 @@ if __name__ == '__main__':
                                      new_column_tfr_frequency_hz=f"{sensor}_tfr_frequency_hz",
                                      new_column_tfr_time_s=f"{sensor}_tfr_time_s")
 
-    print(rdvx_data.event_name)
-    print(rdvx_data)
-
+    # print(rdvx_data.event_name)
+    # print(rdvx_data)
+    #
     # rpd_dq.mic_sync(rdvx_data)
     # rpd_dq.station_channel_timing(rdvx_data)
     # rpd_dq.station_metadata(rdvx_data)
-
+    #
     # fig_mesh = plot_mesh_pandas(df=df0,
     #                             mesh_time_label="audio_tfr_time_s",
     #                             mesh_frequency_label="audio_tfr_frequency_hz",

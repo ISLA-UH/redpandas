@@ -343,6 +343,8 @@ def main():
                 and synchronization_best_offset_label and synchronization_offset_delta_label and \
                 synchronization_number_exchanges_label in df_skyfall_data.columns:
 
+            print(df_skyfall_data[synchronization_epoch_label][station])
+            print(df_skyfall_data[synchronization_latency_label][station])
             # Plot synchronization framework
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=df_skyfall_data[synchronization_latency_label][station],
