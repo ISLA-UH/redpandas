@@ -58,6 +58,7 @@ class TestYticks(unittest.TestCase):
     def test_yticks_is_station_id_one_sensor_no_custom_yticks(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data,
                                               sig_wf_label=["audio_wf"],
+                                              sig_timestamps_label=["audio_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=None)
@@ -66,25 +67,30 @@ class TestYticks(unittest.TestCase):
     def test_yticks_multiple_stations_multiple_sensors(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data,
                                               sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                              sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, ['1234567890 aud', '1234567890 bar raw', '2345678901 aud', '2345678901 bar raw'])
+        self.assertEqual(self.yticks, ['1234567890 aud', '2345678901 aud', '1234567890 bar raw', '2345678901 bar raw'])
 
     def test_yticks_multiple_stations_multiple_sensors_with_3c_sensors(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data,
                                               sig_wf_label=["audio_wf", "barometer_wf_raw",
                                                             "accelerometer_wf_raw"],
+                                              sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s",
+                                                                    "accelerometer_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, ["1234567890 aud", "1234567890 bar raw", "1234567890 acc X raw", "1234567890 acc Y raw",
-                                       "1234567890 acc Z raw", "2345678901 aud", "2345678901 bar raw",
+        self.assertEqual(self.yticks, ["1234567890 aud", "2345678901 aud",
+                                       "1234567890 bar raw", "2345678901 bar raw",
+                                       "1234567890 acc X raw", "1234567890 acc Y raw", "1234567890 acc Z raw",
                                        "2345678901 acc X raw", "2345678901 acc Y raw", "2345678901 acc Z raw"])
 
     def test_yticks_one_station_multiple_sensors(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data,
                                               sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                              sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str="1234567890")
         self.assertEqual(self.yticks, ['aud', 'bar raw'])
@@ -93,6 +99,8 @@ class TestYticks(unittest.TestCase):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data,
                                               sig_wf_label=["audio_wf", "barometer_wf_raw",
                                                             "accelerometer_wf_raw"],
+                                              sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s",
+                                                                    "accelerometer_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str="1234567890")
         self.assertEqual(self.yticks, ['aud', 'bar raw', 'acc X raw', 'acc Y raw', 'acc Z raw'])
@@ -100,6 +108,7 @@ class TestYticks(unittest.TestCase):
     def test_yticks_if_custom_yticks_index(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data,
                                               sig_wf_label=["audio_wf"],
+                                              sig_timestamps_label=["audio_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks="index")
@@ -109,6 +118,7 @@ class TestYticks(unittest.TestCase):
     def test_yticks_if_correct_input_custom_yticks(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data,
                                               sig_wf_label=["audio_wf"],
+                                              sig_timestamps_label=["audio_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=['a', 'b'])
@@ -186,6 +196,7 @@ class TestIrregularFindYticks(unittest.TestCase):
     def test_irregular_yticks_is_station_id_one_sensor_no_custom_yticks(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data_irregular,
                                               sig_wf_label=["audio_wf"],
+                                              sig_timestamps_label=["audio_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=None)
@@ -194,15 +205,17 @@ class TestIrregularFindYticks(unittest.TestCase):
     def test_irregular_yticks_multiple_stations_multiple_sensors(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data_irregular,
                                               sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                              sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=None)
-        self.assertEqual(self.yticks, ['1234567890 aud', '1234567890 bar raw', '2345678901 aud'])
+        self.assertEqual(self.yticks, ['1234567890 aud', '2345678901 aud', '1234567890 bar raw'])
 
     def test_irregular_yticks_one_station_multiple_sensors_with_3c_sensors(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data_irregular,
                                               sig_wf_label=["audio_wf",
                                                             "accelerometer_wf_raw"],
+                                              sig_timestamps_label=["audio_epoch_s", "accelerometer_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str="2345678901")
         self.assertEqual(self.yticks, ['aud', 'acc X raw', 'acc Y raw', 'acc Z raw'])
@@ -210,6 +223,7 @@ class TestIrregularFindYticks(unittest.TestCase):
     def test_irregular_yticks_one_station_multiple_sensors(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data_irregular,
                                               sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                              sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str="2345678901")
         self.assertEqual(self.yticks, ['aud'])
@@ -217,6 +231,7 @@ class TestIrregularFindYticks(unittest.TestCase):
     def test_irregular_yticks_if_custom_yticks_index(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data_irregular,
                                               sig_wf_label=["audio_wf"],
+                                              sig_timestamps_label=["audio_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks="index")
@@ -226,6 +241,7 @@ class TestIrregularFindYticks(unittest.TestCase):
     def test_irregular_yticks_if_correct_input_custom_yticks(self):
         self.yticks = rpd_wiggles.find_ylabel(df=self.df_data_irregular,
                                               sig_wf_label=["audio_wf"],
+                                              sig_timestamps_label=["audio_epoch_s"],
                                               sig_id_label="station_id",
                                               station_id_str=None,
                                               custom_yticks=['a', 'b'])

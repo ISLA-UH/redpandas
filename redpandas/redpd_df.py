@@ -11,6 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # RedVox and Red Pandas modules
+# from redvox.common.data_window import DataWindow
 from redvox.common.data_window import DataWindow
 import redpandas.redpd_datawin as rpd_dw
 import redpandas.redpd_dq as rpd_dq
@@ -91,12 +92,12 @@ def redpd_dataframe(input_dw: DataWindow,
     # BEGIN RED PANDAS
     print("\nInitiating RedVox Redpandas:")
     df_all_sensors_all_stations = pd.DataFrame([rpd_build_sta.station_to_dict_from_dw(station=station,
-                                                                                      sdk_version=rdvx_data.sdk_version,
+                                                                                      sdk_version=rdvx_data.sdk_version(),
                                                                                       sensor_labels=sensor_labels,
                                                                                       highpass_type=highpass_type,
                                                                                       frequency_filter_low=frequency_filter_low,
                                                                                       filter_order=filter_order)
-                                                for station in rdvx_data.stations])
+                                                for station in rdvx_data.stations()])
     df_all_sensors_all_stations.sort_values(by="station_id", ignore_index=True, inplace=True)
 
     # Offer glimpse of what the DataFrame contains
