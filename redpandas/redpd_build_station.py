@@ -308,11 +308,11 @@ def synchronization_build_station(station: Station) -> dict:
     if station.has_timesync_data():
         synchronization = station.timesync_data()
 
-        return {'synchronization_epoch_s': synchronization.get_device_exchanges_timestamps() * rpd_scales.MICROS_TO_S,
-                'synchronization_latency_ms': synchronization.latencies() * rpd_scales.MICROS_TO_MILLIS,
-                'synchronization_offset_ms': synchronization.offsets() * rpd_scales.MICROS_TO_MILLIS,
+        return {'synchronization_epoch_s': synchronization.get_exchange_timestamps(3) * rpd_scales.MICROS_TO_S,
+                'synchronization_latency_ms': synchronization.best_latency_per_exchange() * rpd_scales.MICROS_TO_MILLIS,
+                'synchronization_offset_ms': synchronization.best_offset_per_exchange() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_best_offset_ms': synchronization.best_offset() * rpd_scales.MICROS_TO_MILLIS,
-                'synchronization_offset_delta_ms': synchronization.offsets() * rpd_scales.MICROS_TO_MILLIS -
+                'synchronization_offset_delta_ms': synchronization.best_offset_per_exchange() * rpd_scales.MICROS_TO_MILLIS -
                                                    synchronization.best_offset() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_number_exchanges': synchronization.num_tri_messages()}
     else:
