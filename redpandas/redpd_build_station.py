@@ -37,7 +37,7 @@ def station_to_dict_from_dw(
     :return: a dictionary ready for conversion into a dataframe
     """
     sensors = {"station_id": station.id(),
-               'station_start_date_epoch_micros': station.first_data_timestamp,
+               'station_start_date_epoch_micros': station.first_data_timestamp(),
                'station_make': station.metadata().make,
                'station_model': station.metadata().model,
                'station_app_version': station.metadata().app_version,
