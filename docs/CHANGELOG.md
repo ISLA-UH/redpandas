@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.2.16 ()
+- Adapted to RedVox SDK 3.0.
+
 ## 1.2.13-15 (2021-10-28)
 - Minor changes to mesh plot and decimating functions
 - Changes to mesh to avoid memory leaks
