@@ -9,6 +9,7 @@ import numpy as np
 from redvox.common.station import Station
 
 # RedPandas library
+import redpandas
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
 # Note: Available sensors in build station: ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
@@ -41,7 +42,8 @@ def station_to_dict_from_dw(
                'station_make': station.metadata().make,
                'station_model': station.metadata().model,
                'station_app_version': station.metadata().app_version,
-               'redvox_sdk_version': sdk_version}
+               'redvox_sdk_version': sdk_version,
+               'redpandas_version': redpandas.VERSION}
 
     print(f"Prep Station {station.id()}...", end=" ")
     for label in sensor_labels:

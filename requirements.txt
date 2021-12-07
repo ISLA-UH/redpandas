@@ -2,7 +2,6 @@ numpy >= 1.21.4  # M1Pro
 pandas >= 1.3.4
 redvox >= 3.0.10
 scipy >= 1.7.3
-# scipy >= 1.21.4 # M1 Pro
 obspy
 
 # SDK
