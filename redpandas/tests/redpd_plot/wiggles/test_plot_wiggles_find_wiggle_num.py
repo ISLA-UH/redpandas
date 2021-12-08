@@ -58,20 +58,23 @@ class TestNumWiggles(unittest.TestCase):
     def test_num_wiggle_is_2_audio(self):
 
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data,
-                                                      sig_wf_label=["audio_wf"])
+                                                      sig_wf_label=["audio_wf"],
+                                                      sig_timestamps_label=["audio_epoch_s"])
 
         self.assertEqual(self.num_wiggle, 2)
 
     def test_num_wiggle_is_2_barometer(self):
 
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data,
-                                                      sig_wf_label=["barometer_wf_raw"])
+                                                      sig_wf_label=["barometer_wf_raw"],
+                                                      sig_timestamps_label=["barometer_epoch_s"])
         self.assertEqual(self.num_wiggle, 2)
 
     def test_num_wiggle_is_4_audio_barometer(self):
 
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data,
-                                                      sig_wf_label=["audio_wf", "barometer_wf_raw"])
+                                                      sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                                      sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s"])
 
         self.assertEqual(self.num_wiggle, 4)
 
@@ -79,7 +82,9 @@ class TestNumWiggles(unittest.TestCase):
 
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data,
                                                       sig_wf_label=["audio_wf", "barometer_wf_raw",
-                                                                    "accelerometer_wf_raw"])
+                                                                    "accelerometer_wf_raw"],
+                                                      sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s",
+                                                                            "accelerometer_epoch_s"])
         self.assertEqual(self.num_wiggle, 10)
 
     def test_num_wiggle_if_one_station(self):
@@ -87,6 +92,8 @@ class TestNumWiggles(unittest.TestCase):
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data,
                                                       sig_wf_label=["audio_wf", "barometer_wf_raw",
                                                                     "accelerometer_wf_raw"],
+                                                      sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s",
+                                                                            "accelerometer_epoch_s"],
                                                       station_id_str="1234567890")
         self.assertEqual(self.num_wiggle, 5)
 
@@ -162,13 +169,15 @@ class TestIrregularFindNumWiggles(unittest.TestCase):
     def test_irregular_num_wiggle_is_1_barometer(self):
 
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data_irregular,
-                                                      sig_wf_label=["barometer_wf_raw"])
+                                                      sig_wf_label=["barometer_wf_raw"],
+                                                      sig_timestamps_label=["barometer_epoch_s"])
         self.assertEqual(self.num_wiggle, 1)
 
     def test_irregular_num_wiggle_is_3_audio_barometer(self):
 
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data_irregular,
-                                                      sig_wf_label=["audio_wf", "barometer_wf_raw"])
+                                                      sig_wf_label=["audio_wf", "barometer_wf_raw"],
+                                                      sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s"])
 
         self.assertEqual(self.num_wiggle, 3)
 
@@ -176,7 +185,9 @@ class TestIrregularFindNumWiggles(unittest.TestCase):
 
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data_irregular,
                                                       sig_wf_label=["audio_wf", "barometer_wf_raw",
-                                                                    "accelerometer_wf_raw"])
+                                                                    "accelerometer_wf_raw"],
+                                                      sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s",
+                                                                            "accelerometer_epoch_s"])
 
         self.assertEqual(self.num_wiggle, 6)
 
@@ -185,6 +196,8 @@ class TestIrregularFindNumWiggles(unittest.TestCase):
         self.num_wiggle = rpd_wiggles.find_wiggle_num(df=self.df_data_irregular,
                                                       sig_wf_label=["audio_wf", "barometer_wf_raw",
                                                                     "accelerometer_wf_raw"],
+                                                      sig_timestamps_label=["audio_epoch_s", "barometer_epoch_s",
+                                                                            "accelerometer_epoch_s"],
                                                       station_id_str="1234567890")
         self.assertEqual(self.num_wiggle, 2)
 

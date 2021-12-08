@@ -20,7 +20,7 @@ from examples.skyfall.skyfall_config_file import skyfall_config, \
 def main():
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
-    Last updated: 20210909
+    Last updated: November 2021
     """
 
     print('Let the sky fall')
