@@ -1,8 +1,6 @@
 """
 This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
-
-Last updated: 6 July 2021
 """
 
 from enum import Enum

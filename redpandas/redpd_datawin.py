@@ -11,7 +11,7 @@ from datetime import datetime
 import os
 
 # RedVox modules
-from redvox.common.data_window import DataWindow
+from redvox.common.data_window import DataWindow, DataWindowConfig
 from redvox.common.station import Station
 from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
 import redvox.common.data_window_configuration as dwc
@@ -36,71 +36,78 @@ def dw_from_redpd_config(config: RedpdConfig) -> DataWindow:
     end_epoch_s: float = config.event_end_epoch_s
     start_buffer_minutes: int = config.start_buffer_minutes
     end_buffer_minutes: int = config.end_buffer_minutes
+    event_name_from_config = config.event_name
+
+    DWAConfig = DataWindowConfig(input_dir=api_input_directory,
+                                 station_ids=redvox_station_ids,
+                                 start_datetime=dt_utils.datetime_from_epoch_seconds_utc(start_epoch_s),
+                                 end_datetime=dt_utils.datetime_from_epoch_seconds_utc(end_epoch_s),
+                                 structured_layout=True,
+                                 apply_correction=True,
+                                 start_buffer_td=dt_utils.timedelta(minutes=start_buffer_minutes),
+                                 end_buffer_td=dt_utils.timedelta(minutes=end_buffer_minutes))
 
     # Load RedVox Datawindow
-    rdvx_data: DataWindow = DataWindow(input_dir=api_input_directory,
-                                       structured_layout=True,
-                                       start_datetime=dt_utils.datetime_from_epoch_seconds_utc(start_epoch_s),
-                                       end_datetime=dt_utils.datetime_from_epoch_seconds_utc(end_epoch_s),
-                                       station_ids=redvox_station_ids,
-                                       start_buffer_td=dt_utils.timedelta(minutes=start_buffer_minutes),
-                                       end_buffer_td=dt_utils.timedelta(minutes=end_buffer_minutes),
-                                       apply_correction=True,
+    rdvx_data: DataWindow = DataWindow(event_name=event_name_from_config,
+                                       # event_origin=,
+                                       config=DWAConfig,
+                                       # out_dir=,
+                                       # out_type=,
                                        debug=False)
     return rdvx_data
 
 
-def export_dw_to_pickle(dw: DataWindow,
-                        output_directory: str,
-                        output_filename: Optional[str] = None,
-                        event_name: Optional[str] = "Redvox") -> str:
-    """
-    Export DataWindow to pickle file
-
-    :param dw: RedVox Datawindow object. REQUIRED
-    :param output_directory: optional string, output directory to save pickle. Default is None
-    :param output_filename: optional string, pickle filename. Default is None
-    :param event_name: optional string, name of event. Default is "Redvox"
-
-    :return: string with path of pickle
-    """
-
-    # if output_directory is None:  # set output directory
-    #     output_directory = os.path.join(".", "rpd_files")
-    #     if not os.path.exists(output_directory):  # make output directory if first time running build function
-    #         print(f"Creating output directory: {output_directory}...")
-    #         os.mkdir(output_directory)
-
-    # else:  # check output directory exists
-    if not os.path.exists(output_directory):  # make output directory if it doesn't exist
-        print(f"Creating output directory: {output_directory}...")
-        os.mkdir(output_directory)
-
-    if output_filename is None:  # set output filename
-        output_filename_dw: str = event_name
-    # make sure the .pkl does not repeat when we save the DataWindow
-    elif output_filename.find(".pickle") != -1:
-        output_filename_dw = output_filename.replace(".pickle", "")
-    elif output_filename.find(".pkl") != -1:
-        output_filename_dw = output_filename.replace(".pkl", "")
-    else:
-        output_filename_dw = output_filename
-
-    print(output_filename_dw)
-
-    print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
-    dw.to_json_file(base_dir=output_directory,
-                    file_name=output_filename_dw)
-
-    if output_filename_dw.find(".pkl") == -1 and output_filename_dw.find(".pickle") == -1:
-        path_dw_pickle = os.path.join(output_directory, output_filename_dw + '.pkl')
-        print(f"Done. Path:{path_dw_pickle}")
-
-    else:
-        path_dw_pickle = os.path.join(output_directory, output_filename_dw)
-        print(f"Done. Path:{path_dw_pickle}")
-
-    return path_dw_pickle
+# def export_dw_to_pickle(dw: DataWindow,
+#                         output_directory: str,
+#                         output_filename: Optional[str] = None,
+#                         event_name: Optional[str] = "Redvox") -> str:
+#     """
+#     Export DataWindow to pickle file
+#
+#     :param dw: RedVox Datawindow object. REQUIRED
+#     :param output_directory: optional string, output directory to save pickle. Default is None
+#     :param output_filename: optional string, pickle filename. Default is None
+#     :param event_name: optional string, name of event. Default is "Redvox"
+#
+#     :return: string with path of pickle
+#     """
+#
+#     # if output_directory is None:  # set output directory
+#     #     output_directory = os.path.join(".", "rpd_files")
+#     #     if not os.path.exists(output_directory):  # make output directory if first time running build function
+#     #         print(f"Creating output directory: {output_directory}...")
+#     #         os.mkdir(output_directory)
+#
+#     # else:  # check output directory exists
+#     if not os.path.exists(output_directory):  # make output directory if it doesn't exist
+#         print(f"Creating output directory: {output_directory}...")
+#         os.mkdir(output_directory)
+#
+#     if output_filename is None:  # set output filename
+#         output_filename_dw: str = event_name
+#     # make sure the .pkl does not repeat when we save the DataWindow
+#     elif output_filename.find(".pickle") != -1:
+#         output_filename_dw = output_filename.replace(".pickle", "")
+#     elif output_filename.find(".pkl") != -1:
+#         output_filename_dw = output_filename.replace(".pkl", "")
+#     else:
+#         output_filename_dw = output_filename
+#
+#     print(output_filename_dw)
+#
+#     print("Exporting RedVox DataWindow JSON and Pickle...", end=" ")
+#     dw.to_json_file(base_dir=output_directory,
+#                     file_name=output_filename_dw)
+#
+#     if output_filename_dw.find(".pkl") == -1 and output_filename_dw.find(".pickle") == -1:
+#         path_dw_pickle = os.path.join(output_directory, output_filename_dw + '.pkl')
+#         print(f"Done. Path:{path_dw_pickle}")
+#
+#     else:
+#         path_dw_pickle = os.path.join(output_directory, output_filename_dw)
+#         print(f"Done. Path:{path_dw_pickle}")
+#
+#     return path_dw_pickle
 
 
 def plot_dw_mic(data_window: DataWindow) -> Figure:
