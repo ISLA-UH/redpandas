@@ -54,8 +54,7 @@ class TestExportDfToParquet(unittest.TestCase):
 
 class TestRedpdDataframe(unittest.TestCase):
     def setUp(self) -> None:
-        self.dw: DataWindow = DataWindow.from_json_file(base_dir="./test_data",
-                                                        file_name="aud_bar_acc_mag_gyr_loc_soh_clock_sync")
+        self.dw: DataWindow = DataWindow.load(file_path="./test_data/dw310_skyfall_1_min")
 
     def test_result_type(self):
         self.df = rpd_df.redpd_dataframe(input_dw=self.dw)
