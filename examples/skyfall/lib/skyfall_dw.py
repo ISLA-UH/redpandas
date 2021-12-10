@@ -37,9 +37,9 @@ def dw_main(load_method: DataLoadMethod):
 
             else:  # Option B: Load pickle with DataWindow object. Assume compressed
                 print("Unpickling existing compressed RedVox DataWindow with JSON...", end=" ")
-                rdvx_data: DataWindow = DataWindow.load(os.path.join(skyfall_config.output_dir,
-                                                                     skyfall_config.output_filename_pkl_pqt))
-            print(f"Done. RedVox SDK version: {rdvx_data.sdk_version()}")
+                rdvx_data: DataWindow = DataWindow.from_json_file(base_dir=skyfall_config.output_dir,
+                                                                  file_name=skyfall_config.output_filename_pkl_pqt)
+            print(f"Done. RedVox SDK version: {rdvx_data.sdk_version}")
 
             # For option A or B, begin RedPandas
             LOADED_DF = rpd_df.redpd_dataframe(rdvx_data, skyfall_config.sensor_labels)
