@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.3.1 (2021-12-10)
+- Fix for RedVox SDK 3.1.1
+
 ## 1.3.0 (2021-12-09)
 - Backend changes to adapt for new RedVox SDK 3.1.0
 - Added RedPandas version in the RedPandas DataFrame

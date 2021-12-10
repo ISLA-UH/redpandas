@@ -7,4 +7,4 @@ set -o xtrace
 
 cd ..
 
-python3 -m unittest tests/test_quantum.py
+python3 -m unittest discover
