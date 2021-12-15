@@ -49,11 +49,13 @@ if __name__ == '__main__':
                                          "accelerometer",
                                          "gyroscope",
                                          "magnetometer"])
+
     # Check audio wiggles ok
     fig_wiggles = plot_wiggles_pandas(df=df0,
                                       sig_wf_label=["audio_wf"],
                                       sig_timestamps_label=["audio_epoch_s"],
                                       sig_id_label="station_id",
+                                      station_id_str="1637610078",
                                       show_figure=False)
 
     # TFR

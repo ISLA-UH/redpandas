@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.3.2 ()
+- Now error will appear if the wrong station is provided in wiggles.
+
 ## 1.3.1 (2021-12-10)
 - Fix for RedVox SDK 3.1.1
 
