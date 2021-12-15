@@ -1,5 +1,5 @@
 """
-This module contains scale conversions.
+Scale conversions.
 """
 
 import numpy as np

@@ -1,5 +1,5 @@
 """
-This module contains utilities for extraction of RedVox DataWindow data into dictionary structures for later conversion to
+Utilities to extract RedVox DataWindow data into dictionary structures for later conversion to
 RedPandas DataFrames.
 """
 from typing import List, Dict, Union, Tuple

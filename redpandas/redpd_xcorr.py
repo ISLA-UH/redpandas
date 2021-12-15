@@ -1,5 +1,5 @@
 """
-This module contains functions for calculating correlation.
+Calculate correlation.
 """
 
 import numpy as np

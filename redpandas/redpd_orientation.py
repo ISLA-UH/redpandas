@@ -1,5 +1,5 @@
 """
-This module contains functions to integrate, and apply complimentary filters for phone orientation.
+Functions to integrate, and apply complimentary filters for phone orientation.
 """
 
 import numpy as np

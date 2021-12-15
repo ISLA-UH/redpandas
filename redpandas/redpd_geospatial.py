@@ -1,5 +1,5 @@
 """
-This module contains functions to extract and process geospatial data.
+Functions to extract and process geospatial data.
 """
 
 import os
