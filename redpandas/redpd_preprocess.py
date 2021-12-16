@@ -1,5 +1,5 @@
 """
-This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
+Utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
 """
 
