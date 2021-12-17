@@ -72,7 +72,7 @@ def plot_dw_mic(data_window: DataWindow) -> Figure:
 
             ax1.plot(mic_epoch_s-mic_epoch_s[0],
                      mic_wf_raw/np.nanmax(np.abs(mic_wf_raw)),
-                     label=station.id)
+                     label=station.id())
             ax1.legend(loc='upper right')
             ax1.set_title("Audio raw normalized waveforms")
             ax1.set_xlabel("Time from record start, s")
@@ -97,7 +97,7 @@ def plot_dw_baro(data_window: DataWindow) -> Figure:
             baro_wf = baro_wf_raw - np.nanmean(baro_wf_raw)
             ax1.plot(baro_epoch_s-baro_epoch_s[0],
                      baro_wf/np.nanmax(np.abs(baro_wf)),
-                     label=station.id)
+                     label=station.id())
             ax1.legend(loc='upper right')
             ax1.set_title("Pressure raw normalized waveforms")
             ax1.set_xlabel("Time from record start, s")

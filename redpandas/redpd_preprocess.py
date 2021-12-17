@@ -1,5 +1,5 @@
 """
-This module contains general utilities that can work with values containing nans. Mainly used for data manipulation
+Utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
 """
 
@@ -356,6 +356,12 @@ def df_column_unflatten(df: pd.DataFrame,
 
     col_values = df[col_wf_label].to_numpy()
     for index_array in df.index:
-        if len(df[col_ndim_label][index_array]) > 1:
-            col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
-                                             int(df[col_ndim_label][index_array][1]))
+        if len(df[col_ndim_label][index_array]) > 1:  # check that there is data
+            if len(df[col_ndim_label][index_array]) == 2:
+                col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
+                                                 int(df[col_ndim_label][index_array][1]))
+
+            if len(df[col_ndim_label][index_array]) == 3: # tfr
+                col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
+                                                 int(df[col_ndim_label][index_array][1]),
+                                                 int(df[col_ndim_label][index_array][2]))

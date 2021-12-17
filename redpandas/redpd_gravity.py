@@ -1,5 +1,5 @@
 """
-This module contains functions to apply exponential filter on accelerometer to separate gravity and linear acceleration.
+Functions to apply exponential filter on accelerometer to separate gravity and linear acceleration.
 Based on the "past-gen" Android code without incorporation of the gyroscope
 http://josejuansanchez.org/android-sensors-overview/gravity_and_linear_acceleration/README.html
 """

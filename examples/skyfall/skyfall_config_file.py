@@ -5,6 +5,7 @@ from redpandas.redpd_config import RedpdConfig, TFRConfig
 # SKYFALL_DIR = "path/to/download/data/folder"
 # Example: MacOS directory containing /api900 or /api1000 directories with yyyy/mm/dd and yyyy/mm/dd/hh structure
 SKYFALL_DIR = "/Users/mgarces/Documents/DATA/SDK_DATA/api900_Skyfall_20201027"
+# SKYFALL_DIR = "/Users/meritxell/Desktop/skyfall_dummy_test"
 
 # Build Bounder Data Products: Settings for skyfall_loc_rpd.py
 is_rerun_bounder: bool = True  # If true, rerun and save as parquet

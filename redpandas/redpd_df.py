@@ -75,7 +75,7 @@ def redpd_dataframe(input_dw: DataWindow,
 
     :param input_dw: REQUIRED. Redvox DataWindow
     :param sensor_labels: optional list of strings, list of sensors available ['audio', 'barometer', 'accelerometer',
-        'gyroscope', 'magnetometer', 'health', 'location', 'synchronization', 'best_location']. For example: sensor_labels = ['audio', 'accelerometer'].
+        'gyroscope', 'magnetometer', 'health', 'location', 'synchronization', 'clock', 'best_location']. For example: sensor_labels = ['audio', 'accelerometer'].
         Default is ["audio"]
     :param highpass_type: optional string, type of highpass applied. One of: 'obspy', 'butter', or 'rc'. Default is 'obspy'
     :param frequency_filter_low: optional float, lowest frequency for highpass filter. Default is 100 second periods
@@ -108,8 +108,27 @@ def redpd_dataframe(input_dw: DataWindow,
     return df_all_sensors_all_stations
 
 
+def three_step_to_flat(df: pd.DataFrame,
+                       name_column: str):
+    """
+
+    :param df: input pandas DataFrame. REQUIRED
+    :param name_column: string, name of column
+    :return: nothing, acts on the df
+    """
+    # Create new columns with shape tuple for future unflattening/reshaping
+    df[[f'{name_column}_ndim']] = df[[f'{name_column}']].applymap(np.shape)
+    # Change tuples to 1D np.array to save it to parquet
+    df[[f'{name_column}_ndim']] = df[[f'{name_column}_ndim']].applymap(np.asarray)
+    # Flatten each row in wf columns
+    df[[f'{name_column}']] = df[[f'{name_column}']].applymap(np.ravel)
+
+
 def export_df_to_parquet(df: pd.DataFrame,
                          output_dir_pqt: str,
+                         tfr_column_label: Union[List[str], str, None] = None,
+                         tfr_frequency_label: Union[List[str], str, None] = None,
+                         tfr_time_label: Union[List[str], str, None] = None,
                          output_filename_pqt: Optional[str] = None,
                          event_name: Optional[str] = "Redvox") -> str:
     """
@@ -117,6 +136,9 @@ def export_df_to_parquet(df: pd.DataFrame,
 
     :param df: input pandas DataFrame. REQUIRED
     :param output_dir_pqt: string, output directory for parquet. REQUIRED
+    :param tfr_column_label: string or list of strings, column label where TFR
+    :param tfr_frequency_label:
+    :param tfr_time_label:
     :param output_filename_pqt: optional string for parquet filename. Default is None
     :param event_name: optional string with name of event. Default is "Redvox"
 
@@ -130,28 +152,42 @@ def export_df_to_parquet(df: pd.DataFrame,
     for label in key_sensors:
         # Create new columns with shape tuple for future unflattening/reshaping
         if f'{label}_wf_raw' in df.columns:
-            # Create new columns with shape tuple for future unflattening/reshaping
-            df[[f'{label}_wf_raw_ndim']] = df[[f'{label}_wf_raw']].applymap(np.shape)
-            # Change tuples to 1D np.array to save it to parquet
-            df[[f'{label}_wf_raw_ndim']] = df[[f'{label}_wf_raw_ndim']].applymap(np.asarray)
-            # Flatten each row in wf columns
-            df[[f'{label}_wf_raw']] = df[[f'{label}_wf_raw']].applymap(np.ravel)
+            three_step_to_flat(df=df,
+                               name_column=f'{label}_wf_raw')
 
         if f'{label}_wf_highpass' in df.columns:
-            # Create new columns with shape tuple for future unflattening/reshaping
-            df[[f'{label}_wf_highpass_ndim']] = df[[f'{label}_wf_highpass']].applymap(np.shape)
-            # Change tuples to 1D np.array to save it to parquet
-            df[[f'{label}_wf_highpass_ndim']] = df[[f'{label}_wf_highpass_ndim']].applymap(np.asarray)
-            # Flatten each row in wf columns
-            df[[f'{label}_wf_highpass']] = df[[f'{label}_wf_highpass']].applymap(np.ravel)
+            three_step_to_flat(df=df,
+                               name_column=f'{label}_wf_highpass')
 
         if f'{label}_nans' in df.columns:
-            # Create new columns with shape tuple for future unflattening/reshaping
-            df[[f'{label}_nans_ndim']] = df[[f'{label}_nans']].applymap(np.shape)
-            # Change tuples to 1D np.array to save it to parquet
-            df[[f'{label}_nans_ndim']] = df[[f'{label}_nans_ndim']].applymap(np.asarray)
-            # Flatten each row in wf columns
-            df[[f'{label}_nans']] = df[[f'{label}_nans']].applymap(np.ravel)
+            three_step_to_flat(df=df,
+                               name_column=f'{label}_nans')
+
+    if isinstance(tfr_column_label, str):
+        tfr_column_label = [tfr_column_label]
+    if isinstance(tfr_frequency_label, str):
+        tfr_frequency_label = [tfr_frequency_label]
+    if isinstance(tfr_time_label, str):
+        tfr_time_label = [tfr_time_label]
+
+    for index_list, tfr_columns_in_df in enumerate(tfr_column_label):
+        tfr_frequency_in_df = tfr_frequency_label[index_list]
+        tfr_time_in_df = tfr_time_label[index_list]
+
+        if tfr_columns_in_df is not None:
+            if tfr_columns_in_df in df.columns:
+                three_step_to_flat(df=df,
+                                   name_column=f'{tfr_columns_in_df}')
+
+        if tfr_frequency_in_df is not None:
+            if tfr_frequency_in_df in df.columns:
+                three_step_to_flat(df=df,
+                                   name_column=f'{tfr_frequency_in_df}')
+
+        if tfr_time_in_df is not None:
+            if tfr_time_in_df in df.columns:
+                three_step_to_flat(df=df,
+                                   name_column=f'{tfr_time_in_df}')
 
     # Make filename if non given
     if output_filename_pqt is None:

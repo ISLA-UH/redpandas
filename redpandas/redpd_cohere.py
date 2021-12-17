@@ -1,5 +1,5 @@
 """
-This module contains functions to calculate coherence.
+Calculate coherence.
 """
 
 import numpy as np
