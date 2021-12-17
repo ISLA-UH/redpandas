@@ -1,7 +1,9 @@
 ## RedVox Pandas (RedPandas) Version History
 
-## 1.3.2 ()
+## 1.3.2 (2021-12-16)
 - Now error will appear if the wrong station is provided in wiggles.
+- Fix in plot_mic and plot_bar
+- Can now export matrixes to df in export_df_to_parquet
 
 ## 1.3.1 (2021-12-10)
 - Fix for RedVox SDK 3.1.1
