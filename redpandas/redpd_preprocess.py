@@ -342,7 +342,7 @@ def highpass_from_diff(sig_wf: np.ndarray,
 
 
 # Auxiliary functions to open parquets
-def df_column_unflatten(df: pd.DataFrame) -> None:
+def df_unflatten(df: pd.DataFrame) -> None:
     """
     Restores original shape of elements in column. Used for loading columns in dataframe from parquet.
 
@@ -369,9 +369,9 @@ def df_column_unflatten(df: pd.DataFrame) -> None:
                                                      int(df[col_ndim_label][index_array][2]))
 
 
-def df_column_unflatten_individual(df: pd.DataFrame,
-                                   col_wf_label: str,
-                                   col_ndim_label: str) -> None:
+def df_column_unflatten(df: pd.DataFrame,
+                        col_wf_label: str,
+                        col_ndim_label: str) -> None:
     """
     Restores original shape of elements in column. Used for loading columns in dataframe from parquet.
 
