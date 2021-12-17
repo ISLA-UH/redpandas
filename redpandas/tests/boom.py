@@ -6,6 +6,7 @@ from redpandas.redpd_plot.wiggles import plot_wiggles_pandas
 import redpandas.redpd_tfr as rpd_tfr
 from redpandas.redpd_plot.mesh import plot_mesh_pandas
 import redpandas.redpd_dq as rpd_dq
+from redpandas.redpd_preprocess import df_column_unflatten
 
 # from redvox.common.data_window import DataWindow
 from redvox.common.data_window import DataWindow, EventOrigin
@@ -29,33 +30,40 @@ if __name__ == '__main__':
     DWAConfig = DataWindowConfig(input_dir=INPUT_DIR,
                                  station_ids=[
                                      "1637610015",
-                                 #              "2551278155",
-                                 #              "1637610012",
-                                 #              "1637610015",
-                                 #              "1637610014",
-                                 #              "872266036"
+                                              "2551278155",
+                                              "1637610012",
+                                              "1637610015",
+                                              "1637610014",
+                                              "872266036"
                                               ],
                                  start_datetime=dt.datetime_from_epoch_seconds_utc(1632006000),
                                  end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
 
-    DWOrigin = EventOrigin(provider="CELL")
-
     rdvx_data: DataWindow = DataWindow(event_name="dw",
-                                       event_origin=DWOrigin,
+                                       # event_origin=DWOrigin,
                                        config=DWAConfig,
                                        out_dir="/Users/meritxell/Desktop/test",
                                        out_type="lz4",
                                        debug=True)
-    path = rdvx_data.save()
-    print(path)
+    # path = rdvx_dataa.save()
+    # print(path)
+    # station = rdvx_data.get_station("0872266036")[0]
+    # print(station.health_sensor().get_data_channel("network_type"))
+    #
+    # exit()
 
     df0 = redpd_dataframe(input_dw=rdvx_data,
-                          sensor_labels=["audio",
-                                         # "barometer",
-                                         "accelerometer",
-                                         # "gyroscope",
-                                         # "magnetometer"
-                                         ])
+                              sensor_labels=["audio",
+                                             "barometer",
+                                             "accelerometer",
+                                             "gyroscope",
+                                             "magnetometer",
+                                             "clock",
+                                             "synchronization",
+                                             "location",
+                                             "health"
+                                             ])
+
 
     # # Check audio wiggles ok
     # fig_wiggles = plot_wiggles_pandas(df=df0,
@@ -84,14 +92,20 @@ if __name__ == '__main__':
                                      new_column_tfr_frequency_hz=f"{sensor}_tfr_frequency_hz",
                                      new_column_tfr_time_s=f"{sensor}_tfr_time_s")
 
+
     export_df_to_parquet(df=df0,
                          output_dir_pqt="/Users/meritxell/Desktop",
                          tfr_column_label=["audio_tfr_bits", "accelerometer_tfr_bits"],
                          tfr_frequency_label=["audio_tfr_frequency_hz", "accelerometer_tfr_frequency_hz"],
                          tfr_time_label=["audio_tfr_time_s", "accelerometer_tfr_time_s"])
 
-    exit()
+    # df_sensors = pd.read_parquet("/Users/meritxell/Desktop/Redvox_df.parquet")
+    #
+    # df_column_unflatten(df=df_sensors,
+    #                     col_wf_label="accelerometer_tfr_bits",
+    #                     col_ndim_label="accelerometer_tfr_bits_ndim")
 
+    exit()
     print(rdvx_data.event_name)
     print(rdvx_data)
 

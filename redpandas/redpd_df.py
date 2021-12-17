@@ -75,7 +75,7 @@ def redpd_dataframe(input_dw: DataWindow,
 
     :param input_dw: REQUIRED. Redvox DataWindow
     :param sensor_labels: optional list of strings, list of sensors available ['audio', 'barometer', 'accelerometer',
-        'gyroscope', 'magnetometer', 'health', 'location', 'synchronization', 'best_location']. For example: sensor_labels = ['audio', 'accelerometer'].
+        'gyroscope', 'magnetometer', 'health', 'location', 'synchronization', 'clock', 'best_location']. For example: sensor_labels = ['audio', 'accelerometer'].
         Default is ["audio"]
     :param highpass_type: optional string, type of highpass applied. One of: 'obspy', 'butter', or 'rc'. Default is 'obspy'
     :param frequency_filter_low: optional float, lowest frequency for highpass filter. Default is 100 second periods
@@ -126,9 +126,9 @@ def three_step_to_flat(df: pd.DataFrame,
 
 def export_df_to_parquet(df: pd.DataFrame,
                          output_dir_pqt: str,
-                         tfr_column_label: Union[List[str], str] = [None],
-                         tfr_frequency_label: Union[List[str], str] = [None],
-                         tfr_time_label: Union[List[str], str] = [None],
+                         tfr_column_label: Union[List[str], str, None] = None,
+                         tfr_frequency_label: Union[List[str], str, None] = None,
+                         tfr_time_label: Union[List[str], str, None] = None,
                          output_filename_pqt: Optional[str] = None,
                          event_name: Optional[str] = "Redvox") -> str:
     """
@@ -136,7 +136,7 @@ def export_df_to_parquet(df: pd.DataFrame,
 
     :param df: input pandas DataFrame. REQUIRED
     :param output_dir_pqt: string, output directory for parquet. REQUIRED
-    :param tfr_column_label:
+    :param tfr_column_label: string or list of strings, column label where TFR
     :param tfr_frequency_label:
     :param tfr_time_label:
     :param output_filename_pqt: optional string for parquet filename. Default is None
@@ -163,21 +163,31 @@ def export_df_to_parquet(df: pd.DataFrame,
             three_step_to_flat(df=df,
                                name_column=f'{label}_nans')
 
+    if isinstance(tfr_column_label, str):
+        tfr_column_label = [tfr_column_label]
+    if isinstance(tfr_frequency_label, str):
+        tfr_frequency_label = [tfr_frequency_label]
+    if isinstance(tfr_time_label, str):
+        tfr_time_label = [tfr_time_label]
+
     for index_list, tfr_columns_in_df in enumerate(tfr_column_label):
         tfr_frequency_in_df = tfr_frequency_label[index_list]
         tfr_time_in_df = tfr_time_label[index_list]
 
-        if tfr_columns_in_df in df.columns:
-            three_step_to_flat(df=df,
-                               name_column=f'{tfr_columns_in_df}')
+        if tfr_columns_in_df is not None:
+            if tfr_columns_in_df in df.columns:
+                three_step_to_flat(df=df,
+                                   name_column=f'{tfr_columns_in_df}')
 
-        if tfr_frequency_in_df in df.columns:
-            three_step_to_flat(df=df,
-                               name_column=f'{tfr_frequency_in_df}')
+        if tfr_frequency_in_df is not None:
+            if tfr_frequency_in_df in df.columns:
+                three_step_to_flat(df=df,
+                                   name_column=f'{tfr_frequency_in_df}')
 
-        if tfr_time_in_df in df.columns:
-            three_step_to_flat(df=df,
-                               name_column=f'{tfr_time_in_df}')
+        if tfr_time_in_df is not None:
+            if tfr_time_in_df in df.columns:
+                three_step_to_flat(df=df,
+                                   name_column=f'{tfr_time_in_df}')
 
     # Make filename if non given
     if output_filename_pqt is None:

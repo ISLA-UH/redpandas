@@ -98,7 +98,7 @@ def build_station(station: Station,
 
     :param station: RDVX Station object
     :param sensor_label: one of: ['audio', 'barometer', 'accelerometer', 'gyroscope', 'magnetometer',
-        'health', 'location', 'best_location', 'image']
+        'health', 'location', 'best_location', 'image', 'clock', 'synchronization']
     :param highpass_type: 'obspy', 'butter', or 'rc', default 'obspy'. Used for sensors barometer, acceleration,
         gyroscope, magnetometer
     :param frequency_filter_low: apply highpass filter. Default is 100 second periods
