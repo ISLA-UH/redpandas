@@ -163,11 +163,11 @@ def export_df_to_parquet(df: pd.DataFrame,
             three_step_to_flat(df=df,
                                name_column=f'{label}_nans')
 
-    if isinstance(tfr_column_label, str):
+    if not isinstance(tfr_column_label, list):
         tfr_column_label = [tfr_column_label]
-    if isinstance(tfr_frequency_label, str):
+    if not isinstance(tfr_frequency_label, list):
         tfr_frequency_label = [tfr_frequency_label]
-    if isinstance(tfr_time_label, str):
+    if not isinstance(tfr_time_label, list):
         tfr_time_label = [tfr_time_label]
 
     for index_list, tfr_columns_in_df in enumerate(tfr_column_label):

@@ -30,11 +30,11 @@ if __name__ == '__main__':
     DWAConfig = DataWindowConfig(input_dir=INPUT_DIR,
                                  station_ids=[
                                      "1637610015",
-                                              "2551278155",
-                                              "1637610012",
-                                              "1637610015",
-                                              "1637610014",
-                                              "872266036"
+                                      "2551278155",
+                                      "1637610012",
+                                      "1637610015",
+                                      "1637610014",
+                                      "872266036"
                                               ],
                                  start_datetime=dt.datetime_from_epoch_seconds_utc(1632006000),
                                  end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
@@ -64,6 +64,18 @@ if __name__ == '__main__':
                                              "health"
                                              ])
 
+    # # Create new columns with shape tuple for future unflattening/reshaping
+    # df0[[f'station_id_ndim']] = df0[[f'station_id']].applymap(np.shape)
+    # # Change tuples to 1D np.array to save it to parquet
+    # df0[[f'station_id_ndim']] = df0[[f'station_id_ndim']].applymap(np.asarray)
+    # # Flatten each row in wf columns
+    # df0[[f'station_id']] = df0[[f'station_id']].applymap(np.ravel)
+    #
+    # print(df0[f'station_id'])
+    # print(df0['station_id_ndim'])
+    #
+    # exit()
+
 
     # # Check audio wiggles ok
     # fig_wiggles = plot_wiggles_pandas(df=df0,
@@ -74,7 +86,7 @@ if __name__ == '__main__':
     #                                   show_figure=False)
 
     # TFR
-    sensors_to_tfr = ["audio", 'accelerometer'] #"barometer", "accelerometer", "magnetometer", "gyroscope"]
+    sensors_to_tfr = ["audio", 'accelerometer']  #"barometer", "accelerometer", "magnetometer", "gyroscope"]
     for sensor in sensors_to_tfr:
         if sensor == "audio":
             sensor_wf = "audio_wf"
@@ -92,12 +104,15 @@ if __name__ == '__main__':
                                      new_column_tfr_frequency_hz=f"{sensor}_tfr_frequency_hz",
                                      new_column_tfr_time_s=f"{sensor}_tfr_time_s")
 
-
     export_df_to_parquet(df=df0,
                          output_dir_pqt="/Users/meritxell/Desktop",
-                         tfr_column_label=["audio_tfr_bits", "accelerometer_tfr_bits"],
-                         tfr_frequency_label=["audio_tfr_frequency_hz", "accelerometer_tfr_frequency_hz"],
-                         tfr_time_label=["audio_tfr_time_s", "accelerometer_tfr_time_s"])
+                         tfr_column_label=None,
+                         # tfr_column_label=["audio_tfr_bits", "accelerometer_tfr_bits"],
+                         # tfr_frequency_label=["audio_tfr_frequency_hz", "accelerometer_tfr_frequency_hz"],
+                         tfr_frequency_label=None,
+                         # tfr_time_label=["audio_tfr_time_s", "accelerometer_tfr_time_s"]
+                         tfr_time_label=None
+                         )
 
     # df_sensors = pd.read_parquet("/Users/meritxell/Desktop/Redvox_df.parquet")
     #
