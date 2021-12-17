@@ -341,10 +341,37 @@ def highpass_from_diff(sig_wf: np.ndarray,
     return sensor_waveform_reconstruct, frequency_filter_low
 
 
-# Auxiliary function to open parquets
-def df_column_unflatten(df: pd.DataFrame,
-                        col_wf_label: str,
-                        col_ndim_label: str) -> None:
+# Auxiliary functions to open parquets
+def df_column_unflatten(df: pd.DataFrame) -> None:
+    """
+    Restores original shape of elements in column. Used for loading columns in dataframe from parquet.
+
+    :param df: pandas DataFrame
+
+    :return: original df, replaces column values with reshaped ones
+    """
+
+    df_ndim = df.filter(like='_ndim', axis=1)
+    og_names = [col.replace('_ndim', '') for col in df_ndim.columns]
+
+    for col_name in og_names:
+        col_ndim_label = col_name + "_ndim"
+        col_values = df[col_name].to_numpy()
+        for index_array in df.index:
+            if len(df[col_ndim_label][index_array]) > 1:  # check that there is data
+                if len(df[col_ndim_label][index_array]) == 2:
+                    col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
+                                                     int(df[col_ndim_label][index_array][1]))
+
+                if len(df[col_ndim_label][index_array]) == 3:  # tfr
+                    col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
+                                                     int(df[col_ndim_label][index_array][1]),
+                                                     int(df[col_ndim_label][index_array][2]))
+
+
+def df_column_unflatten_individual(df: pd.DataFrame,
+                                   col_wf_label: str,
+                                   col_ndim_label: str) -> None:
     """
     Restores original shape of elements in column. Used for loading columns in dataframe from parquet.
 
@@ -361,7 +388,7 @@ def df_column_unflatten(df: pd.DataFrame,
                 col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
                                                  int(df[col_ndim_label][index_array][1]))
 
-            if len(df[col_ndim_label][index_array]) == 3: # tfr
+            if len(df[col_ndim_label][index_array]) == 3:  # tfr
                 col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
                                                  int(df[col_ndim_label][index_array][1]),
                                                  int(df[col_ndim_label][index_array][2]))

@@ -29,7 +29,7 @@ if __name__ == '__main__':
 
     DWAConfig = DataWindowConfig(input_dir=INPUT_DIR,
                                  station_ids=[
-                                     "1637610015",
+                                     "1637610001",
                                       "2551278155",
                                       "1637610012",
                                       "1637610015",
@@ -45,12 +45,6 @@ if __name__ == '__main__':
                                        out_dir="/Users/meritxell/Desktop/test",
                                        out_type="lz4",
                                        debug=True)
-    # path = rdvx_dataa.save()
-    # print(path)
-    # station = rdvx_data.get_station("0872266036")[0]
-    # print(station.health_sensor().get_data_channel("network_type"))
-    #
-    # exit()
 
     df0 = redpd_dataframe(input_dw=rdvx_data,
                               sensor_labels=["audio",
@@ -105,30 +99,25 @@ if __name__ == '__main__':
                                      new_column_tfr_time_s=f"{sensor}_tfr_time_s")
 
     export_df_to_parquet(df=df0,
-                         output_dir_pqt="/Users/meritxell/Desktop",
-                         tfr_column_label=None,
-                         # tfr_column_label=["audio_tfr_bits", "accelerometer_tfr_bits"],
-                         # tfr_frequency_label=["audio_tfr_frequency_hz", "accelerometer_tfr_frequency_hz"],
-                         tfr_frequency_label=None,
-                         # tfr_time_label=["audio_tfr_time_s", "accelerometer_tfr_time_s"]
-                         tfr_time_label=None
-                         )
+                         output_dir_pqt="/Users/meritxell/Desktop")
+    # print(df0.columns)
 
-    # df_sensors = pd.read_parquet("/Users/meritxell/Desktop/Redvox_df.parquet")
-    #
-    # df_column_unflatten(df=df_sensors,
-    #                     col_wf_label="accelerometer_tfr_bits",
-    #                     col_ndim_label="accelerometer_tfr_bits_ndim")
+    df_sensors = pd.read_parquet("/Users/meritxell/Desktop/Redvox_df.parquet")
 
-    exit()
-    print(rdvx_data.event_name)
-    print(rdvx_data)
+    df_column_unflatten(df=df_sensors,
+                        col_wf_label="accelerometer_tfr_bits",
+                        col_ndim_label="accelerometer_tfr_bits_ndim")
+    # print(df_sensors.columns)
 
-    rpd_dq.mic_sync(rdvx_data)
-    rpd_dq.station_channel_timing(rdvx_data)
-    rpd_dq.station_metadata(rdvx_data)
+    # list = df0.filter(like='_ndim', axis=1)
+    # og_names = [col.replace('_ndim', '') for col in list.columns]
+    # print(og_names, len(og_names))
 
-    fig_mesh = plot_mesh_pandas(df=df0,
+    # rpd_dq.mic_sync(rdvx_data)
+    # rpd_dq.station_channel_timing(rdvx_data)
+    # rpd_dq.station_metadata(rdvx_data)
+
+    fig_mesh = plot_mesh_pandas(df=df_sensors,
                                 mesh_time_label="audio_tfr_time_s",
                                 mesh_frequency_label="audio_tfr_frequency_hz",
                                 mesh_tfr_label="audio_tfr_bits",
@@ -143,15 +132,15 @@ if __name__ == '__main__':
                                 mesh_color_range=[16.0, 16.0, 16.0, 16.0, 16.0],
                                 show_figure=True,
                                 ytick_values_show=True)
-    for station in df0.index:
-        if df0["station_id"][station] == "0872266036":
-            pnl.plot_wf_mesh_vert(redvox_id=df0["station_id"][station],
-                                  wf_panel_2_sig=df0["audio_wf"][station],
-                                  wf_panel_2_time=df0["audio_epoch_s"][station],
-                                  mesh_time=df0["audio_tfr_time_s"][station],
-                                  mesh_frequency=df0["audio_tfr_frequency_hz"][station],
-                                  mesh_panel_0_tfr=df0["audio_tfr_bits"][station],
-                                  start_time_epoch=df0["audio_epoch_s"][0][0],
+    for station in df_sensors.index:
+        if df_sensors["station_id"][station] == "0872266036":
+            pnl.plot_wf_mesh_vert(redvox_id=df_sensors["station_id"][station],
+                                  wf_panel_2_sig=df_sensors["audio_wf"][station],
+                                  wf_panel_2_time=df_sensors["audio_epoch_s"][station],
+                                  mesh_time=df_sensors["audio_tfr_time_s"][station],
+                                  mesh_frequency=df_sensors["audio_tfr_frequency_hz"][station],
+                                  mesh_panel_0_tfr=df_sensors["audio_tfr_bits"][station],
+                                  start_time_epoch=df_sensors["audio_epoch_s"][0][0],
                                   frequency_scaling="log",
                                   frequency_hz_ymax=320,
                                   frequency_hz_ymin=20,
@@ -161,13 +150,13 @@ if __name__ == '__main__':
                                   figure_title=f"STFT")
 
         else:
-            pnl.plot_wf_mesh_vert(redvox_id=df0["station_id"][station],
-                                  wf_panel_2_sig=df0["audio_wf"][station],
-                                  wf_panel_2_time=df0["audio_epoch_s"][station],
-                                  mesh_time=df0["audio_tfr_time_s"][station],
-                                  mesh_frequency=df0["audio_tfr_frequency_hz"][station],
-                                  mesh_panel_0_tfr=df0["audio_tfr_bits"][station],
-                                  start_time_epoch=df0["audio_epoch_s"][0][0],
+            pnl.plot_wf_mesh_vert(redvox_id=df_sensors["station_id"][station],
+                                  wf_panel_2_sig=df_sensors["audio_wf"][station],
+                                  wf_panel_2_time=df_sensors["audio_epoch_s"][station],
+                                  mesh_time=df_sensors["audio_tfr_time_s"][station],
+                                  mesh_frequency=df_sensors["audio_tfr_frequency_hz"][station],
+                                  mesh_panel_0_tfr=df_sensors["audio_tfr_bits"][station],
+                                  start_time_epoch=df_sensors["audio_epoch_s"][0][0],
                                   frequency_scaling="log",
                                   mesh_panel_0_colormap_scaling="range",
                                   mesh_panel_0_color_range=16.,
@@ -175,30 +164,30 @@ if __name__ == '__main__':
                                   figure_title=f"STFT")
 
     # Check barometer wiggles
-    fig_wiggles_bar = plot_wiggles_pandas(df=df0,
+    fig_wiggles_bar = plot_wiggles_pandas(df=df_sensors,
                                           sig_wf_label=["barometer_wf_highpass"],
                                           sig_timestamps_label=["barometer_epoch_s"],
                                           sig_id_label="station_id",
-                                          show_figure=False)
+                                          show_figure=True)
     # Check accelerometer wiggles
-    fig_wiggles_acc = plot_wiggles_pandas(df=df0,
+    fig_wiggles_acc = plot_wiggles_pandas(df=df_sensors,
                                           sig_wf_label=["accelerometer_wf_highpass"],
                                           sig_timestamps_label=["accelerometer_epoch_s"],
                                           sig_id_label="station_id",
-                                          show_figure=False)
+                                          show_figure=True)
 
-    for station in df0.index:
-        if type(df0["accelerometer_wf_highpass"][station]) != float:
-            pnl.plot_wf_wf_wf_vert(redvox_id=df0["station_id"][station],
-                                   wf_panel_2_sig=df0["audio_wf"][station],
-                                   wf_panel_2_time=df0["audio_epoch_s"][station],
-                                   wf_panel_1_sig=df0["barometer_wf_highpass"][station][0],
-                                   wf_panel_1_time=df0["barometer_epoch_s"][station],
-                                   wf_panel_0_sig=df0["accelerometer_wf_highpass"][station][2],
-                                   wf_panel_0_time=df0["accelerometer_epoch_s"][station],
-                                   start_time_epoch=df0["audio_epoch_s"][station][0],
-                                   wf_panel_2_units="Mic, Norm",
-                                   wf_panel_1_units="Bar hp, kPa",
-                                   wf_panel_0_units="Acc Z hp, m/$s^2$")
+    # for station in df_sensors.index:
+    #     if type(df_sensors["accelerometer_wf_highpass"][station]) != float:
+    #         pnl.plot_wf_wf_wf_vert(redvox_id=df_sensors["station_id"][station],
+    #                                wf_panel_2_sig=df_sensors["audio_wf"][station],
+    #                                wf_panel_2_time=df_sensors["audio_epoch_s"][station],
+    #                                wf_panel_1_sig=df_sensors["barometer_wf_highpass"][station][0],
+    #                                wf_panel_1_time=df_sensors["barometer_epoch_s"][station],
+    #                                wf_panel_0_sig=df_sensors["accelerometer_wf_highpass"][station][2],
+    #                                wf_panel_0_time=df_sensors["accelerometer_epoch_s"][station],
+    #                                start_time_epoch=df_sensors["audio_epoch_s"][station][0],
+    #                                wf_panel_2_units="Mic, Norm",
+    #                                wf_panel_1_units="Bar hp, kPa",
+    #                                wf_panel_0_units="Acc Z hp, m/$s^2$")
 
     plt.show()
