@@ -162,8 +162,25 @@ Return to _[Table of Contents](#table-of-contents)_.
 ### Opening RedPandas parquet files
 
 Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
-nested arrays in the RedPandas DataFrame. The function [df_column_unflatten](https://redvoxinc.github.io/redpandas/redpd_preprocess.html#redpandas.redpd_preprocess.df_column_unflatten) 
-recovers the original nested arrays of the sensors.
+nested arrays in the RedPandas DataFrame. 
+
+The function [df_unflatten](https://redvoxinc.github.io/redpandas/redpd_preprocess.html#redpandas.redpd_preprocess.df_unflatten)
+recovers the original shape of all columns.
+
+_Unflattening RedPandas parquet example:_
+```python
+import pandas as pd
+from redpandas.redpd_preprocess import df_unflatten
+
+# Open RedPandas parquet file
+df_sensors = pd.read_parquet("path/to/output/directory/parquet_file_name.parquet")
+
+# Unflatten all data stored in columns
+df_unflatten(df=df_sensors)
+```
+
+The function [df_column_unflatten](https://redvoxinc.github.io/redpandas/redpd_preprocess.html#redpandas.redpd_preprocess.df_column_unflatten) 
+recovers the original nested arrays of the sensors individually. This function is useful if only unflattening a particular column is necessary.
 
 _Unflattening barometer raw data column example:_
 ```python

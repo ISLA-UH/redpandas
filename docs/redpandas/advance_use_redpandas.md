@@ -282,7 +282,7 @@ in the parameters ``new_column_tfr_bits``, ``new_column_tfr_time_s``, and ``new_
 
 #### Plotting Time Frequency Representation
 
-Once the TFR has been calculated, ``tfr_bits`` can be plotted with the function [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot.html#redpandas.redpd_plot.plot_mesh_pandas).
+Once the TFR has been calculated, ``tfr_bits`` can be plotted with the function [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/mesh.html#redpandas.redpd_plot.mesh.plot_mesh_pandas).
 
 _Plotting TFR for audio signal from a [previous example](#plotting-signal-waveforms-for-all-stations-stored-in-the-dataframe):_
 ```python
@@ -305,10 +305,10 @@ The resulting plot is shown below:
 
 ![](img/fig_stft.png)
 
-The function [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot.html#redpandas.redpd_plot.plot_mesh_pandas)
+The function [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/mesh.html#redpandas.redpd_plot.mesh.plot_mesh_pandas)
 can be adjusted with the variables ``frequency_scaling``, ``frequency_hz_ymin``, ``frequency_hz_ymax``, for y-axis manipulation,
 ``fig_title_show`` and ``fig_title``, for publication, and ``common_colorbar``, ``mesh_color_scaling`` and ``mesh_color_range`` 
-for dynamic range adjustments. Visit [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot.html#redpandas.redpd_plot.plot_mesh_pandas)
+for dynamic range adjustments. Visit [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/mesh.html#redpandas.redpd_plot.mesh.plot_mesh_pandas)
 for defaults and more options.
 
 Return to _[Table of Contents](#table-of-contents)_.
