@@ -40,7 +40,6 @@ if __name__ == '__main__':
                                  end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
 
     rdvx_data: DataWindow = DataWindow(event_name="dw",
-                                       # event_origin=DWOrigin,
                                        config=DWAConfig,
                                        out_dir="/Users/meritxell/Desktop/test",
                                        out_type="lz4",
