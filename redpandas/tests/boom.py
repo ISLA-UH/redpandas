@@ -47,40 +47,26 @@ if __name__ == '__main__':
                                        debug=True)
 
     df0 = redpd_dataframe(input_dw=rdvx_data,
-                              sensor_labels=["audio",
-                                             "barometer",
-                                             "accelerometer",
-                                             "gyroscope",
-                                             "magnetometer",
-                                             "clock",
-                                             "synchronization",
-                                             "location",
-                                             "health"
-                                             ])
+                          sensor_labels=["audio",
+                                         "barometer",
+                                         "accelerometer",
+                                         "gyroscope",
+                                         "magnetometer",
+                                         "clock",
+                                         "synchronization",
+                                         "location",
+                                         "health"
+                                         ])
 
-    # # Create new columns with shape tuple for future unflattening/reshaping
-    # df0[[f'station_id_ndim']] = df0[[f'station_id']].applymap(np.shape)
-    # # Change tuples to 1D np.array to save it to parquet
-    # df0[[f'station_id_ndim']] = df0[[f'station_id_ndim']].applymap(np.asarray)
-    # # Flatten each row in wf columns
-    # df0[[f'station_id']] = df0[[f'station_id']].applymap(np.ravel)
-    #
-    # print(df0[f'station_id'])
-    # print(df0['station_id_ndim'])
-    #
-    # exit()
-
-
-    # # Check audio wiggles ok
-    # fig_wiggles = plot_wiggles_pandas(df=df0,
-    #                                   sig_wf_label=["audio_wf"],
-    #                                   sig_timestamps_label=["audio_epoch_s"],
-    #                                   sig_id_label="station_id",
-    #                                   station_id_str="1637610078",
-    #                                   show_figure=False)
+    # Check audio wiggles ok
+    fig_wiggles = plot_wiggles_pandas(df=df0,
+                                      sig_wf_label=["audio_wf"],
+                                      sig_timestamps_label=["audio_epoch_s"],
+                                      sig_id_label="station_id",
+                                      show_figure=False)
 
     # TFR
-    sensors_to_tfr = ["audio", 'accelerometer']  #"barometer", "accelerometer", "magnetometer", "gyroscope"]
+    sensors_to_tfr = ["audio", 'accelerometer']  # "barometer", "accelerometer", "magnetometer", "gyroscope"]
     for sensor in sensors_to_tfr:
         if sensor == "audio":
             sensor_wf = "audio_wf"
@@ -100,18 +86,12 @@ if __name__ == '__main__':
 
     export_df_to_parquet(df=df0,
                          output_dir_pqt="/Users/meritxell/Desktop")
-    # print(df0.columns)
 
     df_sensors = pd.read_parquet("/Users/meritxell/Desktop/Redvox_df.parquet")
 
     df_column_unflatten(df=df_sensors,
                         col_wf_label="accelerometer_tfr_bits",
                         col_ndim_label="accelerometer_tfr_bits_ndim")
-    # print(df_sensors.columns)
-
-    # list = df0.filter(like='_ndim', axis=1)
-    # og_names = [col.replace('_ndim', '') for col in list.columns]
-    # print(og_names, len(og_names))
 
     # rpd_dq.mic_sync(rdvx_data)
     # rpd_dq.station_channel_timing(rdvx_data)
