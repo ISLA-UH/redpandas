@@ -154,19 +154,4 @@ if __name__ == '__main__':
                                           sig_timestamps_label=["accelerometer_epoch_s"],
                                           sig_id_label="station_id",
                                           show_figure=True)
-
-    # for station in df_sensors.index:
-    #     if type(df_sensors["accelerometer_wf_highpass"][station]) != float:
-    #         pnl.plot_wf_wf_wf_vert(redvox_id=df_sensors["station_id"][station],
-    #                                wf_panel_2_sig=df_sensors["audio_wf"][station],
-    #                                wf_panel_2_time=df_sensors["audio_epoch_s"][station],
-    #                                wf_panel_1_sig=df_sensors["barometer_wf_highpass"][station][0],
-    #                                wf_panel_1_time=df_sensors["barometer_epoch_s"][station],
-    #                                wf_panel_0_sig=df_sensors["accelerometer_wf_highpass"][station][2],
-    #                                wf_panel_0_time=df_sensors["accelerometer_epoch_s"][station],
-    #                                start_time_epoch=df_sensors["audio_epoch_s"][station][0],
-    #                                wf_panel_2_units="Mic, Norm",
-    #                                wf_panel_1_units="Bar hp, kPa",
-    #                                wf_panel_0_units="Acc Z hp, m/$s^2$")
-
     plt.show()
