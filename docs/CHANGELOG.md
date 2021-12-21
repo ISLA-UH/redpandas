@@ -1,5 +1,9 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.3.3 (2021-12-21)
+- Added df_unflatten which now unflattens all columns in RedPandas DataFrame (assuming the DataFrame was exported using export_df_to_parquet).
+- Changes to export_df_to_parquet to automatically flatten TFR.
+
 ## 1.3.2 (2021-12-16)
 - Now error will appear if the wrong station is provided in wiggles.
 - Fix in plot_mic and plot_bar
