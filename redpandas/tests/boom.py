@@ -6,7 +6,7 @@ from redpandas.redpd_plot.wiggles import plot_wiggles_pandas
 import redpandas.redpd_tfr as rpd_tfr
 from redpandas.redpd_plot.mesh import plot_mesh_pandas
 import redpandas.redpd_dq as rpd_dq
-from redpandas.redpd_preprocess import df_column_unflatten
+from redpandas.redpd_preprocess import df_column_unflatten, df_unflatten
 
 # from redvox.common.data_window import DataWindow
 from redvox.common.data_window import DataWindow, EventOrigin
@@ -88,9 +88,11 @@ if __name__ == '__main__':
 
     df_sensors = pd.read_parquet("/Users/meritxell/Desktop/Redvox_df.parquet")
 
-    df_column_unflatten(df=df_sensors,
-                        col_wf_label="accelerometer_tfr_bits",
-                        col_ndim_label="accelerometer_tfr_bits_ndim")
+    # df_column_unflatten(df=df_sensors,
+    #                     col_wf_label="accelerometer_tfr_bits",
+    #                     col_ndim_label="accelerometer_tfr_bits_ndim")
+
+    df_unflatten(df_sensors)
 
     # rpd_dq.mic_sync(rdvx_data)
     # rpd_dq.station_channel_timing(rdvx_data)

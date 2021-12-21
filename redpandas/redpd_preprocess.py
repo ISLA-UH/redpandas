@@ -344,11 +344,11 @@ def highpass_from_diff(sig_wf: np.ndarray,
 # Auxiliary functions to open parquets
 def df_unflatten(df: pd.DataFrame) -> None:
     """
-    Restores original shape of elements in column. Used for loading columns in dataframe from parquet.
+    Restores original shape of elements in all column. Used for loading dataframe from parquet.
 
     :param df: pandas DataFrame
 
-    :return: original df, replaces column values with reshaped ones
+    :return: original df
     """
 
     df_ndim = df.filter(like='_ndim', axis=1)
