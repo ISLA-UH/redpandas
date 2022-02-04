@@ -89,7 +89,7 @@ def sensor_uneven(station: Station, sensor_label: str) -> Tuple[Union[None, floa
 
 # Build station modules
 def build_station(station: Station,
-                  sensor_label: str,
+                  sensor_label: str = 'audio',
                   highpass_type: str = 'obspy',
                   frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
                   filter_order: int = 4) -> dict:
