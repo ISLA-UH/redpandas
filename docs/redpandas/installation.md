@@ -36,7 +36,7 @@ installed module and requires. An example is shown below:
 
 ```shell script
 Name: redvox-pandas
-Version: 1.1.5
+Version: 1.3.4
 Summary: Library to streamline preprocessing of RedVox API 900 and API 1000 data
 Home-page: https://github.com/RedVoxInc/redpandas
 Author: RedVox
