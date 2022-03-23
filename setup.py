@@ -5,7 +5,7 @@ with open("requirements.txt", "r") as requirements_file:
     requirements = list(filter(lambda line: (not line.startswith("#")) and len(line) > 0, requirements))
 
 setup(name="redvox-pandas",
-      version="1.3.4",
+      version="1.3.5",
       url='https://github.com/RedVoxInc/redpandas',
       license='Apache',
       author='RedVox',
@@ -19,4 +19,4 @@ setup(name="redvox-pandas",
       long_description_content_type='text/markdown',
       long_description=open('README.md').read(),
       install_requires=requirements,
-      python_requires=">=3.7")
+      python_requires=">=3.8")
