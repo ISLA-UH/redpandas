@@ -1,5 +1,9 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.3.4 (2022-03-23)
+- Updated to current NumPy, Pandas, SciPy, ObsPy and RedVox SDK version.
+- Changes in documentation and requirements to reflect this change.
+
 ## 1.3.3 (2021-12-21)
 - Added df_unflatten which now unflattens all columns in RedPandas DataFrame (assuming the DataFrame was exported using export_df_to_parquet).
 - Changes to export_df_to_parquet to automatically flatten TFR.

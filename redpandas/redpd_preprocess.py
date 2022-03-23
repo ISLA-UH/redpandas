@@ -4,7 +4,7 @@ before construction of RedPandas DataFrame.
 """
 
 from enum import Enum
-from typing import Tuple
+from typing import Tuple, Union
 
 import numpy as np
 from scipy import signal
@@ -137,7 +137,7 @@ def pad_reflection_symmetric(sig_wf: np.ndarray) -> Tuple[np.ndarray, int]:
 
 
 def filter_reflection_highpass(sig_wf: np.ndarray,
-                               sample_rate_hz: int,
+                               sample_rate_hz: Union[float, int],
                                filter_cutoff_hz: float) -> np.ndarray:
     """
     Apply fold filter to input signal (edges reflected) and highpass

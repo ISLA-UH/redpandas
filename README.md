@@ -1,7 +1,7 @@
 # RedPandas
 
 [![Current version on PyPI](https://img.shields.io/badge/pypi-v1.3.3-blue)](https://pypi.org/project/redvox-pandas/)
-[![Python versions supported](https://img.shields.io/badge/python-3.7+%20-blue)]()
+[![Python versions supported](https://img.shields.io/badge/python-3.8+%20-blue)]()
 
 ### Description
 
@@ -45,3 +45,4 @@ Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for more d
 RedPandas depends on [RedVox SDK version](https://github.com/RedVoxInc/redvox-python-sdk):
 - For RedVox SDK >= 3.1.0, RedPandas >= 1.3.0 
 - For RedVox SDK < 3.1.0, RedPandas = 1.2.15
+
