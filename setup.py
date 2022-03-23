@@ -19,4 +19,4 @@ setup(name="redvox-pandas",
       long_description_content_type='text/markdown',
       long_description=open('README.md').read(),
       install_requires=requirements,
-      python_requires=">=3.7")
+      python_requires=">=3.8")
