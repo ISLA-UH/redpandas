@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.3.6 (2022-08-31)
+- Change plot_wiggles to now accept custom y-labels
+
 ## 1.3.4-5 (2022-03-23)
 - Updated to current Pandas, SciPy, ObsPy and RedVox SDK version.
 - Now redpandas is python 3.8+ library
