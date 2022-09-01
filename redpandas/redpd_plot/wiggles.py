@@ -239,7 +239,9 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         fig_title_show: bool = True,
                         fig_title: str = 'Signals',
                         custom_yticks: Optional[Union[List[str], str]] = None,
-                        show_figure: bool = True) -> Figure:
+                        ylabel_str: Optional[str] = None,
+                        show_figure: bool = True
+                        ) -> Figure:
 
     """
     More nuanced plots with minimal distraction. Optimized for pandas input.
@@ -259,6 +261,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     :param custom_yticks: optional, provide custom names for yticks, list of strings (one label per channel component) or
         "index" for station index in dataframe. For example, for multiple sensors: custom_y_ticks = ["audio", "bar", "acc X", "acc Y", "acc Z"].
          Another example, for multiple stations with 1 sensor
+    :param ylabel_str: optional str, add a y-label
     :param show_figure: optional bool, show figure if True. Default is True
 
     :return: matplotlib figure instance
@@ -381,10 +384,12 @@ def plot_wiggles_pandas(df: pd.DataFrame,
             ax1.set_title(f'Normalized {fig_title} for Station {station_id_str}', size=FigParam().text_size)
 
     # Set ylabel
-    if station_id_str is None:
-        ax1.set_ylabel("Signals", size=FigParam().text_size)
-    else:
-        ax1.set_ylabel("Sensors", size=FigParam().text_size)
+    # if station_id_str is None:
+    #     ax1.set_ylabel("Signals", size=FigParam().text_size)
+    # else:
+    #     ax1.set_ylabel("Sensors", size=FigParam().text_size)
+    if ylabel_str is not None:
+        ax1.set_ylabel(ylabel_str, size=FigParam().text_size)
 
     x_label = "Time (s)"
     if time_epoch_origin > 0:
