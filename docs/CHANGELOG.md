@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.3.7 (2022-09-27)
+- Fixed a bug that prevented the dataframe from building if the sensors only had one data point
+
 ## 1.3.6 (2022-08-31)
 - Change plot_wiggles to now accept custom y-labels
 

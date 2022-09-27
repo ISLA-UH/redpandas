@@ -135,14 +135,17 @@ def build_station(station: Station,
         list_sensor_highpass = []
         if sensor_sample_rate_hz:
             for index_dimension, _ in enumerate(sensor_raw):
-                sensor_waveform_highpass, _ = rpd_prep.highpass_from_diff(sig_wf=sensor_raw[index_dimension],
-                                                                          sig_epoch_s=sensor_epoch_s,
-                                                                          sample_rate_hz=sensor_sample_rate_hz,
-                                                                          fold_signal=True,
-                                                                          highpass_type=highpass_type,
-                                                                          frequency_filter_low=frequency_filter_low,
-                                                                          filter_order=filter_order)
-                list_sensor_highpass.append(sensor_waveform_highpass)
+                if len(sensor_raw[index_dimension]) > 1:
+                    sensor_waveform_highpass, _ = rpd_prep.highpass_from_diff(sig_wf=sensor_raw[index_dimension],
+                                                                              sig_epoch_s=sensor_epoch_s,
+                                                                              sample_rate_hz=sensor_sample_rate_hz,
+                                                                              fold_signal=True,
+                                                                              highpass_type=highpass_type,
+                                                                              frequency_filter_low=frequency_filter_low,
+                                                                              filter_order=filter_order)
+                    list_sensor_highpass.append(sensor_waveform_highpass)
+                else:
+                    list_sensor_highpass.append(sensor_raw[index_dimension])
 
             return {f'{sensor_label}_sensor_name': eval('station.' + sensor_label + '_sensor()').name,
                     f'{sensor_label}_sample_rate_hz': sensor_sample_rate_hz,

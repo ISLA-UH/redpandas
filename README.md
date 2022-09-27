@@ -1,6 +1,6 @@
 # RedPandas
 
-[![Current version on PyPI](https://img.shields.io/badge/pypi-v1.3.6-blue)](https://pypi.org/project/redvox-pandas/)
+[![Current version on PyPI](https://img.shields.io/badge/pypi-v1.3.7-blue)](https://pypi.org/project/redvox-pandas/)
 [![Python versions supported](https://img.shields.io/badge/python-3.8+%20-blue)]()
 
 ### Description
