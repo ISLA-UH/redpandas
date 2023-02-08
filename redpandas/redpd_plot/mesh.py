@@ -15,14 +15,12 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 import redpandas.redpd_scales as rpd_scales
 from redpandas.redpd_plot.parameters import FigureParameters as FigParam
 
-
-def sci_format(x,lim):
-    """
-    Ticks formatter scientific notation with base 10. Adapted from https://www.py4u.net/discuss/140199
-    """
-    a, b = '{:.0e}'.format(x).split('e')
-    b = int(b)
-    return r'${} \times 10^{{{}}}$'.format(a, b)
+# TODO: hspace for 2/3 panels
+# TODO: max panels
+# TODO: mesh for 3 channel
+# TODO: make 1 Hz the min frequency
+# TODO: wiggles same edges as mesh
+# TODO: method for min/max time windows for plotting
 
 
 def find_wiggle_num_tfr(df: pd.DataFrame,
@@ -411,7 +409,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                     if frequency_scaling == "log":
                         ax.set_yscale("log", subs=None)
                         middle_point_diff = np.sqrt(frequency_fix_ymax*frequency_fix_ymin)
-                        ax.minorticks_off()
+                        # ax.minorticks_off()
 
                     else:
                         middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
@@ -419,19 +417,16 @@ def plot_mesh_pandas(df: pd.DataFrame,
                     # Plot yticks
                     if ytick_values_show is True:
                         # Plot primary ticks with y values
-                        ytick_min = float("{:.2f}".format(frequency_fix_ymin))
-                        ytick_max = float("{:.2f}".format(frequency_fix_ymax))
                         ax.yaxis.tick_right()
-                        ax.set_yticks([ytick_min, ytick_max])
-                        major_formatter = mticker.FuncFormatter(sci_format)  # format ticks to scientific notation
-                        ax.yaxis.set_major_formatter(major_formatter)
+                        ax.yaxis.set_label_position("right")
+                        ax.set_ylabel('Hz', size=FigParam().text_size)
 
                         # Plot secondary ticks with name station
                         secax = ax.secondary_yaxis("left")
                         secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                         secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
                         secax.minorticks_off()
-                        ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size_minor_yaxis)
+                        ax.tick_params(axis='y', which='both', labelsize=FigParam().text_size)
 
                     else:
                         # Plot yticks only name station
@@ -508,19 +503,16 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         # Plot yticks
                         if ytick_values_show is True:
                             # Plot primary ticks with y values
-                            ytick_min = float("{:.2f}".format(frequency_fix_ymin))
-                            ytick_max = float("{:.2f}".format(frequency_fix_ymax))
                             ax.yaxis.tick_right()
-                            ax.set_yticks([ytick_min, ytick_max])
-                            major_formatter = mticker.FuncFormatter(sci_format)  # format ticks to scientific notation
-                            ax.yaxis.set_major_formatter(major_formatter)
+                            ax.yaxis.set_label_position("right")
+                            ax.set_ylabel('Hz', size=FigParam().text_size)
 
                             # Plot secondary ticks with name station
                             secax = ax.secondary_yaxis("left")
                             secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                             secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
                             secax.minorticks_off()
-                            ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size_minor_yaxis)
+                            ax.tick_params(axis='y', which='both', labelsize=FigParam().text_size)
 
                         else:
                             # Plot yticks only name station
@@ -575,7 +567,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
         elif common_colorbar is True and ytick_values_show is False:
             fig.subplots_adjust(left=left_spacing, top=0.92)
         elif common_colorbar is False and ytick_values_show is True:
-            fig.subplots_adjust(left=left_spacing, right=0.94, top=0.92, hspace=0.32)
+            fig.subplots_adjust(left=left_spacing, right=0.91, top=0.92, hspace=0.32)
         else:
             fig.subplots_adjust(left=left_spacing, right=0.97, top=0.92)
 
