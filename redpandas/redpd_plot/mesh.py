@@ -239,8 +239,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
                      frequency_scaling: str = "log",
                      frequency_hz_ymin: float = rpd_scales.Slice.FU,
                      frequency_hz_ymax: float = rpd_scales.Slice.F0,
-                     common_colorbar: bool = True,
-                     ytick_values_show: bool = False,
+                     common_colorbar: bool = False,
+                     ytick_values_show: bool = True,
                      mesh_color_scaling: Union[List[str], str] = 'auto',
                      mesh_color_range: Union[List[float], float] = 15.0,
                      show_figure: bool = True) -> Figure:
@@ -261,7 +261,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
      :param frequency_scaling: optional string, determine frequency scaling "log" or "lin". Default is "log"
      :param frequency_hz_ymin: optional float, y axis min lim
      :param frequency_hz_ymax: optional float, y axis max lim
-     :param common_colorbar: optional bool, display a colorbar for all mesh panels if True. Default is True
+     :param common_colorbar: optional bool, display a colorbar for all mesh panels if True. Default is False
      :param ytick_values_show: optional bool, display ytick values. Default is False
      :param mesh_color_scaling: optional, colorbar scaling, "auto" or "range". Default is 'auto'. The parameter common_colorbar
         needs to be set to False to apply mesh_color_scaling
@@ -505,6 +505,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                             # Plot primary ticks with y values
                             ax.yaxis.tick_right()
                             ax.yaxis.set_label_position("right")
+                            ax.minorticks_off()
                             ax.set_ylabel('Hz', size=FigParam().text_size)
 
                             # Plot secondary ticks with name station
@@ -567,7 +568,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
         elif common_colorbar is True and ytick_values_show is False:
             fig.subplots_adjust(left=left_spacing, top=0.92)
         elif common_colorbar is False and ytick_values_show is True:
-            fig.subplots_adjust(left=left_spacing, right=0.91, top=0.92, hspace=0.32)
+            fig.subplots_adjust(left=left_spacing, right=0.91, top=0.92, hspace=0.2)
         else:
             fig.subplots_adjust(left=left_spacing, right=0.97, top=0.92)
 
