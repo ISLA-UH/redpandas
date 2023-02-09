@@ -574,7 +574,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
         if common_colorbar is False and ytick_values_show is False:
             fig.subplots_adjust(left=left_spacing, top=0.95, right=0.97)
         elif common_colorbar is False and ytick_values_show is True:
-            fig.subplots_adjust(left=left_spacing, top=0.95, right=0.94, hspace=0.25)
+            fig.subplots_adjust(left=left_spacing, top=0.95, right=0.91, hspace=0.25)
         elif common_colorbar is True and ytick_values_show is True:
             fig.subplots_adjust(left=left_spacing, top=0.95, hspace=0.25)
         else:  # if common bar true

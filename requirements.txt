@@ -1,9 +1,9 @@
 # Requirements for using redvox-pandas.
 
-redvox >= 3.1.9
+redvox >= 3.3.0
 
 # Overlap with redvox SDK so just use SDK version
-numpy < 1.22
+numpy
 pandas
 scipy
 
