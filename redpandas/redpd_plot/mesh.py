@@ -15,13 +15,6 @@ from libquantum.plot_templates import plot_time_frequency_reps as pnl
 import redpandas.redpd_scales as rpd_scales
 from redpandas.redpd_plot.parameters import FigureParameters as FigParam
 
-# TODO: hspace for 2/3 panels
-# TODO: max panels
-# TODO: mesh for 3 channel
-# TODO: make 1 Hz the min frequency
-# TODO: wiggles same edges as mesh
-# TODO: method for min/max time windows for plotting
-
 
 def find_wiggle_num_tfr(df: pd.DataFrame,
                         mesh_tfr_label: Union[str, List[str]]) -> int:
@@ -420,13 +413,15 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         ax.yaxis.tick_right()
                         ax.yaxis.set_label_position("right")
                         ax.set_ylabel('Hz', size=FigParam().text_size)
+                        if wiggle_num > 3:
+                            ax.minorticks_off()
 
                         # Plot secondary ticks with name station
                         secax = ax.secondary_yaxis("left")
                         secax.set_yticks([middle_point_diff])  # set station label in the middle of the yaxis
                         secax.set_yticklabels([wiggle_yticklabel[index_wiggle_yticklabels]], size=FigParam().text_size)
                         secax.minorticks_off()
-                        ax.tick_params(axis='y', which='both', labelsize=FigParam().text_size)
+                        ax.tick_params(axis='y', which='major', labelsize=FigParam().text_size)
 
                     else:
                         # Plot yticks only name station
@@ -467,7 +462,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                                                           mesh_color_range)
                             else:
                                 mesh_color_min, mesh_color_max = pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal][index_dimension],
-                                                                                          mesh_color_scaling[index_mesh_color_scale_panel],
+                                                                                           mesh_color_scaling[index_mesh_color_scale_panel],
                                                                                           mesh_color_range[index_mesh_color_scale_panel])
 
                             ax = fig.add_subplot(gs[index_panel_order])
@@ -499,14 +494,16 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
                         else:
                             middle_point_diff = (frequency_fix_ymax-frequency_fix_ymin)/2
+                            ax.minorticks_off()
 
                         # Plot yticks
                         if ytick_values_show is True:
                             # Plot primary ticks with y values
                             ax.yaxis.tick_right()
                             ax.yaxis.set_label_position("right")
-                            ax.minorticks_off()
                             ax.set_ylabel('Hz', size=FigParam().text_size)
+                            if wiggle_num > 3:
+                                ax.minorticks_off()
 
                             # Plot secondary ticks with name station
                             secax = ax.secondary_yaxis("left")
