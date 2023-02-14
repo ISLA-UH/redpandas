@@ -45,9 +45,12 @@ def find_wiggle_num(df: pd.DataFrame,
     for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):
         for index_n in df.index:
             if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
-                # check column exists and not empty
-                if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float and \
-                        df[sig_timestamps_label[index_sensor_in_list]][index_n] is not None:
+                # Check column exists
+                if sensor_in_list in df.columns and df[sig_timestamps_label[index_sensor_in_list]][index_n] is not None:
+                    # Check if empty
+                    if isinstance(df[sensor_in_list][index_n], float) or \
+                            isinstance(df[sig_timestamps_label[index_sensor_in_list]][index_n], float):
+                        continue
 
                     if dict_wiggle_num.get(sensor_in_list) is not None:
                         # Get number of wiggles per sensor
@@ -61,6 +64,9 @@ def find_wiggle_num(df: pd.DataFrame,
                                 sensor_in_list.find("bar") == 0 or \
                                 sensor_in_list.find("pressure") == 0:
                             wiggle_num_list.append(1)
+                        # Edge case: there is data in channels x and y but notz (and viceversa)
+                        # elif isinstance(df[sensor_in_list][index_n], float):
+                        #     continue
                         else:
                             # Assume if not audio related wf, it is 3c sensors
                             wiggle_num_list.append(3)
@@ -113,8 +119,14 @@ def find_ylabel(df: pd.DataFrame,
             for index_n in df.index:  # loop for every station
                 if station_id_str is None or df[sig_id_label][index_n].find(station_id_str) != -1:
                     # check column exists and not empty
-                    if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float and \
-                            df[sig_timestamps_label[index_sensor_in_list]][index_n] is not None:
+                    # if sensor_in_list in df.columns and type(df[sensor_in_list][index_n]) != float and \
+                    #         df[sig_timestamps_label[index_sensor_in_list]][index_n] is not None:
+                    # Check column exists
+                    if sensor_in_list in df.columns and df[sig_timestamps_label[index_sensor_in_list]][index_n] is not None:
+                        # Check if empty
+                        if isinstance(df[sensor_in_list][index_n], float) or \
+                                isinstance(df[sig_timestamps_label[index_sensor_in_list]][index_n], float):
+                            continue
                         # Get yticks
                         if custom_yticks == "index":  # if ylabel for wiggle is index station
                             list_index = [df.index[index_n]] * len(dict_yticks.get(sensor_in_list))
@@ -187,16 +199,16 @@ def determine_time_epoch_origin(df: pd.DataFrame,
                     continue  # skip cause entry for this station is empty
                 else:
                     timestamps = df[sensor_time_label][index_station]
-                    if start_time_window is not None and end_time_window is not None:
+                    if start_time_window > 0.0 and end_time_window > 0.0:
                         idx_time_start = find_nearest_idx(timestamps, start_time_window)
                         idx_time_end = find_nearest_idx(timestamps, end_time_window)
                         epoch_j.append(timestamps[idx_time_start:idx_time_end].min())
 
-                    elif start_time_window is not None and end_time_window is None:
+                    elif start_time_window > 0.0 and end_time_window == 0.0:
                         idx_time_start = find_nearest_idx(timestamps, start_time_window)
                         epoch_j.append(timestamps[idx_time_start:].min())
 
-                    elif end_time_window is not None and start_time_window is None:
+                    elif end_time_window > 0.0 and start_time_window == 0.0:
                         idx_time_end = find_nearest_idx(timestamps, end_time_window)
                         epoch_j.append(timestamps[0:idx_time_end].min())
 
@@ -223,8 +235,8 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         custom_yticks: Optional[Union[List[str], str]] = None,
                         ylabel_str: Optional[str] = None,
                         show_figure: bool = True,
-                        start_time_window: Optional[float] = None,
-                        end_time_window: Optional[float] = None,
+                        start_time_window: Optional[float] = 0.0,
+                        end_time_window: Optional[float] = 0.0,
                         ) -> Figure:
 
     """
@@ -271,7 +283,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                              f"was not found in sig_id_label column name provided ('{sig_id_label}')")
 
     # Check zooming window
-    if start_time_window is not None and end_time_window is not None:
+    if start_time_window > 0.0 and end_time_window > 0.0:
         if end_time_window <= start_time_window:
             raise ValueError(f"end_time_window parameter ('{end_time_window}') "
                              f"cannot be smaller than start_time_window parameter ('{start_time_window}')")
@@ -328,7 +340,6 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     xlim_max = np.empty(wiggle_num)
 
     index_sensor_label_ticklabels_list = 0
-    # for index_sensor_label_ticklabels_list, index_station in enumerate(df.index):  # loop per station
 
     for index_sensor_in_list, label in enumerate(sig_wf_label):  # loop per sensor
         for index_station in df.index:  # loop per station
@@ -343,15 +354,15 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                 sensor_timestamps_label = sig_timestamps_label[index_sensor_in_list]  # timestamps
                 timestamps = df[sensor_timestamps_label][index_station]
 
-                if start_time_window is not None and end_time_window is not None:
+                if start_time_window > 0.0 and end_time_window > 0.0:
                     idx_time_start = find_nearest_idx(timestamps, start_time_window)
                     idx_time_end = find_nearest_idx(timestamps, end_time_window)
 
-                elif start_time_window is not None and end_time_window is None:
+                elif start_time_window > 0.0 and end_time_window == 0.0:
                     idx_time_start = find_nearest_idx(timestamps, start_time_window)
                     idx_time_end = -1
 
-                elif end_time_window is not None and start_time_window is None:
+                elif end_time_window > 0.0 and start_time_window == 0.0:
                     idx_time_start = 0
                     idx_time_end = find_nearest_idx(timestamps, end_time_window)
 
@@ -470,8 +481,8 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
                            custom_yticks: Optional[Union[List[str], str]] = None,
                            ylabel_str: Optional[str] = None,
                            show_figure: bool = True,
-                           start_time_window: Optional[float] = None,
-                           end_time_window: Optional[float] = None,
+                           start_time_window: Optional[float] = 0.0,
+                           end_time_window: Optional[float] = 0.0,
                            ) -> List[Figure]:
 
     """
@@ -518,7 +529,7 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
                              f"was not found in sig_id_label column name provided ('{sig_id_label}')")
 
     # Check zooming window
-    if start_time_window is not None and end_time_window is not None:
+    if start_time_window > 0.0 and end_time_window > 0.0:
         if end_time_window <= start_time_window:
             raise ValueError(f"end_time_window parameter ('{end_time_window}') "
                              f"cannot be smaller than start_time_window parameter ('{start_time_window}')")
@@ -555,7 +566,7 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
         if len(wiggle_yticklabel) != wiggle_num:
             raise ValueError(f"The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) "
                              f"does not match the number of signal channels provided in sig_wf_label "
-                             f"or t0000he number of stations in dataframe ({wiggle_num})."
+                             f"or the number of stations in dataframe ({wiggle_num})."
                              f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z components "
                              f"so a label is required for each component.")
 
@@ -587,30 +598,29 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
         xlim_max = np.empty(wiggle_num)
 
         index_sensor_label_ticklabels_list = 0
-        # for index_sensor_label_ticklabels_list, index_station in enumerate(df.index):  # loop per station
 
         for index_sensor_in_list, label in enumerate(sig_wf_subset):  # loop per sensor
             for index_station in df_xyz.index:  # loop per station
                 # first things first, check if column with data exists and if there is data in it:
                 if label not in df_xyz.columns or type(df_xyz[label][index_station]) == float or \
                         df_xyz[sig_timestamps_label[index_sensor_in_list]][index_station] is None:
-                    print(f"SensorMissingException: The column {label} was not found in DataFrame or no data available in "
-                          f"{label} for station {df_xyz[sig_id_label][index_station]}")
+                    print(f"SensorMissingException: The column {label} was not found in DataFrame or no data available "
+                          f"in {label} for station {df_xyz[sig_id_label][index_station]}")
                     continue  # if not, skip this iteration
 
                 if station_id_str is None or df_xyz[sig_id_label][index_station].find(station_id_str) != -1:
                     sensor_timestamps_label = sig_timestamps_label[index_sensor_in_list]  # timestamps
                     timestamps = df_xyz[sensor_timestamps_label][index_station]
 
-                    if start_time_window is not None and end_time_window is not None:
+                    if start_time_window > 0.0 and end_time_window > 0.0:
                         idx_time_start = find_nearest_idx(timestamps, start_time_window)
                         idx_time_end = find_nearest_idx(timestamps, end_time_window)
 
-                    elif start_time_window is not None and end_time_window is None:
+                    elif start_time_window > 0.0 and end_time_window == 0.0:
                         idx_time_start = find_nearest_idx(timestamps, start_time_window)
                         idx_time_end = -1
 
-                    elif end_time_window is not None and start_time_window is None:
+                    elif end_time_window > 0.0 and start_time_window == 0.0:
                         idx_time_start = 0
                         idx_time_end = find_nearest_idx(timestamps, end_time_window)
 
@@ -623,8 +633,7 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
                     sig_j = df_xyz[label][index_station] / np.nanmax(df_xyz[label][index_station])
                     sig_j = sig_j[idx_time_start: idx_time_end]
 
-                    ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list],
-                             color='midnightblue')
+                    ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color='midnightblue')
                     xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
                     xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
 

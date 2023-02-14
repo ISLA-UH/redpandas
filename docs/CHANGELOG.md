@@ -1,9 +1,14 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.3.9 (2023-02-14)
+- Added time window selectio to plot_wiggles and tfr_bits (for plotting mesh)
+- Added reports module to facilitate pre-selected audio/barometer/accelerometer parameters
+
 ## 1.3.8 (2023-02-09)
 - Added plot_wiggles_3c_pandas to plot X, Y Z channels on separate plots
 - Fix frequency y axis labels in plot_mesh_pandas 
 - Now plot_wiggles and plot_mesh have the same dimensions to facilitate 1 on 1 comparison
+- Updated requirements to match RedVox Python SDK
 
 ## 1.3.7 (2022-09-27)
 - Fixed a bug that prevented the dataframe from building if the sensors only had one data point

@@ -1,21 +1,20 @@
-import numpy as np
-from typing import List, Optional, Tuple
+"""
+Module to facilitate reports
+"""
+from typing import Tuple
+
 import pandas as pd
-import redpandas.redpd_tfr as rpd_tfr
-from redpandas.redpd_df import redpd_dataframe
-from redpandas.redpd_plot.mesh import plot_mesh_pandas
-from redpandas.redpd_plot.wiggles import plot_wiggles_pandas, plot_wiggles_3c_pandas
-from redpandas import redpd_scales as rpd_scales
-from redvox.common.data_window import DataWindow
 from matplotlib.figure import Figure
 
-# TODO: time/station selection
-# Todo: max number of wiggles per plot
+import redpandas.redpd_tfr as rpd_tfr
+from redpandas import redpd_scales as rpd_scales
+from redpandas.redpd_plot.mesh import plot_mesh_pandas
+from redpandas.redpd_plot.wiggles import plot_wiggles_pandas, plot_wiggles_3c_pandas
 
 
 def plot_wiggles_pandas_audio(df: pd.DataFrame,
-                              start_time_window: float = None,
-                              end_time_window: float = None) -> Figure:
+                              start_time_window: float = 0.0,
+                              end_time_window: float = 0.0) -> Figure:
 
     fig_audio = plot_wiggles_pandas(df=df,
                                     sig_wf_label="audio_wf",
@@ -30,8 +29,8 @@ def plot_wiggles_pandas_audio(df: pd.DataFrame,
 
 
 def plot_wiggles_pandas_bar(df: pd.DataFrame,
-                            start_time_window: float = None,
-                            end_time_window: float = None) -> Figure:
+                            start_time_window: float = 0.0,
+                            end_time_window: float = 0.0) -> Figure:
 
     fig_bar = plot_wiggles_pandas(df=df,
                                   sig_wf_label="barometer_wf_highpass",
@@ -45,8 +44,8 @@ def plot_wiggles_pandas_bar(df: pd.DataFrame,
 
 
 def plot_wiggles_pandas_acc(df: pd.DataFrame,
-                            start_time_window: float = None,
-                            end_time_window: float = None) -> Tuple[Figure, Figure, Figure]:
+                            start_time_window: float = 0.0,
+                            end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
 
     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
                                                  sig_wf_label='accelerometer_wf_highpass',
@@ -59,39 +58,39 @@ def plot_wiggles_pandas_acc(df: pd.DataFrame,
     return fig_x, fig_y, fig_z
 
 
-def plot_wiggles_pandas_gyr(df: pd.DataFrame,
-                            start_time_window: float = None,
-                            end_time_window: float = None) -> Tuple[Figure, Figure, Figure]:
-
-    fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
-                                                 sig_wf_label='gyroscope_wf_highpass',
-                                                 sig_timestamps_label='gyroscope_epoch_s',
-                                                 fig_title="Normalized Signals for Gyroscope",
-                                                 show_figure=False,
-                                                 start_time_window=start_time_window,
-                                                 end_time_window=end_time_window)
-
-    return fig_x, fig_y, fig_z
-
-
-def plot_wiggles_pandas_mag(df: pd.DataFrame,
-                            start_time_window: float = None,
-                            end_time_window: float = None) -> Tuple[Figure, Figure, Figure]:
-
-    fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
-                                                 sig_wf_label='magnetometer_wf_highpass',
-                                                 sig_timestamps_label='magnetometer_epoch_s',
-                                                 fig_title="Normalized Signals for Magnetometer",
-                                                 show_figure=False,
-                                                 start_time_window=start_time_window,
-                                                 end_time_window=end_time_window)
-
-    return fig_x, fig_y, fig_z
+# def plot_wiggles_pandas_gyr(df: pd.DataFrame,
+#                             start_time_window: float = 0.0,
+#                             end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
+#
+#     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
+#                                                  sig_wf_label='gyroscope_wf_highpass',
+#                                                  sig_timestamps_label='gyroscope_epoch_s',
+#                                                  fig_title="Normalized Signals for Gyroscope",
+#                                                  show_figure=False,
+#                                                  start_time_window=start_time_window,
+#                                                  end_time_window=end_time_window)
+#
+#     return fig_x, fig_y, fig_z
+#
+#
+# def plot_wiggles_pandas_mag(df: pd.DataFrame,
+#                             start_time_window: float = 0.0,
+#                             end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
+#
+#     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
+#                                                  sig_wf_label='magnetometer_wf_highpass',
+#                                                  sig_timestamps_label='magnetometer_epoch_s',
+#                                                  fig_title="Normalized Signals for Magnetometer",
+#                                                  show_figure=False,
+#                                                  start_time_window=start_time_window,
+#                                                  end_time_window=end_time_window)
+#
+#     return fig_x, fig_y, fig_z
 
 
 def tfr_bits_panda_audio(df: pd.DataFrame,
-                         start_time_window: float = None,
-                         end_time_window: float = None,
+                         start_time_window: float = 0.0,
+                         end_time_window: float = 0.0,
                          tfr_type: str = 'stft',
                          order_number_input: int = 12):
     # Audio TFR
@@ -111,16 +110,19 @@ def tfr_bits_panda_audio(df: pd.DataFrame,
 
 
 def plot_mesh_pandas_audio(df: pd.DataFrame,
-                           frequency_hz_ymin: float = None,
-                           frequency_hz_ymax: float = None,
-                           start_time_window: float = None):
+                           frequency_hz_ymin: float = 1.0,
+                           frequency_hz_ymax: float = 0.0,
+                           start_time_window: float = 0.0):
 
-    if frequency_hz_ymin is None:
-        frequency_hz_ymin = 1
-    if frequency_hz_ymax is None:
+    if frequency_hz_ymax == 0.0:
+        frequency_hz_ymax = rpd_scales.Slice.F0
+    if frequency_hz_ymin == 0.0:
+        frequency_hz_ymin = rpd_scales.Slice.FU
+    if frequency_hz_ymin >= frequency_hz_ymax and frequency_hz_ymin != 0.0:
+        frequency_hz_ymin = 1.0
         frequency_hz_ymax = rpd_scales.Slice.F0
 
-    if start_time_window is None:
+    if start_time_window == 0.0:
         start_mesh = df['audio_epoch_s'][0][0]
     else:
         start_mesh = start_time_window

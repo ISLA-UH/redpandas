@@ -222,8 +222,8 @@ def tfr_bits_panda_window(df: pd.DataFrame,
                           new_column_tfr_bits: str = 'tfr_bits',
                           new_column_tfr_time_s: str = 'tfr_time_s',
                           new_column_tfr_frequency_hz: str = 'tfr_frequency_hz',
-                          start_time_window: Optional[float] = None,
-                          end_time_window: Optional[float] = None,) -> pd.DataFrame:
+                          start_time_window: Optional[float] = 0.0,
+                          end_time_window: Optional[float] = 0.0) -> pd.DataFrame:
     """
     Calculate Time Frequency Representation for a signal withing a time window
 
@@ -246,7 +246,7 @@ def tfr_bits_panda_window(df: pd.DataFrame,
     tfr_frequency_hz = []
 
     # Check zooming window
-    if start_time_window is not None and end_time_window is not None:
+    if start_time_window > 0.0 and end_time_window > 0.0:
         if end_time_window <= start_time_window:
             raise ValueError(f"end_time_window parameter ('{end_time_window}') "
                              f"cannot be smaller than start_time_window parameter ('{start_time_window}')")
@@ -263,15 +263,15 @@ def tfr_bits_panda_window(df: pd.DataFrame,
 
             timestamps = df[sig_timestamps_label][n]
 
-            if start_time_window is not None and end_time_window is not None:
+            if start_time_window > 0.0 and end_time_window > 0.0:
                 idx_time_start = find_nearest_idx(timestamps, start_time_window)
                 idx_time_end = find_nearest_idx(timestamps, end_time_window)
 
-            elif start_time_window is not None and end_time_window is None:
+            elif start_time_window > 0.0 and end_time_window == 0.0:
                 idx_time_start = find_nearest_idx(timestamps, start_time_window)
                 idx_time_end = -1
 
-            elif end_time_window is not None and start_time_window is None:
+            elif end_time_window > 0.0 and start_time_window == 0.0:
                 idx_time_start = 0
                 idx_time_end = find_nearest_idx(timestamps, end_time_window)
 
