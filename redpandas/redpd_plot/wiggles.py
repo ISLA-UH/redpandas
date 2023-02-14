@@ -8,6 +8,7 @@ from matplotlib.figure import Figure
 import numpy as np
 import pandas as pd
 from redpandas.redpd_plot.parameters import FigureParameters as FigParam
+from redpandas.redpd_preprocess import find_nearest_idx
 
 
 # PLOT_WIGGLES AUXILIARY FUNCTIONS
@@ -150,7 +151,10 @@ def find_ylabel(df: pd.DataFrame,
 def determine_time_epoch_origin(df: pd.DataFrame,
                                 sig_id_label: str = "station_id",
                                 sig_timestamps_label: Union[List[str], str] = "audio_epoch_s",
-                                station_id_str: Optional[str] = None) -> float:
+                                station_id_str: Optional[str] = None,
+                                start_time_window: Optional[float] = None,
+                                end_time_window: Optional[float] = None
+                                ) -> float:
     """
     Get time epoch origin for all sensors for all stations to establish the earliest timestamp
 
@@ -158,6 +162,8 @@ def determine_time_epoch_origin(df: pd.DataFrame,
     :param sig_id_label: optional string for the station id column name in df. Default is "station_id"
     :param sig_timestamps_label: optional string or list of strings for column label in df with epoch time. Default is "audio_epoch_s"
     :param station_id_str: optional string with name of one station to plot. Default is None
+    :param start_time_window: optional float, start time window
+    :param end_time_window: optional float, end time window
 
     :return: time_epoch_origin
     """
@@ -169,7 +175,6 @@ def determine_time_epoch_origin(df: pd.DataFrame,
     epoch_j = []
 
     # loop though each sensor in station
-
     for _, sensor_time_label in enumerate(sig_timestamps_label):
         for index_station in df.index:
             # No station indicated, or station indicated and found
@@ -181,7 +186,22 @@ def determine_time_epoch_origin(df: pd.DataFrame,
                 elif type(df[sensor_time_label][index_station]) == float or df[sensor_time_label][index_station] is None:  # not an array, so a Nan
                     continue  # skip cause entry for this station is empty
                 else:
-                    epoch_j.append(df[sensor_time_label][index_station].min())
+                    timestamps = df[sensor_time_label][index_station]
+                    if start_time_window is not None and end_time_window is not None:
+                        idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                        idx_time_end = find_nearest_idx(timestamps, end_time_window)
+                        epoch_j.append(timestamps[idx_time_start:idx_time_end].min())
+
+                    elif start_time_window is not None and end_time_window is None:
+                        idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                        epoch_j.append(timestamps[idx_time_start:].min())
+
+                    elif end_time_window is not None and start_time_window is None:
+                        idx_time_end = find_nearest_idx(timestamps, end_time_window)
+                        epoch_j.append(timestamps[0:idx_time_end].min())
+
+                    else:
+                        epoch_j.append(timestamps.min())
 
     epoch_j = np.array(epoch_j)
     try:
@@ -202,7 +222,9 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                         fig_title: str = 'Signals',
                         custom_yticks: Optional[Union[List[str], str]] = None,
                         ylabel_str: Optional[str] = None,
-                        show_figure: bool = True
+                        show_figure: bool = True,
+                        start_time_window: Optional[float] = None,
+                        end_time_window: Optional[float] = None,
                         ) -> Figure:
 
     """
@@ -225,6 +247,8 @@ def plot_wiggles_pandas(df: pd.DataFrame,
          Another example, for multiple stations with 1 sensor
     :param ylabel_str: optional str, add a y-label
     :param show_figure: optional bool, show figure if True. Default is True
+    :param start_time_window: optional float, start time window
+    :param end_time_window: optional float, end time window
 
     :return: matplotlib figure instance
     """
@@ -245,6 +269,12 @@ def plot_wiggles_pandas(df: pd.DataFrame,
         if (station_id_str in df[sig_id_label].values) is False:
             raise ValueError(f"station_id_str parameter provided ('{station_id_str}') "
                              f"was not found in sig_id_label column name provided ('{sig_id_label}')")
+
+    # Check zooming window
+    if start_time_window is not None and end_time_window is not None:
+        if end_time_window <= start_time_window:
+            raise ValueError(f"end_time_window parameter ('{end_time_window}') "
+                             f"cannot be smaller than start_time_window parameter ('{start_time_window}')")
 
     # Get wiggle number, yticks label
     wiggle_num = find_wiggle_num(df=df,
@@ -290,7 +320,9 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     time_epoch_origin = determine_time_epoch_origin(df=df,
                                                     sig_timestamps_label=sig_timestamps_label,
                                                     station_id_str=station_id_str,
-                                                    sig_id_label=sig_id_label)
+                                                    sig_id_label=sig_id_label,
+                                                    start_time_window=start_time_window,
+                                                    end_time_window=end_time_window)
     # Set up xlim min and max arrays.
     xlim_min = np.empty(wiggle_num)
     xlim_max = np.empty(wiggle_num)
@@ -309,9 +341,28 @@ def plot_wiggles_pandas(df: pd.DataFrame,
 
             if station_id_str is None or df[sig_id_label][index_station].find(station_id_str) != -1:
                 sensor_timestamps_label = sig_timestamps_label[index_sensor_in_list]  # timestamps
-                time_s = df[sensor_timestamps_label][index_station] - time_epoch_origin  # scrubbed clean time
+                timestamps = df[sensor_timestamps_label][index_station]
+
+                if start_time_window is not None and end_time_window is not None:
+                    idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                    idx_time_end = find_nearest_idx(timestamps, end_time_window)
+
+                elif start_time_window is not None and end_time_window is None:
+                    idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                    idx_time_end = -1
+
+                elif end_time_window is not None and start_time_window is None:
+                    idx_time_start = 0
+                    idx_time_end = find_nearest_idx(timestamps, end_time_window)
+
+                else:
+                    idx_time_start = 0
+                    idx_time_end = -1
+
+                time_s = timestamps[idx_time_start:idx_time_end] - time_epoch_origin  # scrubbed clean time
 
                 for sensor_array in df[label][index_station]:  # Make a regular loop
+
                     if label == "audio_wf":  # or "sig_aligned_wf":
                         sig_j = df[label][index_station] / np.nanmax(df[label][index_station])
                     elif label == "sig_aligned_wf":
@@ -321,6 +372,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
                     else:
                         sig_j = sensor_array / np.nanmax(sensor_array)
 
+                    sig_j = sig_j[idx_time_start:idx_time_end]
                     ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list],
                              color='midnightblue')
                     xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
@@ -338,18 +390,9 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
     ax1.grid(True)
     if fig_title_show is True:  # Set title
-        # if station_id_str is None and len(sig_wf_label) > 1:
         ax1.set_title(f'{fig_title}', size=FigParam().text_size)
-        # elif station_id_str is None and len(sig_wf_label) == 1:
-        #     ax1.set_title(f'Normalized {fig_title} for {sig_wf_label[0]}', size=FigParam().text_size)
-        # else:
-        #     ax1.set_title(f'Normalized {fig_title} for Station {station_id_str}', size=FigParam().text_size)
 
     # Set ylabel
-    # if station_id_str is None:
-    #     ax1.set_ylabel("Signals", size=FigParam().text_size)
-    # else:
-    #     ax1.set_ylabel("Sensors", size=FigParam().text_size)
     if ylabel_str is not None:
         ax1.set_ylabel(ylabel_str, size=FigParam().text_size)
 
@@ -426,7 +469,9 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
                            fig_title: str = 'Signals',
                            custom_yticks: Optional[Union[List[str], str]] = None,
                            ylabel_str: Optional[str] = None,
-                           show_figure: bool = True
+                           show_figure: bool = True,
+                           start_time_window: Optional[float] = None,
+                           end_time_window: Optional[float] = None,
                            ) -> List[Figure]:
 
     """
@@ -449,6 +494,8 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
          Another example, for multiple stations with 1 sensor
     :param ylabel_str: optional str, add a y-label
     :param show_figure: optional bool, show figure if True. Default is True
+    :param start_time_window: optional float, start time window
+    :param end_time_window: optional float, end time window
 
     :return: matplotlib figure instance
     """
@@ -469,6 +516,12 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
         if (station_id_str in df[sig_id_label].values) is False:
             raise ValueError(f"station_id_str parameter provided ('{station_id_str}') "
                              f"was not found in sig_id_label column name provided ('{sig_id_label}')")
+
+    # Check zooming window
+    if start_time_window is not None and end_time_window is not None:
+        if end_time_window <= start_time_window:
+            raise ValueError(f"end_time_window parameter ('{end_time_window}') "
+                             f"cannot be smaller than start_time_window parameter ('{start_time_window}')")
 
     # Separate XYZ waveforms
     df_xyz, sig_wf_label_xyz = df_3c_sensor(df=df, sig_wf_label=sig_wf_label)
@@ -526,7 +579,9 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
         time_epoch_origin = determine_time_epoch_origin(df=df_xyz,
                                                         sig_timestamps_label=sig_timestamps_label,
                                                         station_id_str=station_id_str,
-                                                        sig_id_label=sig_id_label)
+                                                        sig_id_label=sig_id_label,
+                                                        start_time_window=start_time_window,
+                                                        end_time_window=end_time_window)
         # Set up xlim min and max arrays.
         xlim_min = np.empty(wiggle_num)
         xlim_max = np.empty(wiggle_num)
@@ -545,19 +600,28 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
 
                 if station_id_str is None or df_xyz[sig_id_label][index_station].find(station_id_str) != -1:
                     sensor_timestamps_label = sig_timestamps_label[index_sensor_in_list]  # timestamps
-                    time_s = df_xyz[sensor_timestamps_label][index_station] - time_epoch_origin  # scrubbed clean time
+                    timestamps = df_xyz[sensor_timestamps_label][index_station]
 
-                    # for sensor_array in df_xyz[label][index_station]:  # Make a regular loop
-                        # if label == "audio_wf":  # or "sig_aligned_wf":
-                        #     sig_j = df_xyz[label][index_station] / np.max(df[label][index_station])
-                        # elif label == "sig_aligned_wf":
-                        #     sig_j = df_xyz[label][index_station] / np.max(df[label][index_station])
-                        # elif df_xyz[label][index_station].ndim == 1:
-                        #     sig_j = df_xyz[label][index_station] / np.max(df[label][index_station])
-                        # else:
-                        #     sig_j = sensor_array / np.max(sensor_array)
+                    if start_time_window is not None and end_time_window is not None:
+                        idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                        idx_time_end = find_nearest_idx(timestamps, end_time_window)
+
+                    elif start_time_window is not None and end_time_window is None:
+                        idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                        idx_time_end = -1
+
+                    elif end_time_window is not None and start_time_window is None:
+                        idx_time_start = 0
+                        idx_time_end = find_nearest_idx(timestamps, end_time_window)
+
+                    else:
+                        idx_time_start = 0
+                        idx_time_end = -1
+
+                    time_s = timestamps[idx_time_start:idx_time_end] - time_epoch_origin  # scrubbed clean time
 
                     sig_j = df_xyz[label][index_station] / np.nanmax(df_xyz[label][index_station])
+                    sig_j = sig_j[idx_time_start: idx_time_end]
 
                     ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list],
                              color='midnightblue')
@@ -565,13 +629,6 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
                     xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
 
                     index_sensor_label_ticklabels_list += 1
-
-                        # if label == "audio_wf":
-                        #     break
-                        # if label == "sig_aligned_wf":
-                        #     break
-                        # if df[label][index_station].ndim == 1:
-                        #     break
 
         ax1.set_xlim(np.min(xlim_min), np.max(xlim_max))  # Set xlim min and max
         ax1.grid(True)

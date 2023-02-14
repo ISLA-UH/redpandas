@@ -29,6 +29,18 @@ class NormType(Enum):
 
 
 # Auxiliary modules for building stations
+def find_nearest_idx(array: np.ndarray, value: float):
+    """
+    Return nearest idx for value in array
+    :param array: np.array
+    :param value: float/int
+    :return:
+    """
+    array = np.asarray(array)
+    idx_array = (np.abs(array - value)).argmin()
+    return idx_array
+
+
 def datetime_now_epoch_s() -> float:
     """
     Returns the invocation Unix time in seconds
