@@ -1,7 +1,10 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.3.10 (2023-02-15)
+- Added plot_wiggles for gyroscope and magnetometer sensors
+
 ## 1.3.9 (2023-02-14)
-- Added time window selectio to plot_wiggles and tfr_bits (for plotting mesh)
+- Added time window selection to plot_wiggles and tfr_bits (for plotting mesh)
 - Added reports module to facilitate pre-selected audio/barometer/accelerometer parameters
 
 ## 1.3.8 (2023-02-09)

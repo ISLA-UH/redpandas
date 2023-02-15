@@ -40,6 +40,12 @@
                     <a class="function" href="#plot_wiggles_pandas_acc">plot_wiggles_pandas_acc</a>
             </li>
             <li>
+                    <a class="function" href="#plot_wiggles_pandas_gyr">plot_wiggles_pandas_gyr</a>
+            </li>
+            <li>
+                    <a class="function" href="#plot_wiggles_pandas_mag">plot_wiggles_pandas_mag</a>
+            </li>
+            <li>
                     <a class="function" href="#tfr_bits_panda_audio">tfr_bits_panda_audio</a>
             </li>
             <li>
@@ -128,34 +134,34 @@
 </span><span id="L-58"><a href="#L-58"><span class="linenos"> 58</span></a>    <span class="k">return</span> <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span>
 </span><span id="L-59"><a href="#L-59"><span class="linenos"> 59</span></a>
 </span><span id="L-60"><a href="#L-60"><span class="linenos"> 60</span></a>
-</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="c1"># def plot_wiggles_pandas_gyr(df: pd.DataFrame,</span>
-</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a><span class="c1">#                             start_time_window: float = 0.0,</span>
-</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a><span class="c1">#                             end_time_window: float = 0.0) -&gt; Tuple[Figure, Figure, Figure]:</span>
-</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a><span class="c1">#</span>
-</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a><span class="c1">#     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,</span>
-</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a><span class="c1">#                                                  sig_wf_label=&#39;gyroscope_wf_highpass&#39;,</span>
-</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a><span class="c1">#                                                  sig_timestamps_label=&#39;gyroscope_epoch_s&#39;,</span>
-</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a><span class="c1">#                                                  fig_title=&quot;Normalized Signals for Gyroscope&quot;,</span>
-</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a><span class="c1">#                                                  show_figure=False,</span>
-</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a><span class="c1">#                                                  start_time_window=start_time_window,</span>
-</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a><span class="c1">#                                                  end_time_window=end_time_window)</span>
-</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a><span class="c1">#</span>
-</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a><span class="c1">#     return fig_x, fig_y, fig_z</span>
-</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a><span class="c1">#</span>
-</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a><span class="c1">#</span>
-</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="c1"># def plot_wiggles_pandas_mag(df: pd.DataFrame,</span>
-</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a><span class="c1">#                             start_time_window: float = 0.0,</span>
-</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a><span class="c1">#                             end_time_window: float = 0.0) -&gt; Tuple[Figure, Figure, Figure]:</span>
-</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a><span class="c1">#</span>
-</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a><span class="c1">#     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,</span>
-</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a><span class="c1">#                                                  sig_wf_label=&#39;magnetometer_wf_highpass&#39;,</span>
-</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a><span class="c1">#                                                  sig_timestamps_label=&#39;magnetometer_epoch_s&#39;,</span>
-</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a><span class="c1">#                                                  fig_title=&quot;Normalized Signals for Magnetometer&quot;,</span>
-</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a><span class="c1">#                                                  show_figure=False,</span>
-</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a><span class="c1">#                                                  start_time_window=start_time_window,</span>
-</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a><span class="c1">#                                                  end_time_window=end_time_window)</span>
-</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a><span class="c1">#</span>
-</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a><span class="c1">#     return fig_x, fig_y, fig_z</span>
+</span><span id="L-61"><a href="#L-61"><span class="linenos"> 61</span></a><span class="k">def</span> <span class="nf">plot_wiggles_pandas_gyr</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span id="L-62"><a href="#L-62"><span class="linenos"> 62</span></a>                            <span class="n">start_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="L-63"><a href="#L-63"><span class="linenos"> 63</span></a>                            <span class="n">end_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">Figure</span><span class="p">]:</span>
+</span><span id="L-64"><a href="#L-64"><span class="linenos"> 64</span></a>
+</span><span id="L-65"><a href="#L-65"><span class="linenos"> 65</span></a>    <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span> <span class="o">=</span> <span class="n">plot_wiggles_3c_pandas</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+</span><span id="L-66"><a href="#L-66"><span class="linenos"> 66</span></a>                                                 <span class="n">sig_wf_label</span><span class="o">=</span><span class="s1">&#39;gyroscope_wf_highpass&#39;</span><span class="p">,</span>
+</span><span id="L-67"><a href="#L-67"><span class="linenos"> 67</span></a>                                                 <span class="n">sig_timestamps_label</span><span class="o">=</span><span class="s1">&#39;gyroscope_epoch_s&#39;</span><span class="p">,</span>
+</span><span id="L-68"><a href="#L-68"><span class="linenos"> 68</span></a>                                                 <span class="n">fig_title</span><span class="o">=</span><span class="s2">&quot;Normalized Signals for Gyroscope&quot;</span><span class="p">,</span>
+</span><span id="L-69"><a href="#L-69"><span class="linenos"> 69</span></a>                                                 <span class="n">show_figure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="L-70"><a href="#L-70"><span class="linenos"> 70</span></a>                                                 <span class="n">start_time_window</span><span class="o">=</span><span class="n">start_time_window</span><span class="p">,</span>
+</span><span id="L-71"><a href="#L-71"><span class="linenos"> 71</span></a>                                                 <span class="n">end_time_window</span><span class="o">=</span><span class="n">end_time_window</span><span class="p">)</span>
+</span><span id="L-72"><a href="#L-72"><span class="linenos"> 72</span></a>
+</span><span id="L-73"><a href="#L-73"><span class="linenos"> 73</span></a>    <span class="k">return</span> <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span>
+</span><span id="L-74"><a href="#L-74"><span class="linenos"> 74</span></a>
+</span><span id="L-75"><a href="#L-75"><span class="linenos"> 75</span></a>
+</span><span id="L-76"><a href="#L-76"><span class="linenos"> 76</span></a><span class="k">def</span> <span class="nf">plot_wiggles_pandas_mag</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span id="L-77"><a href="#L-77"><span class="linenos"> 77</span></a>                            <span class="n">start_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="L-78"><a href="#L-78"><span class="linenos"> 78</span></a>                            <span class="n">end_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">Figure</span><span class="p">]:</span>
+</span><span id="L-79"><a href="#L-79"><span class="linenos"> 79</span></a>
+</span><span id="L-80"><a href="#L-80"><span class="linenos"> 80</span></a>    <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span> <span class="o">=</span> <span class="n">plot_wiggles_3c_pandas</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+</span><span id="L-81"><a href="#L-81"><span class="linenos"> 81</span></a>                                                 <span class="n">sig_wf_label</span><span class="o">=</span><span class="s1">&#39;magnetometer_wf_highpass&#39;</span><span class="p">,</span>
+</span><span id="L-82"><a href="#L-82"><span class="linenos"> 82</span></a>                                                 <span class="n">sig_timestamps_label</span><span class="o">=</span><span class="s1">&#39;magnetometer_epoch_s&#39;</span><span class="p">,</span>
+</span><span id="L-83"><a href="#L-83"><span class="linenos"> 83</span></a>                                                 <span class="n">fig_title</span><span class="o">=</span><span class="s2">&quot;Normalized Signals for Magnetometer&quot;</span><span class="p">,</span>
+</span><span id="L-84"><a href="#L-84"><span class="linenos"> 84</span></a>                                                 <span class="n">show_figure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="L-85"><a href="#L-85"><span class="linenos"> 85</span></a>                                                 <span class="n">start_time_window</span><span class="o">=</span><span class="n">start_time_window</span><span class="p">,</span>
+</span><span id="L-86"><a href="#L-86"><span class="linenos"> 86</span></a>                                                 <span class="n">end_time_window</span><span class="o">=</span><span class="n">end_time_window</span><span class="p">)</span>
+</span><span id="L-87"><a href="#L-87"><span class="linenos"> 87</span></a>
+</span><span id="L-88"><a href="#L-88"><span class="linenos"> 88</span></a>    <span class="k">return</span> <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span>
 </span><span id="L-89"><a href="#L-89"><span class="linenos"> 89</span></a>
 </span><span id="L-90"><a href="#L-90"><span class="linenos"> 90</span></a>
 </span><span id="L-91"><a href="#L-91"><span class="linenos"> 91</span></a><span class="k">def</span> <span class="nf">tfr_bits_panda_audio</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
@@ -300,6 +306,66 @@
 </span><span id="plot_wiggles_pandas_acc-57"><a href="#plot_wiggles_pandas_acc-57"><span class="linenos">57</span></a>                                                 <span class="n">end_time_window</span><span class="o">=</span><span class="n">end_time_window</span><span class="p">)</span>
 </span><span id="plot_wiggles_pandas_acc-58"><a href="#plot_wiggles_pandas_acc-58"><span class="linenos">58</span></a>
 </span><span id="plot_wiggles_pandas_acc-59"><a href="#plot_wiggles_pandas_acc-59"><span class="linenos">59</span></a>    <span class="k">return</span> <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span>
+</span></pre></div>
+
+
+    
+
+                </section>
+                <section id="plot_wiggles_pandas_gyr">
+                            <input id="plot_wiggles_pandas_gyr-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">plot_wiggles_pandas_gyr</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">df</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">start_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>,</span><span class="param">	<span class="n">end_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="plot_wiggles_pandas_gyr-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#plot_wiggles_pandas_gyr"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="plot_wiggles_pandas_gyr-62"><a href="#plot_wiggles_pandas_gyr-62"><span class="linenos">62</span></a><span class="k">def</span> <span class="nf">plot_wiggles_pandas_gyr</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_gyr-63"><a href="#plot_wiggles_pandas_gyr-63"><span class="linenos">63</span></a>                            <span class="n">start_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_gyr-64"><a href="#plot_wiggles_pandas_gyr-64"><span class="linenos">64</span></a>                            <span class="n">end_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">Figure</span><span class="p">]:</span>
+</span><span id="plot_wiggles_pandas_gyr-65"><a href="#plot_wiggles_pandas_gyr-65"><span class="linenos">65</span></a>
+</span><span id="plot_wiggles_pandas_gyr-66"><a href="#plot_wiggles_pandas_gyr-66"><span class="linenos">66</span></a>    <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span> <span class="o">=</span> <span class="n">plot_wiggles_3c_pandas</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_gyr-67"><a href="#plot_wiggles_pandas_gyr-67"><span class="linenos">67</span></a>                                                 <span class="n">sig_wf_label</span><span class="o">=</span><span class="s1">&#39;gyroscope_wf_highpass&#39;</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_gyr-68"><a href="#plot_wiggles_pandas_gyr-68"><span class="linenos">68</span></a>                                                 <span class="n">sig_timestamps_label</span><span class="o">=</span><span class="s1">&#39;gyroscope_epoch_s&#39;</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_gyr-69"><a href="#plot_wiggles_pandas_gyr-69"><span class="linenos">69</span></a>                                                 <span class="n">fig_title</span><span class="o">=</span><span class="s2">&quot;Normalized Signals for Gyroscope&quot;</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_gyr-70"><a href="#plot_wiggles_pandas_gyr-70"><span class="linenos">70</span></a>                                                 <span class="n">show_figure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_gyr-71"><a href="#plot_wiggles_pandas_gyr-71"><span class="linenos">71</span></a>                                                 <span class="n">start_time_window</span><span class="o">=</span><span class="n">start_time_window</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_gyr-72"><a href="#plot_wiggles_pandas_gyr-72"><span class="linenos">72</span></a>                                                 <span class="n">end_time_window</span><span class="o">=</span><span class="n">end_time_window</span><span class="p">)</span>
+</span><span id="plot_wiggles_pandas_gyr-73"><a href="#plot_wiggles_pandas_gyr-73"><span class="linenos">73</span></a>
+</span><span id="plot_wiggles_pandas_gyr-74"><a href="#plot_wiggles_pandas_gyr-74"><span class="linenos">74</span></a>    <span class="k">return</span> <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span>
+</span></pre></div>
+
+
+    
+
+                </section>
+                <section id="plot_wiggles_pandas_mag">
+                            <input id="plot_wiggles_pandas_mag-view-source" class="view-source-toggle-state" type="checkbox" aria-hidden="true" tabindex="-1">
+<div class="attr function">
+            
+        <span class="def">def</span>
+        <span class="name">plot_wiggles_pandas_mag</span><span class="signature pdoc-code multiline">(<span class="param">	<span class="n">df</span><span class="p">:</span> <span class="n">pandas</span><span class="o">.</span><span class="n">core</span><span class="o">.</span><span class="n">frame</span><span class="o">.</span><span class="n">DataFrame</span>,</span><span class="param">	<span class="n">start_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span>,</span><span class="param">	<span class="n">end_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span></span><span class="return-annotation">) -> <span class="n">Tuple</span><span class="p">[</span><span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">,</span> <span class="n">matplotlib</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span><span class="p">]</span>:</span></span>
+
+                <label class="view-source-button" for="plot_wiggles_pandas_mag-view-source"><span>View Source</span></label>
+
+    </div>
+    <a class="headerlink" href="#plot_wiggles_pandas_mag"></a>
+            <div class="pdoc-code codehilite"><pre><span></span><span id="plot_wiggles_pandas_mag-77"><a href="#plot_wiggles_pandas_mag-77"><span class="linenos">77</span></a><span class="k">def</span> <span class="nf">plot_wiggles_pandas_mag</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_mag-78"><a href="#plot_wiggles_pandas_mag-78"><span class="linenos">78</span></a>                            <span class="n">start_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_mag-79"><a href="#plot_wiggles_pandas_mag-79"><span class="linenos">79</span></a>                            <span class="n">end_time_window</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">Figure</span><span class="p">,</span> <span class="n">Figure</span><span class="p">,</span> <span class="n">Figure</span><span class="p">]:</span>
+</span><span id="plot_wiggles_pandas_mag-80"><a href="#plot_wiggles_pandas_mag-80"><span class="linenos">80</span></a>
+</span><span id="plot_wiggles_pandas_mag-81"><a href="#plot_wiggles_pandas_mag-81"><span class="linenos">81</span></a>    <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span> <span class="o">=</span> <span class="n">plot_wiggles_3c_pandas</span><span class="p">(</span><span class="n">df</span><span class="o">=</span><span class="n">df</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_mag-82"><a href="#plot_wiggles_pandas_mag-82"><span class="linenos">82</span></a>                                                 <span class="n">sig_wf_label</span><span class="o">=</span><span class="s1">&#39;magnetometer_wf_highpass&#39;</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_mag-83"><a href="#plot_wiggles_pandas_mag-83"><span class="linenos">83</span></a>                                                 <span class="n">sig_timestamps_label</span><span class="o">=</span><span class="s1">&#39;magnetometer_epoch_s&#39;</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_mag-84"><a href="#plot_wiggles_pandas_mag-84"><span class="linenos">84</span></a>                                                 <span class="n">fig_title</span><span class="o">=</span><span class="s2">&quot;Normalized Signals for Magnetometer&quot;</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_mag-85"><a href="#plot_wiggles_pandas_mag-85"><span class="linenos">85</span></a>                                                 <span class="n">show_figure</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_mag-86"><a href="#plot_wiggles_pandas_mag-86"><span class="linenos">86</span></a>                                                 <span class="n">start_time_window</span><span class="o">=</span><span class="n">start_time_window</span><span class="p">,</span>
+</span><span id="plot_wiggles_pandas_mag-87"><a href="#plot_wiggles_pandas_mag-87"><span class="linenos">87</span></a>                                                 <span class="n">end_time_window</span><span class="o">=</span><span class="n">end_time_window</span><span class="p">)</span>
+</span><span id="plot_wiggles_pandas_mag-88"><a href="#plot_wiggles_pandas_mag-88"><span class="linenos">88</span></a>
+</span><span id="plot_wiggles_pandas_mag-89"><a href="#plot_wiggles_pandas_mag-89"><span class="linenos">89</span></a>    <span class="k">return</span> <span class="n">fig_x</span><span class="p">,</span> <span class="n">fig_y</span><span class="p">,</span> <span class="n">fig_z</span>
 </span></pre></div>
 
 
