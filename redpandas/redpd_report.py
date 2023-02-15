@@ -58,34 +58,34 @@ def plot_wiggles_pandas_acc(df: pd.DataFrame,
     return fig_x, fig_y, fig_z
 
 
-# def plot_wiggles_pandas_gyr(df: pd.DataFrame,
-#                             start_time_window: float = 0.0,
-#                             end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
-#
-#     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
-#                                                  sig_wf_label='gyroscope_wf_highpass',
-#                                                  sig_timestamps_label='gyroscope_epoch_s',
-#                                                  fig_title="Normalized Signals for Gyroscope",
-#                                                  show_figure=False,
-#                                                  start_time_window=start_time_window,
-#                                                  end_time_window=end_time_window)
-#
-#     return fig_x, fig_y, fig_z
-#
-#
-# def plot_wiggles_pandas_mag(df: pd.DataFrame,
-#                             start_time_window: float = 0.0,
-#                             end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
-#
-#     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
-#                                                  sig_wf_label='magnetometer_wf_highpass',
-#                                                  sig_timestamps_label='magnetometer_epoch_s',
-#                                                  fig_title="Normalized Signals for Magnetometer",
-#                                                  show_figure=False,
-#                                                  start_time_window=start_time_window,
-#                                                  end_time_window=end_time_window)
-#
-#     return fig_x, fig_y, fig_z
+def plot_wiggles_pandas_gyr(df: pd.DataFrame,
+                            start_time_window: float = 0.0,
+                            end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
+
+    fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
+                                                 sig_wf_label='gyroscope_wf_highpass',
+                                                 sig_timestamps_label='gyroscope_epoch_s',
+                                                 fig_title="Normalized Signals for Gyroscope",
+                                                 show_figure=False,
+                                                 start_time_window=start_time_window,
+                                                 end_time_window=end_time_window)
+
+    return fig_x, fig_y, fig_z
+
+
+def plot_wiggles_pandas_mag(df: pd.DataFrame,
+                            start_time_window: float = 0.0,
+                            end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
+
+    fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
+                                                 sig_wf_label='magnetometer_wf_highpass',
+                                                 sig_timestamps_label='magnetometer_epoch_s',
+                                                 fig_title="Normalized Signals for Magnetometer",
+                                                 show_figure=False,
+                                                 start_time_window=start_time_window,
+                                                 end_time_window=end_time_window)
+
+    return fig_x, fig_y, fig_z
 
 
 def tfr_bits_panda_audio(df: pd.DataFrame,
