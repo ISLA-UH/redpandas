@@ -15,6 +15,13 @@ from redpandas.redpd_plot.wiggles import plot_wiggles_pandas, plot_wiggles_3c_pa
 def plot_wiggles_pandas_audio(df: pd.DataFrame,
                               start_time_window: float = 0.0,
                               end_time_window: float = 0.0) -> Figure:
+    """
+    Plot wiggles, set for Audio
+    :param df: input pandas dataframe
+    :param start_time_window: float, epoch s
+    :param end_time_window: float, epoch s
+    :return: matplotlib figure instance
+    """
 
     fig_audio = plot_wiggles_pandas(df=df,
                                     sig_wf_label="audio_wf",
@@ -31,6 +38,13 @@ def plot_wiggles_pandas_audio(df: pd.DataFrame,
 def plot_wiggles_pandas_bar(df: pd.DataFrame,
                             start_time_window: float = 0.0,
                             end_time_window: float = 0.0) -> Figure:
+    """
+    Plot wiggles, set for Barometer
+    :param df: input pandas dataframe
+    :param start_time_window: float, epoch s
+    :param end_time_window: float, epoch s
+    :return: matplotlib figure instance
+    """
 
     fig_bar = plot_wiggles_pandas(df=df,
                                   sig_wf_label="barometer_wf_highpass",
@@ -46,6 +60,13 @@ def plot_wiggles_pandas_bar(df: pd.DataFrame,
 def plot_wiggles_pandas_acc(df: pd.DataFrame,
                             start_time_window: float = 0.0,
                             end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
+    """
+    Plot wiggles, set for Accelerometer
+    :param df: input pandas dataframe
+    :param start_time_window: float, epoch s
+    :param end_time_window: float, epoch s
+    :return: matplotlib figure instance x3
+    """
 
     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
                                                  sig_wf_label='accelerometer_wf_highpass',
@@ -61,6 +82,13 @@ def plot_wiggles_pandas_acc(df: pd.DataFrame,
 def plot_wiggles_pandas_gyr(df: pd.DataFrame,
                             start_time_window: float = 0.0,
                             end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
+    """
+    Plot wiggles, set for Gyroscope
+    :param df: input pandas dataframe
+    :param start_time_window: float, epoch s
+    :param end_time_window: float, epoch s
+    :return: matplotlib figure instance x3
+    """
 
     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
                                                  sig_wf_label='gyroscope_wf_highpass',
@@ -76,6 +104,13 @@ def plot_wiggles_pandas_gyr(df: pd.DataFrame,
 def plot_wiggles_pandas_mag(df: pd.DataFrame,
                             start_time_window: float = 0.0,
                             end_time_window: float = 0.0) -> Tuple[Figure, Figure, Figure]:
+    """
+    Plot wiggles, set for Magnetometer
+    :param df: input pandas dataframe
+    :param start_time_window: float, epoch s
+    :param end_time_window: float, epoch s
+    :return: matplotlib figure instance x3
+    """
 
     fig_x, fig_y, fig_z = plot_wiggles_3c_pandas(df=df,
                                                  sig_wf_label='magnetometer_wf_highpass',
@@ -93,6 +128,15 @@ def tfr_bits_panda_audio(df: pd.DataFrame,
                          end_time_window: float = 0.0,
                          tfr_type: str = 'stft',
                          order_number_input: int = 12):
+    """
+    Calculate TFR, set for Audio
+    :param df: input pandas dataframe
+    :param start_time_window: float, epoch s
+    :param end_time_window: float, epoch s
+    :param tfr_type: 'stft' or 'cwt'. Default is 'stft'
+    :param order_number_input: default is 12
+    :return:
+    """
     # Audio TFR
     df_tfr = rpd_tfr.tfr_bits_panda_window(df=df,
                                            sig_wf_label="audio_wf",
@@ -112,7 +156,17 @@ def tfr_bits_panda_audio(df: pd.DataFrame,
 def plot_mesh_pandas_audio(df: pd.DataFrame,
                            frequency_hz_ymin: float = 1.0,
                            frequency_hz_ymax: float = 0.0,
-                           start_time_window: float = 0.0):
+                           frequency_scaling: str = "log",
+                           start_time_window: float = 0.0,):
+    """
+    Plot mesh, set for Audio
+    :param df: input pandas dataframe
+    :param frequency_hz_ymin: float, default is 1.0
+    :param frequency_hz_ymax: float, sets to Nyquist if 0.0
+    :param frequency_scaling: 'log' or 'lin', default is 'log'
+    :param start_time_window: float, epoch s
+    :return: matplotlib figure instance
+    """
 
     if frequency_hz_ymax == 0.0:
         frequency_hz_ymax = rpd_scales.Slice.F0
@@ -134,6 +188,7 @@ def plot_mesh_pandas_audio(df: pd.DataFrame,
                                     sig_id_label='station_id',
                                     t0_sig_epoch_s=start_mesh,
                                     fig_title="STFT Audio",
+                                    frequency_scaling=frequency_scaling,
                                     frequency_hz_ymin=frequency_hz_ymin,
                                     frequency_hz_ymax=frequency_hz_ymax,
                                     mesh_color_scaling="range",
