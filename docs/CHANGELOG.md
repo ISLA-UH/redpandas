@@ -1,8 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
-## 1.3.11 ()
+## 1.3.11 (2023-04-11)
 - Updated requirements
-- Added frequency_scaling option for plot_mesh_audio
+- Added frequency_scaling option for plot_mesh_pandas_audio
 
 ## 1.3.10 (2023-02-15)
 - Added plot_wiggles for gyroscope and magnetometer sensors
