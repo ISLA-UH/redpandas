@@ -27,7 +27,7 @@ RedVox data in mind, these functions can be applied to any datasets stored in a 
   
 ### Ensonify RedVox data
 
-You can listen to your RedVox dataset using the function [ensonify_sensors_pandas](https://redvoxinc.github.io/redpandas/redpd_ensonify.html#redpandas.redpd_ensonify.ensonify_sensors_pandas) 
+You can listen to your RedVox dataset using the function [ensonify_sensors_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_ensonify.html#ensonify_sensors_pandas) 
 to resample your data.
 
 _Ensonifying RedVox data example:_
@@ -66,7 +66,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 ### Plot waveforms
 
-The function [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) 
+The function [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_plot/wiggles.html#plot_wiggles_pandas) 
 plots signal waveforms stored in the [RedPandas DataFrame](using_redpandas.md#basic-definitions).
 
 
@@ -91,12 +91,12 @@ The resulting plot is shown below:
 
 ![](img/fig_audio.png)
 
-The function [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) 
+The function [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_plot/wiggles.html#plot_wiggles_pandas) 
 provides a quick visual check as shown in the example above, where ``Station 3`` has 
 an incomplete audio record and therefore the signal might not be useful for further analysis. 
 
-Furthermore, [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) can also plot multiple signals for all stations. 
-For example, the input in the following parameters in [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) 
+Furthermore, [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_plot/wiggles.html#plot_wiggles_pandas) can also plot multiple signals for all stations. 
+For example, the input in the following parameters in [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_plot/wiggles.html#plot_wiggles_pandas) 
 would change to plot the accelerometer and the audio waveforms for all stations: ``sig_wf_label=["audio_wf", "accelerometer_wf_raw"]``, 
 ``sig_timestamps_label = ["audio_epoch_s","acceleroemter_epoch_s"]`` 
 and optionally, ``fig_title="Audio and Accelerometer"``, and ``custom_yticks=["Station 1 Audio", "Station 1 AccX", "Station 1 AccY", "Station 1 AccZ",
@@ -108,7 +108,7 @@ the sensor data column for barometer / acceleration / gyroscope / magnetometer d
 Return to _[Table of Contents](#table-of-contents)_.
 
 #### Plotting signal waveforms for only one station
-Another application of [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/wiggles.html#redpandas.redpd_plot.wiggles.plot_wiggles_pandas) 
+Another application of [plot_wiggles_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_plot/wiggles.html#plot_wiggles_pandas) 
 is plotting one station and multiple sensor channels as shown in the following example.
  
   _Plotting audio and barometer for one station example:_
@@ -144,7 +144,7 @@ The RedPandas library has multiple tools for cleaning and filtering signals stor
 
 #### Eliminate DC offset
 
-The function [signal_zero_mean_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.signal_zero_mean_pandas) 
+The function [signal_zero_mean_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#signal_zero_mean_pandas) 
 can be used to eliminate the DC offset in a signal for all stations.
 
 _Eliminate DC offset in audio signal example:_
@@ -157,14 +157,15 @@ rpd_filter.signal_zero_mean_pandas(df=df,
                                    sig_wf_label="audio_wf")  # signal column label in df
 ```
 The new signal will be stored in a new column in the [RedPandas Dataframe](using_redpandas.md#basic-definitions)  named ``zero_mean``. The label
-can be changed by changing the name provided in the parameter ``new_column_label`` in [signal_zero_mean_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.signal_zero_mean_pandas).
+can be changed by changing the name provided in the parameter ``new_column_label`` in 
+[signal_zero_mean_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#signal_zero_mean_pandas).
 
 Return to _[Table of Contents](#table-of-contents)_.
 
 #### Add taper 
 
 A taper can be added to a signal in the [RedPandas Dataframe](using_redpandas.md#basic-definitions) with the function 
-[taper_tukey_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.taper_tukey_pandas).
+[taper_tukey_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#taper_tukey_pandas).
 
 _Taper edges in audio signal example:_
 ```python
@@ -177,13 +178,14 @@ rpd_filter.taper_tukey_pandas(df=df,
                               fraction_cosine=0.1)  # fraction of the window inside the cosine tapered window, shared between the head and tail
 ```
 The new signal will be stored in a new column in the [RedPandas Dataframe](using_redpandas.md#basic-definitions)  named ``taper``. The label
-can be changed by changing the name provided in the parameter ``new_column_label_append`` in [taper_tukey_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.taper_tukey_pandas).
+can be changed by changing the name provided in the parameter ``new_column_label_append`` in
+[taper_tukey_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#taper_tukey_pandas).
 
 Return to _[Table of Contents](#table-of-contents)_.
 
 #### Normalize signal
 
-A signal can be normalized using the function [normalize_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.normalize_pandas).
+A signal can be normalized using the function [normalize_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#normalize_pandas).
 
 _Normalize audio waveform example:_
 ```python
@@ -195,13 +197,13 @@ rpd_filter.normalize_pandas(df=df,
                             sig_wf_label="audio_wf")  # signal column label in df
 ```
 The new signal will be stored in a new column in the [RedPandas Dataframe](using_redpandas.md#basic-definitions)  named ``normalized``. 
-The label can be changed by changing the name provided in the parameter ``new_column_label`` in [normalize_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.normalize_pandas).
+The label can be changed by changing the name provided in the parameter ``new_column_label`` in [normalize_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#normalize_pandas).
 
 Return to _[Table of Contents](#table-of-contents)_.
 
 #### Decimate signal
 
-A signal can be decimated using the function [decimate_signal_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.decimate_signal_pandas).
+A signal can be decimated using the function [decimate_signal_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#decimate_signal_pandas).
 
 _Decimate audio waveform example:_
 ```python
@@ -221,12 +223,12 @@ The new signal will be stored in a new column in the [RedPandas Dataframe](using
 ``decimated_sig_data``. The decimated timestamps and sample rate will be stored in new columns named ``decimated_sig_epoch``
 and ``decimated_sample_rate_hz`` respectively. The labels for these three columns can be changed by changing the names provided 
 in the parameters ``new_column_label_decimated_sig``, ``new_column_label_decimated_sig_timestamps``, and ``new_column_label_decimated_sample_rate_hz``
-in [decimate_signal_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.decimate_signal_pandas).
+in [decimate_signal_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#decimate_signal_pandas).
 
 Return to _[Table of Contents](#table-of-contents)_.                                                                                      
                                                                                       
 #### Bandpass signal
-A bandpass filter can be applied to a signal using the [bandpass_butter_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.bandpass_butter_pandas) 
+A bandpass filter can be applied to a signal using the [bandpass_butter_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#bandpass_butter_pandas) 
 function. 
 
 _Bandpass audio example_:
@@ -248,7 +250,7 @@ The new signal will be stored in a new column in the [RedPandas Dataframe](using
 ``bandpass``. The low and high frequency cutoff used will be in columns ``frequency_low_hz`` and ``frequency_high_hz``.
 The labels for these three columns can be changed by changing the names provided 
 in the parameters ``new_column_label_sig_bandpass``, ``new_column_label_frequency_low``, and ``new_column_label_frequency_high``
-in [bandpass_butter_pandas](https://redvoxinc.github.io/redpandas/redpd_filter.html#redpandas.redpd_filter.bandpass_butter_pandas).
+in [bandpass_butter_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_filter.html#bandpass_butter_pandas).
 
 Return to _[Table of Contents](#table-of-contents)_.
 
@@ -258,7 +260,7 @@ The following subsections focus on calculating and plotting time frequency repre
 
 #### Calculating Time Frequency Representation
 
-The function [tfr_bits_panda](https://redvoxinc.github.io/redpandas/redpd_tfr.html#redpandas.redpd_tfr.tfr_bits_panda) 
+The function [tfr_bits_panda](https://redvoxinc.github.io/redpandas/redpandas/redpd_tfr.html#tfr_bits_panda) 
 can be used to calculate time-frequency analysis.
 
 _Calculating TFR for audio example_:
@@ -278,11 +280,12 @@ The calculated time frequency representation bits will be stored in a new column
 ``tfr_bits``. The time and frequency will be in columns ``tfr_time_s`` and ``tfr_frequency_hz``.
 The labels for these three columns can be changed by changing the names provided 
 in the parameters ``new_column_tfr_bits``, ``new_column_tfr_time_s``, and ``new_column_tfr_frequency_hz`` in 
-[tfr_bits_panda](https://redvoxinc.github.io/redpandas/redpd_tfr.html#redpandas.redpd_tfr.tfr_bits_panda).
+[tfr_bits_panda](https://redvoxinc.github.io/redpandas/redpandas/redpd_tfr.html#tfr_bits_panda).
 
 #### Plotting Time Frequency Representation
 
-Once the TFR has been calculated, ``tfr_bits`` can be plotted with the function [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/mesh.html#redpandas.redpd_plot.mesh.plot_mesh_pandas).
+Once the TFR has been calculated, ``tfr_bits`` can be plotted with the function 
+[plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_plot/mesh.html#plot_mesh_pandas).
 
 _Plotting TFR for audio signal from a [previous example](#plotting-signal-waveforms-for-all-stations-stored-in-the-dataframe):_
 ```python
@@ -305,10 +308,10 @@ The resulting plot is shown below:
 
 ![](img/fig_stft.png)
 
-The function [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/mesh.html#redpandas.redpd_plot.mesh.plot_mesh_pandas)
+The function [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_plot/mesh.html#plot_mesh_pandas)
 can be adjusted with the variables ``frequency_scaling``, ``frequency_hz_ymin``, ``frequency_hz_ymax``, for y-axis manipulation,
 ``fig_title_show`` and ``fig_title``, for publication, and ``common_colorbar``, ``mesh_color_scaling`` and ``mesh_color_range`` 
-for dynamic range adjustments. Visit [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpd_plot/mesh.html#redpandas.redpd_plot.mesh.plot_mesh_pandas)
+for dynamic range adjustments. Visit [plot_mesh_pandas](https://redvoxinc.github.io/redpandas/redpandas/redpd_plot/mesh.html#plot_mesh_pandas)
 for defaults and more options.
 
 Return to _[Table of Contents](#table-of-contents)_.
