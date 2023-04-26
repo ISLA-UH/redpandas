@@ -29,10 +29,12 @@ A full example can be found in [examples directory](https://github.com/RedVoxInc
 
 Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md#how-to-use-redpandas) to get started.
 
+You can find examples on [how to plot audio waveforms](https://redvoxinc.github.io/redvox-examples/04_plot_wiggles.html)
+and [audio spectrogram](https://redvoxinc.github.io/redvox-examples/05_plot_spectrogram.html) in [RedVox Examples](https://redvoxinc.github.io/redvox-examples/index.html).
+
 ### API Documentation
 
 Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for more details on RedPandas functions.
-
 
 ### Development
 
