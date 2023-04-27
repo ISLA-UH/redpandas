@@ -1,0 +1,33 @@
+# See:
+# - https://setuptools.pypa.io/en/latest/userguide/pyproject_config.html
+# - https://packaging.python.org/en/latest/specifications/declaring-project-metadata/
+
+[project]
+name = "redvox-pandas"
+version = "1.4.0"
+authors = [
+    { name = "RedVox, Inc", email = "support@redvox.io" }
+]
+description = "Library to streamline preprocessing of RedVox API 900 and API 1000 data"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { file = "LICENSE" }
+
+dependencies = [
+    "obspy==1.4.0",
+    "pymap3d==3.0.1",
+    "redvox==3.4.0",
+    "redvox-base[matplotlib,numpy,pandas,scipy]==2023.4.25"
+]
+
+[project.urls]
+homepage = "https://github.com/RedVoxInc/redpandas"
+PyPI = "https://pypi.org/project/redpandas/"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["redpandas*"]
+exclude = ["redpandas.test*"]
