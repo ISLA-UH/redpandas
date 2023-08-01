@@ -4,7 +4,7 @@
 
 [project]
 name = "redvox-pandas"
-version = "1.4.2"
+version = "1.4.3"
 authors = [
     { name = "RedVox, Inc", email = "support@redvox.io" }
 ]
@@ -16,7 +16,7 @@ license = { file = "LICENSE" }
 dependencies = [
     "obspy==1.4.0",
     "pymap3d==3.0.1",
-    "redvox==3.4.2",
+    "redvox==3.5.1",
     "redvox-base[matplotlib,numpy,pandas,scipy]==2023.4.27"
 ]
 
