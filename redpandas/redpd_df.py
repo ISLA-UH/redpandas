@@ -14,7 +14,7 @@ import redpandas.redpd_scales as rpd_scales
 
 
 def redpd_dataframe(input_dw: DataWindow,
-                    sensor_labels: Optional[List[str]] = ["audio"],
+                    sensor_labels: Optional[List[str]] = None,
                     highpass_type: Optional[str] = 'obspy',
                     frequency_filter_low: Optional[float] = 1./rpd_scales.Slice.T100S,
                     filter_order: Optional[int] = 4) -> pd.DataFrame:
@@ -27,7 +27,7 @@ def redpd_dataframe(input_dw: DataWindow,
         'gyroscope', 'magnetometer', 'health', 'location', 'synchronization', 'clock', 'best_location']. For example:
         sensor_labels = ['audio', 'accelerometer']. Default is ["audio"]
     :param highpass_type: optional string, type of highpass applied. One of: 'obspy', 'butter', or 'rc'.
-    Default is 'obspy'
+        Default is 'obspy'
     :param frequency_filter_low: optional float, lowest frequency for highpass filter. Default is 100 second periods
     :param filter_order: optional integer, the order of the filter. Default is 4
 
