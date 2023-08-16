@@ -4,7 +4,7 @@
 
 [project]
 name = "redvox-pandas"
-version = "1.4.5"
+version = "1.4.6"
 authors = [
     { name = "RedVox, Inc", email = "support@redvox.io" }
 ]
@@ -19,7 +19,7 @@ dependencies = [
     "obspy==1.4.0",
     "pandas==2.0.1",
     "pymap3d==3.0.1",
-    "redvox==3.6.0",
+    "redvox==3.6.1",
     "scipy==1.10.1",
 ]
 
