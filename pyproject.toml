@@ -4,7 +4,7 @@
 
 [project]
 name = "redvox-pandas"
-version = "1.4.9"
+version = "1.4.10"
 authors = [
     { name = "RedVox, Inc", email = "support@redvox.io" }
 ]
