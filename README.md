@@ -1,6 +1,6 @@
 # RedPandas
 
-[![Current version on PyPI](https://img.shields.io/badge/pypi-v1.3.11-blue)](https://pypi.org/project/redvox-pandas/)
+[![Current version on PyPI](https://img.shields.io/badge/pypi-v1.4.10-blue)](https://pypi.org/project/redvox-pandas/)
 [![Python versions supported](https://img.shields.io/badge/python-3.8+%20-blue)]()
 
 ### Description
@@ -10,7 +10,7 @@ and [API 1000](https://github.com/RedVoxInc/redvox-api-1000) (API M) data.
 The RedVox Pandas (also known as RedPandas) pipeline is designed for integrability with other legacy and heterogeneous data sources.
 
 <p align="center">
-<img src="https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/img/cover_fig.png?raw=true" alt="Wiggles" width="700">
+<img src="https://github.com/ISLA-UH/redpandas/blob/master/docs/redpandas/img/cover_fig.png?raw=true" alt="Wiggles" width="700">
 </p>
 
 ### Installation 
