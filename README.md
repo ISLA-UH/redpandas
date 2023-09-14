@@ -20,14 +20,14 @@ To install with pip:
 pip install redvox-pandas
 ```
 
-More installation instructions can be found in the [RedPandas Installation Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/installation.md).
+More installation instructions can be found in the [RedPandas Installation Documentation](https://github.com/ISLA-UH/redpandas/blob/master/docs/redpandas/installation.md).
 
 ### Examples 
-A full example can be found in [examples directory](https://github.com/RedVoxInc/redpandas/tree/master/examples/skyfall#examples-skyfall).
+A full example can be found in [examples directory](https://github.com/ISLA-UH/redpandas/tree/master/examples/skyfall#examples-skyfall).
 
 ### Getting started
 
-Check the [User Documentation](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/using_redpandas.md#how-to-use-redpandas) to get started.
+Check the [User Documentation](https://github.com/ISLA-UH/redpandas/blob/master/docs/redpandas/using_redpandas.md#how-to-use-redpandas) to get started.
 
 You can find examples on [how to plot audio waveforms](https://redvoxinc.github.io/redvox-examples/04_plot_wiggles.html)
 and [audio spectrogram](https://redvoxinc.github.io/redvox-examples/05_plot_spectrogram.html) in [RedVox Examples](https://redvoxinc.github.io/redvox-examples/index.html).
@@ -38,9 +38,9 @@ Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for more d
 
 ### Development
 
-- Please feel free to submit issues and bugs on the GitHub [issue tracker](https://github.com/RedVoxInc/redpandas/issues).
-- [Version History](https://github.com/RedVoxInc/redpandas/blob/master/docs/CHANGELOG.md)
-- [The Apache License](https://github.com/RedVoxInc/redpandas/blob/master/LICENSE)
+- Please feel free to submit issues and bugs on the GitHub [issue tracker](https://github.com/ISLA-UH/redpandas/issues).
+- [Version History](https://github.com/ISLA-UH/redpandas/blob/master/docs/CHANGELOG.md)
+- [The Apache License](https://github.com/ISLA-UH/redpandas/blob/master/LICENSE)
 
 ### Note
 
