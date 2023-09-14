@@ -26,14 +26,14 @@ def station_to_dict_from_dw(
         frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
         filter_order: int = 4) -> Dict[str, Union[str, None, float]]:
     """
-    converts information from a station object created by a data window into a dictionary easily converted into a dataframe
+    converts information from a station object created by a data window into a dictionary for easy dataframe conversion
 
     :param station: RDVX station object
     :param sdk_version: version of Redvox SDK used to create the Station object
-    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer', 'gyroscope',
-        'magnetometer', 'health', 'location', 'image']
+    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer',
+        'gyroscope', 'magnetometer', 'health', 'location', 'image']
     :param highpass_type: obspy', 'butter', 'rc', default 'obspy'
-    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param frequency_filter_low: apply highpass filter. Default is 100-second periods
     :param filter_order: the order of the filter integer. Default is 4
     :return: a dictionary ready for conversion into a dataframe
     """
@@ -101,7 +101,7 @@ def build_station(station: Station,
         'health', 'location', 'best_location', 'image', 'clock', 'synchronization']
     :param highpass_type: 'obspy', 'butter', or 'rc', default 'obspy'. Used for sensors barometer, acceleration,
         gyroscope, magnetometer
-    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param frequency_filter_low: apply highpass filter. Default is 100-second periods
     :param filter_order: the order of the filter integer. Default is 4
     :return: dictionary with sensor name, sample rate, timestamps, data (raw and highpassed)
     """

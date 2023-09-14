@@ -164,8 +164,8 @@ def determine_time_epoch_origin(df: pd.DataFrame,
                                 sig_id_label: str = "station_id",
                                 sig_timestamps_label: Union[List[str], str] = "audio_epoch_s",
                                 station_id_str: Optional[str] = None,
-                                start_time_window: Optional[float] = None,
-                                end_time_window: Optional[float] = None
+                                start_time_window: float = 0.,
+                                end_time_window: float = 0.
                                 ) -> float:
     """
     Get time epoch origin for all sensors for all stations to establish the earliest timestamp
@@ -174,8 +174,8 @@ def determine_time_epoch_origin(df: pd.DataFrame,
     :param sig_id_label: optional string for the station id column name in df. Default is "station_id"
     :param sig_timestamps_label: optional string or list of strings for column label in df with epoch time. Default is "audio_epoch_s"
     :param station_id_str: optional string with name of one station to plot. Default is None
-    :param start_time_window: optional float, start time window
-    :param end_time_window: optional float, end time window
+    :param start_time_window: float, start time window, default 0
+    :param end_time_window: float, end time window, default 0
 
     :return: time_epoch_origin
     """
