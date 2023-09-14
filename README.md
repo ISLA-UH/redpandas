@@ -9,7 +9,7 @@ This repository contains routines to streamline preprocessing of [RedVox API 900
 and [API 1000](https://github.com/RedVoxInc/redvox-api-1000) (API M) data.
 The RedVox Pandas (also known as RedPandas) pipeline is designed for integrability with other legacy and heterogeneous data sources.
 
-<p align="center">
+<p>
 <img src="https://github.com/ISLA-UH/redpandas/blob/master/docs/redpandas/img/cover_fig.png?raw=true" alt="Wiggles" width="700">
 </p>
 
@@ -47,4 +47,3 @@ Check the [API Documentation](https://redvoxinc.github.io/redpandas/) for more d
 RedPandas depends on [RedVox SDK version](https://github.com/RedVoxInc/redvox-python-sdk):
 - For RedVox SDK >= 3.1.0, RedPandas >= 1.3.0 
 - For RedVox SDK < 3.1.0, RedPandas = 1.2.15
-
