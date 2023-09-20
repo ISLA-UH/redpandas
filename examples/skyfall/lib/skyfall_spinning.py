@@ -1,3 +1,6 @@
+"""
+SkyFall spinning
+"""
 # Python libraries
 import matplotlib.pyplot as plt
 import numpy as np
@@ -16,7 +19,6 @@ def main():
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
     """
-
     # Label columns in dataframe
     station_label: str = "station_id"
 
@@ -46,6 +48,8 @@ def main():
 
             # Frame to mic start and end and plot
             event_reference_time_epoch_s = df_skyfall_data[audio_epoch_s_label][station][0]
+        else:
+            raise ValueError("Missing Audio label in the data.")
 
         if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label \
                 in df_skyfall_data.columns:

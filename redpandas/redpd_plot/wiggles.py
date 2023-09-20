@@ -21,9 +21,11 @@ def find_wiggle_num(df: pd.DataFrame,
     Determine number of wiggles to plot
 
     :param df: input pandas dataframe. REQUIRED
-    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
-        multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
-    :param sig_timestamps_label: optional string or list of strings for column label in df with epoch time. Default is "audio_epoch_s"
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf".
+        For example, for multiple sensor waveforms:
+        sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
+    :param sig_timestamps_label: optional string or list of strings for column label in df with epoch time.
+        Default is "audio_epoch_s"
     :param sig_id_label: string for the station id column name in df. Default is "station_id"
     :param station_id_str: optional string with name of one station to plot. Default is None
     :return: int, number of wiggles
@@ -39,7 +41,6 @@ def find_wiggle_num(df: pd.DataFrame,
                        "gyroscope_wf_highpass": 3,
                        "magnetometer_wf_raw": 3,
                        "magnetometer_wf_highpass": 3}
-
     wiggle_num_list = []  # number of wiggles
 
     for index_sensor_in_list, sensor_in_list in enumerate(sig_wf_label):
@@ -64,9 +65,6 @@ def find_wiggle_num(df: pd.DataFrame,
                                 sensor_in_list.find("bar") == 0 or \
                                 sensor_in_list.find("pressure") == 0:
                             wiggle_num_list.append(1)
-                        # Edge case: there is data in channels x and y but notz (and viceversa)
-                        # elif isinstance(df[sensor_in_list][index_n], float):
-                        #     continue
                         else:
                             # Assume if not audio related wf, it is 3c sensors
                             wiggle_num_list.append(3)
@@ -487,31 +485,32 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
 
     """
     More nuanced plots with minimal distraction. Optimized for pandas input.
-    Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label parameters.
-    For more information on available columns in dataframe, visit:
+    Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label
+    parameters.  For more information on available columns in dataframe, visit:
     https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
 
     :param df: input pandas data frame. REQUIRED
-    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
-        multiple sensor waveforms: sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
-    :param sig_timestamps_label: string or list of strings for column label in df with epoch time. Default is "audio_epoch_s". For example, for
-        multiple sensor timestamps: sig_timestamps_label = ["audio_epoch_s", "barometer_epoch_s", "accelerometer_epoch_s"]
+    :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf".
+        For example, for multiple sensor waveforms:
+        sig_wf_label = ["audio_wf", "barometer_wf_highpass", "accelerometer_wf_highpass"]
+    :param sig_timestamps_label: string or list of strings for column label in df with epoch time.
+        Default is "audio_epoch_s". For example, for multiple sensor timestamps:
+        sig_timestamps_label = ["audio_epoch_s", "barometer_epoch_s", "accelerometer_epoch_s"]
     :param sig_id_label: string for the station id column name in df. Default is "station_id"
     :param station_id_str: string with name of one station to plot only that station. Default is None
     :param fig_title_show: optional bool, include a title in the figure if True. Default is True
     :param fig_title: optional string, 'Normalized' + title label. Default is "signals"
-    :param custom_yticks: optional, provide custom names for yticks, list of strings (one label per channel component) or
-        "index" for station index in dataframe. For example, for multiple sensors: custom_y_ticks = ["audio", "bar", "acc X", "acc Y", "acc Z"].
-         Another example, for multiple stations with 1 sensor
+    :param custom_yticks: optional, provide custom names for yticks, list of strings (one label per channel component)
+        or "index" for station index in dataframe. For example, for multiple sensors:
+        custom_y_ticks = ["audio", "bar", "acc X", "acc Y", "acc Z"].
     :param ylabel_str: optional str, add a y-label
     :param show_figure: optional bool, show figure if True. Default is True
     :param start_time_window: optional float, start time window
     :param end_time_window: optional float, end time window
-
     :return: matplotlib figure instance
     """
     # Create List of signal channels to loop through later
-    # If given only one, aka a sting, make it a list of length 1
+    # If given only one, aka a stRing, make it a list of length 1
     if type(sig_timestamps_label) == str:
         sig_timestamps_label = [sig_timestamps_label]
     if type(sig_wf_label) == str:
@@ -536,44 +535,35 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
 
     # Separate XYZ waveforms
     df_xyz, sig_wf_label_xyz = df_3c_sensor(df=df, sig_wf_label=sig_wf_label)
-
     xyz_list = ['X', 'Y', "Z"]
-
     # Get new xyz column labels into subsets
     sig_wf_label_xyz_subset = [[i for i in sig_wf_label_xyz if xyz in i] for xyz in xyz_list]
 
     fig_xyz_sensors = []
     for idx_xyz, sig_wf_subset in enumerate(sig_wf_label_xyz_subset):
-
         # Get wiggle number, yticks label
         wiggle_num = find_wiggle_num(df=df_xyz,
                                      sig_wf_label=sig_wf_subset,
                                      sig_timestamps_label=sig_timestamps_label,
                                      sig_id_label=sig_id_label,
                                      station_id_str=station_id_str)
-
         wiggle_yticklabel = find_ylabel(df=df_xyz,
                                         sig_wf_label=sig_wf_subset,
                                         sig_timestamps_label=sig_timestamps_label,
                                         sig_id_label=sig_id_label,
                                         station_id_str=station_id_str,
                                         custom_yticks=custom_yticks)
-        # # For debugging
-        # print("Wiggle num:", wiggle_num)
-        # print("Wiggle ylabel:", wiggle_yticklabel)
-
         # Check wiggle_num and # of ylabels match
         if len(wiggle_yticklabel) != wiggle_num:
             raise ValueError(f"The number of labels provided in the custom_yticks parameter ({len(wiggle_yticklabel)}) "
                              f"does not match the number of signal channels provided in sig_wf_label "
-                             f"or the number of stations in dataframe ({wiggle_num})."
-                             f"\nDo not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z components "
-                             f"so a label is required for each component.")
+                             f"or the number of stations in dataframe ({wiggle_num}).\n"
+                             f"Do not forget that accelerometer, gyroscope, and magnetometer have X, Y and Z "
+                             f"components so a label is required for each component.")
 
         # Wiggle scaling
-        offset_scaling = 2**(np.log2(wiggle_num)+1.0)/wiggle_num
-        wiggle_offset = np.arange(0, wiggle_num)*offset_scaling
-        wiggle_yticks = wiggle_offset
+        offset_scaling = 2**(np.log2(wiggle_num) + 1.0) / wiggle_num
+        wiggle_offset = np.arange(0, wiggle_num) * offset_scaling
 
         # Set up figure
         if show_figure:
@@ -581,9 +571,9 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
         else:
             fig: Figure = Figure(figsize=(FigParam().figure_size_x, FigParam().figure_size_y))
             ax1 = fig.subplots()
-        ax1.set_yticks(wiggle_yticks)
+        ax1.set_yticks(wiggle_offset)
         ax1.set_yticklabels(wiggle_yticklabel)
-        ax1.set_ylim(wiggle_offset[0]-offset_scaling, wiggle_offset[-1]+offset_scaling)
+        ax1.set_ylim(wiggle_offset[0] - offset_scaling, wiggle_offset[-1] + offset_scaling)
         ax1.tick_params(axis='both', which='both', labelsize=FigParam().text_size)
 
         # Get first timestamps out of all the sensors for all stations to establish xlim min
@@ -615,24 +605,19 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
                     if start_time_window > 0.0 and end_time_window > 0.0:
                         idx_time_start = find_nearest_idx(timestamps, start_time_window)
                         idx_time_end = find_nearest_idx(timestamps, end_time_window)
-
                     elif start_time_window > 0.0 and end_time_window == 0.0:
                         idx_time_start = find_nearest_idx(timestamps, start_time_window)
                         idx_time_end = -1
-
                     elif end_time_window > 0.0 and start_time_window == 0.0:
                         idx_time_start = 0
                         idx_time_end = find_nearest_idx(timestamps, end_time_window)
-
                     else:
                         idx_time_start = 0
                         idx_time_end = -1
 
                     time_s = timestamps[idx_time_start:idx_time_end] - time_epoch_origin  # scrubbed clean time
-
                     sig_j = df_xyz[label][index_station] / np.nanmax(df_xyz[label][index_station])
                     sig_j = sig_j[idx_time_start: idx_time_end]
-
                     ax1.plot(time_s, sig_j + wiggle_offset[index_sensor_label_ticklabels_list], color='midnightblue')
                     xlim_min[index_sensor_label_ticklabels_list] = np.min(time_s)
                     xlim_max[index_sensor_label_ticklabels_list] = np.max(time_s)
@@ -649,11 +634,12 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
 
         x_label = "Time (s)"
         if time_epoch_origin > 0:
-            x_label += " relative to UTC " + dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')
+            x_label += f" relative to UTC " \
+                       f"{dt.datetime.utcfromtimestamp(time_epoch_origin).strftime('%Y-%m-%d %H:%M:%S')}"
         ax1.set_xlabel(x_label, size=FigParam().text_size)
         fig.tight_layout()
 
-        # Accomodate to mesh fig size (no common colorbar, yticks true)
+        # Accommodate to mesh fig size (no common colorbar, y-ticks true)
         fig.subplots_adjust(right=0.91)
 
         fig_xyz_sensors.append(fig)

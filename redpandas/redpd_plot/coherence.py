@@ -28,12 +28,12 @@ def plot_psd_coh(psd_sig,
     :param f_hz: sample frequencies of PSD
     :param f_min_hz: minimum frequency to plot in Hz (x min limit)
     :param f_max_hz: maximum frequency to plot in Hz (x max limit)
-    :param f_scale: scale of x axis. One of {"linear", "log", "symlog", "logit"}. Default is "log"
+    :param f_scale: scale of x-axis. One of {"linear", "log", "symlog", "logit"}. Default is "log"
     :param sig_label: label for signal. Default is "PSD Sig"
     :param ref_label: label for reference. Default is "PSD Ref"
     :param psd_label: label for PSD. Default is "PSD (bits)"
     :param coh_label: label for coherence. Default is "Coherence"
-    :param f_label: x axis label. Default is "Frequency (Hz)"
+    :param f_label: x-axis label. Default is "Frequency (Hz)"
     :param fig_title: title of figure. Default is "Power spectral density and coherence"
     :param show_figure: show figure is True. Default is True
 

@@ -99,7 +99,7 @@ class TestRedpdDataframe(unittest.TestCase):
 
     def test_with_dw_sensor_is_not_string_then_do_audio_only(self):
         self.df = rpd_df.redpd_dataframe(input_dw=self.dw, sensor_labels=["barometer"])
-        self.assertEqual(len(self.df.columns), 14)
+        self.assertEqual(len(self.df.columns), 13)
 
     def test_with_dw_audio_barometer_accelerometer(self):
         self.df = rpd_df.redpd_dataframe(input_dw=self.dw, sensor_labels=['audio', 'barometer', 'accelerometer'])

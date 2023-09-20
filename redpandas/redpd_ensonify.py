@@ -7,7 +7,7 @@ M. Garces, last updated 20210702.
 import os
 import numpy as np
 import pandas as pd
-import scipy.io.wavfile
+import scipy.io.wavfile as wavfile
 import scipy.signal as signal
 from scipy.fft import rfft, fftfreq
 from libquantum import synthetics
@@ -133,7 +133,7 @@ def save_to_elastic_wav(sig_wf: np.ndarray,
         khz_str = sample_rate_str(wav_sample_rate_hz=wav_sample_rate_hz)
         export_filename = wav_filename + stretch_str + khz_str
         synth_wav = 0.9 * np.real(sig_wf) / np.max(np.abs((np.real(sig_wf))))
-        scipy.io.wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
+        wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
     else:
         print(exception_str)
 
@@ -159,7 +159,7 @@ def save_to_resampled_wav(sig_wf: np.ndarray,
         khz_str = sample_rate_str(wav_sample_rate_hz=wav_sample_rate_hz)
         export_filename = wav_filename + resample_str + khz_str
         synth_wav = 0.9 * np.real(sig_wf) / np.max(np.abs((np.real(sig_wf))))
-        scipy.io.wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
+        wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
     else:
         print(exception_str)
 
@@ -329,6 +329,7 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
     """
     Channel sensor data sonification
     Tested for REDVOX SENSOR (API M)
+
     :param df: input pandas data frame
     :param sig_id_label: string for column name with station ids in df
     :param sensor_column_label_list: list of strings with column name with sensor waveform data in df
@@ -339,35 +340,27 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
     :param sensor_name_list: optional list of strings with channel names per sensor
     :return: .wav files, plot
     """
-
     wav_directory = os.path.join(output_wav_directory, "wav")
     os.makedirs(wav_directory, exist_ok=True)
     print("Exporting wav files to " + wav_directory)
 
     # sensor_channel_index = 0
     for station in df.index:
-
         print(f'\nStation: {df[sig_id_label][station]}')
         sensor_channel_index = 0
 
         for index_sensor_label, sensor_label in enumerate(sensor_column_label_list):
 
             sensor_fs_column_label = sig_sample_rate_label_list[index_sensor_label]
-
             sig_j = df[sensor_label][station]
             fs_j = df[sensor_fs_column_label][station]
-
             print(f'\nSensor for {sensor_label}')
             print('Sample rate:', fs_j)
-
+            print('Sensor signal shape:', sig_j.shape)
             if sig_j.ndim == 1:  # audio basically
-                print('Sensor signal shape:', sig_j.shape)
                 # Exporting .wav
-                if sensor_name_list is None:
-                    full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{sensor_label}"
-                else:
-
-                    full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{sensor_name_list[sensor_channel_index]}"
+                full_label = sensor_label if sensor_name_list is None else sensor_name_list[sensor_channel_index]
+                full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{full_label}"
                 filename_with_path = os.path.join(output_wav_directory, full_filename)
                 print(filename_with_path)
                 # Save to 48, 96, 192 kHz
@@ -376,20 +369,14 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
                                     wav_filename=filename_with_path,
                                     wav_sample_rate_hz=wav_sample_rate_hz)
                 sensor_channel_index += 1
-
             else:
-                print('Sensor signal shape:', sig_j.shape)
-
                 names_index_channel = ['_X', '_Y', '_Z']
                 for index_channel, _ in enumerate(sig_j):
                     sig_j_ch_m = sig_j[index_channel]  # get x,y,z of sensor
-
                     # Exporting .wav
-                    if sensor_name_list is None:
-                        full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{sensor_label + names_index_channel[index_channel]}"
-                    else:
-                        full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{sensor_name_list[sensor_channel_index]}"
-
+                    full_label = sensor_label + names_index_channel[index_channel] if sensor_name_list is None \
+                        else sensor_name_list[sensor_channel_index]
+                    full_filename = f"{output_wav_filename}_{df[sig_id_label][station]}_{full_label}"
                     filename_with_path = os.path.join(output_wav_directory, full_filename)
                     print(filename_with_path)
                     # Save to 48, 96, 192 kHz

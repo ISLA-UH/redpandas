@@ -36,7 +36,6 @@ def coherence_numpy(sig_in: np.ndarray,
     :param sig_ref_calib: calibration of reference signal. Default is 1.0
     :return: plots
     """
-
     # Stated with WACT IMS ref code, increased consistency.
     # Core computation is standard scipy.signal.
 
@@ -64,15 +63,15 @@ def coherence_numpy(sig_in: np.ndarray,
     # Compute cross-power spectral density with ref sample rate
     # Original code had no overlap - fixed
 
-    f, Pxy = signal.csd(x=sig,
+    f, pxy = signal.csd(x=sig,
                         y=sig_ref,
                         fs=sig_ref_sample_rate_hz,
                         nperseg=window_points,
                         noverlap=window_overlap_points)
-    cross_spectrum_bits = 0.5 * np.log2(abs(Pxy))
+    cross_spectrum_bits = 0.5 * np.log2(abs(pxy))
 
     # Coherence, same as from PSD
-    f, Cxy = signal.coherence(x=sig,
+    f, cxy = signal.coherence(x=sig,
                               y=sig_ref,
                               fs=sig_ref_sample_rate_hz,
                               nperseg=window_points,
@@ -80,21 +79,21 @@ def coherence_numpy(sig_in: np.ndarray,
 
     # Compute response assuming incoherent comp in ref.
     # Ref sensor response already removed
-    H_x = pxx_sig / Pxy
+    h_x = pxx_sig / pxy
 
     # compute magnitude and phase in deg
-    mag = np.abs(H_x)
-    ph = np.unwrap(180 / np.pi * np.angle(H_x))
+    mag = np.abs(h_x)
+    ph = np.unwrap(180 / np.pi * np.angle(h_x))
 
     # get new mag and phase values at frequency closest to ref frequency
     frequency_ref_index = np.argmin(np.abs(f - frequency_ref_hz))
-    frequency_coherence_max_index = np.argmax(Cxy)
+    frequency_coherence_max_index = np.argmax(cxy)
 
     calmag = mag[frequency_ref_index]
     calph = ph[frequency_ref_index]
-    calcoh = Cxy[frequency_ref_index]
+    calcoh = cxy[frequency_ref_index]
     maxcoh_f = f[frequency_coherence_max_index]
-    maxcoh = Cxy[frequency_coherence_max_index]
+    maxcoh = cxy[frequency_coherence_max_index]
 
     calflab = '%s, %.2f Hz' % ('Ref frequency', frequency_ref_hz)
     calmaglab = 'Mag=%.2f' % calmag
@@ -109,14 +108,14 @@ def coherence_numpy(sig_in: np.ndarray,
     print(maxcoh_f, maxcoh)
 
     rpd_plt.plot_psd_coh(psd_sig=psd_sig_bits, psd_ref=psd_ref_bits,
-                         coherence_sig_ref=Cxy,
+                         coherence_sig_ref=cxy,
                          f_hz=f,
                          f_min_hz=frequency_min_hz,
                          f_max_hz=frequency_max_hz,
                          f_scale='linear')
 
     rpd_plt.plot_psd_coh(psd_sig=cross_spectrum_bits, psd_ref=psd_ref_bits,
-                         coherence_sig_ref=Cxy,
+                         coherence_sig_ref=cxy,
                          f_hz=f,
                          f_min_hz=frequency_min_hz,
                          f_max_hz=frequency_max_hz,
@@ -125,7 +124,7 @@ def coherence_numpy(sig_in: np.ndarray,
 
     rpd_plt.plot_response_scatter(h_magnitude=mag,
                                   h_phase_deg=ph,
-                                  color_guide=Cxy,
+                                  color_guide=cxy,
                                   f_hz=f,
                                   f_min_hz=frequency_min_hz,
                                   f_max_hz=frequency_max_hz,
@@ -176,16 +175,13 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
     :param new_column_label_cohere_response_phase_degrees: string for new column containing coherence phase in degrees
     :return: input pandas dataframe with new columns
     """
-
     number_sig = len(df.index)
     print("Coherence, number of signals excluding reference:", number_sig-1)
     print("Reference station: ", ref_id)
-    # exit()
 
     # Is there a better way?
     m_list = df.index[df[sig_id_label] == ref_id]
     m = m_list[0]
-    # print("m", m)
     if len(m_list) > 1:
         raise Warning("More than one station meets the id spec. Picked first instance")
 
@@ -251,31 +247,19 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             frequency_ref_index = np.argmin(np.abs(frequency_coherence - frequency_ref_hz))
             frequency_coherence_max_index = np.argmax(coherence_welch)
 
-            # New magnitude_norm and phase values at coherence frequency closest to ref frequency
-            ref_frequency_hz = frequency_coherence[frequency_coherence_max_index]
-            ref_frequency_coherence = coherence_welch[frequency_ref_index]
-            ref_frequency_response_magnitude_bits = 0.5*utils.log2epsilon(magnitude_norm[frequency_ref_index])
-            ref_frequency_response_phase_degrees = phase_degrees[frequency_ref_index]
-
-            # Return max coherence values
-            max_coherence_frequency_hz = frequency_coherence[frequency_coherence_max_index]
-            max_coherence = np.max(coherence_welch)
-            max_coherence_response_magnitude_bits = 0.5*utils.log2epsilon(magnitude_norm[frequency_coherence_max_index])
-            max_coherence_response_phase_degrees = phase_degrees[frequency_coherence_max_index]
-
-            if n == m:
-                max_coherence_frequency_hz = np.nan
-
             if 'max_coherence' == export_option:
-                coherence_frequency.append(max_coherence_frequency_hz)
-                coherence_value.append(max_coherence)
-                coherence_response_magnitude_bits.append(max_coherence_response_magnitude_bits)
-                coherence_response_phase_degrees.append(max_coherence_response_phase_degrees)
+                # Return max coherence values
+                coherence_frequency.append(np.nan if n == m else frequency_coherence[frequency_coherence_max_index])
+                coherence_value.append(np.max(coherence_welch))
+                coherence_response_magnitude_bits.append(
+                    0.5 * utils.log2epsilon(magnitude_norm[frequency_coherence_max_index]))
+                coherence_response_phase_degrees.append(phase_degrees[frequency_coherence_max_index])
             if 'ref_frequency' == export_option:
-                coherence_frequency.append(ref_frequency_hz)
-                coherence_value.append(ref_frequency_coherence)
-                coherence_response_magnitude_bits.append(ref_frequency_response_magnitude_bits)
-                coherence_response_phase_degrees.append(ref_frequency_response_phase_degrees)
+                # New magnitude_norm and phase values at coherence frequency closest to ref frequency
+                coherence_frequency.append(frequency_coherence[frequency_coherence_max_index])
+                coherence_value.append(coherence_welch[frequency_ref_index])
+                coherence_response_magnitude_bits.append(0.5 * utils.log2epsilon(magnitude_norm[frequency_ref_index]))
+                coherence_response_phase_degrees.append(phase_degrees[frequency_ref_index])
 
             if plot_response:
                 rpd_plt.plot_psd_coh(psd_sig=psd_sig_bits, psd_ref=psd_ref_bits,

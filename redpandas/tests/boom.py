@@ -1,6 +1,8 @@
 """
 TFR for Space X sonic boom on 20210918
 """
+from tempfile import TemporaryDirectory
+import os.path
 from redpandas.redpd_df import redpd_dataframe, export_df_to_parquet
 from redpandas.redpd_plot.wiggles import plot_wiggles_pandas
 import redpandas.redpd_tfr as rpd_tfr
@@ -26,22 +28,22 @@ INPUT_DIR = "/Users/meritxell/Documents/20210916_spacex/boom"
 # Note: Need RedPandas v1.2.12 to run
 
 if __name__ == '__main__':
-
     DWAConfig = DataWindowConfig(input_dir=INPUT_DIR,
                                  station_ids=[
                                      "1637610001",
-                                      "2551278155",
-                                      "1637610012",
-                                      "1637610015",
-                                      "1637610014",
-                                      "872266036"
-                                              ],
+                                     "2551278155",
+                                     "1637610012",
+                                     "1637610015",
+                                     "1637610014",
+                                     "872266036"
+                                 ],
                                  start_datetime=dt.datetime_from_epoch_seconds_utc(1632006000),
                                  end_datetime=dt.datetime_from_epoch_seconds_utc(1632006330))
 
+    out_dir = TemporaryDirectory()
     rdvx_data: DataWindow = DataWindow(event_name="dw",
                                        config=DWAConfig,
-                                       out_dir="/Users/meritxell/Desktop/test",
+                                       output_dir=out_dir.name,
                                        out_type="lz4",
                                        debug=True)
 
@@ -83,10 +85,9 @@ if __name__ == '__main__':
                                      new_column_tfr_frequency_hz=f"{sensor}_tfr_frequency_hz",
                                      new_column_tfr_time_s=f"{sensor}_tfr_time_s")
 
-    export_df_to_parquet(df=df0,
-                         output_dir_pqt="/Users/meritxell/Desktop")
+    export_df_to_parquet(df=df0, output_dir_pqt=out_dir.name)
 
-    df_sensors = pd.read_parquet("/Users/meritxell/Desktop/Redvox_df.parquet")
+    df_sensors = pd.read_parquet(os.path.join(out_dir.name, "Redvox_df.parquet"))
 
     # df_column_unflatten(df=df_sensors,
     #                     col_wf_label="accelerometer_tfr_bits",
@@ -103,7 +104,8 @@ if __name__ == '__main__':
                                 mesh_frequency_label="audio_tfr_frequency_hz",
                                 mesh_tfr_label="audio_tfr_bits",
                                 sig_id_label="station_id",
-                                t0_sig_epoch_s=rdvx_data.get_station("1637610014")[0].audio_sensor().first_data_timestamp()/1e6,
+                                t0_sig_epoch_s=
+                                rdvx_data.get_station("1637610014")[0].audio_sensor().first_data_timestamp() / 1e6,
                                 fig_title="STFT for audio_wf",
                                 frequency_scaling="log",
                                 # frequency_hz_ymax=320,

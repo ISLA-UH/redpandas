@@ -1,3 +1,6 @@
+"""
+SkyFall Gravity
+"""
 # todo: address possible invalid values in building plots section
 # Python libraries
 import matplotlib.pyplot as plt
@@ -18,7 +21,6 @@ def main():
     """
     RedVox RedPandas time-domain representation of API900 data.
     """
-
     # Label columns in dataframe
     station_label: str = "station_id"
 
@@ -47,6 +49,8 @@ def main():
 
             # Frame to mic start and end and plot
             event_reference_time_epoch_s = df_skyfall_data[audio_epoch_s_label][station][0]
+        else:
+            raise ValueError("Missing Audio label in the data.")
 
         # Repeat here
         if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label \

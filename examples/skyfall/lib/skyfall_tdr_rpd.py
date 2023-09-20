@@ -1,3 +1,6 @@
+"""
+Skyfall TDR RPD
+"""
 # todo: address possible invalid values in building plots section
 # Python libraries
 import matplotlib.pyplot as plt
@@ -22,7 +25,6 @@ def main():
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
     Last updated: November 2021
     """
-
     print('Let the sky fall')
 
     # Label columns in dataframe
@@ -59,7 +61,7 @@ def main():
 
     # Health columns
     health_battery_charge_label: str = 'battery_charge_remaining_per'
-    health_internal_temp_deg_C_label: str = 'internal_temp_deg_C'
+    health_internal_temp_deg_c_label: str = 'internal_temp_deg_C'
     health_network_type_label: str = 'network_type'
     health_epoch_s_label: str = 'health_epoch_s'
 
@@ -89,12 +91,14 @@ def main():
         station_id_str = df_skyfall_data[station_label][station]  # Get the station id
 
         if audio_data_label and audio_fs_label in df_skyfall_data.columns:
-
             print('mic_sample_rate_hz: ', df_skyfall_data[audio_fs_label][station])
             print('mic_epoch_s_0: ', df_skyfall_data[audio_epoch_s_label][station][0])
 
             # Frame to mic start and end and plot
             event_reference_time_epoch_s = df_skyfall_data[audio_epoch_s_label][station][0]
+        else:
+            print(f"Missing Audio for station {station_id_str}.")
+            continue  # skip to next iteration if audio data missing
 
         if barometer_data_raw_label and barometer_data_highpass_label and barometer_fs_label in df_skyfall_data.columns:
             if skyfall_config.tdr_load_method == DataLoadMethod.PARQUET:
@@ -112,7 +116,10 @@ def main():
 
             barometer_height_m = \
                 rpd_geo.bounder_model_height_from_pressure(df_skyfall_data[barometer_data_raw_label][station][0])
-            baro_height_from_bounder_km = barometer_height_m*METERS_TO_KM
+            baro_height_from_bounder_km = barometer_height_m * METERS_TO_KM
+        else:
+            barometer_height_m = 0  # set as a precaution
+            baro_height_from_bounder_km = 0  # set as a precaution
 
         # Repeat here
         if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label \
@@ -300,21 +307,22 @@ def main():
                 ax1.set_xticklabels([])
                 plt.grid(True)
 
-                ax2=plt.subplot(212)
+                ax2 = plt.subplot(212)
                 plt.plot(time_loc, df_skyfall_data[location_altitude_label][station] * METERS_TO_KM, 'r',
                          label='Location sensor')
                 plt.plot(time_bar, barometer_height_m * METERS_TO_KM, 'midnightblue', label='Barometer Z')
                 # plt.plot(time_bounder, bounder_loc['Alt_m'] * METERS_TO_KM, 'g', label='Bounder Z')
                 plt.ylabel('Height, km')
-                plt.xlabel(f"Time (s) from UTC "
-                           f"{dtime.datetime.utcfromtimestamp(skyfall_config.event_start_epoch_s).strftime('%Y-%m-%d %H:%M:%S')}")
+                time_str = dtime.datetime.utcfromtimestamp(skyfall_config.event_start_epoch_s).strftime(
+                    '%Y-%m-%d %H:%M:%S')
+                plt.xlabel(f"Time (s) from UTC {time_str}")
                 plt.legend(loc='upper right')
                 plt.xlim([0, 1800])
                 plt.text(0.01, 0.05, "(a)", transform=ax2.transAxes,  fontweight='bold')
                 plt.grid(True)
                 plt.tight_layout()
 
-        if health_battery_charge_label and health_internal_temp_deg_C_label and health_network_type_label \
+        if health_battery_charge_label and health_internal_temp_deg_c_label and health_network_type_label \
                 and barometer_data_raw_label and location_provider_label in df_skyfall_data.columns:
 
             print(f"location_provider_epoch_s_0: {df_skyfall_data[location_provider_label][station][0]}",
@@ -326,7 +334,7 @@ def main():
             pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
                                    wf_panel_2_sig=barometer_height_m,
                                    wf_panel_2_time=df_skyfall_data[barometer_epoch_s_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[health_internal_temp_deg_C_label][station],
+                                   wf_panel_1_sig=df_skyfall_data[health_internal_temp_deg_c_label][station],
                                    wf_panel_1_time=df_skyfall_data[health_epoch_s_label][station],
                                    wf_panel_0_sig=df_skyfall_data[health_battery_charge_label][station],
                                    wf_panel_0_time=df_skyfall_data[health_epoch_s_label][station],

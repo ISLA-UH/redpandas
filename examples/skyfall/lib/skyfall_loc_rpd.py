@@ -1,3 +1,6 @@
+"""
+SkyFall Location RPD
+"""
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -19,7 +22,6 @@ skyfall_config.is_rerun_bounder = True
 
 
 def bounder_specs_to_csv(df, csv_export_file):
-
     with open(csv_export_file, 'w', newline='') as csvfile:
         writer = csv.writer(csvfile, delimiter=',')
 
@@ -45,7 +47,6 @@ def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parq
     :param file_bounder_parquet: name bounder parquet file
     :return: save as parquet
     """
-
     # Event-specific start date and curated file
     # Bounder Skyfall starts at 13:45:00, end at 14:16:00
     yyyymmdd = "2020-10-27 "
@@ -145,8 +146,6 @@ def main():
     print('Bounder sample interval, s:', bounder_sample_interval_s)
     print('Bounder standard dev, s:', bounder_interval_std_s)
 
-
-
     if is_export_bounder_csv:
         # Export Initial and Final states to CSV
         print(f"Export Bounder initial and final states to CSV. Path: "
@@ -162,7 +161,7 @@ def main():
     print('Phone loc end:', phone_datetime_end)
 
     # Use atmospheric pressure to construct an elevation model
-    elevation_model = rpd_geo.bounder_model_height_from_pressure(pressure_kPa=bounder_loc['Pres_kPa'])
+    elevation_model = rpd_geo.bounder_model_height_from_pressure(pressure_kpa=bounder_loc['Pres_kPa'])
 
     plt.figure()
     plt.semilogx(bounder_loc['Pres_kPa'], bounder_loc['Alt_m']*METERS_TO_KM, label='data')

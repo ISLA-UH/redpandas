@@ -1,3 +1,6 @@
+"""
+Skyfall TFR RPD
+"""
 # Python libraries
 import matplotlib.pyplot as plt
 
@@ -12,7 +15,7 @@ import examples.skyfall.lib.skyfall_dw as sf_dw
 from redpandas.redpd_config import DataLoadMethod
 from examples.skyfall.skyfall_config_file import skyfall_config, tfr_config
 
-axes = ["X", "Y", "Z"]
+AXES = ["X", "Y", "Z"]
 
 
 def main():
@@ -20,10 +23,8 @@ def main():
     RedVox RedPandas time-frequency representation of API900 data. Example: Skyfall.
     Last updated: 20210909
     """
-
     # Label columns in dataframe
     station_label: str = "station_id"
-    redvox_sdk_version_label: str = 'redvox_sdk_version'
 
     # Audio columns
     audio_data_label: str = "audio_wf"
@@ -75,7 +76,7 @@ def main():
 
     # PLOTTING
     print("\nInitiating time-frequency representation of Skyfall:")
-    print(f"tfr_type: {tfr_config.tfr_type}, order: {tfr_config.tfr_order_number_N}")
+    print(f"tfr_type: {tfr_config.tfr_type}, order: {tfr_config.tfr_order_number_n}")
     for station in df_skyfall_data.index:
         station_id_str = df_skyfall_data[station_label][station]  # Get the station id
 
@@ -90,7 +91,7 @@ def main():
             df_skyfall_data = rpd_tfr.tfr_bits_panda(df=df_skyfall_data,
                                                      sig_wf_label=audio_data_label,
                                                      sig_sample_rate_label=audio_fs_label,
-                                                     order_number_input=tfr_config.tfr_order_number_N,
+                                                     order_number_input=tfr_config.tfr_order_number_n,
                                                      tfr_type=tfr_config.tfr_type,
                                                      new_column_tfr_bits=audio_tfr_bits_label,
                                                      new_column_tfr_frequency_hz=audio_tfr_frequency_hz_label,
@@ -102,8 +103,8 @@ def main():
                                   mesh_time=df_skyfall_data[audio_tfr_time_s_label][station],
                                   mesh_frequency=df_skyfall_data[audio_tfr_frequency_hz_label][station],
                                   mesh_panel_0_tfr=df_skyfall_data[audio_tfr_bits_label][station],
-                                  figure_title=skyfall_config.event_name +
-                                               f": Audio, {tfr_config.tfr_type.upper()} and waveform",
+                                  figure_title=f"{skyfall_config.event_name}: Audio, "
+                                               f"{tfr_config.tfr_type.upper()} and waveform",
                                   start_time_epoch=event_reference_time_epoch_s,
                                   mesh_panel_0_color_range=tfr_config.mc_range['Audio'],
                                   mesh_panel_0_colormap_scaling=tfr_config.mc_scale['Audio'],
@@ -133,7 +134,7 @@ def main():
             df_skyfall_data = rpd_tfr.tfr_bits_panda(df=df_skyfall_data,
                                                      sig_wf_label=bar_sig_label,
                                                      sig_sample_rate_label=barometer_fs_label,
-                                                     order_number_input=tfr_config.tfr_order_number_N,
+                                                     order_number_input=tfr_config.tfr_order_number_n,
                                                      tfr_type=tfr_config.tfr_type,
                                                      new_column_tfr_bits=barometer_tfr_bits_label,
                                                      new_column_tfr_frequency_hz=barometer_tfr_frequency_hz_label,
@@ -147,8 +148,8 @@ def main():
                                   mesh_panel_0_tfr=df_skyfall_data[barometer_tfr_bits_label][station][0],
                                   mesh_panel_0_colormap_scaling=tfr_config.mc_scale["Bar"],
                                   mesh_panel_0_color_range=tfr_config.mc_range["Bar"],
-                                  figure_title=skyfall_config.event_name +
-                                               f": Barometer, {tfr_config.tfr_type.upper()} and waveform",
+                                  figure_title=f"{skyfall_config.event_name}: Barometer, "
+                                               f"{tfr_config.tfr_type.upper()} and waveform",
                                   start_time_epoch=barometer_tfr_start_epoch,
                                   figure_title_show=tfr_config.show_fig_titles,
                                   wf_panel_2_units=f"Bar {bar_hp_raw}, kPa")
@@ -178,7 +179,7 @@ def main():
             df_skyfall_data = rpd_tfr.tfr_bits_panda(df=df_skyfall_data,
                                                      sig_wf_label=acc_sig_label,
                                                      sig_sample_rate_label=accelerometer_fs_label,
-                                                     order_number_input=tfr_config.tfr_order_number_N,
+                                                     order_number_input=tfr_config.tfr_order_number_n,
                                                      tfr_type=tfr_config.tfr_type,
                                                      new_column_tfr_bits=accelerometer_tfr_bits_label,
                                                      new_column_tfr_frequency_hz=accelerometer_tfr_frequency_hz_label,
@@ -194,11 +195,11 @@ def main():
                                       mesh_panel_0_tfr=df_skyfall_data[accelerometer_tfr_bits_label][station][ax_n],
                                       mesh_panel_0_colormap_scaling=tfr_config.mc_scale["Acc"],
                                       mesh_panel_0_color_range=tfr_config.mc_range["Acc"],
-                                      figure_title=skyfall_config.event_name +
-                                                   f": Accelerometer, {tfr_config.tfr_type.upper()} and waveform",
+                                      figure_title=f"{skyfall_config.event_name}: Accelerometer, "
+                                                   f"{tfr_config.tfr_type.upper()} and waveform",
                                       start_time_epoch=acceleromter_tfr_start_epoch,
                                       figure_title_show=tfr_config.show_fig_titles,
-                                      wf_panel_2_units=f"Acc {axes[ax_n]} {acc_hp_raw}, m/$s^2$")
+                                      wf_panel_2_units=f"Acc {AXES[ax_n]} {acc_hp_raw}, m/$s^2$")
 
         if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label \
                 in df_skyfall_data.columns:
@@ -226,7 +227,7 @@ def main():
             df_skyfall_data = rpd_tfr.tfr_bits_panda(df=df_skyfall_data,
                                                      sig_wf_label=gyr_sig_label,
                                                      sig_sample_rate_label=gyroscope_fs_label,
-                                                     order_number_input=tfr_config.tfr_order_number_N,
+                                                     order_number_input=tfr_config.tfr_order_number_n,
                                                      tfr_type=tfr_config.tfr_type,
                                                      new_column_tfr_bits=gyroscope_tfr_bits_label,
                                                      new_column_tfr_frequency_hz=gyroscope_tfr_frequency_hz_label,
@@ -241,11 +242,11 @@ def main():
                                       mesh_panel_0_tfr=df_skyfall_data[gyroscope_tfr_bits_label][station][ax_n],
                                       mesh_panel_0_colormap_scaling=tfr_config.mc_scale["Gyr"],
                                       mesh_panel_0_color_range=tfr_config.mc_range["Gyr"],
-                                      figure_title=skyfall_config.event_name +
-                                                   f": Gyroscope, {tfr_config.tfr_type.upper()} and waveform",
+                                      figure_title=f"{skyfall_config.event_name}: Gyroscope, "
+                                                   f"{tfr_config.tfr_type.upper()} and waveform",
                                       start_time_epoch=gyroscope_tfr_start_epoch,
                                       figure_title_show=tfr_config.show_fig_titles,
-                                      wf_panel_2_units=f"Gyr {axes[ax_n]} {gyr_hp_raw}, rad/s")
+                                      wf_panel_2_units=f"Gyr {AXES[ax_n]} {gyr_hp_raw}, rad/s")
 
         if magnetometer_data_raw_label and magnetometer_fs_label and magnetometer_data_highpass_label \
                 in df_skyfall_data.columns:
@@ -271,7 +272,7 @@ def main():
             df_skyfall_data = rpd_tfr.tfr_bits_panda(df=df_skyfall_data,
                                                      sig_wf_label=mag_sig_label,
                                                      sig_sample_rate_label=magnetometer_fs_label,
-                                                     order_number_input=tfr_config.tfr_order_number_N,
+                                                     order_number_input=tfr_config.tfr_order_number_n,
                                                      tfr_type=tfr_config.tfr_type,
                                                      new_column_tfr_bits=magnetometer_tfr_bits_label,
                                                      new_column_tfr_frequency_hz=magnetometer_tfr_frequency_hz_label,
@@ -286,11 +287,11 @@ def main():
                                       mesh_panel_0_tfr=df_skyfall_data[magnetometer_tfr_bits_label][station][ax_n],
                                       mesh_panel_0_colormap_scaling=tfr_config.mc_scale["Mag"],
                                       mesh_panel_0_color_range=tfr_config.mc_range["Mag"],
-                                      figure_title=skyfall_config.event_name +
-                                                   f": Magnetometer, {tfr_config.tfr_type.upper()} and waveform",
+                                      figure_title=f"{skyfall_config.event_name}: Magnetometer, "
+                                                   f"{tfr_config.tfr_type.upper()} and waveform",
                                       start_time_epoch=magnetometer_tfr_start_epoch,
                                       figure_title_show=tfr_config.show_fig_titles,
-                                      wf_panel_2_units=f"Mag {axes[ax_n]} {mag_hp_raw}, $\mu$T")
+                                      wf_panel_2_units=f"Mag {AXES[ax_n]} {mag_hp_raw}, $\mu$T")
 
         # Plot TFR sensor wiggles
         rpd_plot.plot_mesh_pandas(df=df_skyfall_data,
@@ -317,7 +318,7 @@ def main():
                                   fig_title_show=tfr_config.show_fig_titles,
                                   fig_title="",
                                   frequency_scaling='log',
-                                  common_colorbar=False,
+                                  common_colorbar=True,
                                   mesh_color_scaling=[tfr_config.mc_scale["Audio"], tfr_config.mc_scale["Bar"],
                                                       tfr_config.mc_scale["Acc"], tfr_config.mc_scale["Acc"],
                                                       tfr_config.mc_scale["Acc"],

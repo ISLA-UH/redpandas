@@ -1,7 +1,6 @@
 """
 Pipeline from RedVox DataWindow to pandas DataFrame parquet.
 """
-
 # Python libraries
 import os
 from typing import List, Optional
