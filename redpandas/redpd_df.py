@@ -49,7 +49,7 @@ def redpd_dataframe(input_dw: DataWindow,
                                                                                       frequency_filter_low=frequency_filter_low,
                                                                                       filter_order=filter_order)
                                                 for station in rdvx_data.stations()])
-    df_all_sensors_all_stations.sort_values(by="station_id", ignore_index=True, inplace=True)
+    #df_all_sensors_all_stations.sort_values(by="station_id", ignore_index=True, inplace=True)
 
     # Offer glimpse of what the DataFrame contains
     print(f"\nTotal stations in DataFrame: {len(df_all_sensors_all_stations['station_id'])}")
