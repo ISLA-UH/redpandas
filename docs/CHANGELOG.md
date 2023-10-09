@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.4.13 (2023-10-09)
+- Updated requirements
+
 ## 1.3.11 (2023-04-11)
 - Updated requirements
 - Added frequency_scaling option for plot_mesh_pandas_audio
