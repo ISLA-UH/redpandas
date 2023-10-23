@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.4.14 (2023-10-23)
+- Updated requirements to redvox==3.7.0
+
 ## 1.4.13 (2023-10-09)
 - Updated requirements
 
