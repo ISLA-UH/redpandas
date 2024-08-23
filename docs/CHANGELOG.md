@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.4.23 (2024-08-22)
+- Update matplotlib requirement to 3.9.2
+
 ## 1.4.22 (2024-07-09)
 - Updated project requirements
 
