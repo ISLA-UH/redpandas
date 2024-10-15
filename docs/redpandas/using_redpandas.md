@@ -113,7 +113,7 @@ Note that [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpandas/redp
 will only export audio sensor. For more options, such as type of sensors, visit the [More options](#more-options) section.
 
 For more information on columns found in the [RedPandas DataFrame](#basic-definitions) saved in the parquet, column names 
-and their contents, visit [RedVox RedPandas DataFrame Columns](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns). 
+and their contents, visit [RedVox RedPandas DataFrame Columns](https://github.com/ISLA-UH/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns). 
 For more information on manipulation of pandas DataFrames, visit [pandas.DataFrame documentation](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
 
 Return to _[Table of Contents](#table-of-contents)_.
@@ -221,9 +221,9 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 - A function is broken, what do I do?
 
-    Please feel free to submit issues on the [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
+    Please feel free to submit issues on the [issue tracker](https://github.com/ISLA-UH/redpandas/issues). 
 
 
 Return to _[Table of Contents](#table-of-contents)_.
 
-Return to _[main page](https://github.com/RedVoxInc/redpandas#redpandas)_.
+Return to _[main page](https://github.com/ISLA-UH/redpandas#redpandas)_.

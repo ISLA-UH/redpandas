@@ -241,7 +241,7 @@ def plot_wiggles_pandas(df: pd.DataFrame,
     More nuanced plots with minimal distraction. Optimized for pandas input.
     Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label parameters.
     For more information on available columns in dataframe, visit:
-    https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
+    https://github.com/ISLA-UH/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
 
     :param df: input pandas data frame. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf". For example, for
@@ -487,7 +487,7 @@ def plot_wiggles_3c_pandas(df: pd.DataFrame,
     More nuanced plots with minimal distraction. Optimized for pandas input.
     Defualt is audio, to plot other sensors add the relevant column labels in sig_wf_label and sig_timestamps_label
     parameters.  For more information on available columns in dataframe, visit:
-    https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
+    https://github.com/ISLA-UH/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns
 
     :param df: input pandas data frame. REQUIRED
     :param sig_wf_label: single string or list of strings for the waveform column name in df. Default is "audio_wf".

@@ -5,7 +5,7 @@ Calculate coherence.
 import numpy as np
 import pandas as pd
 from scipy import signal
-from libquantum import utils
+from quantum_inferno.utilities import log2epsilon
 import redpandas.redpd_plot.coherence as rpd_plt
 
 
@@ -225,9 +225,9 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                                                          nperseg=window_points,
                                                          noverlap=window_overlap_points)
 
-            psd_ref_bits = 0.5 * utils.log2epsilon(abs(auto_spectrum_ref))
-            psd_sig_bits = 0.5 * utils.log2epsilon(abs(auto_spectrum_sig))
-            cross_spectrum_bits = 0.5 * utils.log2epsilon(abs(cross_spectrum))
+            psd_ref_bits = 0.5 * log2epsilon(abs(auto_spectrum_ref))
+            psd_sig_bits = 0.5 * log2epsilon(abs(auto_spectrum_sig))
+            cross_spectrum_bits = 0.5 * log2epsilon(abs(cross_spectrum))
 
             # Coherence, same as coherence from PSD
             frequency_coherence, coherence_welch = signal.coherence(x=sig_n,
@@ -252,13 +252,13 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                 coherence_frequency.append(np.nan if n == m else frequency_coherence[frequency_coherence_max_index])
                 coherence_value.append(np.max(coherence_welch))
                 coherence_response_magnitude_bits.append(
-                    0.5 * utils.log2epsilon(magnitude_norm[frequency_coherence_max_index]))
+                    0.5 * log2epsilon(magnitude_norm[frequency_coherence_max_index]))
                 coherence_response_phase_degrees.append(phase_degrees[frequency_coherence_max_index])
             if 'ref_frequency' == export_option:
                 # New magnitude_norm and phase values at coherence frequency closest to ref frequency
                 coherence_frequency.append(frequency_coherence[frequency_coherence_max_index])
                 coherence_value.append(coherence_welch[frequency_ref_index])
-                coherence_response_magnitude_bits.append(0.5 * utils.log2epsilon(magnitude_norm[frequency_ref_index]))
+                coherence_response_magnitude_bits.append(0.5 * log2epsilon(magnitude_norm[frequency_ref_index]))
                 coherence_response_phase_degrees.append(phase_degrees[frequency_ref_index])
 
             if plot_response:

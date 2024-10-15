@@ -137,7 +137,7 @@ is no data available.
 - Updated filter modules for 3 component sensors such as acceleration.
 - Added documentation
 
-Return to [_main page_](https://github.com/RedVoxInc/redpandas#redpandas).
+Return to [_main page_](https://github.com/ISLA-UH/redpandas#redpandas).
 
 
 

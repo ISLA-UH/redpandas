@@ -38,14 +38,14 @@ installed module and requires. An example is shown below:
 Name: redvox-pandas
 Version: 1.3.4
 Summary: Library to streamline preprocessing of RedVox API 900 and API 1000 data
-Home-page: https://github.com/RedVoxInc/redpandas
+Home-page: https://github.com/ISLA-UH/redpandas
 Author: RedVox
-Author-email: dev@redvoxsound.com
+Author-email: tyller@isla.hawaii.edu
 License: Apache
 Location: /path/where/module/is/installed
-Requires: matplotlib, scipy, libquantum, redvox, fastkml, obspy, librosa, pymap3d, numpy, pandas, libwwz
+Requires: matplotlib, scipy, quantum-inferno, redvox, fastkml, obspy, librosa, pymap3d, numpy, pandas, libwwz
 Required-by: 
 ```
 Return to _[Table of Contents](#table-of-contents)_.
 
-Return to _[main page](https://github.com/RedVoxInc/redpandas#redpandas)_.
+Return to _[main page](https://github.com/ISLA-UH/redpandas#redpandas)_.

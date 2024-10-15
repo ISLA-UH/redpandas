@@ -10,7 +10,7 @@ import pandas as pd
 import scipy.io.wavfile as wavfile
 import scipy.signal as signal
 from scipy.fft import rfft, fftfreq
-from libquantum import synthetics
+from quantum_inferno.synth import synthetic_signals as synthetics
 import matplotlib.pyplot as plt
 from typing import List, Optional
 
@@ -283,7 +283,7 @@ def dual_tone_test():
     peak_amp = np.sqrt(2)
     y = peak_amp * np.sin(2 * np.pi * center_frequency * t) + \
         peak_amp * np.sin(2 * np.pi * new_rate/2. * t)
-    z = synthetics.antialias_halfNyquist(y)
+    z = synthetics.antialias_half_nyquist(y)
     lz = len(z)
     print('Original Number of Points: ', lz)
     fz = 2 * rfft(z) / lz

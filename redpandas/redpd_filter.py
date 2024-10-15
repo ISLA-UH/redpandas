@@ -165,7 +165,6 @@ def normalize_pandas(df: pd.DataFrame,
             list_normalized_signals.append(float("NaN"))
             continue
         if df[sig_wf_label][row].ndim == 1:
-            # use libquantum utils normalize module
             list_normalized_signals.append(rpd_prep.normalize(sig_wf=df[sig_wf_label][row], scaling=scaling,
                                                               norm_type=norm_type_utils))
         else:

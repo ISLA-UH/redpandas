@@ -1,13 +1,91 @@
 """
 Calculate Time Representation Frequency.
 """
-from typing import Optional
+from typing import Optional, Tuple
 
 import numpy as np
 import pandas as pd
-from libquantum import atoms, spectra, utils
+from libquantum import spectra
+import quantum_inferno.cwt_atoms as atoms
+from quantum_inferno.utilities.rescaling import to_log2_with_epsilon
+from scipy.signal import ShortTimeFFT
+
 import redpandas.redpd_preprocess as rpd_prep
 from redpandas.redpd_preprocess import find_nearest_idx
+
+
+# TODO: NOT DONE, NOT TESTED
+def stft_from_sig(sig_wf: np.ndarray,
+                  frequency_sample_rate_hz: float,
+                  band_order_nth: float) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    """
+    Stft from signal
+
+    :param sig_wf: array with input signal
+    :param frequency_sample_rate_hz: sample rate of frequency in Hz
+    :param band_order_nth: Nth order of constant Q bands
+    :return: numpy arrays of: STFT, STFT_bits, time_stft_s, frequency_stft_hz
+    """
+    sig_duration_s = len(sig_wf) / frequency_sample_rate_hz
+    _, min_frequency_hz = atoms.chirp_scales_from_duration(band_order_nth=band_order_nth, sig_duration_s=sig_duration_s)
+    order_nth, _, _, _, geometric_freq_center, frequency_start, frequency_end \
+        = atoms.chirp_frequency_bands(
+            scale_order_input=band_order_nth,
+            frequency_low_input=min_frequency_hz,
+            frequency_sample_rate_input=frequency_sample_rate_hz,
+            frequency_high_input=min_frequency_hz)
+
+    # Choose the spectral resolution as the key parameter
+    frequency_resolution_min_hz = np.min(frequency_end - frequency_start)
+    frequency_resolution_max_hz = np.max(frequency_end - frequency_start)
+    frequency_resolution_hz_geo = np.sqrt(frequency_resolution_min_hz * frequency_resolution_max_hz)
+    stft_time_duration_s = 1 / frequency_resolution_hz_geo
+    stft_points_per_seg = int(frequency_sample_rate_hz * stft_time_duration_s)
+
+    hann_bandwidth = 1.50018310546875
+
+    _, q_gabor, _ = atoms.chirp_mqg_from_n(band_order_nth)
+    threshold = geometric_freq_center * (1 + 0.5 * hann_bandwidth / q_gabor)  # > frequency_sample_rate_hz / 2.0:
+
+    # Remember frequency order is inverted because solution is in periods.
+    idn = np.argmax(threshold < 0.45 * frequency_sample_rate_hz)
+    scale_number_bins = int(len(geometric_freq_center[idn:]))
+
+    cqt_points_hop_min = int(2**(np.floor(scale_number_bins / order_nth) - 1.))
+
+    stft_scaling = 2 * np.sqrt(np.pi) / stft_points_per_seg
+    stft = ShortTimeFFT(sig_wf, cqt_points_hop_min, frequency_sample_rate_hz, fft_mode = "centered")
+
+    stft *= stft_scaling
+    stft_bits = to_log2_with_epsilon(stft)
+
+    # TODO: NOT DONE, NOT TESTED
+    time_stft_s = librosa.times_like(STFT, sr=frequency_sample_rate_hz,
+                                     hop_length=stft_points_hop)
+
+    return stft, stft_bits, time_stft_s, geometric_freq_center
+
+
+
+def sig_frame(sig: np.ndarray,
+              time_epoch_s: np.ndarray,
+              epoch_s_start: float,
+              epoch_s_stop: float) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Frame one-component signal within start and stop epoch times
+
+    :param sig: input signal
+    :param time_epoch_s: input epoch time in seconds
+    :param epoch_s_start: start epoch time
+    :param epoch_s_stop: stop epoch time
+    :return: truncated time series and time
+    """
+    intro_index = np.argmin(np.abs(time_epoch_s - epoch_s_start))
+    outro_index = np.argmin(np.abs(time_epoch_s - epoch_s_stop))
+    sig_wf = sig[intro_index: outro_index]
+    sig_epoch_s = time_epoch_s[intro_index: outro_index]
+
+    return sig_wf, sig_epoch_s
 
 
 def frame_panda_no_offset(df: pd.DataFrame,
@@ -38,10 +116,10 @@ def frame_panda_no_offset(df: pd.DataFrame,
             continue
         if df[sig_wf_label][n].ndim == 1:
             sig_wf, sig_epoch_s = \
-                utils.sig_frame(sig=df[sig_wf_label][n],
-                                time_epoch_s=df[sig_epoch_s_label][n],
-                                epoch_s_start=sig_epoch_s_start,
-                                epoch_s_stop=sig_epoch_s_end)
+                sig_frame(sig=df[sig_wf_label][n],
+                          time_epoch_s=df[sig_epoch_s_label][n],
+                          epoch_s_start=sig_epoch_s_start,
+                          epoch_s_stop=sig_epoch_s_end)
             aligned_wf.append(sig_wf)
             aligned_epoch_s.append(sig_epoch_s)
         else:
@@ -49,10 +127,10 @@ def frame_panda_no_offset(df: pd.DataFrame,
             sig_epoch_s = 0  # set just in case
             for index_sensor_array, _ in enumerate(df[sig_wf_label][n]):
                 sig_wf, sig_epoch_s = \
-                    utils.sig_frame(sig=df[sig_wf_label][n][index_sensor_array],
-                                    time_epoch_s=df[sig_epoch_s_label][n],
-                                    epoch_s_start=sig_epoch_s_start,
-                                    epoch_s_stop=sig_epoch_s_end)
+                    sig_frame(sig=df[sig_wf_label][n][index_sensor_array],
+                               time_epoch_s=df[sig_epoch_s_label][n],
+                               epoch_s_start=sig_epoch_s_start,
+                               epoch_s_stop=sig_epoch_s_end)
                 aligned_wf_3c.append(sig_wf)
             aligned_wf.append(np.array(aligned_wf_3c))
             aligned_epoch_s.append(sig_epoch_s)
@@ -91,10 +169,10 @@ def frame_panda(df: pd.DataFrame,
             aligned_epoch_s.append(float("NaN"))
             continue
         sig_wf, sig_epoch_s = \
-            utils.sig_frame(sig=df[sig_wf_label][n],
-                            time_epoch_s=df[sig_epoch_s_label][n] + df[offset_seconds_label][n],
-                            epoch_s_start=sig_epoch_s_start,
-                            epoch_s_stop=sig_epoch_s_end)
+            sig_frame(sig=df[sig_wf_label][n],
+                      time_epoch_s=df[sig_epoch_s_label][n] + df[offset_seconds_label][n],
+                      epoch_s_start=sig_epoch_s_start,
+                      epoch_s_stop=sig_epoch_s_end)
         aligned_wf.append(sig_wf)
         aligned_epoch_s.append(sig_epoch_s)
     df[new_column_aligned_wf] = aligned_wf
@@ -103,8 +181,6 @@ def frame_panda(df: pd.DataFrame,
     return df
 
 
-# todo: don't repeat functions that can't be reused easily.  This function is a pointless as long as the window
-# function exists
 # INPUT ALIGNED DATA
 def tfr_bits_panda(df: pd.DataFrame,
                    sig_wf_label: str,
@@ -127,64 +203,8 @@ def tfr_bits_panda(df: pd.DataFrame,
     :param new_column_tfr_frequency_hz: label for new column containing tfr frequency in Hz
     :return: input dataframe with new columns
     """
-    tfr_bits = []
-    tfr_time_s = []
-    tfr_frequency_hz = []
-    for n in df.index:
-        if sig_wf_label not in df.columns or type(df[sig_wf_label][n]) == float:
-            tfr_bits.append(float("NaN"))
-            tfr_time_s.append(float("NaN"))
-            tfr_frequency_hz.append(float("NaN"))
-            continue
-        if df[sig_wf_label][n].ndim == 1:  # audio basically
-            sig_wf_n = np.copy(df[sig_wf_label][n])
-            sig_wf_n *= rpd_prep.taper_tukey(sig_wf_or_time=sig_wf_n, fraction_cosine=0.1)
-            if tfr_type == "stft":
-                # Compute complex wavelet transform (cwt) from signal duration
-                _, sig_bits, sig_time_s, sig_frequency_hz = \
-                    spectra.stft_from_sig(sig_wf=sig_wf_n,
-                                          frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                          band_order_Nth=order_number_input)
-            else:
-                # Compute complex wavelet transform (cwt) from signal duration
-                _, sig_bits, sig_time_s, sig_frequency_hz = \
-                    atoms.cwt_chirp_from_sig(sig_wf=sig_wf_n,
-                                             frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                             band_order_Nth=order_number_input)
-            tfr_bits.append(sig_bits)
-            tfr_time_s.append(sig_time_s)
-            tfr_frequency_hz.append(sig_frequency_hz)
-        else:  # sensor that is acceleration/gyroscope/magnetometer/barometer
-            tfr_3c_bits = []
-            tfr_3c_time = []
-            tfr_3c_frequency = []
-            for index_dimension, _ in enumerate(df[sig_wf_label][n]):
-                sig_wf_n = np.copy(df[sig_wf_label][n][index_dimension])
-                sig_wf_n *= rpd_prep.taper_tukey(sig_wf_or_time=sig_wf_n, fraction_cosine=0.1)
-                if tfr_type == "stft":
-                    # Compute complex wavelet transform (cwt) from signal duration
-                    _, sig_bits, sig_time_s, sig_frequency_hz = \
-                        spectra.stft_from_sig(sig_wf=sig_wf_n,
-                                              frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                              band_order_Nth=order_number_input)
-                else:
-                    # Compute complex wavelet transform (cwt) from signal duration
-                    _, sig_bits, sig_time_s, sig_frequency_hz = \
-                        atoms.cwt_chirp_from_sig(sig_wf=sig_wf_n,
-                                                 frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                                 band_order_Nth=order_number_input)
-                tfr_3c_bits.append(sig_bits)
-                tfr_3c_time.append(sig_time_s)
-                tfr_3c_frequency.append(sig_frequency_hz)
-            # append 3c tfr into 'main' list
-            tfr_bits.append(np.array(tfr_3c_bits))
-            tfr_time_s.append(np.array(tfr_3c_time))
-            tfr_frequency_hz.append(np.array(tfr_3c_frequency))
-    df[new_column_tfr_bits] = tfr_bits
-    df[new_column_tfr_time_s] = tfr_time_s
-    df[new_column_tfr_frequency_hz] = tfr_frequency_hz
-
-    return df
+    return tfr_bits_panda_window(df, sig_wf_label, sig_sample_rate_label, order_number_input, tfr_type, new_column_tfr_bits, 
+                                 new_column_tfr_time_s, new_column_tfr_frequency_hz)
 
 
 # INPUT ALIGNED DATA

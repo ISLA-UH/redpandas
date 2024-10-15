@@ -9,7 +9,7 @@ from matplotlib.colorbar import Colorbar
 from matplotlib.figure import Figure
 import numpy as np
 import pandas as pd
-from libquantum.plot_templates import plot_time_frequency_reps as pnl
+from quantum_inferno.plot_templates import plot_base as pbase, plot_templates as pnl
 
 import redpandas.redpd_scales as rpd_scales
 from redpandas.redpd_plot.parameters import FigureParameters as FigParam
@@ -326,14 +326,14 @@ def plot_mesh_pandas(df: pd.DataFrame,
                         # Color scaling calculation if colorbar False
                         if type(mesh_color_scaling) == str:
                             mesh_color_min, mesh_color_max = \
-                                pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
-                                                         mesh_color_scaling,
-                                                         mesh_color_range)
+                                pbase.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
+                                                           mesh_color_scaling,
+                                                           mesh_color_range)
                         else:
                             mesh_color_min, mesh_color_max = \
-                                pnl.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
-                                                         mesh_color_scaling[index_mesh_color_scale_panel],
-                                                         mesh_color_range[index_mesh_color_scale_panel])
+                                pbase.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
+                                                           mesh_color_scaling[index_mesh_color_scale_panel],
+                                                           mesh_color_range[index_mesh_color_scale_panel])
                         ax = fig.add_subplot(gs[index_panel_order])
                         plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal],
                                                 df[mesh_frequency_label_individual][index_signal],
@@ -403,15 +403,15 @@ def plot_mesh_pandas(df: pd.DataFrame,
                             # Color scaling calculation if colorbar False
                             if type(mesh_color_scaling) == str:
                                 mesh_color_min, mesh_color_max = \
-                                    pnl.mesh_colormap_limits(
-                                        df[mesh_tfr_label_individual][index_signal][index_dimension],
-                                        mesh_color_scaling, mesh_color_range)
+                                    pbase.mesh_colormap_limits(
+                                          df[mesh_tfr_label_individual][index_signal][index_dimension],
+                                          mesh_color_scaling, mesh_color_range)
                             else:
                                 mesh_color_min, mesh_color_max = \
-                                    pnl.mesh_colormap_limits(
-                                        df[mesh_tfr_label_individual][index_signal][index_dimension],
-                                        mesh_color_scaling[index_mesh_color_scale_panel],
-                                        mesh_color_range[index_mesh_color_scale_panel])
+                                    pbase.mesh_colormap_limits(
+                                          df[mesh_tfr_label_individual][index_signal][index_dimension],
+                                          mesh_color_scaling[index_mesh_color_scale_panel],
+                                          mesh_color_range[index_mesh_color_scale_panel])
                             ax = fig.add_subplot(gs[index_panel_order])
                             plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal][index_dimension],
                                                     df[mesh_frequency_label_individual][index_signal][index_dimension],

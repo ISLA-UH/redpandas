@@ -5,7 +5,7 @@ SkyFall Gravity
 # Python libraries
 import matplotlib.pyplot as plt
 import numpy as np
-from libquantum.plot_templates import plot_time_frequency_reps as pnl
+from quantum_inferno.plot_templates import plot_base as pbase, plot_templates as pnl
 
 # RedVox RedPandas and related RedVox modules
 import examples.skyfall.lib.skyfall_dw as sf_dw
@@ -69,21 +69,22 @@ def main():
                   df_skyfall_data[accelerometer_epoch_s_label][station][-1])
 
             # Plot 3c acceleration raw waveforms
-            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=df_skyfall_data[accelerometer_data_raw_label][station][2],
-                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[accelerometer_data_raw_label][station][1],
-                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_0_sig=df_skyfall_data[accelerometer_data_raw_label][station][0],
-                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   start_time_epoch=event_reference_time_epoch_s,
-                                   wf_panel_2_units="Acc Z, m/$s^2$",
-                                   wf_panel_1_units="Acc Y, m/$s^2$",
-                                   wf_panel_0_units="Acc X, m/$s^2$",
-                                   figure_title=skyfall_config.event_name + ": Accelerometer raw",
-                                   figure_title_show=False,  # for press
-                                   label_panel_show=True,  # for press
-                                   labels_fontweight='bold')
+            pnl_wfb = pbase.WaveformPlotBase(station_id=station_id_str,
+                                             figure_title=skyfall_config.event_name + ": Accelerometer raw",
+                                             figure_title_show=False, # for press
+                                             start_time_epoch=event_reference_time_epoch_s,
+                                             label_panel_show=True,  # for press
+                                             labels_fontweight='bold')
+            pnl_a = pbase.WaveformPanel(sig=df_skyfall_data[accelerometer_data_raw_label][station][0],
+                                        time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                        label="Acc X, m/$s^2$")
+            pnl_b = pbase.WaveformPanel(sig=df_skyfall_data[accelerometer_data_raw_label][station][1],
+                                        time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                        label="Acc Y, m/$s^2$")
+            pnl_c = pbase.WaveformPanel(sig=df_skyfall_data[accelerometer_data_raw_label][station][2],
+                                        time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                        label="Acc Z, m/$s^2$")
+            fig_3c_acc_raw = pnl.plot_wf_3_vert(pnl_wfb, pnl_a, pnl_b, pnl_c)
 
             # get time and sample rate
             accelerometer_time_s = df_skyfall_data[accelerometer_epoch_s_label][station]
@@ -106,38 +107,24 @@ def main():
                 low_pass_sample_rate_hz=2)
 
             # Plot 3c acceleration gravity waveforms
-            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=gravity_z,
-                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_1_sig=gravity_y,
-                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_0_sig=gravity_x,
-                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   start_time_epoch=event_reference_time_epoch_s,
-                                   wf_panel_2_units="LP Acc Z, m/$s^2$",
-                                   wf_panel_1_units="LP Acc Y, m/$s^2$",
-                                   wf_panel_0_units="LP Acc X, m/$s^2$",
-                                   figure_title=skyfall_config.event_name + ": Gravity",
-                                   figure_title_show=False,  # for press
-                                   label_panel_show=True,  # for press
-                                   labels_fontweight='bold')
+            pnl_wfb.figure_title = skyfall_config.event_name + ": Gravity"
+            pnl_a.sig = gravity_x
+            pnl_a.label = "LP Acc X, m/$s^2$"
+            pnl_b.sig = gravity_y
+            pnl_b.label = "LP Acc Y, m/$s^2$"
+            pnl_c.sig = gravity_z
+            pnl_c.label = "LP Acc Z, m/$s^2$"
+            fig_3c_grv_raw = pnl.plot_wf_3_vert(pnl_wfb, pnl_a, pnl_b, pnl_c)
 
             # Plot 3c acceleration linear waveforms
-            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=linear_z,
-                                   wf_panel_2_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_1_sig=linear_y,
-                                   wf_panel_1_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   wf_panel_0_sig=linear_x,
-                                   wf_panel_0_time=df_skyfall_data[accelerometer_epoch_s_label][station],
-                                   start_time_epoch=event_reference_time_epoch_s,
-                                   wf_panel_2_units="Linear Acc Z, m/$s^2$",
-                                   wf_panel_1_units="Linear Acc Y, m/$s^2$",
-                                   wf_panel_0_units="Linear Acc X, m/$s^2$",
-                                   figure_title=skyfall_config.event_name + ": Linear Acceleration",
-                                   figure_title_show=False,  # for press
-                                   label_panel_show=True,  # for press
-                                   labels_fontweight='bold')
+            pnl_wfb.figure_title=skyfall_config.event_name + ": Linear Acceleration"
+            pnl_a.sig = linear_x
+            pnl_a.label = "Linear Acc Z, m/$s^2$"
+            pnl_b.sig = linear_y
+            pnl_b.label = "Linear Acc Y, m/$s^2$"
+            pnl_c.sig = linear_z
+            pnl_c.label = "Linear Acc Z, m/$s^2$"
+            fig_3c_lin_raw = pnl.plot_wf_3_vert(pnl_wfb, pnl_a, pnl_b, pnl_c)
 
         plt.show()
 

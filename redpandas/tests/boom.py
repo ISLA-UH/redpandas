@@ -15,7 +15,7 @@ from redvox.common.data_window import DataWindow, EventOrigin
 from redvox.common.data_window import DataWindowConfig
 import redvox.common.date_time_utils as dt
 
-from libquantum.plot_templates import plot_time_frequency_reps as pnl
+from quantum_inferno.plot_templates import plot_base as pbase, plot_templates as pnl
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -116,35 +116,23 @@ if __name__ == '__main__':
                                 show_figure=True,
                                 ytick_values_show=True)
     for station in df_sensors.index:
+        wf_base = pbase.WaveformPlotBase(station_id=df_sensors["station_id"][station],
+                                         figure_title="STFT",
+                                         start_time_epoch=df_sensors["audio_epoch_s"][0][0])
+        wf_pnl = pbase.WaveformPanel(sig=df_sensors["audio_wf"][station],
+                                     time=df_sensors["audio_epoch_s"][station],
+                                     units="Audio")
+        m_base = pbase.MeshBase(time=df_sensors["audio_tfr_time_s"][station],
+                                frequency=df_sensors["audio_tfr_frequency_hz"][station])
+        m_pnl = pbase.MeshPanel(tfr=df_sensors["audio_tfr_bits"][station],
+                                colormap_scaling="range")
         if df_sensors["station_id"][station] == "0872266036":
-            pnl.plot_wf_mesh_vert(redvox_id=df_sensors["station_id"][station],
-                                  wf_panel_2_sig=df_sensors["audio_wf"][station],
-                                  wf_panel_2_time=df_sensors["audio_epoch_s"][station],
-                                  mesh_time=df_sensors["audio_tfr_time_s"][station],
-                                  mesh_frequency=df_sensors["audio_tfr_frequency_hz"][station],
-                                  mesh_panel_0_tfr=df_sensors["audio_tfr_bits"][station],
-                                  start_time_epoch=df_sensors["audio_epoch_s"][0][0],
-                                  frequency_scaling="log",
-                                  frequency_hz_ymax=320,
-                                  frequency_hz_ymin=20,
-                                  mesh_panel_0_colormap_scaling="range",
-                                  mesh_panel_0_color_range=12.,
-                                  wf_panel_2_units="Audio",
-                                  figure_title=f"STFT")
-
+            m_base.frequency_hz_ymin=20
+            m_base.frequency_hz_ymax=320
+            m_pnl.color_range=12.
         else:
-            pnl.plot_wf_mesh_vert(redvox_id=df_sensors["station_id"][station],
-                                  wf_panel_2_sig=df_sensors["audio_wf"][station],
-                                  wf_panel_2_time=df_sensors["audio_epoch_s"][station],
-                                  mesh_time=df_sensors["audio_tfr_time_s"][station],
-                                  mesh_frequency=df_sensors["audio_tfr_frequency_hz"][station],
-                                  mesh_panel_0_tfr=df_sensors["audio_tfr_bits"][station],
-                                  start_time_epoch=df_sensors["audio_epoch_s"][0][0],
-                                  frequency_scaling="log",
-                                  mesh_panel_0_colormap_scaling="range",
-                                  mesh_panel_0_color_range=16.,
-                                  wf_panel_2_units="Audio",
-                                  figure_title=f"STFT")
+            m_pnl.color_range=16.
+        pnl.plot_mesh_wf_vert(m_base, m_pnl, wf_base, wf_pnl)
 
     # Check barometer wiggles
     fig_wiggles_bar = plot_wiggles_pandas(df=df_sensors,
