@@ -81,8 +81,8 @@ def main():
         station_id_str = df_skyfall_data[station_label][station]  # Get the station id
 
         if audio_data_label and audio_fs_label in df_skyfall_data.columns:
-            print('mic_sample_rate_hz: ', df_skyfall_data[audio_fs_label][station])
-            print('mic_epoch_s_0: ', df_skyfall_data[audio_epoch_s_label][station][0])
+            print(f"mic_sample_rate_hz: {df_skyfall_data[audio_fs_label][station]}")
+            print(f"mic_epoch_s_0: {df_skyfall_data[audio_epoch_s_label][station][0]}")
 
             # Frame to mic start and end and plot
             event_reference_time_epoch_s = df_skyfall_data[audio_epoch_s_label][station][0]
@@ -100,10 +100,11 @@ def main():
             mesh_base = pbase.MeshBase(time=df_skyfall_data[audio_tfr_time_s_label][station],
                                        frequency=df_skyfall_data[audio_tfr_frequency_hz_label][station])
             mesh_pnl = pbase.MeshPanel(tfr=df_skyfall_data[audio_tfr_bits_label][station],
-                                       colormap_scaling=tfr_config.mc_scale['Audio'],
-                                       color_range=tfr_config.mc_range['Audio'])
+                                       colormap_scaling=tfr_config.mc_scale["Audio"],
+                                       color_range=tfr_config.mc_range["Audio"])
             wf_base = pbase.WaveformPlotBase(station_id=station_id_str,
-                                             figure_title=f"{skyfall_config.event_name}: Audio, {tfr_config.tfr_type.upper()} and waveform",
+                                             figure_title=f"{skyfall_config.event_name}: Audio, "
+                                                          f"{tfr_config.tfr_type.upper()} and waveform",
                                              figure_title_show=tfr_config.show_fig_titles,
                                              start_time_epoch=event_reference_time_epoch_s)
             wf_pnl = pbase.WaveformPanel(sig=df_skyfall_data[audio_data_label][station],
@@ -122,15 +123,15 @@ def main():
                                              col_wf_label=barometer_data_highpass_label,
                                              col_ndim_label=barometer_data_highpass_label + "_ndim")
 
-            print('barometer_sample_rate_hz:', df_skyfall_data[barometer_fs_label][station])
-            print('barometer_epoch_s_0:', df_skyfall_data[barometer_epoch_s_label][station][0])
+            print(f"barometer_sample_rate_hz: {df_skyfall_data[barometer_fs_label][station]}")
+            print(f"barometer_epoch_s_0: {df_skyfall_data[barometer_epoch_s_label][station][0]}")
 
             barometer_tfr_start_epoch: float = df_skyfall_data[barometer_epoch_s_label][0][0]
-            if tfr_config.sensor_hp['Bar']:
-                bar_sig_label, bar_hp_raw = barometer_data_highpass_label, 'hp'
+            if tfr_config.sensor_hp["Bar"]:
+                bar_sig_label, bar_hp_raw = barometer_data_highpass_label, "hp"
             else:
-                bar_sig_label, bar_hp_raw = barometer_data_raw_label, 'raw'
-            print('Starting tfr_bits_panda for barometer:')
+                bar_sig_label, bar_hp_raw = barometer_data_raw_label, "raw"
+            print("Starting tfr_bits_panda for barometer:")
             df_skyfall_data = rpd_tfr.tfr_bits_panda(df=df_skyfall_data,
                                                      sig_wf_label=bar_sig_label,
                                                      sig_sample_rate_label=barometer_fs_label,
@@ -140,19 +141,20 @@ def main():
                                                      new_column_tfr_frequency_hz=barometer_tfr_frequency_hz_label,
                                                      new_column_tfr_time_s=barometer_tfr_time_s_label)
 
-            pnl.plot_wf_mesh_vert(redvox_id=station_id_str,
-                                  wf_panel_2_sig=df_skyfall_data[bar_sig_label][station][0],
-                                  wf_panel_2_time=df_skyfall_data[barometer_epoch_s_label][station],
-                                  mesh_time=df_skyfall_data[barometer_tfr_time_s_label][station][0],
-                                  mesh_frequency=df_skyfall_data[barometer_tfr_frequency_hz_label][station][0],
-                                  mesh_panel_0_tfr=df_skyfall_data[barometer_tfr_bits_label][station][0],
-                                  mesh_panel_0_colormap_scaling=tfr_config.mc_scale["Bar"],
-                                  mesh_panel_0_color_range=tfr_config.mc_range["Bar"],
-                                  figure_title=f"{skyfall_config.event_name}: Barometer, "
-                                               f"{tfr_config.tfr_type.upper()} and waveform",
-                                  start_time_epoch=barometer_tfr_start_epoch,
-                                  figure_title_show=tfr_config.show_fig_titles,
-                                  wf_panel_2_units=f"Bar {bar_hp_raw}, kPa")
+            mesh_base = pbase.MeshBase(time=df_skyfall_data[barometer_tfr_time_s_label][station][0],
+                                       frequency=df_skyfall_data[barometer_tfr_frequency_hz_label][station][0])
+            mesh_pnl = pbase.MeshPanel(tfr=df_skyfall_data[barometer_tfr_bits_label][station][0],
+                                       colormap_scaling=tfr_config.mc_scale["Bar"],
+                                       color_range=tfr_config.mc_range["Bar"])
+            wf_base = pbase.WaveformPlotBase(station_id=station_id_str,
+                                             figure_title=f"{skyfall_config.event_name}: Barometer, "
+                                                          f"{tfr_config.tfr_type.upper()} and waveform",
+                                             figure_title_show=tfr_config.show_fig_titles,
+                                             start_time_epoch=barometer_tfr_start_epoch)
+            wf_pnl = pbase.WaveformPanel(sig=df_skyfall_data[bar_sig_label][station][0],
+                                         time=df_skyfall_data[barometer_epoch_s_label][station],
+                                         units=f"Bar {bar_hp_raw}, kPa")
+            fig_bwf_mesh = pnl.plot_mesh_wf_vert(mesh_base, mesh_pnl, wf_base, wf_pnl)
 
         # Repeat here
         if accelerometer_data_raw_label and accelerometer_fs_label and accelerometer_data_highpass_label \
@@ -187,16 +189,20 @@ def main():
             fig_axn_mesh = []
 
             for ax_n in range(3):
-                mesh_base.time = df_skyfall_data[accelerometer_tfr_time_s_label][station][ax_n]
-                mesh_base.frequency = df_skyfall_data[accelerometer_tfr_frequency_hz_label][station][ax_n]
-                mesh_pnl.tfr = df_skyfall_data[accelerometer_tfr_bits_label][station][ax_n]
-                mesh_pnl.colormap_scaling = tfr_config.mc_scale["Acc"],
-                mesh_pnl.color_range = tfr_config.mc_range["Acc"]
-                wf_base.figure_title = f"{skyfall_config.event_name}: Accelerometer, {tfr_config.tfr_type.upper()} and waveform"
-                wf_base.start_time_epoch = accelerometer_tfr_start_epoch
-                wf_pnl.sig = df_skyfall_data[acc_sig_label][station][ax_n]
-                wf_pnl.time = df_skyfall_data[accelerometer_epoch_s_label][station]
-                wf_pnl.units = f"Acc {AXES[ax_n]} {acc_hp_raw}, m/$s^2$"
+                mesh_base = \
+                    pbase.MeshBase(time=df_skyfall_data[accelerometer_tfr_time_s_label][station][ax_n],
+                                   frequency=df_skyfall_data[accelerometer_tfr_frequency_hz_label][station][ax_n])
+                mesh_pnl = pbase.MeshPanel(tfr=df_skyfall_data[accelerometer_tfr_bits_label][station][ax_n],
+                                           colormap_scaling=tfr_config.mc_scale["Acc"],
+                                           color_range=tfr_config.mc_range["Acc"])
+                wf_base = pbase.WaveformPlotBase(station_id=station_id_str,
+                                                 figure_title=f"{skyfall_config.event_name}: Accelerometer, "
+                                                              f"{tfr_config.tfr_type.upper()} and waveform",
+                                                 figure_title_show=tfr_config.show_fig_titles,
+                                                 start_time_epoch=accelerometer_tfr_start_epoch)
+                wf_pnl = pbase.WaveformPanel(sig=df_skyfall_data[acc_sig_label][station][ax_n],
+                                             time=df_skyfall_data[accelerometer_epoch_s_label][station],
+                                             units=f"Acc {AXES[ax_n]} {acc_hp_raw}, m/$s^2$")
                 fig_axn_mesh.append(pnl.plot_mesh_wf_vert(mesh_base, mesh_pnl, wf_base, wf_pnl))
 
         if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label \
@@ -230,21 +236,22 @@ def main():
                                                      new_column_tfr_bits=gyroscope_tfr_bits_label,
                                                      new_column_tfr_frequency_hz=gyroscope_tfr_frequency_hz_label,
                                                      new_column_tfr_time_s=gyroscope_tfr_time_s_label)
+            fig_gxn_mesh = []
             for ax_n in range(3):
-                pnl.plot_wf_mesh_vert(redvox_id=station_id_str,
-                                      wf_panel_2_sig=df_skyfall_data[gyr_sig_label][station][ax_n],
-                                      wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-                                      mesh_time=df_skyfall_data[gyroscope_tfr_time_s_label][station][ax_n],
-                                      mesh_frequency=df_skyfall_data[gyroscope_tfr_frequency_hz_label][station][
-                                          ax_n],
-                                      mesh_panel_0_tfr=df_skyfall_data[gyroscope_tfr_bits_label][station][ax_n],
-                                      mesh_panel_0_colormap_scaling=tfr_config.mc_scale["Gyr"],
-                                      mesh_panel_0_color_range=tfr_config.mc_range["Gyr"],
-                                      figure_title=f"{skyfall_config.event_name}: Gyroscope, "
-                                                   f"{tfr_config.tfr_type.upper()} and waveform",
-                                      start_time_epoch=gyroscope_tfr_start_epoch,
-                                      figure_title_show=tfr_config.show_fig_titles,
-                                      wf_panel_2_units=f"Gyr {AXES[ax_n]} {gyr_hp_raw}, rad/s")
+                mesh_base = pbase.MeshBase(time=df_skyfall_data[gyroscope_tfr_time_s_label][station][ax_n],
+                                           frequency=df_skyfall_data[gyroscope_tfr_frequency_hz_label][station][ax_n])
+                mesh_pnl = pbase.MeshPanel(tfr=df_skyfall_data[gyroscope_tfr_bits_label][station][ax_n],
+                                           colormap_scaling=tfr_config.mc_scale["Gyr"],
+                                           color_range=tfr_config.mc_range["Gyr"])
+                wf_base = pbase.WaveformPlotBase(station_id=station_id_str,
+                                                 figure_title=f"{skyfall_config.event_name}: Gyroscope, "
+                                                              f"{tfr_config.tfr_type.upper()} and waveform",
+                                                 figure_title_show=tfr_config.show_fig_titles,
+                                                 start_time_epoch=gyroscope_tfr_start_epoch)
+                wf_pnl = pbase.WaveformPanel(sig=df_skyfall_data[gyr_sig_label][station][ax_n],
+                                             time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                             units=f"Gyr {AXES[ax_n]} {gyr_hp_raw}, rad/s")
+                fig_gxn_mesh.append(pnl.plot_mesh_wf_vert(mesh_base, mesh_pnl, wf_base, wf_pnl))
 
         if magnetometer_data_raw_label and magnetometer_fs_label and magnetometer_data_highpass_label \
                 in df_skyfall_data.columns:
@@ -275,18 +282,23 @@ def main():
                                                      new_column_tfr_bits=magnetometer_tfr_bits_label,
                                                      new_column_tfr_frequency_hz=magnetometer_tfr_frequency_hz_label,
                                                      new_column_tfr_time_s=magnetometer_tfr_time_s_label)
+            fig_mxn_mesh = []
             for ax_n in range(3):
-                mesh_base.time = df_skyfall_data[magnetometer_tfr_time_s_label][station][ax_n]
-                mesh_base.frequency = df_skyfall_data[magnetometer_tfr_frequency_hz_label][station][ax_n]
-                mesh_pnl.tfr = df_skyfall_data[magnetometer_tfr_bits_label][station][ax_n]
-                mesh_pnl.colormap_scaling = tfr_config.mc_scale["Mag"],
-                mesh_pnl.color_range = tfr_config.mc_range["Mag"]
-                wf_base.figure_title = f"{skyfall_config.event_name}: Magnetometer, {tfr_config.tfr_type.upper()} and waveform"
-                wf_base.start_time_epoch = magnetometer_tfr_start_epoch
-                wf_pnl.sig = df_skyfall_data[mag_sig_label][station][ax_n]
-                wf_pnl.time = df_skyfall_data[magnetometer_epoch_s_label][station]
-                wf_pnl.units = f"Mag {AXES[ax_n]} {mag_hp_raw}, $\mu$T"
-                fig_axn_mesh.append(pnl.plot_mesh_wf_vert(mesh_base, mesh_pnl, wf_base, wf_pnl))
+                mesh_base = \
+                    pbase.MeshBase(time=df_skyfall_data[magnetometer_tfr_time_s_label][station][ax_n],
+                                   frequency=df_skyfall_data[magnetometer_tfr_frequency_hz_label][station][ax_n])
+                mesh_pnl = pbase.MeshPanel(tfr=df_skyfall_data[magnetometer_tfr_bits_label][station][ax_n],
+                                           colormap_scaling=tfr_config.mc_scale["Mag"],
+                                           color_range=tfr_config.mc_range["Mag"])
+                wf_base = pbase.WaveformPlotBase(station_id=station_id_str,
+                                                 figure_title=f"{skyfall_config.event_name}: Magnetometer, "
+                                                              f"{tfr_config.tfr_type.upper()} and waveform",
+                                                 figure_title_show=tfr_config.show_fig_titles,
+                                                 start_time_epoch=magnetometer_tfr_start_epoch)
+                wf_pnl = pbase.WaveformPanel(sig=df_skyfall_data[mag_sig_label][station][ax_n],
+                                             time=df_skyfall_data[magnetometer_epoch_s_label][station],
+                                             units=f"Mag {AXES[ax_n]} {mag_hp_raw}, $\mu$T")
+                fig_mxn_mesh.append(pnl.plot_mesh_wf_vert(mesh_base, mesh_pnl, wf_base, wf_pnl))
 
         # Plot TFR sensor wiggles
         rpd_plot.plot_mesh_pandas(df=df_skyfall_data,
