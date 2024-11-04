@@ -5,7 +5,7 @@ Calculate coherence.
 import numpy as np
 import pandas as pd
 from scipy import signal
-from libquantum import utils
+from quantum_inferno.utilities.rescaling import to_log2_with_epsilon
 import redpandas.redpd_plot.coherence as rpd_plt
 
 
@@ -229,9 +229,9 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
                                                          nperseg=window_points,
                                                          noverlap=window_overlap_points)
 
-            psd_ref_bits = 0.5 * utils.log2epsilon(abs(auto_spectrum_ref))
-            psd_sig_bits = 0.5 * utils.log2epsilon(abs(auto_spectrum_sig))
-            cross_spectrum_bits = 0.5 * utils.log2epsilon(abs(cross_spectrum))
+            psd_ref_bits = 0.5 * to_log2_with_epsilon(abs(auto_spectrum_ref))
+            psd_sig_bits = 0.5 * to_log2_with_epsilon(abs(auto_spectrum_sig))
+            cross_spectrum_bits = 0.5 * to_log2_with_epsilon(abs(cross_spectrum))
 
             # Coherence, same as coherence from PSD
             frequency_coherence, coherence_welch = signal.coherence(x=sig_n,
@@ -254,13 +254,13 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             # New magnitude_norm and phase values at coherence frequency closest to ref frequency
             ref_frequency_hz = frequency_coherence[frequency_coherence_max_index]
             ref_frequency_coherence = coherence_welch[frequency_ref_index]
-            ref_frequency_response_magnitude_bits = 0.5*utils.log2epsilon(magnitude_norm[frequency_ref_index])
+            ref_frequency_response_magnitude_bits = 0.5*to_log2_with_epsilon(magnitude_norm[frequency_ref_index])
             ref_frequency_response_phase_degrees = phase_degrees[frequency_ref_index]
 
             # Return max coherence values
             max_coherence_frequency_hz = frequency_coherence[frequency_coherence_max_index]
             max_coherence = np.max(coherence_welch)
-            max_coherence_response_magnitude_bits = 0.5*utils.log2epsilon(magnitude_norm[frequency_coherence_max_index])
+            max_coherence_response_magnitude_bits = 0.5*to_log2_with_epsilon(magnitude_norm[frequency_coherence_max_index])
             max_coherence_response_phase_degrees = phase_degrees[frequency_coherence_max_index]
 
             if n == m:
