@@ -184,5 +184,5 @@ For more information on how to unflatten the barometer, accelerometer, gyroscope
 visit [Opening RedPandas parquet files](using_redpandas.md#opening-redpandas-parquet-files).
 
 
-Return to _[main page](https://github.com/RedVoxInc/redpandas#redpandas)_.
+Return to _[main page](https://github.com/ISLA-UH/redpandas#redpandas)_.
 

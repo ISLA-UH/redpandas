@@ -243,26 +243,34 @@ def tfr_bits_panda_window(df: pd.DataFrame,
             tfr_frequency_hz.append(float("NaN"))
             continue
         if df[sig_wf_label][n].ndim == 1:  # audio basically
-            timestamps = df[sig_timestamps_label][n]
-            if start_time_window > 0.0 and end_time_window > 0.0:
-                idx_time_start = find_nearest_idx(timestamps, start_time_window)
-                idx_time_end = find_nearest_idx(timestamps, end_time_window)
-            elif start_time_window > 0.0 and end_time_window == 0.0:
-                idx_time_start = find_nearest_idx(timestamps, start_time_window)
-                idx_time_end = -1
-            elif end_time_window > 0.0 and start_time_window == 0.0:
-                idx_time_start = 0
-                idx_time_end = find_nearest_idx(timestamps, end_time_window)
+            # get everything if the user doesn't specify a time window
+            if sig_timestamps_label == "" or (start_time_window == 0. and end_time_window == 0.):
+                sig_wf = df[sig_wf_label][n]
             else:
-                idx_time_start = 0
-                idx_time_end = -1
-            sig_wf = df[sig_wf_label][n][idx_time_start:idx_time_end]
+                timestamps = df[sig_timestamps_label][n]
+                if start_time_window > 0.0 and end_time_window > 0.0:
+                    idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                    idx_time_end = find_nearest_idx(timestamps, end_time_window)
+                elif start_time_window > 0.0 and end_time_window == 0.0:
+                    idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                    idx_time_end = -1
+                elif end_time_window > 0.0 and start_time_window == 0.0:
+                    idx_time_start = 0
+                    idx_time_end = find_nearest_idx(timestamps, end_time_window)
+                else:
+                    idx_time_start = 0
+                    idx_time_end = -1
+                sig_wf = df[sig_wf_label][n][idx_time_start:idx_time_end]
             sig_wf_n = np.copy(sig_wf)
             sig_wf_n *= rpd_prep.taper_tukey(sig_wf_or_time=sig_wf_n, fraction_cosine=0.1)
             if tfr_type == "stft":
                 # Compute complex wavelet transform (cwt) from signal duration
                 _, sig_bits, sig_time_s, sig_frequency_hz = \
                     stft_from_sig(sig_wf=sig_wf_n,
+                                  frequency_sample_rate_hz=df[sig_sample_rate_label][n],
+                                  band_order_Nth=order_number_input)
+                _s, sig_bits2, sig_time_s2, sig_frequency_hz2 = \
+                    stft_from_siz(sig_wf=sig_wf_n,
                                   frequency_sample_rate_hz=df[sig_sample_rate_label][n],
                                   band_order_nth=order_number_input)
             else:
@@ -283,6 +291,11 @@ def tfr_bits_panda_window(df: pd.DataFrame,
                 sig_wf_n *= rpd_prep.taper_tukey(sig_wf_or_time=sig_wf_n, fraction_cosine=0.1)
                 if tfr_type == "stft":
                     # Compute complex wavelet transform (cwt) from signal duration
+                    _, sig_bits, sig_time_s, sig_frequency_hz = \
+                        stft_from_sig(sig_wf=sig_wf_n,
+                                      frequency_sample_rate_hz=df[sig_sample_rate_label][n],
+                                      band_order_Nth=order_number_input)
+                else:
                     _, sig_bits, sig_time_s, sig_frequency_hz = \
                         stft_from_sig(sig_wf=sig_wf_n,
                                       frequency_sample_rate_hz=df[sig_sample_rate_label][n],

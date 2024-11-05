@@ -65,7 +65,7 @@ The data collected with the [RedVox Infrasound Recorder](https://www.redvoxsound
 with one of these four methods:
 
 1) Moving the RedVox files from your smartphone RedVox folder to your computer.
-2) Using the [RedVox Cloud Platform](https://beta.redvox.io/#/home).
+2) Using the [RedVox Cloud Platform](https://redvox.io/#/home).
 3) Using the [RedVox Python SDK cloud-download](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#cloud-download-command-details). Note that you will need to install the [GUI RedVox Python SDK](https://github.com/RedVoxInc/redvox-python-sdk/blob/master/docs/python_sdk/installation.md#installing-optional-dependencies) 
 dependencies to use the cloud-download.
 4) Using the [RedVox Python SDK Command Line Interface (CLI)](https://github.com/RedVoxInc/redvox-python-sdk/tree/master/docs/python_sdk/cli#data-req-command-details) 
@@ -88,7 +88,7 @@ If you want to manipulate RedVox data files directly in your Python environment,
 #### For raw RedVox data (.rdvxz, .rdvxm)
 
 The easiest method to covert RedVox data to a RedPandas dataframe is by using the function
-[redpd_dataframe](https://redvoxinc.github.io/redpandas/redpd_df.html#redpandas.redpd_df.redpd_dataframe). 
+[redpd_dataframe](https://redvoxinc.github.io/redpandas/redpandas/redpd_df.html#redpd_dataframe). 
 This approach is ideal for python newcomers, new RedVox users, and for a superficial first glance at new RedVox data.
 
 _Opening RedVox files (.rdvxz, .rdvxm) example:_
@@ -109,18 +109,18 @@ rdvx_data: DataWindow = DataWindow(input_dir=INPUT_DIR)
 # Load RedVox data into a RedVox DataWindow (dw), make a pandas DataFrame and save it as parquet
 redpd_dataframe(input_dw=rdvx_data)
 ```
-Note that [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpd_df.html#redpandas.redpd_df.redpd_dataframe) 
+Note that [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpandas/redpd_df.html#redpd_dataframe) 
 will only export audio sensor. For more options, such as type of sensors, visit the [More options](#more-options) section.
 
 For more information on columns found in the [RedPandas DataFrame](#basic-definitions) saved in the parquet, column names 
-and their contents, visit [RedVox RedPandas DataFrame Columns](https://github.com/RedVoxInc/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns). 
+and their contents, visit [RedVox RedPandas DataFrame Columns](https://github.com/ISLA-UH/redpandas/blob/master/docs/redpandas/columns_name.md#redpandas-dataframe-columns). 
 For more information on manipulation of pandas DataFrames, visit [pandas.DataFrame documentation](https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html).
 
 Return to _[Table of Contents](#table-of-contents)_.
 
 #### More options
 
-The function [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpd_df.html#redpandas.redpd_df.redpd_dataframe)
+The function [redpd_dataframe](https://redvoxinc.github.io/redpandas/redpandas/redpd_df.html#redpd_dataframe)
  has a few optional variables to provide more flexibility when creating the RedPandas parquet.
 
 _Opening Redvox files (.rdvxz, .rdvxm) with more options example:_
@@ -146,7 +146,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 ### Exporting RedPandas DataFrame
 
-The function [export_df_to_parquet](https://redvoxinc.github.io/redpandas/redpd_df.html#redpandas.redpd_df.export_df_to_parquet)
+The function [export_df_to_parquet](https://redvoxinc.github.io/redpandas/redpandas/redpd_df.html#export_df_to_parquet)
 exports to parquet for later use.
 
 _Exporting RedPandas example:_
@@ -164,7 +164,7 @@ Return to _[Table of Contents](#table-of-contents)_.
 Due to their structure, parquet files do not handle nested arrays (i.e., 2d arrays). The barometer, accelerometer, gyroscope and magnetometer sensors data are 
 nested arrays in the RedPandas DataFrame. 
 
-The function [df_unflatten](https://redvoxinc.github.io/redpandas/redpd_preprocess.html#redpandas.redpd_preprocess.df_unflatten)
+The function [df_unflatten](https://redvoxinc.github.io/redpandas/redpandas/redpd_preprocess.html#df_unflatten)
 recovers the original shape of all columns.
 
 _Unflattening RedPandas parquet example:_
@@ -179,7 +179,7 @@ df_sensors = pd.read_parquet("path/to/output/directory/parquet_file_name.parquet
 df_unflatten(df=df_sensors)
 ```
 
-The function [df_column_unflatten](https://redvoxinc.github.io/redpandas/redpd_preprocess.html#redpandas.redpd_preprocess.df_column_unflatten) 
+The function [df_column_unflatten](https://redvoxinc.github.io/redpandas/redpandas/redpd_preprocess.html#df_unflatten) 
 recovers the original nested arrays of the sensors individually. This function is useful if only unflattening a particular column is necessary.
 
 _Unflattening barometer raw data column example:_
@@ -221,9 +221,9 @@ Return to _[Table of Contents](#table-of-contents)_.
 
 - A function is broken, what do I do?
 
-    Please feel free to submit issues on the [issue tracker](https://github.com/RedVoxInc/redpandas/issues). 
+    Please feel free to submit issues on the [issue tracker](https://github.com/ISLA-UH/redpandas/issues). 
 
 
 Return to _[Table of Contents](#table-of-contents)_.
 
-Return to _[main page](https://github.com/RedVoxInc/redpandas#redpandas)_.
+Return to _[main page](https://github.com/ISLA-UH/redpandas#redpandas)_.

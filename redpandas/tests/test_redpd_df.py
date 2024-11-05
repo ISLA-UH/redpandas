@@ -1,6 +1,5 @@
 import unittest
 import pandas as pd
-import os
 import shutil
 from redvox.common.data_window import DataWindow
 import redpandas.redpd_df as rpd_df
@@ -12,34 +11,41 @@ class TestExportDfToParquet(unittest.TestCase):
         self.df_data = pd.read_parquet(f"{TEST_DATA_DIR}/aud_bar_acc_mag_gyr_loc_soh_clock_sync_df.parquet")
 
     def test_usual_case(self):
-        self.full_output_dir_path_parquet = rpd_df.export_df_to_parquet(df=self.df_data,
-                                                                        output_dir_pqt=f"{TEST_DATA_DIR}/TestExportDfToParquet")
+        self.full_output_dir_path_parquet = \
+            rpd_df.export_df_to_parquet(df=self.df_data,
+                                        output_dir_pqt=f"{TEST_DATA_DIR}/TestExportDfToParquet")
 
         self.assertEqual(self.full_output_dir_path_parquet, f"{TEST_DATA_DIR}/TestExportDfToParquet/Redvox_df.parquet")
 
     def test_custom_filename_without(self):
 
-        self.full_output_dir_path_parquet = rpd_df.export_df_to_parquet(df=self.df_data,
-                                                                        output_dir_pqt=f"{TEST_DATA_DIR}/TestExportDfToParquet",
-                                                                        output_filename_pqt='myRedpdParquet1')
+        self.full_output_dir_path_parquet = \
+            rpd_df.export_df_to_parquet(df=self.df_data,
+                                        output_dir_pqt=f"{TEST_DATA_DIR}/TestExportDfToParquet",
+                                        output_filename_pqt='myRedpdParquet1')
 
-        self.assertEqual(self.full_output_dir_path_parquet, f"{TEST_DATA_DIR}/TestExportDfToParquet/myRedpdParquet1.parquet")
+        self.assertEqual(self.full_output_dir_path_parquet,
+                         f"{TEST_DATA_DIR}/TestExportDfToParquet/myRedpdParquet1.parquet")
 
     def test_custom_filename_with_dot_parquet(self):
 
-        self.full_output_dir_path_parquet = rpd_df.export_df_to_parquet(df=self.df_data,
-                                                                        output_dir_pqt=f"{TEST_DATA_DIR}/TestExportDfToParquet",
-                                                                        output_filename_pqt='myRedpdParquet2.parquet')
+        self.full_output_dir_path_parquet = \
+            rpd_df.export_df_to_parquet(df=self.df_data,
+                                        output_dir_pqt=f"{TEST_DATA_DIR}/TestExportDfToParquet",
+                                        output_filename_pqt='myRedpdParquet2.parquet')
 
-        self.assertEqual(self.full_output_dir_path_parquet, f"{TEST_DATA_DIR}/TestExportDfToParquet/myRedpdParquet2.parquet")
+        self.assertEqual(self.full_output_dir_path_parquet,
+                         f"{TEST_DATA_DIR}/TestExportDfToParquet/myRedpdParquet2.parquet")
 
     def test_custom_filename_with_dot_pqt(self):
 
-        self.full_output_dir_path_parquet = rpd_df.export_df_to_parquet(df=self.df_data,
-                                                                        output_dir_pqt=f"{TEST_DATA_DIR}/TestExportDfToParquet",
-                                                                        output_filename_pqt='myRedpdParquet3.pqt')
+        self.full_output_dir_path_parquet = \
+            rpd_df.export_df_to_parquet(df=self.df_data,
+                                        output_dir_pqt=f"{TEST_DATA_DIR}/TestExportDfToParquet",
+                                        output_filename_pqt='myRedpdParquet3.pqt')
 
-        self.assertEqual(self.full_output_dir_path_parquet, f"{TEST_DATA_DIR}/TestExportDfToParquet/myRedpdParquet3.pqt")
+        self.assertEqual(self.full_output_dir_path_parquet,
+                         f"{TEST_DATA_DIR}/TestExportDfToParquet/myRedpdParquet3.pqt")
 
     def tearDown(self) -> None:
         self.df_data = None
@@ -92,8 +98,8 @@ class TestRedpdDataframe(unittest.TestCase):
         self.assertEqual(len(self.df.columns), 15)
 
     def test_with_dw_sensor_is_not_string_then_do_audio_only(self):
-        self.df = rpd_df.redpd_dataframe(input_dw=self.dw, sensor_labels="barometer")
-        self.assertEqual(len(self.df.columns), 14)
+        self.df = rpd_df.redpd_dataframe(input_dw=self.dw, sensor_labels=["barometer"])
+        self.assertEqual(len(self.df.columns), 13)
 
     def test_with_dw_audio_barometer_accelerometer(self):
         self.df = rpd_df.redpd_dataframe(input_dw=self.dw, sensor_labels=['audio', 'barometer', 'accelerometer'])

@@ -104,7 +104,3 @@ class TestFindXlim(unittest.TestCase):
                                                            mesh_tfr_label=["audio_stft_bits"])
         self.assertEqual(self.xmin, 0.0)
         self.assertEqual(self.xmax, 9.92)
-
-
-if __name__ == '__main__':
-    unittest.main()

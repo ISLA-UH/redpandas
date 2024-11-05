@@ -1,8 +1,36 @@
 ## RedVox Pandas (RedPandas) Version History
 
-## 1.3.11 ()
+## 1.4.23 (2024-08-22)
+- Update matplotlib requirement to 3.9.2
+
+## 1.4.22 (2024-07-09)
+- Updated project requirements
+
+## 1.4.21 (2024-03-04)
+- Updated redvox requirements
+
+## 1.4.20 (2024-02-13)
+- Updated redvox requirements
+
+## 1.4.19 (2024-02-07)
+- Updated redvox requirements
+- Fixed error in requirements from 1.4.18
+
+## 1.4.17 (2023-11-21)
+- Updated redvox requirements
+
+## 1.4.16 (2023-11-17)
+- Updated redvox requirements
+
+## 1.4.14 (2023-10-23)
+- Updated requirements to redvox==3.7.0
+
+## 1.4.13 (2023-10-09)
 - Updated requirements
-- Added frequency_scaling option for plot_mesh_audio
+
+## 1.3.11 (2023-04-11)
+- Updated requirements
+- Added frequency_scaling option for plot_mesh_pandas_audio
 
 ## 1.3.10 (2023-02-15)
 - Added plot_wiggles for gyroscope and magnetometer sensors
@@ -109,7 +137,7 @@ is no data available.
 - Updated filter modules for 3 component sensors such as acceleration.
 - Added documentation
 
-Return to [_main page_](https://github.com/RedVoxInc/redpandas#redpandas).
+Return to [_main page_](https://github.com/ISLA-UH/redpandas#redpandas).
 
 
 

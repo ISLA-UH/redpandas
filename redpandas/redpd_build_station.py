@@ -5,7 +5,6 @@ RedPandas DataFrames.
 from typing import List, Dict, Union, Tuple
 
 import numpy as np
-# from redvox.common.station import Station
 from redvox.common.station import Station
 
 # RedPandas library
@@ -14,8 +13,10 @@ import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
 # Note: Available sensors in build station: ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
 # 'health', 'location', 'clock', 'synchronization', 'best_location', 'light]
-# To construct: ['ambient_temperature', 'compressed_audio', 'gravity', 'linear_acceleration', 'orientation',
+# Todo construct: ['ambient_temperature', 'compressed_audio', 'gravity', 'linear_acceleration', 'orientation',
 # 'proximity', 'relative_humidity', 'rotation vector']
+
+DEFAULT_FREQ_FILTER_LOW = 1. / rpd_scales.Slice.T100S  # default value for low frequency filter
 
 
 def station_to_dict_from_dw(
@@ -23,17 +24,18 @@ def station_to_dict_from_dw(
         sdk_version: str,
         sensor_labels: List[str],
         highpass_type: str = 'obspy',
-        frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
-        filter_order: int = 4) -> Dict[str, Union[str, None, float]]:
+        frequency_filter_low: float = DEFAULT_FREQ_FILTER_LOW,
+        filter_order: int = 4
+) -> Dict[str, Union[str, None, float]]:
     """
-    converts information from a station object created by a data window into a dictionary easily converted into a dataframe
+    converts information from a station object created by a data window into a dictionary for easy dataframe conversion
 
     :param station: RDVX station object
     :param sdk_version: version of Redvox SDK used to create the Station object
-    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer', 'gyroscope',
-        'magnetometer', 'health', 'location', 'image']
+    :param sensor_labels: the names of the sensors to extract, one of: ['audio', 'barometer', 'accelerometer',
+        'gyroscope', 'magnetometer', 'health', 'location', 'image']
     :param highpass_type: obspy', 'butter', 'rc', default 'obspy'
-    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param frequency_filter_low: apply highpass filter. Default is 100-second periods
     :param filter_order: the order of the filter integer. Default is 4
     :return: a dictionary ready for conversion into a dataframe
     """
@@ -68,7 +70,6 @@ def sensor_uneven(station: Station, sensor_label: str) -> Tuple[Union[None, floa
     :param sensor_label: one of: ['barometer', 'accelerometer', 'gyroscope', 'magnetometer']
     :return: sensor sample rate (Hz), timestamps, raw data and nans in sensor.
     """
-
     # default parameters
     sensor_sample_rate_hz = None
     sensor_epoch_s = None
@@ -91,7 +92,7 @@ def sensor_uneven(station: Station, sensor_label: str) -> Tuple[Union[None, floa
 def build_station(station: Station,
                   sensor_label: str = 'audio',
                   highpass_type: str = 'obspy',
-                  frequency_filter_low: float = 1./rpd_scales.Slice.T100S,
+                  frequency_filter_low: float = DEFAULT_FREQ_FILTER_LOW,
                   filter_order: int = 4) -> dict:
     """
     Obtain sensor data from RDVX station
@@ -101,7 +102,7 @@ def build_station(station: Station,
         'health', 'location', 'best_location', 'image', 'clock', 'synchronization']
     :param highpass_type: 'obspy', 'butter', or 'rc', default 'obspy'. Used for sensors barometer, acceleration,
         gyroscope, magnetometer
-    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param frequency_filter_low: apply highpass filter. Default is 100-second periods
     :param filter_order: the order of the filter integer. Default is 4
     :return: dictionary with sensor name, sample rate, timestamps, data (raw and highpassed)
     """
@@ -162,10 +163,12 @@ def audio_wf_time_build_station(station: Station,
                                 mean_type: str = "simple",
                                 raw: bool = False) -> dict:
     """
-    Builds mic waveform and times if it exists
+    Builds mic waveform and times if it exists.  returns empty dictionary if no data.  Defaults to "simple" mean_type
+    if not passed "lin".
 
     :param station: RDVX Station object
-    :param mean_type: "simple" (demean and replace nans with zeros), or "lin" (remove linear trend)
+    :param mean_type: "simple" (demean and replace nans with zeros), or "lin" (remove linear trend).
+        Defaults to "simple" if the value given is not one of the two options.
     :param raw: if false (default), boolean or nan mean removed
     :return: dictionary with sensor name, sample rate, timestamps, audio data
     """
@@ -174,15 +177,10 @@ def audio_wf_time_build_station(station: Station,
         mic_epoch_s = station.audio_sensor().data_timestamps() * rpd_scales.MICROS_TO_S
         mic_nans = np.array(np.argwhere(np.isnan(mic_wf_raw)))
 
-        if raw:
-            mic_wf = np.array(mic_wf_raw)
-        else:
-            if mean_type == "simple":
-                # Simple demean and replace nans with zeros. OK for mic, not OK for all other DC-biased sensors
-                mic_wf = rpd_prep.demean_nan(mic_wf_raw)
-            else:
-                # Remove linear trend
-                mic_wf = rpd_prep.detrend_nan(mic_wf_raw)
+        # Use raw if specified by user, otherwise use Simple demean and replace nans with zeros or Remove linear trend.
+        # OK for mic, not OK for all other DC-biased sensors
+        mic_wf = np.array(mic_wf_raw) if raw \
+            else rpd_prep.detrend_nan(mic_wf_raw) if mean_type == "lin" else rpd_prep.demean_nan(mic_wf_raw)
 
         return {'audio_sensor_name': station.audio_sensor().name,
                 'audio_sample_rate_nominal_hz': station.audio_sample_rate_nominal_hz(),
@@ -191,9 +189,8 @@ def audio_wf_time_build_station(station: Station,
                 'audio_wf_raw': mic_wf_raw,
                 'audio_wf': mic_wf,
                 'audio_nans': mic_nans.tolist()}
-    else:
-        print(f'Station {station.id()} has no audio data.')
-        return {}
+    print(f'Station {station.id()} has no audio data.')
+    return {}
 
 
 def location_build_station(station: Station) -> dict:
@@ -221,9 +218,8 @@ def location_build_station(station: Station) -> dict:
                 'location_bearing_accuracy': station.location_sensor().get_data_channel("bearing_accuracy"),
                 'location_speed_accuracy': station.location_sensor().get_data_channel("speed_accuracy"),
                 'location_provider': station.location_sensor().get_data_channel("location_provider")}
-    else:
-        print(f'Station {station.id()} has no location data.')
-        return {}
+    print(f'Station {station.id()} has no location data.')
+    return {}
 
 
 def best_location_build_station(station: Station) -> dict:
@@ -251,9 +247,8 @@ def best_location_build_station(station: Station) -> dict:
                 'best_location_bearing_accuracy': station.best_location_sensor().get_data_channel("bearing_accuracy"),
                 'best-location_speed_accuracy': station.best_location_sensor().get_data_channel("speed_accuracy"),
                 'best_location_provider': station.best_location_sensor().get_data_channel("location_provider")}
-    else:
-        print(f'Station {station.id()} has no best location data.')
-        return {}
+    print(f'Station {station.id()} has no best location data.')
+    return {}
 
 
 def state_of_health_build_station(station: Station) -> dict:
@@ -279,9 +274,8 @@ def state_of_health_build_station(station: Station) -> dict:
                 'available_ram_byte': station.health_sensor().get_data_channel('avail_ram'),
                 'available_disk_byte': station.health_sensor().get_data_channel('avail_disk'),
                 'cell_service_state': station.health_sensor().get_data_channel('cell_service')}
-    else:
-        print(f'Station {station.id()} has no health data.')
-        return {}
+    print(f'Station {station.id()} has no health data.')
+    return {}
 
 
 def image_build_station(station: Station) -> dict:
@@ -297,9 +291,8 @@ def image_build_station(station: Station) -> dict:
                 'image_epoch_s': station.image_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
                 'image_bytes': station.image_sensor().get_data_channel('image'),
                 'image_codec': station.image_sensor().get_data_channel('image_codec')}
-    else:
-        print(f'Station {station.id()} has no image data.')
-        return {}
+    print(f'Station {station.id()} has no image data.')
+    return {}
 
 
 def synchronization_build_station(station: Station) -> dict:
@@ -317,12 +310,12 @@ def synchronization_build_station(station: Station) -> dict:
                 'synchronization_latency_ms': synchronization.best_latency_per_exchange() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_offset_ms': synchronization.best_offset_per_exchange() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_best_offset_ms': synchronization.best_offset() * rpd_scales.MICROS_TO_MILLIS,
-                'synchronization_offset_delta_ms': synchronization.best_offset_per_exchange() * rpd_scales.MICROS_TO_MILLIS -
-                                                   synchronization.best_offset() * rpd_scales.MICROS_TO_MILLIS,
+                'synchronization_offset_delta_ms':
+                    synchronization.best_offset_per_exchange() * rpd_scales.MICROS_TO_MILLIS
+                    - synchronization.best_offset() * rpd_scales.MICROS_TO_MILLIS,
                 'synchronization_number_exchanges': synchronization.num_tri_messages()}
-    else:
-        print(f'Station {station.id()} has no timesync data.')
-        return {}
+    print(f'Station {station.id()} has no timesync data.')
+    return {}
 
 
 def clock_build_station(station: Station) -> dict:
@@ -343,9 +336,8 @@ def clock_build_station(station: Station) -> dict:
                 'clock_number_samples': clock.n_samples,
                 'clock_offset_slope': clock.slope,
                 'clock_offset_model_score': clock.score}
-    else:
-        print(f'Station {station.id()} has no timesync analysis.')
-        return {}
+    print(f'Station {station.id()} has no timesync analysis.')
+    return {}
 
 
 def light_build_station(station: Station) -> dict:
@@ -356,11 +348,9 @@ def light_build_station(station: Station) -> dict:
     :return: dictionary with sensor name, sample rate, timestamps, light data.
     """
     if station.has_light_data():
-
         return {'light_sensor_name': station.light_sensor().name,
                 'light_sample_rate_hz': station.light_sensor().sample_rate_hz(),
                 'light_epoch_s': station.light_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
                 'light_lux': station.light_sensor().get_data_channel('light')}
-    else:
-        print(f'Station {station.id()} has no luminosity data.')
-        return {}
+    print(f'Station {station.id()} has no luminosity data.')
+    return {}

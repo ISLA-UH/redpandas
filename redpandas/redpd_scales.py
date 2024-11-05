@@ -4,8 +4,6 @@ Scale conversions.
 
 import numpy as np
 
-# copied from scales in libquantum, decide if we want to use libquantum.scales or have a redpd scales
-
 """ Smallest number for 64-bit floats. Deploy to avoid division by zero or log zero singularities"""
 EPSILON = np.finfo(np.float64).eps
 NANOS_TO_S = 1E-9

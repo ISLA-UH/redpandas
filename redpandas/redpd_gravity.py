@@ -30,10 +30,8 @@ def get_gravity(accelerometer: np.ndarray, smoothing_factor: float) -> np.ndarra
     :param smoothing_factor: from get_smoothing_factor function
     :return: numpy array with gravity values
     """
-
     # initialize gravity array
     gravity = np.zeros(len(accelerometer)) * np.mean(accelerometer)
-
     # loop through to update gravity information
     for i in range(len(gravity) - 1):
         gravity[i + 1] = (1 - smoothing_factor) * gravity[i] + smoothing_factor * accelerometer[i + 1]
@@ -55,14 +53,10 @@ def get_gravity_and_linear_acceleration(accelerometer: np.ndarray,
     # get smoothing factor (alpha)
     alpha = get_smoothing_factor(sensor_sample_rate_hz=sensor_sample_rate_hz,
                                  low_pass_sample_rate_hz=low_pass_sample_rate_hz)
-
     # extract gravity via exponential filtering
     gravity = get_gravity(accelerometer=accelerometer, smoothing_factor=alpha)
-
-    # subtract gravity from acceleration
-    linear_acceleration = accelerometer - gravity
-
-    return gravity, linear_acceleration
+    # linear acceleration is acceleration - gravity
+    return gravity, accelerometer - gravity
 
 
 """
@@ -81,15 +75,12 @@ def get_sensor_lowpass(sensor_wf: np.ndarray,
     :param lowpass_frequency_hz: sample rate of low pass filter in Hz
     :return: sensor low pass
     """
-
     smoothing_factor = lowpass_frequency_hz / sensor_sample_rate_hz
     # initialize gravity array
     sensor_lowpass = np.zeros(len(sensor_wf))
-
     # loop through to update gravity information
     for i in range(len(sensor_lowpass) - 1):
         sensor_lowpass[i + 1] = (1 - smoothing_factor) * sensor_lowpass[i] + smoothing_factor * sensor_wf[i + 1]
-
     return sensor_lowpass
 
 
@@ -97,17 +88,12 @@ def get_lowpass_and_highpass(sensor_wf: np.ndarray,
                              sensor_sample_rate_hz: float,
                              lowpass_frequency_hz: float = 1) -> Tuple[np.ndarray, np.ndarray]:
     """
-
     :param sensor_wf: signal waveform
     :param sensor_sample_rate_hz: sample rate of sensor in Hz
     :param lowpass_frequency_hz: sample rate of low pass filter in Hz
     :return: sensor low pass and high pass
     """
-
     # extract low-frequency component via exponential filtering
     sensor_lowpass = get_sensor_lowpass(sensor_wf, sensor_sample_rate_hz, lowpass_frequency_hz)
-
     # subtract low-frequency component from waveform
-    sensor_highpass = sensor_wf - sensor_lowpass
-
-    return sensor_lowpass, sensor_highpass
+    return sensor_lowpass, sensor_wf - sensor_lowpass

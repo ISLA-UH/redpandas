@@ -1,3 +1,6 @@
+"""
+SkyFall spinning
+"""
 # Python libraries
 import matplotlib.pyplot as plt
 import numpy as np
@@ -5,7 +8,7 @@ import numpy as np
 # RedVox RedPandas and related RedVox modules
 import examples.skyfall.lib.skyfall_dw as sf_dw
 import redpandas.redpd_preprocess as rpd_prep
-from libquantum.plot_templates import plot_time_frequency_reps as pnl
+from quantum_inferno.plot_templates import plot_base as pbase, plot_templates as pnl
 
 # Configuration files
 from redpandas.redpd_config import DataLoadMethod
@@ -16,7 +19,6 @@ def main():
     """
     RedVox RedPandas time-domain representation of API900 data. Example: Skyfall.
     """
-
     # Label columns in dataframe
     station_label: str = "station_id"
 
@@ -46,6 +48,8 @@ def main():
 
             # Frame to mic start and end and plot
             event_reference_time_epoch_s = df_skyfall_data[audio_epoch_s_label][station][0]
+        else:
+            raise ValueError("Missing Audio label in the data.")
 
         if gyroscope_data_raw_label and gyroscope_fs_label and gyroscope_data_highpass_label \
                 in df_skyfall_data.columns:
@@ -68,21 +72,22 @@ def main():
             print('gyroscope max rotation rate, Hz:',
                   np.max(df_skyfall_data[gyroscope_data_raw_label][station][2] / (2*np.pi)))
             # Plot 3c raw gyroscope waveforms
-            pnl.plot_wf_wf_wf_vert(redvox_id=station_id_str,
-                                   wf_panel_2_sig=df_skyfall_data[gyroscope_data_raw_label][station][2] / (2*np.pi),
-                                   wf_panel_2_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-                                   wf_panel_1_sig=df_skyfall_data[gyroscope_data_raw_label][station][1] / (2*np.pi),
-                                   wf_panel_1_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-                                   wf_panel_0_sig=df_skyfall_data[gyroscope_data_raw_label][station][0] / (2*np.pi),
-                                   wf_panel_0_time=df_skyfall_data[gyroscope_epoch_s_label][station],
-                                   start_time_epoch=event_reference_time_epoch_s,
-                                   wf_panel_2_units="Gyr Z, rotation/s",
-                                   wf_panel_1_units="Gyr Y, rotation/s",
-                                   wf_panel_0_units="Gyr X, rotation/s",
-                                   figure_title=skyfall_config.event_name + ": Gyroscope raw",
-                                   figure_title_show=False,
-                                   label_panel_show=True,  # for press
-                                   labels_fontweight='bold')
+            pnl_wfb = pbase.WaveformPlotBase(station_id=station_id_str,
+                                             figure_title=skyfall_config.event_name + ": Gyroscope raw",
+                                             figure_title_show=False,
+                                             start_time_epoch=event_reference_time_epoch_s,
+                                             label_panel_show=True,  # for press
+                                             labels_fontweight='bold')
+            pnl_a = pbase.WaveformPanel(sig=df_skyfall_data[gyroscope_data_raw_label][station][0] / (2*np.pi),
+                                        time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                        label="Gyr X, rotation/s")
+            pnl_b = pbase.WaveformPanel(sig=df_skyfall_data[gyroscope_data_raw_label][station][1] / (2*np.pi),
+                                        time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                        label="Gyr Y, rotation/s")
+            pnl_c = pbase.WaveformPanel(sig=df_skyfall_data[gyroscope_data_raw_label][station][2] / (2*np.pi),
+                                        time=df_skyfall_data[gyroscope_epoch_s_label][station],
+                                        label="Gyr Z, rotation/s")
+            fig_3c_gyr_raw = pnl.plot_wf_3_vert(pnl_wfb, pnl_a, pnl_b, pnl_c)
 
         plt.show()
 

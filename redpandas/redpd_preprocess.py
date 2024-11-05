@@ -29,22 +29,17 @@ class NormType(Enum):
 
 
 # Auxiliary modules for building stations
-def find_nearest_idx(array: np.ndarray, value: float):
+def find_nearest_idx(array: np.ndarray, value: float) -> np.array:
     """
-    Return nearest idx for value in array
     :param array: np.array
     :param value: float/int
-    :return:
+    :return: nearest idx for value in array
     """
-    array = np.asarray(array)
-    idx_array = (np.abs(array - value)).argmin()
-    return idx_array
+    return (np.abs(np.asarray(array) - value)).argmin()
 
 
 def datetime_now_epoch_s() -> float:
     """
-    Returns the invocation Unix time in seconds
-
     :return: The current epoch timestamp as seconds since the epoch UTC
     """
     return dt.datetime_to_epoch_seconds_utc(dt.now())
@@ -52,8 +47,6 @@ def datetime_now_epoch_s() -> float:
 
 def datetime_now_epoch_micros() -> float:
     """
-    Returns the invocation Unix time in microseconds
-
     :return: The current epoch timestamp as microseconds since the epoch UTC
     """
     return dt.datetime_to_epoch_microseconds_utc(dt.now())
@@ -61,12 +54,10 @@ def datetime_now_epoch_micros() -> float:
 
 def normalize(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType = NormType.MAX) -> np.ndarray:
     """
-    Scale a 1D time series
-
     :param sig_wf: signal waveform
     :param scaling: scaling parameter, division
     :param norm_type: {'max', l1, l2}, optional
-    :return: The scaled series
+    :return: The scaled 1D time series
     """
     if norm_type == NormType.MAX:
         return sig_wf / np.nanmax(np.abs(sig_wf))
@@ -80,8 +71,6 @@ def normalize(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType = Nor
 
 def demean_nan(sig_wf: np.ndarray) -> np.ndarray:
     """
-    Detrend and normalize a 1D time series
-
     :param sig_wf: signal waveform
     :return: Detrended and normalized time series
     """
@@ -90,8 +79,6 @@ def demean_nan(sig_wf: np.ndarray) -> np.ndarray:
 
 def detrend_nan(sig_wf: np.ndarray) -> np.ndarray:
     """
-    Detrend and normalize a 1D time series
-
     :param sig_wf: signal waveform
     :return: Detrended and normalized time series
     """
@@ -100,22 +87,18 @@ def detrend_nan(sig_wf: np.ndarray) -> np.ndarray:
 
 def demean_nan_norm(sig_wf: np.ndarray, scaling: float = 1., norm_type: NormType = NormType.MAX) -> np.ndarray:
     """
-    Detrend and normalize a 1D time series
-
     :param sig_wf: signal waveform
     :param scaling: scaling parameter, division
     :param norm_type: {'max', l1, l2}, overrides scikit default of 'l2' by 'max'
-    :return: The detrended and denormalized series.
+    :return: The detrended and denormalized 1D time series.
     """
     return normalize(demean_nan(sig_wf), scaling=scaling, norm_type=norm_type)
 
 
 def demean_nan_matrix(sig_wf: np.ndarray) -> np.ndarray:
     """
-    Detrend and normalize a matrix of time series
-
     :param sig_wf: signal waveform
-    :return: The detrended and normalized signature
+    :return: The detrended and normalized signature of a matrix of time series
     """
     return np.nan_to_num(np.subtract(sig_wf.transpose(), np.nanmean(sig_wf, axis=1))).transpose()
 
@@ -135,12 +118,10 @@ def taper_tukey(sig_wf_or_time: np.ndarray,
 
 def pad_reflection_symmetric(sig_wf: np.ndarray) -> Tuple[np.ndarray, int]:
     """
-    Apply reflection transformation
-
     :param sig_wf: signal waveform
     :return: input signal with reflected edges, numbers of points folded per edge
     """
-    number_points_to_flip_per_edge = int(len(sig_wf)//2)
+    number_points_to_flip_per_edge = int(len(sig_wf) // 2)
     wf_folded = np.pad(np.copy(sig_wf),
                        (number_points_to_flip_per_edge, number_points_to_flip_per_edge),
                        'reflect')
@@ -160,12 +141,10 @@ def filter_reflection_highpass(sig_wf: np.ndarray,
     :return: signal folded and filtered
     """
     wf_folded, number_points_to_flip_per_edge = pad_reflection_symmetric(sig_wf)
-
     sig_folded_filtered = obspy.signal.filter.highpass(np.copy(wf_folded),
                                                        filter_cutoff_hz,
                                                        sample_rate_hz, corners=4,
                                                        zerophase=True)
-
     return sig_folded_filtered[number_points_to_flip_per_edge:-number_points_to_flip_per_edge]
 
 
@@ -176,7 +155,7 @@ def height_asl_from_pressure_below10km(bar_waveform: np.ndarray) -> np.ndarray:
     :param bar_waveform: barometric pressure in kPa
     :return: height ASL in m
     """
-    return -np.log(bar_waveform/rpd_scales.Slice.PREF_KPA)/rpd_scales.MG_RT
+    return -np.log(bar_waveform / rpd_scales.Slice.PREF_KPA) / rpd_scales.MG_RT
 
 
 def model_height_from_pressure_skyfall(pressure_kpa: np.ndarray) -> np.ndarray:
@@ -225,14 +204,12 @@ def bandpass_butter_uneven(sig_wf: np.ndarray,
     :return: bandpassed signal
     """
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
-    # filter_order = 4,
-    nyquist = 0.5 * sample_rate_hz
-    edge_low = frequency_cut_low_hz / nyquist
-    edge_high = 0.5
-    [b, a] = signal.butter(N=filter_order, Wn=[edge_low, edge_high], btype='bandpass')
+    edge_low = frequency_cut_low_hz / (0.5 * sample_rate_hz)
+    [b, a] = signal.butter(N=filter_order, Wn=[edge_low, 0.5], btype='bandpass')
     return signal.filtfilt(b, a, np.copy(sig_wf))
 
 
+# todo: return types?  -> Tuple[np.ndarray, np.ndarray, float, float, np.ndarray]
 def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
     """
     Variation of cross-correlation function cross_stas.xcorr_all for unevenly sampled data
@@ -244,17 +221,12 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
     """
     nx = len(sig_x)
     nref = len(sig_ref)
-    if nx > nref:
-        print('Vectors must have equal sampling and lengths')
-    elif nx < nref:
+    if nx != nref:
         print('Vectors must have equal sampling and lengths')
     elif nx == nref:
         """Cross correlation is centered in the middle of the record and has length NX"""
         # Fastest, o(NX) and can use FFT solution
-        if nx % 2 == 0:
-            xcorr_indexes = np.arange(-int(nx/2), int(nx/2))
-        else:
-            xcorr_indexes = np.arange(-int(nx/2), int(nx/2)+1)
+        xcorr_indexes = np.arange(-int(nx / 2), int(nx / 2) + (nx % 2))
 
         xcorr = signal.correlate(sig_ref, sig_x, mode='same')
         # Normalize
@@ -264,10 +236,9 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
         xcorr_peak = xcorr[xcorr_offset_index]
 
         return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
-
     else:
         print('One of the waveforms is broken')
-        return np.array([]), np.array([]), np.nan, np.nan, np.array([])
+    return np.array([]), np.array([]), np.nan, np.nan, np.array([])
 
 
 def highpass_from_diff(sig_wf: np.ndarray,
@@ -279,18 +250,20 @@ def highpass_from_diff(sig_wf: np.ndarray,
                        filter_order: int = 4) -> Tuple[np.ndarray, float]:
     """
     Preprocess barometer data:
+
     - remove nans and DC offset by getting the differential pressure in kPa
     - apply highpass filter at 100 second periods
     - reconstruct Pressure in kPa from differential pressure: P(i) = dP(i) + P(i-1)
+
+    zero phase filters are acausal
 
     :param sig_wf: signal waveform
     :param sig_epoch_s: signal time in epoch s
     :param sample_rate_hz: sampling rate in Hz
     :param fold_signal: apply reflection transformation and fold edges
     :param highpass_type: 'obspy', 'butter', 'rc'
-    :param frequency_filter_low: apply highpass filter. Default is 100 second periods
+    :param frequency_filter_low: apply highpass filter. Default is 100-second periods
     :param filter_order: filter corners / order. Default is 4.
-    :zero phase filters are acausal
     :return: filtered signal waveform, frequency_filter_low value used
     """
     # Apply diff to remove DC offset; difference of nans is a nan
@@ -300,10 +273,11 @@ def highpass_from_diff(sig_wf: np.ndarray,
 
     # Override default high pass at 100 seconds if signal is too short
     # May be able to zero pad ... with ringing. Or fold as needed.
-    if sig_epoch_s[-1] - sig_epoch_s[0] < 2/frequency_filter_low:
-        frequency_filter_low = 2/(sig_epoch_s[-1] - sig_epoch_s[0])
-        print('Default 100s highpass override. New highpass period = ', 1/frequency_filter_low)
+    if (sig_epoch_s[-1] - sig_epoch_s[0]) < (2 / frequency_filter_low):
+        frequency_filter_low = 2 / (sig_epoch_s[-1] - sig_epoch_s[0])
+        print(f'Default 100s highpass override. New highpass period = {1 / frequency_filter_low}')
 
+    number_points_folded = 0  # set just in case
     # Fold edges of wf
     if fold_signal is True:
         sensor_waveform_fold, number_points_folded = pad_reflection_symmetric(sensor_waveform_grad_dm)
@@ -318,7 +292,6 @@ def highpass_from_diff(sig_wf: np.ndarray,
                                          freq=frequency_filter_low,
                                          df=sample_rate_hz,
                                          zerophase=True)
-
     elif highpass_type == "butter":
         [b, a] = signal.butter(N=filter_order,
                                Wn=frequency_filter_low,
@@ -359,14 +332,9 @@ def df_unflatten(df: pd.DataFrame) -> None:
     Restores original shape of elements in all column. Used for loading dataframe from parquet.
 
     :param df: pandas DataFrame
-
     :return: original df
     """
-
-    df_ndim = df.filter(like='_ndim', axis=1)
-    og_names = [col.replace('_ndim', '') for col in df_ndim.columns]
-
-    for col_name in og_names:
+    for col_name in [col.replace('_ndim', '') for col in df.filter(like='_ndim', axis=1).columns]:
         col_ndim_label = col_name + "_ndim"
         col_values = df[col_name].to_numpy()
         for index_array in df.index:
@@ -374,7 +342,6 @@ def df_unflatten(df: pd.DataFrame) -> None:
                 if len(df[col_ndim_label][index_array]) == 2:
                     col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
                                                      int(df[col_ndim_label][index_array][1]))
-
                 if len(df[col_ndim_label][index_array]) == 3:  # tfr
                     col_values[index_array].shape = (int(df[col_ndim_label][index_array][0]),
                                                      int(df[col_ndim_label][index_array][1]),
@@ -392,7 +359,6 @@ def df_column_unflatten(df: pd.DataFrame,
     :param col_ndim_label: column label with dimensions for reshaping. Elements in column need to be a numpy array.
     :return: original df, replaces column values with reshaped ones
     """
-
     col_values = df[col_wf_label].to_numpy()
     for index_array in df.index:
         if len(df[col_ndim_label][index_array]) > 1:  # check that there is data

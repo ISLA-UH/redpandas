@@ -3,8 +3,9 @@
 The Skyfall data is a high-quality dataset that showcases the RedPandas library for processing smartphone data collected 
 with the [RedVox Infrasound Recorder app](https://www.redvoxsound.com).
 
-In essence, Skyfall is an event where a smartphone fell from a high altitude and landed on the ground. A balloon hoisted a commercial, off-the-shelf, smartphone to a height of 36 km (around 119,000 feet) and purposely burst
-to let the smartphone freefall (hence the name _Skyfall_). As the smartphone fell back to Earth, it recorded its 30 minute 
+In essence, Skyfall is an event where a smartphone fell from a high altitude and landed on the ground. A balloon hoisted 
+a commercial, off-the-shelf, smartphone to a height of 36 km (around 119,000 feet) and purposely burst to let the 
+smartphone freefall (hence the name _Skyfall_). As the smartphone fell back to Earth, it recorded its 30-minute 
 descent using the [RedVox Infrasound Recorder](https://www.redvoxsound.com/) app. 
 
 Using the data from this event, RedPandas is able to produce several products.

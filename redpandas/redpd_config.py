@@ -27,7 +27,6 @@ class DataLoadMethod(enum.Enum):
 
 
 class RedpdConfig:
-
     def __init__(self, input_directory: str,
                  event_name: str = "Redvox",
                  output_directory: Optional[str] = None,
@@ -39,7 +38,6 @@ class RedpdConfig:
                  start_buffer_minutes: Optional[int] = 3,
                  end_buffer_minutes: Optional[int] = 3,
                  tdr_load_method: Optional[str] = "datawindow"):
-
         """
         Configuration parameters for RedPandas
 
@@ -50,54 +48,40 @@ class RedpdConfig:
         :param station_ids: optional list of strings, list of station ids to filter on
         :param sensor_labels: optional list of strings, list of sensors. Default is "audio"
         :param event_start_epoch_s: optional float, start time in epoch s. Default is None
-        :param duration_s: optional int, durtion of event in minutes. Default is None
+        :param duration_s: optional int, duration of event in minutes. Default is None
         :param start_buffer_minutes: float representing the amount of minutes to include before the start datetime
-         when filtering data. Default is 3
+            when filtering data. Default is 3
         :param end_buffer_minutes: float representing the amount of minutes to include before the end datetime
-         when filtering data. Default is 3
+            when filtering data. Default is 3
         :param tdr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet".
-         Default is "datawindow"
+            Default is "datawindow"
         """
-
         self.input_dir = input_directory
         self.event_name = event_name
 
         # Check if input and output dir exists
         if not os.path.exists(self.input_dir):
-            print(f"Input directory does not exist, check path: {self.input_dir}")
-            exit()
+            raise FileNotFoundError(f"Input directory does not exist, check path: {self.input_dir}")
 
         if output_directory is not None:
             self.output_dir = output_directory
             if not os.path.exists(self.output_dir):
                 print(f"Creating output directory: {self.output_dir}")
-                os.mkdir(self.output_dir)
+                os.makedirs(self.output_dir)
         else:
             self.output_dir = os.path.join(self.input_dir, "rpd_files")
 
-        if output_filename_pkl_pqt is None:
-            self.output_filename_pkl_pqt = event_name
-        else:
-            self.output_filename_pkl_pqt = output_filename_pkl_pqt
-
+        self.output_filename_pkl_pqt = event_name if output_filename_pkl_pqt is None else output_filename_pkl_pqt
         self.dw_file: str = self.output_filename_pkl_pqt + ".pkl"
         self.pd_pqt_file: str = self.output_filename_pkl_pqt + "_df.parquet"
 
         self.station_ids = station_ids
-
-        if sensor_labels is not None:
-            self.sensor_labels = sensor_labels
-        else:
-            self.sensor_labels = ["audio"]
+        self.sensor_labels = ["audio"] if sensor_labels is None else sensor_labels
 
         self.event_start_epoch_s = event_start_epoch_s
         self.duration_s = duration_s
-
-        if duration_s is not None:
-            self.event_end_epoch_s: float = self.event_start_epoch_s + self.duration_s
-        else:
-            self.event_end_epoch_s = None
-
+        self.event_end_epoch_s: Optional[float] = \
+            None if duration_s is None else self.event_start_epoch_s + self.duration_s
         self.start_buffer_minutes = start_buffer_minutes
         self.end_buffer_minutes = end_buffer_minutes
 
@@ -109,9 +93,8 @@ class RedpdConfig:
 
 
 class TFRConfig:
-
     def __init__(self, tfr_type: str,
-                 tfr_order_number_N: int,
+                 tfr_order_number_n: int,
                  show_fig_titles: bool,
                  mesh_color_scale: Optional[Union[Dict[str, str] or str]] = 'range',
                  mesh_color_range: Optional[Union[Dict[str, float] or float]] = 18.,
@@ -121,15 +104,15 @@ class TFRConfig:
         Configuration parameters for skyfall_tfr_rpd
 
         :param tfr_type: string, 'stft' or 'cwt'
-        :param tfr_order_number_N: int, order number of the transform
+        :param tfr_order_number_n: int, order number of the transform
         :param show_fig_titles: bool, display or hide figure titles
         :param mesh_color_scale: string or dictionary of strings, color scale mode for spectrograms
         :param mesh_color_range: float or dictionary of floats, color range for spectrograms
         :param sensor_highpass: boolean or dictionary of booleans, use highpass of data if available
-        :param tfr_load_method: optional string, chose loading data method: "datawindow", "pickle", or "parquet"
+        :param tfr_load_method: optional string, choose loading data method: "datawindow", "pickle", or "parquet"
         """
         self.tfr_type = tfr_type
-        self.tfr_order_number_N = tfr_order_number_N
+        self.tfr_order_number_n = tfr_order_number_n
         self.show_fig_titles = show_fig_titles
         self.tfr_load_method = DataLoadMethod.method_from_str(tfr_load_method)
         self.sensor_labels = ['Audio', 'Bar', 'Acc', 'Gyr', 'Mag']
