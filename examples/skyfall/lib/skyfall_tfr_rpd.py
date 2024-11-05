@@ -3,6 +3,7 @@ Skyfall TFR RPD
 """
 # Python libraries
 import matplotlib.pyplot as plt
+import numpy as np
 
 # RedVox RedPandas and related RedVox modules
 import redpandas.redpd_preprocess as rpd_prep
