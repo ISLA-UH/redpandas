@@ -251,7 +251,7 @@ def main():
 
             # Plot location framework
             pnl_wfb.figure_title = skyfall_config.event_name + ": Location Framework"
-            pnl_a.sig = df_skyfall_data[location_speed_label][station][0]
+            pnl_a.sig = df_skyfall_data[location_speed_label][station]
             pnl_a.time = df_skyfall_data[location_epoch_s_label][station]
             pnl_a.label = "Speed, m/s"
             pnl_b.sig = df_range_z_speed['Z_m']*METERS_TO_KM
@@ -308,7 +308,7 @@ def main():
 
             # Other interesting fields: Estimated Height ASL, Internal Temp, % Battery
             pnl_wfb.figure_title = skyfall_config.event_name + ": Station Status"
-            pnl_a.sig = df_skyfall_data[health_battery_charge_label][station][0]
+            pnl_a.sig = df_skyfall_data[health_battery_charge_label][station]
             pnl_a.time = df_skyfall_data[health_epoch_s_label][station]
             pnl_a.label = "Battery %"
             pnl_b.sig = df_skyfall_data[health_internal_temp_deg_c_label][station]

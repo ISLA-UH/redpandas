@@ -176,7 +176,6 @@ def frame_panda(df: pd.DataFrame,
 def tfr_bits_panda(df: pd.DataFrame,
                    sig_wf_label: str,
                    sig_sample_rate_label: str,
-                   sig_timestamps_label: str,
                    order_number_input: float = 3,
                    tfr_type: str = 'cwt',
                    new_column_tfr_bits: str = 'tfr_bits',
@@ -188,7 +187,6 @@ def tfr_bits_panda(df: pd.DataFrame,
     :param df: input pandas data frame
     :param sig_wf_label: string for the waveform column name in df
     :param sig_sample_rate_label: string for column name with sample rate in Hz information in df
-    :param sig_timestamps_label: string for timestamp column name in df
     :param order_number_input: band order Nth
     :param tfr_type: 'cwt' or 'stft'.  if not either option, uses 'cwt'.
     :param new_column_tfr_bits: label for new column containing tfr in bits
@@ -196,7 +194,7 @@ def tfr_bits_panda(df: pd.DataFrame,
     :param new_column_tfr_frequency_hz: label for new column containing tfr frequency in Hz
     :return: input dataframe with new columns
     """
-    return tfr_bits_panda_window(df, sig_wf_label, sig_sample_rate_label, sig_timestamps_label, order_number_input,
+    return tfr_bits_panda_window(df, sig_wf_label, sig_sample_rate_label, "", order_number_input,
                                  tfr_type, new_column_tfr_bits, new_column_tfr_time_s, new_column_tfr_frequency_hz)
 
 
@@ -268,10 +266,6 @@ def tfr_bits_panda_window(df: pd.DataFrame,
                 _, sig_bits, sig_time_s, sig_frequency_hz = \
                     stft_from_sig(sig_wf=sig_wf_n,
                                   frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                  band_order_Nth=order_number_input)
-                _s, sig_bits2, sig_time_s2, sig_frequency_hz2 = \
-                    stft_from_siz(sig_wf=sig_wf_n,
-                                  frequency_sample_rate_hz=df[sig_sample_rate_label][n],
                                   band_order_nth=order_number_input)
             else:
                 # Compute complex wavelet transform (cwt) from signal duration
@@ -291,11 +285,6 @@ def tfr_bits_panda_window(df: pd.DataFrame,
                 sig_wf_n *= rpd_prep.taper_tukey(sig_wf_or_time=sig_wf_n, fraction_cosine=0.1)
                 if tfr_type == "stft":
                     # Compute complex wavelet transform (cwt) from signal duration
-                    _, sig_bits, sig_time_s, sig_frequency_hz = \
-                        stft_from_sig(sig_wf=sig_wf_n,
-                                      frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                      band_order_Nth=order_number_input)
-                else:
                     _, sig_bits, sig_time_s, sig_frequency_hz = \
                         stft_from_sig(sig_wf=sig_wf_n,
                                       frequency_sample_rate_hz=df[sig_sample_rate_label][n],
