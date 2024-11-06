@@ -1,7 +1,7 @@
 import unittest
 import numpy as np
 import pandas as pd
-from libquantum.spectra import stft_from_sig
+from redpandas.redpd_tfr import stft_from_sig
 import redpandas.redpd_plot.mesh as rpd_mesh
 
 
@@ -20,7 +20,7 @@ class TestFindYlabelTfr(unittest.TestCase):
         self.audio_STFT, self.audio_STFT_bits, _, _ = \
             stft_from_sig(sig_wf=self.sinewave_audio,
                           frequency_sample_rate_hz=self.sample_rate_audio,
-                          band_order_Nth=3)
+                          band_order_nth=3)
         # Create barometer
         self.sample_rate_barometer = 31
         self.signal_time_barometer = np.arange(self.start_time, self.end_time, 1/self.sample_rate_barometer)
@@ -35,7 +35,7 @@ class TestFindYlabelTfr(unittest.TestCase):
             self.bar_STFT, self.bar_STFT_bits, _, _ = \
                 stft_from_sig(sig_wf=self.sinewave_barometer[dimension],
                               frequency_sample_rate_hz=self.sample_rate_barometer,
-                              band_order_Nth=3)
+                              band_order_nth=3)
 
             self.bar_stft_all.append(self.bar_STFT)
             self.bar_stft_bits_all.append(self.bar_STFT_bits)
@@ -56,7 +56,7 @@ class TestFindYlabelTfr(unittest.TestCase):
             self.acc_STFT, self.acc_STFT_bits, _, _ = \
                 stft_from_sig(sig_wf=self.sinewave_acc[dimension],
                               frequency_sample_rate_hz=self.sample_rate_acc,
-                              band_order_Nth=3)
+                              band_order_nth=3)
 
             self.acc_stft_all.append(self.acc_STFT)
             self.acc_stft_bits_all.append(self.acc_STFT_bits)
@@ -203,7 +203,7 @@ class TestFindYlabelTfrIrregular(unittest.TestCase):
         self.audio_STFT, self.audio_STFT_bits, _, _ = \
             stft_from_sig(sig_wf=self.sinewave_audio,
                           frequency_sample_rate_hz=self.sample_rate_audio,
-                          band_order_Nth=3)
+                          band_order_nth=3)
         # Create barometer
         self.sample_rate_barometer = 31
         self.signal_time_barometer = np.arange(self.start_time, self.end_time, 1/self.sample_rate_barometer)
@@ -218,7 +218,7 @@ class TestFindYlabelTfrIrregular(unittest.TestCase):
             self.bar_STFT, self.bar_STFT_bits, _, _ = \
                 stft_from_sig(sig_wf=self.sinewave_barometer[dimension],
                               frequency_sample_rate_hz=self.sample_rate_barometer,
-                              band_order_Nth=3)
+                              band_order_nth=3)
 
             self.bar_stft_all.append(self.bar_STFT)
             self.bar_stft_bits_all.append(self.bar_STFT_bits)
@@ -239,7 +239,7 @@ class TestFindYlabelTfrIrregular(unittest.TestCase):
             self.acc_STFT, self.acc_STFT_bits, _, _ = \
                 stft_from_sig(sig_wf=self.sinewave_acc[dimension],
                               frequency_sample_rate_hz=self.sample_rate_acc,
-                              band_order_Nth=3)
+                              band_order_nth=3)
 
             self.acc_stft_all.append(self.acc_STFT)
             self.acc_stft_bits_all.append(self.acc_STFT_bits)
