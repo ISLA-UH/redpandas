@@ -288,7 +288,7 @@ def tfr_bits_panda_window(df: pd.DataFrame,
             raise ValueError(f"end_time_window parameter ('{end_time_window}') "
                              f"cannot be smaller than start_time_window parameter ('{start_time_window}')")
     for n in df.index:
-        if sig_wf_label not in df.columns or type(df[sig_wf_label][n]) == float:
+        if sig_wf_label not in df.columns or isinstance(df[sig_wf_label][n], float):
             tfr_bits.append(float("NaN"))
             tfr_time_s.append(float("NaN"))
             tfr_frequency_hz.append(float("NaN"))
