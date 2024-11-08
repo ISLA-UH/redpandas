@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.5.0 (2024-11-12)
+- Remove libquantum dependency in favor of quantum-inferno dependency
+
 ## 1.4.23 (2024-08-22)
 - Update matplotlib requirement to 3.9.2
 

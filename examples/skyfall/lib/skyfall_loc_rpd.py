@@ -61,7 +61,7 @@ def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parq
     dtime = pd.to_datetime(yyyymmdd + df['Time_hhmmss'], origin='unix')
 
     # Convert datetime to unix nanoseconds, then to seconds
-    dtime_unix_s = dtime.view('int64')*rpd_geo.NANOS_TO_S  # Python 3.9
+    dtime_unix_s = dtime.astype('int64') * rpd_geo.NANOS_TO_S  # Python 3.9
 
     skyfall_bounder_loc = df.filter(['Lat_deg', 'Lon_deg', 'Alt_m', 'Pres_kPa', 'Temp_C', 'Batt_V'])
     skyfall_bounder_loc.insert(0, 'Epoch_s', dtime_unix_s)

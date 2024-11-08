@@ -6,109 +6,58 @@ from typing import Optional, Tuple
 import numpy as np
 import pandas as pd
 import quantum_inferno.cwt_atoms as atoms
-import quantum_inferno.scales_dyadic as scales
+import quantum_inferno.scales_dyadic as scales_dyadic
 from quantum_inferno.utilities.rescaling import to_log2_with_epsilon
-from scipy.signal import ShortTimeFFT
-from scipy.signal.windows import hann
-from libquantum.spectra import stft_from_sig
+from quantum_inferno.utilities.calculations import get_num_points
+from quantum_inferno.styx_fft import stft_complex_pow2
 
 import redpandas.redpd_preprocess as rpd_prep
 from redpandas.redpd_preprocess import find_nearest_idx
 
 
-# TODO: NOT DONE, NOT TESTED
-def band_frequencies_nyquist(
-        frequency_order_input: float,
-        frequency_base_input: float,
-        frequency_ref_input: float,
-        frequency_low_input: float,
-        frequency_sample_rate_input: float
-) -> Tuple[float, float, np.ndarray, float, float, np.ndarray, np.ndarray, np.ndarray]:
-    """
-    Evaluate Standard Logarithmic Interval Time Parameters: ALWAYS USE HZ
-
-    :param frequency_order_input: Nth order
-    :param frequency_base_input: G2 or G3
-    :param frequency_ref_input: reference frequency
-    :param frequency_low_input: lowest frequency of interest
-    :param frequency_sample_rate_input: sample rate
-    :return: scale_order (Band order N > 1, defaults to 1.),
-        scale_base (positive reference Base G > 1, defaults to G3),
-        scale_band_number (Band number n),
-        frequency_ref (reference frequency value),
-        frequency_center_algebraic (Algebraic center of frequencies),
-        frequency_center_geometric (Geometric center of frequencies),
-        frequency_start (first frequency),
-        frequency_end (last frequency)
-
-    """
-    scale_ref_input = 1 / frequency_ref_input
-    scale_nyquist_input = 2 / frequency_sample_rate_input
-    scale_high_input = 1 / frequency_low_input
-
-    scale_order, scale_base, scale_band_number, \
-        scale_ref, scale_center_algebraic, scale_center_geometric, \
-        scale_start, scale_end = \
-        scales.band_intervals_periods(frequency_order_input, frequency_base_input, scale_ref_input,
-                                      scale_nyquist_input, scale_high_input)
-    frequency_ref = 1 / scale_ref
-    frequency_center_geometric = 1 / scale_center_geometric
-    frequency_end = 1 / scale_start
-    frequency_start = 1 / scale_end
-    frequency_center_algebraic = (frequency_end + frequency_start) / 2.
-
-    # Inherit the order, base, and band number
-    return scale_order, scale_base, -scale_band_number, frequency_ref, frequency_center_algebraic, \
-        frequency_center_geometric, frequency_start, frequency_end
-
-
-def stft_from_siz(sig_wf: np.ndarray,
+def stft_from_sig(sig_wf: np.ndarray,
                   frequency_sample_rate_hz: float,
-                  band_order_nth: float) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+                  band_order_nth: float,
+                  center_frequency_hz: float = None,
+                  octaves_below_center: int = 4) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
     """
     Stft from signal
 
     :param sig_wf: array with input signal
     :param frequency_sample_rate_hz: sample rate of frequency in Hz
     :param band_order_nth: Nth order of constant Q bands
+    :param center_frequency_hz: center frequency of the signal in Hz, defaults to 3/20 of Nyquist
+    :param octaves_below_center: number of octaves below center frequency to set the averaging frequency
     :return: numpy arrays of: STFT, STFT_bits, time_stft_s, frequency_stft_hz
     """
-    sig_duration_s = len(sig_wf) / frequency_sample_rate_hz
-    _, min_frequency_hz = atoms.chirp_scales_from_duration(band_order_nth=band_order_nth, sig_duration_s=sig_duration_s)
-    order_nth, scale_base, _, _, _, geometric_freq_center, frequency_start, frequency_end = \
-        band_frequencies_nyquist(frequency_order_input=band_order_nth,
-                                 frequency_base_input=scales.Slice.G2,
-                                 frequency_ref_input=scales.Slice.F1HZ,
-                                 frequency_low_input=min_frequency_hz,
-                                 frequency_sample_rate_input=frequency_sample_rate_hz)
-    cycles_m, q_gabor, _ = atoms.chirp_mqg_from_n(order_nth)
+    if center_frequency_hz is None:
+        center_frequency_hz = frequency_sample_rate_hz * 60.0 / 800.0
+    frequency_averaging_hz = center_frequency_hz / octaves_below_center
+    cycles_m = scales_dyadic.cycles_from_order(band_order_nth)
+    duration_fft_s = cycles_m / frequency_averaging_hz
+    ave_points_ceil_log2 = get_num_points(
+        sample_rate_hz=frequency_sample_rate_hz,
+        duration_s=duration_fft_s,
+        rounding_type="ceil",
+        output_unit="log2",
+    )
+    time_fft_nd: int = 2 ** ave_points_ceil_log2
+    if time_fft_nd > len(sig_wf):
+        time_fft_nd = len(sig_wf) // 2  # use integer division, set num points less than length of signal
+    stft_scaling = 2 * np.sqrt(np.pi) / time_fft_nd
 
-    # Choose the spectral resolution as the key parameter
-    frequency_resolution_min_hz = np.min(frequency_end - frequency_start)
-    frequency_resolution_max_hz = np.max(frequency_end - frequency_start)
-    frequency_resolution_hz_geo = np.sqrt(frequency_resolution_min_hz * frequency_resolution_max_hz)
-    stft_time_duration_s = 1 / frequency_resolution_hz_geo
-    stft_points_per_seg = int(frequency_sample_rate_hz * stft_time_duration_s)
+    tukey_alpha = 1.0
 
-    threshold = geometric_freq_center * (1 + 0.5 * 1.50018310546875 / q_gabor)  # > frequency_sample_rate_hz / 2.0:
-    # Remember frequency order is inverted because solution is in periods.
-    scale_number_bins = int(len(geometric_freq_center[np.argmax(threshold < 0.45 * frequency_sample_rate_hz):]))
-    cqt_points_hop_min = int(2**(np.floor(scale_number_bins / order_nth) - 1.))
+    frequency_stft_hz, time_stft_s, stft_complex = stft_complex_pow2(
+        sig_wf=sig_wf,
+        frequency_sample_rate_hz=frequency_sample_rate_hz,
+        segment_points=time_fft_nd,
+        alpha=tukey_alpha,
+    )
+    stft_complex *= stft_scaling
+    stft_bits = to_log2_with_epsilon(stft_complex)
 
-    stft_scaling = 2 * np.sqrt(np.pi) / stft_points_per_seg
-    w = hann(int(np.ceil(stft_points_per_seg / 2)))
-    stft = ShortTimeFFT(w, cqt_points_hop_min, frequency_sample_rate_hz,
-                        fft_mode="centered").stft(sig_wf, padding="zeros")
-
-    stft *= stft_scaling
-    stft_bits: np.ndarray = to_log2_with_epsilon(stft)
-
-    frames = np.arange(stft) if np.isscalar(stft) else np.arange(stft.shape[-1])
-    time_stft_s: np.ndarray = \
-        np.asanyarray((np.asanyarray(frames) * cqt_points_hop_min).astype(int)) / float(frequency_sample_rate_hz)
-    frequency_stft_hz = np.fft.rfftfreq(n=stft_points_per_seg - 1, d=1.0 / frequency_sample_rate_hz)
-
-    return stft, stft_bits, time_stft_s, frequency_stft_hz
+    return stft_complex, stft_bits, time_stft_s, frequency_stft_hz
 
 
 def sig_frame(sig: np.ndarray,
@@ -247,8 +196,8 @@ def tfr_bits_panda(df: pd.DataFrame,
     :param new_column_tfr_frequency_hz: label for new column containing tfr frequency in Hz
     :return: input dataframe with new columns
     """
-    return tfr_bits_panda_window(df, sig_wf_label, sig_sample_rate_label, "", order_number_input, tfr_type,
-                                 new_column_tfr_bits, new_column_tfr_time_s, new_column_tfr_frequency_hz)
+    return tfr_bits_panda_window(df, sig_wf_label, sig_sample_rate_label, "", order_number_input,
+                                 tfr_type, new_column_tfr_bits, new_column_tfr_time_s, new_column_tfr_frequency_hz)
 
 
 # INPUT ALIGNED DATA
@@ -319,10 +268,6 @@ def tfr_bits_panda_window(df: pd.DataFrame,
                 _, sig_bits, sig_time_s, sig_frequency_hz = \
                     stft_from_sig(sig_wf=sig_wf_n,
                                   frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                  band_order_Nth=order_number_input)
-                _s, sig_bits2, sig_time_s2, sig_frequency_hz2 = \
-                    stft_from_siz(sig_wf=sig_wf_n,
-                                  frequency_sample_rate_hz=df[sig_sample_rate_label][n],
                                   band_order_nth=order_number_input)
             else:
                 # Compute complex wavelet transform (cwt) from signal duration
@@ -345,7 +290,7 @@ def tfr_bits_panda_window(df: pd.DataFrame,
                     _, sig_bits, sig_time_s, sig_frequency_hz = \
                         stft_from_sig(sig_wf=sig_wf_n,
                                       frequency_sample_rate_hz=df[sig_sample_rate_label][n],
-                                      band_order_Nth=order_number_input)
+                                      band_order_nth=order_number_input)
                 else:
                     # Compute complex wavelet transform (cwt) from signal duration
                     _, sig_bits, sig_time_s, sig_frequency_hz = \

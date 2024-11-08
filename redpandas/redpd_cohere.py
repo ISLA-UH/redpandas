@@ -247,6 +247,21 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             frequency_ref_index = np.argmin(np.abs(frequency_coherence - frequency_ref_hz))
             frequency_coherence_max_index = np.argmax(coherence_welch)
 
+            # New magnitude_norm and phase values at coherence frequency closest to ref frequency
+            ref_frequency_hz = frequency_coherence[frequency_coherence_max_index]
+            ref_frequency_coherence = coherence_welch[frequency_ref_index]
+            ref_frequency_response_magnitude_bits = 0.5*to_log2_with_epsilon(magnitude_norm[frequency_ref_index])
+            ref_frequency_response_phase_degrees = phase_degrees[frequency_ref_index]
+
+            # Return max coherence values
+            max_coherence_frequency_hz = frequency_coherence[frequency_coherence_max_index]
+            max_coherence = np.max(coherence_welch)
+            max_coherence_response_magnitude_bits = 0.5*to_log2_with_epsilon(magnitude_norm[frequency_coherence_max_index])
+            max_coherence_response_phase_degrees = phase_degrees[frequency_coherence_max_index]
+
+            if n == m:
+                max_coherence_frequency_hz = np.nan
+
             if 'max_coherence' == export_option:
                 # Return max coherence values
                 coherence_frequency.append(np.nan if n == m else frequency_coherence[frequency_coherence_max_index])
