@@ -42,6 +42,8 @@ def stft_from_sig(sig_wf: np.ndarray,
         output_unit="log2",
     )
     time_fft_nd: int = 2 ** ave_points_ceil_log2
+    if time_fft_nd > len(sig_wf):
+        time_fft_nd = len(sig_wf) // 2  # use integer division, set num points less than length of signal
     stft_scaling = 2 * np.sqrt(np.pi) / time_fft_nd
 
     tukey_alpha = 1.0
