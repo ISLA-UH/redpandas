@@ -1,21 +1,16 @@
 """
 RedVox DataWindow related modules.
 """
-
-# Python libraries
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.figure import Figure
 from typing import Tuple
 
-
-# RedVox modules
+from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
+import numpy as np
 from redvox.common.data_window import DataWindow, DataWindowConfig
-from redvox.common.station import Station
-from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
 import redvox.common.date_time_utils as dt_utils
+from redvox.common.date_time_utils import MICROSECONDS_IN_SECOND
+from redvox.common.station import Station
 
-# RedPandas config
 from redpandas.redpd_config import RedpdConfig
 
 

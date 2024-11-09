@@ -5,12 +5,12 @@ import matplotlib.pyplot as plt
 from matplotlib.figure import Figure
 
 
-def plot_psd_coh(psd_sig,
-                 psd_ref,
-                 coherence_sig_ref,
-                 f_hz,
-                 f_min_hz,
-                 f_max_hz,
+def plot_psd_coh(psd_sig: np.ndarray,
+                 psd_ref: np.ndarray,
+                 coherence_sig_ref: np.ndarray,
+                 f_hz: float,
+                 f_min_hz: float,
+                 f_max_hz: float,
                  f_scale: str = "log",
                  sig_label: str = "PSD Sig",
                  ref_label: str = "PSD Ref",
@@ -69,12 +69,12 @@ def plot_psd_coh(psd_sig,
     return fig1
 
 
-def plot_response_scatter(h_magnitude,
-                          h_phase_deg,
-                          color_guide,
-                          f_hz,
-                          f_min_hz,
-                          f_max_hz,
+def plot_response_scatter(h_magnitude: np.ndarray,
+                          h_phase_deg: np.ndarray,
+                          color_guide: np.ndarray,
+                          f_hz: float,
+                          f_min_hz: float,
+                          f_max_hz: float,
                           f_scale: str = 'log',
                           fig_title: str = 'Response only valid at high coherence',
                           show_figure: bool = True) -> Figure:
@@ -88,7 +88,7 @@ def plot_response_scatter(h_magnitude,
     :param f_hz: frequency of coherence in Hz
     :param f_min_hz: minimum frequency to plot in Hz (x min limit)
     :param f_max_hz: maximum frequency to plot in Hz (x max limit)
-    :param f_scale: scale of x axis. One of {"linear", "log", "symlog", "logit"}. Default is "log"
+    :param f_scale: scale of x-axis. One of {"linear", "log", "symlog", "logit"}. Default is "log"
     :param fig_title: title of figure
     :param show_figure: show figure is True. Default is True
 

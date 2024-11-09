@@ -5,20 +5,21 @@ M. Garces, last updated 20210702.
 """
 
 import os
+from typing import List, Optional
+
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from quantum_inferno.synth import synthetic_signals as synthetics
 import scipy.io.wavfile as wavfile
 import scipy.signal as signal
 from scipy.fft import rfft, fftfreq
-from quantum_inferno.synth import synthetic_signals as synthetics
-import matplotlib.pyplot as plt
-from typing import List, Optional
 
 
 # Supported wav sample rates
-permitted_wav_fs_values = 8000., 16000., 48000., 96000., 192000.
-exception_str = "Wav sample rate must be 8000, 16000, 48000, 96000, or 192000  Hz"
-lowest_wav_fs_value = 8000.
+PERMITTED_WAV_FS_VALUES = 8000., 16000., 48000., 96000., 192000.
+EXCEPTION_STR = "Wav sample rate must be 8000, 16000, 48000, 96000, or 192000  Hz"
+LOWEST_WAV_FS_VALUE = 8000.
 
 
 def stretch_factor_str(sig_sample_rate_hz: float,
@@ -28,7 +29,7 @@ def stretch_factor_str(sig_sample_rate_hz: float,
 
     :param sig_sample_rate_hz: input signal sample rate
     :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
-    :return:
+    :return: string describing stretch factor
     """
     stretch_factor = wav_sample_rate_hz / sig_sample_rate_hz
     # If stretch factor is unity, no change
@@ -102,7 +103,6 @@ def decimate_to_aud(sig_wf: np.ndarray,
     :param new_sample_rate_hz: target wav sample rate
     :return: decimated signal
     """
-
     decimation_factor = int(np.round(sig_sample_rate_hz/new_sample_rate_hz))
 
     if decimation_factor >= 2:
@@ -118,16 +118,14 @@ def save_to_elastic_wav(sig_wf: np.ndarray,
                         wav_filename: str,
                         wav_sample_rate_hz: float = 8000.) -> None:
     """
-    Save input signal to wav file
+    Save input signal to a wav file.
 
     :param sig_wf: input signal waveform, reasonably well preprocessed
     :param sig_sample_rate_hz: input signal sample rate
     :param wav_filename: wav file name, with directory path
     :param wav_sample_rate_hz: wav sample rate; supports permitted_wav_fs_values
-    :return: Export to wav file
     """
-
-    if int(wav_sample_rate_hz) in permitted_wav_fs_values:
+    if int(wav_sample_rate_hz) in PERMITTED_WAV_FS_VALUES:
         stretch_str = stretch_factor_str(sig_sample_rate_hz=sig_sample_rate_hz,
                                          wav_sample_rate_hz=wav_sample_rate_hz)
         khz_str = sample_rate_str(wav_sample_rate_hz=wav_sample_rate_hz)
@@ -135,7 +133,7 @@ def save_to_elastic_wav(sig_wf: np.ndarray,
         synth_wav = 0.9 * np.real(sig_wf) / np.max(np.abs((np.real(sig_wf))))
         wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
     else:
-        print(exception_str)
+        print(EXCEPTION_STR)
 
 
 def save_to_resampled_wav(sig_wf: np.ndarray,
@@ -143,17 +141,15 @@ def save_to_resampled_wav(sig_wf: np.ndarray,
                           wav_filename: str,
                           wav_sample_rate_hz: float = 8000.) -> None:
     """
-    Save input signal to wav file
+    Save resampled input signal to wav file
 
     :param sig_wf: input signal waveform, reasonably well preprocessed
     :param sig_sample_rate_hz: input signal sample rate
     :param wav_filename: wav file name, with directory path
     :param wav_sample_rate_hz: wav sample rate; only 8kHz, 16kHz, and 48kHz
-    :return: Export to wav file
     """
-
     # Export to wav directory
-    if int(wav_sample_rate_hz) in permitted_wav_fs_values:
+    if int(wav_sample_rate_hz) in PERMITTED_WAV_FS_VALUES:
         resample_str = resample_factor_str(sig_sample_rate_hz=sig_sample_rate_hz,
                                            wav_sample_rate_hz=wav_sample_rate_hz)
         khz_str = sample_rate_str(wav_sample_rate_hz=wav_sample_rate_hz)
@@ -161,7 +157,7 @@ def save_to_resampled_wav(sig_wf: np.ndarray,
         synth_wav = 0.9 * np.real(sig_wf) / np.max(np.abs((np.real(sig_wf))))
         wavfile.write(export_filename, int(wav_sample_rate_hz), synth_wav)
     else:
-        print(exception_str)
+        print(EXCEPTION_STR)
 
 
 def pandas_to_resampled_wav(df: pd.DataFrame,
@@ -173,9 +169,10 @@ def pandas_to_resampled_wav(df: pd.DataFrame,
                             wav_sample_rate_hz: float = 8000.,
                             sample_rate_tolerance_percent: float = 1.) -> None:
     """
-    Ensonify a pandas data frame
+    Ensonify a pandas data frame to a wav file
     Tested for REDVOX AUDIO
-    :param df: data frame
+
+    :param df: dataframe with audio data
     :param sig_wf_label: label of signal to be ensonified
     :param sig_sample_rate_hz_label: label of sample rate
     :param sig_id_label: label to be used to id the signal
@@ -183,9 +180,7 @@ def pandas_to_resampled_wav(df: pd.DataFrame,
     :param output_wav_prefix: output name prefix for .wav files
     :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
     :param sample_rate_tolerance_percent: percent of permitted difference in sig and wav sample rates
-    :return: export to .wav
     """
-
     wav_directory = os.path.join(output_wav_directory, "wav")
     os.makedirs(wav_directory, exist_ok=True)
 
@@ -238,8 +233,9 @@ def pandas_to_elastic_wav(df: pd.DataFrame,
                           sig_id_label: str = "index",
                           wav_sample_rate_hz: float = 8000.) -> None:
     """
-    Ensonify a pandas data frame
+    Ensonify a pandas data frame to a wav file
     Tested for REDVOX AUDIO
+
     :param df: data frame
     :param sig_wf_label: label of signal to be ensonified
     :param sig_sample_rate_hz_label: label of sample rate
@@ -247,9 +243,7 @@ def pandas_to_elastic_wav(df: pd.DataFrame,
     :param output_wav_directory: output directory where .wav files are stored
     :param output_wav_prefix: output name prefix for .wav files
     :param wav_sample_rate_hz: nominal wav sample rate, default of 8 kHz
-    :return: export to .wav
     """
-
     wav_directory = os.path.join(output_wav_directory, "wav")
     os.makedirs(wav_directory, exist_ok=True)
 
@@ -271,7 +265,6 @@ def pandas_to_elastic_wav(df: pd.DataFrame,
 def dual_tone_test():
     """
     Sound check
-    :return:
     """
     dir_filename = "./test"
     # Test tone
@@ -327,7 +320,7 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
                             output_wav_filename: str = 'redvox',
                             sensor_name_list: Optional[List[str]] = None) -> None:
     """
-    Channel sensor data sonification
+    Channel sensor data sonification.  Creates a wav file for each sensor channel.
     Tested for REDVOX SENSOR (API M)
 
     :param df: input pandas data frame
@@ -338,7 +331,6 @@ def ensonify_sensors_pandas(df: pd.DataFrame,
     :param output_wav_directory: output directory where .wav files are stored
     :param output_wav_filename: output name for .wav files
     :param sensor_name_list: optional list of strings with channel names per sensor
-    :return: .wav files, plot
     """
     wav_directory = os.path.join(output_wav_directory, "wav")
     os.makedirs(wav_directory, exist_ok=True)

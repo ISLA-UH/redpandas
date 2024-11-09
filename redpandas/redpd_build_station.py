@@ -11,6 +11,7 @@ from redvox.common.station import Station
 import redpandas
 import redpandas.redpd_preprocess as rpd_prep
 import redpandas.redpd_scales as rpd_scales
+
 # Note: Available sensors in build station: ['audio', 'barometer', 'accelerometer', 'magnetometer', 'gyroscope',
 # 'health', 'location', 'clock', 'synchronization', 'best_location', 'light]
 # Todo construct: ['ambient_temperature', 'compressed_audio', 'gravity', 'linear_acceleration', 'orientation',
@@ -205,8 +206,8 @@ def location_build_station(station: Station) -> dict:
         return {'location_sensor_name': station.location_sensor().name,
                 'location_sample_rate_hz': station.location_sensor().sample_rate_hz(),
                 'location_epoch_s': station.location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
-                'location_gps_epoch_s': station.location_sensor().get_data_channel('gps_timestamps')
-                                        * rpd_scales.MICROS_TO_S,
+                'location_gps_epoch_s':
+                    station.location_sensor().get_data_channel('gps_timestamps') * rpd_scales.MICROS_TO_S,
                 'location_latitude': station.location_sensor().get_data_channel("latitude"),
                 'location_longitude': station.location_sensor().get_data_channel("longitude"),
                 'location_altitude': station.location_sensor().get_data_channel("altitude"),
@@ -234,8 +235,8 @@ def best_location_build_station(station: Station) -> dict:
         return {'best_location_sensor_name': station.best_location_sensor().name,
                 'best_location_sample_rate_hz': station.best_location_sensor().sample_rate_hz(),
                 'best_location_epoch_s': station.best_location_sensor().data_timestamps() * rpd_scales.MICROS_TO_S,
-                'best_location_gps_epoch_s': station.best_location_sensor().get_data_channel('gps_timestamps')
-                                             * rpd_scales.MICROS_TO_S,
+                'best_location_gps_epoch_s':
+                    station.best_location_sensor().get_data_channel('gps_timestamps') * rpd_scales.MICROS_TO_S,
                 'best_location_latitude': station.best_location_sensor().get_data_channel("latitude"),
                 'best_location_longitude': station.best_location_sensor().get_data_channel("longitude"),
                 'best_location_altitude': station.best_location_sensor().get_data_channel("altitude"),

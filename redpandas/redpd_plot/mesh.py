@@ -29,7 +29,7 @@ def find_wiggle_num_tfr(df: pd.DataFrame, mesh_tfr_label: Union[str, List[str]])
         mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
         for n in df.index:
             # check column exists and not empty
-            if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][n]) != float:
+            if mesh_tfr_label_individual in df.columns and not isinstance(df[mesh_tfr_label_individual][n], float):
                 is_one_chan = df[mesh_tfr_label_individual][n].ndim == 2 \
                               or (mesh_tfr_label_individual.find("pressure") == 0
                                   or mesh_tfr_label_individual.find("bar") == 0)
@@ -54,14 +54,14 @@ def find_ylabel_tfr(df: pd.DataFrame,
         labels provided needs to match the number of stations and signals in df.
     :return: list of strings with y labels
     """
-    if sig_id_label == "index" or (type(sig_id_label) == str and sig_id_label in df.columns):
+    if sig_id_label == "index" or (isinstance(sig_id_label, str) and sig_id_label in df.columns):
         wiggle_yticklabel = []  # name/y-label of wiggles
 
         for mesh_n in range(len(mesh_tfr_label)):
             mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
             for n in df.index:
                 # check column exists and not empty
-                if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][n]) != float:
+                if mesh_tfr_label_individual in df.columns and not isinstance(df[mesh_tfr_label_individual][n], float):
                     if df[mesh_tfr_label_individual][n].ndim == 2:  # aka audio
                         # Establish y-label for wiggle; either an index station or custom list
                         wiggle_yticklabel.append(df.index[n] if sig_id_label == "index" else df[sig_id_label][n])
@@ -99,7 +99,8 @@ def find_x_max_min_lim(df: pd.DataFrame,
             mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
             mesh_time_label_individual = mesh_time_label[mesh_n]  # individual mesh label from list
             # check column exists and not empty
-            if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_element]) != float:
+            if (mesh_tfr_label_individual in df.columns
+                    and not isinstance(df[mesh_tfr_label_individual][index_element], float)):
                 if df[mesh_tfr_label_individual][index_element].ndim == 2:  # aka audio
                     # Extract max/min x limit for the one wiggle
                     x_lim_min.append(np.min(df[mesh_time_label_individual][index_element]))
@@ -138,7 +139,8 @@ def find_tfr_max_min_lim(df: pd.DataFrame,
         for mesh_n in range(len(mesh_tfr_label)):
             mesh_tfr_label_individual = mesh_tfr_label[mesh_n]  # individual mesh label from list
             # check column exists and not empty
-            if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_element]) != float:
+            if (mesh_tfr_label_individual in df.columns
+                    and not isinstance(df[mesh_tfr_label_individual][index_element], float)):
                 if df[mesh_tfr_label_individual][index_element].ndim == 2:  # aka audio
                     # Extract max/min mesh tfr value for each wiggle that will be plotted
                     tfr_min.append(np.min(df[mesh_tfr_label_individual][index_element]))
@@ -228,11 +230,11 @@ def plot_mesh_pandas(df: pd.DataFrame,
     """
     # Create List of mesh tfr to loop through later
     # If given only one, aka a string, make it a list of length 1
-    if type(mesh_tfr_label) == str:
+    if isinstance(mesh_tfr_label, str):
         mesh_tfr_label = [mesh_tfr_label]
-    if type(mesh_time_label) == str:
+    if isinstance(mesh_time_label, str):
         mesh_time_label = [mesh_time_label]
-    if type(mesh_frequency_label) == str:
+    if isinstance(mesh_frequency_label, str):
         mesh_frequency_label = [mesh_frequency_label]
 
     # Check mesh, time and frequency are the same length:
@@ -308,9 +310,9 @@ def plot_mesh_pandas(df: pd.DataFrame,
             mesh_frequency_label_individual = mesh_frequency_label[mesh_n]  # individual mesh label from list
 
             # check column exists and not empty
-            if mesh_tfr_label_individual in df.columns and type(df[mesh_tfr_label_individual][index_signal]) != float:
+            if (mesh_tfr_label_individual in df.columns
+                    and not isinstance(df[mesh_tfr_label_individual][index_signal], float)):
                 if df[mesh_tfr_label_individual][index_signal].ndim == 2:  # aka audio wiggle
-                    # todo: this can be a function, if i can figure out what's supposed to come back
                     if common_colorbar:
                         ax = fig.add_subplot(gs[index_panel_order, 0])
                         plotted = ax.pcolormesh(df[mesh_time_label_individual][index_signal],
@@ -324,7 +326,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                 snap=True)
                     else:
                         # Color scaling calculation if colorbar False
-                        if type(mesh_color_scaling) == str:
+                        if isinstance(mesh_color_scaling, str):
                             mesh_color_min, mesh_color_max = \
                                 pbase.mesh_colormap_limits(df[mesh_tfr_label_individual][index_signal],
                                                            mesh_color_scaling,
@@ -401,7 +403,7 @@ def plot_mesh_pandas(df: pd.DataFrame,
                                                     snap=True)
                         else:
                             # Color scaling calculation if colorbar False
-                            if type(mesh_color_scaling) == str:
+                            if isinstance(mesh_color_scaling, str):
                                 mesh_color_min, mesh_color_max = \
                                     pbase.mesh_colormap_limits(
                                           df[mesh_tfr_label_individual][index_signal][index_dimension],
@@ -483,7 +485,8 @@ def plot_mesh_pandas(df: pd.DataFrame,
 
     # Common x and y labels
     time_string = "Time (s)" if t0_sig_epoch_s is None \
-        else f"Time (s) relative to {dt.datetime.utcfromtimestamp(t0_sig_epoch_s).strftime('%Y-%m-%d %H:%M:%S')}"
+        else (f"Time (s) relative to "
+              f"{dt.datetime.fromtimestamp(t0_sig_epoch_s, tz=dt.timezone.utc).strftime('%Y-%m-%d %H:%M:%S')}")
     axes.set_xlabel(time_string, size=FigParam().text_size, labelpad=10)
 
     # Format spacing in figure

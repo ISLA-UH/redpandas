@@ -3,8 +3,9 @@ Functions to integrate, and apply complimentary filters for phone orientation.
 """
 
 import numpy as np
-from scipy.integrate import cumulative_trapezoid
 from typing import List, Tuple
+
+from scipy.integrate import cumulative_trapezoid
 
 
 def remove_dc_offset(sensor_wf: np.ndarray, start_loc: int = None, end_loc: int = None) -> np.ndarray:

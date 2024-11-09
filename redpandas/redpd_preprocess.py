@@ -2,17 +2,15 @@
 Utilities that can work with values containing nans. Mainly used for data manipulation
 before construction of RedPandas DataFrame.
 """
-
 from enum import Enum
 from typing import Tuple, Union
 
 import numpy as np
-from scipy import signal
 import obspy.signal.filter
 import pandas as pd
-
-# RedVox and RedPandas
 from redvox.common import date_time_utils as dt
+from scipy import signal
+
 import redpandas.redpd_iterator as rdp_iter
 import redpandas.redpd_scales as rpd_scales
 
@@ -205,12 +203,11 @@ def bandpass_butter_uneven(sig_wf: np.ndarray,
     """
     # Frequencies are scaled by Nyquist, with 1 = Nyquist
     edge_low = frequency_cut_low_hz / (0.5 * sample_rate_hz)
-    [b, a] = signal.butter(N=filter_order, Wn=[edge_low, 0.5], btype='bandpass')
+    [b, a] = signal.butter(N=filter_order, Wn=[edge_low, 0.5], btype="bandpass")
     return signal.filtfilt(b, a, np.copy(sig_wf))
 
 
-# todo: return types?  -> Tuple[np.ndarray, np.ndarray, float, float, np.ndarray]
-def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
+def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float, float, np.ndarray]:
     """
     Variation of cross-correlation function cross_stas.xcorr_all for unevenly sampled data
     with identical sampling and duration.
@@ -222,7 +219,7 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
     nx = len(sig_x)
     nref = len(sig_ref)
     if nx != nref:
-        print('Vectors must have equal sampling and lengths')
+        print("Vectors must have equal sampling and lengths")
     elif nx == nref:
         """Cross correlation is centered in the middle of the record and has length NX"""
         # Fastest, o(NX) and can use FFT solution
@@ -237,7 +234,7 @@ def xcorr_uneven(sig_x: np.ndarray, sig_ref: np.ndarray):
 
         return xcorr, xcorr_indexes, xcorr_peak, xcorr_offset_index, xcorr_offset_samples
     else:
-        print('One of the waveforms is broken')
+        print("One of the waveforms is broken")
     return np.array([]), np.array([]), np.nan, np.nan, np.array([])
 
 
@@ -275,7 +272,7 @@ def highpass_from_diff(sig_wf: np.ndarray,
     # May be able to zero pad ... with ringing. Or fold as needed.
     if (sig_epoch_s[-1] - sig_epoch_s[0]) < (2 / frequency_filter_low):
         frequency_filter_low = 2 / (sig_epoch_s[-1] - sig_epoch_s[0])
-        print(f'Default 100s highpass override. New highpass period = {1 / frequency_filter_low}')
+        print(f"Default 100s highpass override. New highpass period = {1 / frequency_filter_low}")
 
     number_points_folded = 0  # set just in case
     # Fold edges of wf
@@ -296,8 +293,8 @@ def highpass_from_diff(sig_wf: np.ndarray,
         [b, a] = signal.butter(N=filter_order,
                                Wn=frequency_filter_low,
                                fs=sample_rate_hz,
-                               btype='highpass',
-                               output='ba')
+                               btype="highpass",
+                               output="ba")
         # Zero phase, acausal
         sensor_waveform_dp_filtered = signal.filtfilt(b, a, sensor_waveform_fold)
 
@@ -335,7 +332,7 @@ def df_unflatten(df: pd.DataFrame) -> None:
     :return: original df
     """
     for col_name in [col.replace('_ndim', '') for col in df.filter(like='_ndim', axis=1).columns]:
-        col_ndim_label = col_name + "_ndim"
+        col_ndim_label = f"{col_name}_ndim"
         col_values = df[col_name].to_numpy()
         for index_array in df.index:
             if len(df[col_ndim_label][index_array]) > 1:  # check that there is data

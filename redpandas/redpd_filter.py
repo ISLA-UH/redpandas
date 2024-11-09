@@ -1,12 +1,13 @@
 """
 Utils for filtering pandas dataframes.
 """
+from typing import List, Tuple, Union
+
 import numpy as np
 import pandas as pd
 from scipy import signal
-import redpandas.redpd_preprocess as rpd_prep
 
-from typing import List, Tuple, Union
+import redpandas.redpd_preprocess as rpd_prep
 
 
 # Utils for filter modules
@@ -67,7 +68,7 @@ def decimate_individual_station(sig_wf: np.array,
 # Main filter modules
 def signal_zero_mean_pandas(df: pd.DataFrame,
                             sig_wf_label: str,
-                            new_column_label: str = 'zero_mean') -> pd.DataFrame:
+                            new_column_label: str = "zero_mean") -> pd.DataFrame:
     """
     Eliminate DC offset from all signals in df
 
@@ -80,7 +81,7 @@ def signal_zero_mean_pandas(df: pd.DataFrame,
     new_column_label_sig_data = new_column_label
     list_zero_mean_data = []  # list that will be converted to a column
     for n in df.index:
-        if type(df[sig_wf_label][n]) == float:
+        if isinstance(df[sig_wf_label][n], float):
             list_zero_mean_data.append(float("NaN"))
             continue
         if df[sig_wf_label][n].ndim == 1:
@@ -99,7 +100,7 @@ def signal_zero_mean_pandas(df: pd.DataFrame,
 def taper_tukey_pandas(df: pd.DataFrame,
                        sig_wf_label: str,
                        fraction_cosine: float,
-                       new_column_label_append: str = 'taper') -> pd.DataFrame:
+                       new_column_label_append: str = "taper") -> pd.DataFrame:
     """
     Apply taper to all signals in df
 
@@ -112,7 +113,7 @@ def taper_tukey_pandas(df: pd.DataFrame,
     list_taper = []
 
     for row in df.index:
-        if type(df[sig_wf_label][row]) == float:
+        if isinstance(df[sig_wf_label][row], float):
             list_taper.append(float("NaN"))
             continue
         if df[sig_wf_label][row].ndim == 1:
@@ -138,8 +139,8 @@ def taper_tukey_pandas(df: pd.DataFrame,
 def normalize_pandas(df: pd.DataFrame,
                      sig_wf_label: str,
                      scaling: float = 1.0,
-                     norm_type: str = 'max',
-                     new_column_label: str = 'normalized') -> pd.DataFrame:
+                     norm_type: str = "max",
+                     new_column_label: str = "normalized") -> pd.DataFrame:
     """
     Normalize all signals in df
 
@@ -150,18 +151,18 @@ def normalize_pandas(df: pd.DataFrame,
     :param new_column_label:  string for label for new column containing normalized signal data
     :return: original data frame with added column for normalized signal data
     """
-    if norm_type == 'max':
+    if norm_type == "max":
         norm_type_utils = rpd_prep.NormType.MAX
-    elif norm_type == 'l1':
+    elif norm_type == "l1":
         norm_type_utils = rpd_prep.NormType.L1
-    elif norm_type == 'l2':
+    elif norm_type == "l2":
         norm_type_utils = rpd_prep.NormType.L2
     else:
         norm_type_utils = rpd_prep.NormType.OTHER
 
     list_normalized_signals = []  # list that will be converted to a column
     for row in range(len(df)):
-        if type(df[sig_wf_label][row]) == float:
+        if isinstance(df[sig_wf_label][row], float):
             list_normalized_signals.append(float("NaN"))
             continue
         if df[sig_wf_label][row].ndim == 1:
@@ -187,9 +188,9 @@ def decimate_signal_pandas(df: pd.DataFrame,
                            sig_timestamps_label: str,
                            sample_rate_hz_label: str,
                            filter_order: int = 8,
-                           new_column_label_decimated_sig: str = 'decimated_sig_data',
-                           new_column_label_decimated_sig_timestamps: str = 'decimated_sig_epoch',
-                           new_column_label_decimated_sample_rate_hz: str = 'decimated_sample_rate_hz',
+                           new_column_label_decimated_sig: str = "decimated_sig_data",
+                           new_column_label_decimated_sig_timestamps: str = "decimated_sig_epoch",
+                           new_column_label_decimated_sample_rate_hz: str = "decimated_sample_rate_hz",
                            verbose: bool = False) -> pd.DataFrame:
     """
     Decimate all signal data (via spicy.signal.decimate). Decimates to the smallest sample rate recorded in data frame
@@ -212,11 +213,11 @@ def decimate_signal_pandas(df: pd.DataFrame,
     """
     # rate to downsample to is either the min sample rate in sample rate column or passed value
     min_sample_rate = \
-        df[sample_rate_hz_label].min() if downsample_frequency_hz == 'Min' or downsample_frequency_hz == 'min' \
+        df[sample_rate_hz_label].min() if downsample_frequency_hz == "Min" or downsample_frequency_hz == "min" \
         else int(downsample_frequency_hz)
 
     if verbose:
-        print(f'\nAll signals will de downsampled to (or as close to) {min_sample_rate} Hz \n')
+        print(f"\nAll signals will de downsampled to (or as close to) {min_sample_rate} Hz \n")
 
     # list that will be converted to a columns added to the original df
     list_all_decimated_timestamps = []
@@ -224,12 +225,12 @@ def decimate_signal_pandas(df: pd.DataFrame,
     list_all_decimated_sample_rate_hz = []
 
     for row in range(len(df)):  # for row in df
-        if type(df[sig_wf_label][row]) == float:
+        if isinstance(df[sig_wf_label][row], float):
             list_all_decimated_timestamps.append(float("NaN"))
             list_all_decimated_data.append(float("NaN"))
             list_all_decimated_sample_rate_hz.append(float("NaN"))
             if verbose:
-                print(f'No data found for {df[sig_id_label][row]} {sig_wf_label}')
+                print(f"No data found for {df[sig_id_label][row]} {sig_wf_label}")
             continue
 
         if df[sample_rate_hz_label][row] != min_sample_rate:
@@ -237,7 +238,7 @@ def decimate_signal_pandas(df: pd.DataFrame,
             downsampling_factor = int(df[sample_rate_hz_label][row] / min_sample_rate)
             if downsampling_factor <= 1:
                 if verbose:
-                    print(f'{df[sig_id_label][row]} can not be downsampled to {min_sample_rate} Hz')
+                    print(f"{df[sig_id_label][row]} can not be downsampled to {min_sample_rate} Hz")
                 # store the original timestamp/data/sample rate values
                 list_all_decimated_timestamps.append(df[sig_timestamps_label][row])
                 list_all_decimated_data.append(df[sig_wf_label][row])
@@ -250,9 +251,9 @@ def decimate_signal_pandas(df: pd.DataFrame,
                                                 sig_wf=df[sig_wf_label][row],
                                                 sample_rate_hz=df[sample_rate_hz_label][row])
                 if verbose:
-                    print(f'{df[sig_id_label][row]} data downsampled to '
-                          f'{df[sample_rate_hz_label][row] / downsampling_factor} Hz '
-                          f'by downsampling factor of {downsampling_factor}')
+                    print(f"{df[sig_id_label][row]} data downsampled to "
+                          f"{df[sample_rate_hz_label][row] / downsampling_factor} Hz "
+                          f"by downsampling factor of {downsampling_factor}")
                 # store new decimated timestamp, data and sample rate
                 list_all_decimated_timestamps.append(decimated_timestamp)
                 list_all_decimated_data.append(decimated_data)
@@ -278,9 +279,9 @@ def decimate_signal_pandas(df: pd.DataFrame,
                     list_temporary_data_decimate_storage.append(decimated_data)
                     list_temporary_sample_rate_hz.append(list_temporary_sample_rate_hz[index_list_storage] / prime)
                     if verbose:
-                        print(f'{df[sig_id_label][row]} data downsampled to '
-                              f'{list_temporary_sample_rate_hz[index_list_storage] / prime} Hz '
-                              f'by downsampling factor of {prime}')
+                        print(f"{df[sig_id_label][row]} data downsampled to "
+                              f"{list_temporary_sample_rate_hz[index_list_storage] / prime} Hz "
+                              f"by downsampling factor of {prime}")
                 # once timestamps/data/sample rate decimated through all the steps (aka prime factors),
                 # store in general list that will be converted to a df column
                 # we want the last element of the temporary list aka the last decimated step
@@ -289,7 +290,7 @@ def decimate_signal_pandas(df: pd.DataFrame,
                 list_all_decimated_sample_rate_hz.append(list_temporary_sample_rate_hz[-1])
         else:  # if no decimation necessary, store the original timestamp/data/sample rate values
             if verbose:
-                print(f'{df[sig_id_label][row]} does not need to be downsampled')
+                print(f"{df[sig_id_label][row]} does not need to be downsampled")
             list_all_decimated_timestamps.append(df[sig_timestamps_label][row])
             list_all_decimated_data.append(df[sig_wf_label][row])
             list_all_decimated_sample_rate_hz.append(df[sample_rate_hz_label][row])
@@ -358,9 +359,9 @@ def bandpass_butter_pandas(df: pd.DataFrame,
                            frequency_cut_high_hz: float,
                            filter_order: int = 4,
                            tukey_alpha: float = 0.5,
-                           new_column_label_sig_bandpass: str = 'bandpass',
-                           new_column_label_frequency_low: str = 'frequency_low_hz',
-                           new_column_label_frequency_high: str = 'frequency_high_hz') -> pd.DataFrame:
+                           new_column_label_sig_bandpass: str = "bandpass",
+                           new_column_label_frequency_low: str = "frequency_low_hz",
+                           new_column_label_frequency_high: str = "frequency_high_hz") -> pd.DataFrame:
     """
     Apply a taper and a butterworth bandpass filter
 
@@ -395,7 +396,7 @@ def bandpass_butter_pandas(df: pd.DataFrame,
             edge_high = 0.5  # Half of nyquist
         [b, a] = signal.butter(N=filter_order,
                                Wn=[edge_low, edge_high],
-                               btype='bandpass')
+                               btype="bandpass")
         if df[sig_wf_label][j].ndim == 1:
             nyquist = 0.5 * df[sig_sample_rate_label][j]
             edge_low = frequency_cut_low_hz / nyquist
@@ -404,7 +405,7 @@ def bandpass_butter_pandas(df: pd.DataFrame,
                 edge_high = 0.5  # Half of nyquist
             [b, a] = signal.butter(N=filter_order,
                                    Wn=[edge_low, edge_high],
-                                   btype='bandpass')
+                                   btype="bandpass")
             sig_taper = np.copy(df[sig_wf_label][j])
             sig_taper = sig_taper * signal.windows.tukey(M=len(sig_taper), alpha=tukey_alpha)
             sig_bandpass = signal.filtfilt(b, a, sig_taper)
@@ -438,9 +439,9 @@ def highpass_butter_pandas(df: pd.DataFrame,
                            frequency_cut_high_hz: float,
                            filter_order: int = 4,
                            tukey_alpha: float = 0.5,
-                           new_column_label_sig_highpass: str = 'highpass',
-                           new_column_label_frequency_low: str = 'frequency_low_hz',
-                           new_column_label_frequency_high: str = 'frequency_high_hz') -> pd.DataFrame:
+                           new_column_label_sig_highpass: str = "highpass",
+                           new_column_label_frequency_low: str = "frequency_low_hz",
+                           new_column_label_frequency_high: str = "frequency_high_hz") -> pd.DataFrame:
     """
     Apply a taper and a butterworth bandpass filter
 
@@ -472,7 +473,7 @@ def highpass_butter_pandas(df: pd.DataFrame,
         edge_low = frequency_cut_low_hz / nyquist
         [b, a] = signal.butter(N=filter_order,
                                Wn=edge_low,
-                               btype='high')
+                               btype="high")
         if df[sig_wf_label][j].ndim == 1:
             sig_taper = np.copy(df[sig_wf_label][j])
             sig_taper = sig_taper * signal.windows.tukey(M=len(sig_taper), alpha=tukey_alpha)

@@ -3,6 +3,17 @@ TFR for Space X sonic boom on 20210918
 """
 from tempfile import TemporaryDirectory
 import os.path
+
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pyarrow as pa
+import pyarrow.parquet as pq
+from quantum_inferno.plot_templates import plot_base as pbase, plot_templates as pnl
+from redvox.common.data_window import DataWindow, EventOrigin
+from redvox.common.data_window import DataWindowConfig
+import redvox.common.date_time_utils as dt
+
 from redpandas.redpd_df import redpd_dataframe, export_df_to_parquet
 from redpandas.redpd_plot.wiggles import plot_wiggles_pandas
 import redpandas.redpd_tfr as rpd_tfr
@@ -10,20 +21,8 @@ from redpandas.redpd_plot.mesh import plot_mesh_pandas
 import redpandas.redpd_dq as rpd_dq
 from redpandas.redpd_preprocess import df_column_unflatten, df_unflatten
 
-# from redvox.common.data_window import DataWindow
-from redvox.common.data_window import DataWindow, EventOrigin
-from redvox.common.data_window import DataWindowConfig
-import redvox.common.date_time_utils as dt
 
-from quantum_inferno.plot_templates import plot_base as pbase, plot_templates as pnl
-
-import matplotlib.pyplot as plt
-import numpy as np
-import pandas as pd
-import pyarrow as pa
-import pyarrow.parquet as pq
-
-
+# note: INPUT_DIR applies to original developer
 INPUT_DIR = "/Users/meritxell/Documents/20210916_spacex/boom"
 # Note: Need RedPandas v1.2.12 to run
 

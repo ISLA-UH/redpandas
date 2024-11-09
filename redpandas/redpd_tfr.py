@@ -12,7 +12,6 @@ from quantum_inferno.utilities.calculations import get_num_points
 from quantum_inferno.styx_fft import stft_complex_pow2
 
 import redpandas.redpd_preprocess as rpd_prep
-from redpandas.redpd_preprocess import find_nearest_idx
 
 
 def stft_from_sig(sig_wf: np.ndarray,
@@ -42,8 +41,6 @@ def stft_from_sig(sig_wf: np.ndarray,
         output_unit="log2",
     )
     time_fft_nd: int = 2 ** ave_points_ceil_log2
-    if time_fft_nd > len(sig_wf):
-        time_fft_nd = len(sig_wf) // 2  # use integer division, set num points less than length of signal
     stft_scaling = 2 * np.sqrt(np.pi) / time_fft_nd
 
     tukey_alpha = 1.0
@@ -103,7 +100,7 @@ def frame_panda_no_offset(df: pd.DataFrame,
     aligned_wf = []
     aligned_epoch_s = []
     for n in df.index:
-        if sig_wf_label not in df.columns or type(df[sig_wf_label][n]) == float:
+        if sig_wf_label not in df.columns or isinstance(df[sig_wf_label][n], float):
             aligned_wf.append(float("NaN"))
             aligned_epoch_s.append(float("NaN"))
             continue
@@ -157,7 +154,7 @@ def frame_panda(df: pd.DataFrame,
     aligned_wf = []
     aligned_epoch_s = []
     for n in df.index:
-        if sig_wf_label not in df.columns or type(df[sig_wf_label][n]) == float:
+        if sig_wf_label not in df.columns or isinstance(df[sig_wf_label][n], float):
             aligned_wf.append(float("NaN"))
             aligned_epoch_s.append(float("NaN"))
             continue
@@ -249,14 +246,14 @@ def tfr_bits_panda_window(df: pd.DataFrame,
             else:
                 timestamps = df[sig_timestamps_label][n]
                 if start_time_window > 0.0 and end_time_window > 0.0:
-                    idx_time_start = find_nearest_idx(timestamps, start_time_window)
-                    idx_time_end = find_nearest_idx(timestamps, end_time_window)
+                    idx_time_start = rpd_prep.find_nearest_idx(timestamps, start_time_window)
+                    idx_time_end = rpd_prep.find_nearest_idx(timestamps, end_time_window)
                 elif start_time_window > 0.0 and end_time_window == 0.0:
-                    idx_time_start = find_nearest_idx(timestamps, start_time_window)
+                    idx_time_start = rpd_prep.find_nearest_idx(timestamps, start_time_window)
                     idx_time_end = -1
                 elif end_time_window > 0.0 and start_time_window == 0.0:
                     idx_time_start = 0
-                    idx_time_end = find_nearest_idx(timestamps, end_time_window)
+                    idx_time_end = rpd_prep.find_nearest_idx(timestamps, end_time_window)
                 else:
                     idx_time_start = 0
                     idx_time_end = -1

@@ -1,9 +1,9 @@
 """
 Configuration class for RedPandas.
 """
-import os
 import enum
-from typing import List, Optional, Dict, Union
+import os
+from typing import Dict, List, Optional, Union
 
 import pprint
 

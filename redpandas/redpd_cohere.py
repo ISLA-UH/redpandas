@@ -4,8 +4,9 @@ Calculate coherence.
 
 import numpy as np
 import pandas as pd
-from scipy import signal
 from quantum_inferno.utilities import log2epsilon
+from scipy import signal
+
 import redpandas.redpd_plot.coherence as rpd_plt
 
 
@@ -89,23 +90,12 @@ def coherence_numpy(sig_in: np.ndarray,
     frequency_ref_index = np.argmin(np.abs(f - frequency_ref_hz))
     frequency_coherence_max_index = np.argmax(cxy)
 
-    calmag = mag[frequency_ref_index]
-    calph = ph[frequency_ref_index]
-    calcoh = cxy[frequency_ref_index]
-    maxcoh_f = f[frequency_coherence_max_index]
-    maxcoh = cxy[frequency_coherence_max_index]
-
-    calflab = '%s, %.2f Hz' % ('Ref frequency', frequency_ref_hz)
-    calmaglab = 'Mag=%.2f' % calmag
-    calphlab = 'Phase=%.2f' % calph
-    calcohlab = 'Coherence=%.2f' % calcoh
-
-    print(calflab)
-    print(calmaglab)
-    print(calphlab)
-    print(calcohlab)
+    print(f"Ref frequency, {frequency_ref_hz:.2f} Hz")
+    print(f"Mag={mag[frequency_ref_index]:.2f}")
+    print(f"Phase={ph[frequency_ref_index]:.2f}")
+    print(f"Coherence={cxy[frequency_ref_index]:.2f}")
     print('Max coherence frequency, level:')
-    print(maxcoh_f, maxcoh)
+    print(f[frequency_coherence_max_index], cxy[frequency_coherence_max_index])
 
     rpd_plt.plot_psd_coh(psd_sig=psd_sig_bits, psd_ref=psd_ref_bits,
                          coherence_sig_ref=cxy,
@@ -176,8 +166,8 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
     :return: input pandas dataframe with new columns
     """
     number_sig = len(df.index)
-    print("Coherence, number of signals excluding reference:", number_sig-1)
-    print("Reference station: ", ref_id)
+    print(f"Coherence, number of signals excluding reference: {number_sig - 1}")
+    print(f"Reference station: {ref_id}")
 
     # Is there a better way?
     m_list = df.index[df[sig_id_label] == ref_id]
@@ -192,7 +182,7 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
     coherence_response_phase_degrees = []
 
     if m is not None:
-        print("Coherence Reference station ", df[sig_id_label][m])
+        print(f"Coherence Reference station {df[sig_id_label][m]}")
         sig_m = np.copy(df[sig_wf_label][m]) * sig_ref_calib
 
         for n in df.index:
@@ -247,20 +237,27 @@ def coherence_re_ref_pandas(df: pd.DataFrame,
             frequency_ref_index = np.argmin(np.abs(frequency_coherence - frequency_ref_hz))
             frequency_coherence_max_index = np.argmax(coherence_welch)
 
+            """
+            Code not used, commented for future use.
+            
             # New magnitude_norm and phase values at coherence frequency closest to ref frequency
             ref_frequency_hz = frequency_coherence[frequency_coherence_max_index]
             ref_frequency_coherence = coherence_welch[frequency_ref_index]
-            ref_frequency_response_magnitude_bits = 0.5*to_log2_with_epsilon(magnitude_norm[frequency_ref_index])
+            ref_frequency_response_magnitude_bits = 0.5 * to_log2_with_epsilon(magnitude_norm[frequency_ref_index])
             ref_frequency_response_phase_degrees = phase_degrees[frequency_ref_index]
 
             # Return max coherence values
             max_coherence_frequency_hz = frequency_coherence[frequency_coherence_max_index]
             max_coherence = np.max(coherence_welch)
-            max_coherence_response_magnitude_bits = 0.5*to_log2_with_epsilon(magnitude_norm[frequency_coherence_max_index])
+            max_coherence_response_magnitude_bits = (
+                    0.5 * to_log2_with_epsilon(magnitude_norm[frequency_coherence_max_index]))
             max_coherence_response_phase_degrees = phase_degrees[frequency_coherence_max_index]
 
             if n == m:
                 max_coherence_frequency_hz = np.nan
+            
+            # end unused values section
+            """
 
             if 'max_coherence' == export_option:
                 # Return max coherence values

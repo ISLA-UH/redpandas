@@ -3,10 +3,11 @@ Calculate correlation.
 """
 
 import numpy as np
+from typing import Tuple
+
+import matplotlib.pyplot as plt
 import pandas as pd
 from scipy import signal
-import matplotlib.pyplot as plt
-from typing import Tuple
 
 
 def find_nearest(array: np.ndarray, value: any) -> np.ndarray:
@@ -21,10 +22,9 @@ def find_nearest(array: np.ndarray, value: any) -> np.ndarray:
     return np.argmin(np.abs(np.ceil(array[None].T - value)), axis=0)
 
 
-# todo: type hints, figure out return value if any
-def plot_square(xnorm_max,
-                xoffset_s,
-                xoffset_points,
+def plot_square(xnorm_max: np.ndarray,
+                xoffset_s: np.ndarray,
+                xoffset_points: np.ndarray,
                 sig_descriptor: str = "Signal"):
     """
     Plot cross-correlation results
@@ -38,21 +38,20 @@ def plot_square(xnorm_max,
     fig, ax = plt.subplots()
     im = ax.imshow(xnorm_max, cmap=color_map, origin='lower')
     fig.colorbar(im)
-    ax.set_title(sig_descriptor + ' max cross-correlation in the time domain')
+    ax.set_title(f"{sig_descriptor} max cross-correlation in the time domain")
 
     fig, ax = plt.subplots()
     im = ax.imshow(xoffset_s, cmap=color_map, origin='lower')
     fig.colorbar(im)
-    ax.set_title(sig_descriptor + ' cross-correlation offset in s')
+    ax.set_title(f"{sig_descriptor} cross-correlation offset in s")
 
     fig, ax = plt.subplots()
     im = ax.imshow(xoffset_points, cmap=color_map, origin='lower')
     fig.colorbar(im)
-    ax.set_title(sig_descriptor + ' cross-correlation offset in points')
+    ax.set_title(f"{sig_descriptor} cross-correlation offset in points")
 
 
-# todo: type hints
-def most_similar_station_index(xnorm_max) -> Tuple[int, float]:
+def most_similar_station_index(xnorm_max: np.ndarray) -> Tuple[int, float]:
     """
     Sums over column, subtract self xcorr (1), divides by number of stations - 1
 
@@ -84,7 +83,7 @@ def xcorr_pandas(df: pd.DataFrame,
     :return: xcorr normalized, offset in seconds, and offset points
     """
     number_sig = len(df.index)
-    print("Number of signals:", number_sig)
+    print(f"Number of signals: {number_sig}")
 
     # Initialize
     xcorr_offset_points = np.zeros((number_sig, number_sig))
@@ -120,7 +119,7 @@ def xcorr_pandas(df: pd.DataFrame,
                     xcorr_indexes = np.arange(-int(n_points / 2), int(n_points / 2) + (n_points % 2))
                     xcorr = signal.correlate(sig_m, sig_n, mode='same')
                 else:
-                    print('One of the waveforms is broken')
+                    print("One of the waveforms is broken")
                     continue
                 # Normalize
                 xcorr /= np.sqrt(n_points * m_points) * sig_n.std() * sig_m.std()
@@ -144,10 +143,10 @@ def xcorr_re_ref_pandas(df: pd.DataFrame,
                         fs_fractional_tolerance: float = 0.02,
                         abs_xcorr: bool = True,
                         return_xcorr_full: bool = False,
-                        new_column_label_xcorr_offset_points: str = 'xcorr_offset_points',
-                        new_column_label_xcorr_offset_seconds: str = 'xcorr_offset_seconds',
-                        new_column_label_xcorr_normalized_max: str = 'xcorr_normalized_max',
-                        new_column_label_xcorr_full_array: str = 'xcorr_full') -> pd.DataFrame:
+                        new_column_label_xcorr_offset_points: str = "xcorr_offset_points",
+                        new_column_label_xcorr_offset_seconds: str = "xcorr_offset_seconds",
+                        new_column_label_xcorr_normalized_max: str = "xcorr_normalized_max",
+                        new_column_label_xcorr_full_array: str = "xcorr_full") -> pd.DataFrame:
     """
     Returns new pandas columns per station with cross-correlation results relative to a reference station
 
@@ -166,7 +165,7 @@ def xcorr_re_ref_pandas(df: pd.DataFrame,
     :return: input dataframe with new columns
     """
     number_sig = len(df.index)
-    print("XCORR Number of signals:", number_sig)
+    print(f"XCORR Number of signals: {number_sig}")
     m_list = df.index[df[sig_id_label] == ref_id_label]
     m = m_list[0]
     if len(m_list) > 1:
@@ -177,12 +176,12 @@ def xcorr_re_ref_pandas(df: pd.DataFrame,
     xcorr_normalized_max = []
     xcorr_full = []
     if m is not None:
-        print("XCORR Reference station ", df[sig_id_label][m])
+        print(f"XCORR Reference station {df[sig_id_label][m]}")
         sig_m = np.copy(df[sig_wf_label][m])
         m_points = len(sig_m)
         for n in df.index:
             sample_rate_condition = np.abs(df[sig_sample_rate_label][m] - df[sig_sample_rate_label][n]) \
-                                    > fs_fractional_tolerance*df[sig_sample_rate_label][m]
+                                    > fs_fractional_tolerance * df[sig_sample_rate_label][m]
             if sample_rate_condition:
                 print("Sample rates out of tolerance")
                 continue
@@ -205,7 +204,7 @@ def xcorr_re_ref_pandas(df: pd.DataFrame,
                     xcorr_indexes = np.arange(-int(n_points / 2), int(n_points / 2) + (n_points % 2))
                     xcorr = signal.correlate(sig_m, sig_n, mode='same')
                 else:
-                    print('One of the waveforms is broken')
+                    print("One of the waveforms is broken")
                     continue
                 # Normalize
                 xcorr /= np.sqrt(n_points * m_points) * sig_n.std() * sig_m.std()
@@ -228,7 +227,7 @@ def xcorr_re_ref_pandas(df: pd.DataFrame,
         if return_xcorr_full:
             df[new_column_label_xcorr_full_array] = xcorr_full
     else:
-        raise ValueError('ERROR: Incorrect reference station id')
+        raise ValueError("ERROR: Incorrect reference station id")
     return df
 
 
@@ -241,13 +240,13 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
                             sig_tfr_frequency_low_hz_label: str,
                             sig_tfr_frequency_high_hz_label: str,
                             return_xcorr_full: bool = False,
-                            new_column_label_xcorr_offset_points: str = 'spectcorr_offset_points',
-                            new_column_label_xcorr_offset_seconds: str = 'spectcorr_offset_seconds',
-                            new_column_label_xcorr_normalized_max: str = 'spectcorr_normalized_max',
-                            new_column_label_xcorr_peak_frequency_hz: str = 'spectcorr_peak_frequency_hz',
-                            new_column_label_xcorr_full_array: str = 'spectcorr_full',
-                            new_column_label_xcorr_full_per_band: str = 'spectcorr_per_band_full',
-                            new_column_label_xcorr_full_frequency_hz: str = 'spectcorr_frequency_hz') -> pd.DataFrame:
+                            new_column_label_xcorr_offset_points: str = "spectcorr_offset_points",
+                            new_column_label_xcorr_offset_seconds: str = "spectcorr_offset_seconds",
+                            new_column_label_xcorr_normalized_max: str = "spectcorr_normalized_max",
+                            new_column_label_xcorr_peak_frequency_hz: str = "spectcorr_peak_frequency_hz",
+                            new_column_label_xcorr_full_array: str = "spectcorr_full",
+                            new_column_label_xcorr_full_per_band: str = "spectcorr_per_band_full",
+                            new_column_label_xcorr_full_frequency_hz: str = "spectcorr_frequency_hz") -> pd.DataFrame:
     """
     Returns new pandas columns per station with spectral correlation results relative to a reference station
 
@@ -271,7 +270,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
     """
     # Have to learn how to use/validate correlate2D
     number_sig = len(df.index)
-    print("SPECTCORR number of signals:", number_sig)
+    print(f"SPECTCORR number of signals: {number_sig}")
     # M is the reference station
     m_list = df.index[df[sig_id_label] == ref_id_label]
     m = m_list[0]
@@ -291,7 +290,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
     xcorr_full_frequency = []
 
     if m is not None:
-        print("XCORR Reference station ", df[sig_id_label][m])
+        print(f"XCORR Reference station {df[sig_id_label][m]}")
         # Extract the passband of interest
         ref_tfr_m = np.copy(df[sig_tfr_label][m])[freq_index_low:freq_index_high, :]
         spect_corr_frequency = np.copy(df[sig_tfr_frequency_label][m])[freq_index_low:freq_index_high]
@@ -311,10 +310,10 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
             sig_tfr_n = np.copy(df[sig_tfr_label][n])[freq_index_low:freq_index_high, :]
             n_rows, n_columns = sig_tfr_n.shape
             if n_rows != ref_rows:
-                print("TFR does not have the same frequency dimensions:", df[sig_id_label][n])
+                print(f"TFR does not have the same frequency dimensions: {df[sig_id_label][n]}")
                 continue
             if n_columns != ref_columns:
-                print("TFR does not have the same time grid dimensions:", df[sig_id_label][n])
+                print(f"TFR does not have the same time grid dimensions: {df[sig_id_label][n]}")
                 continue
             # Frequency-by-frequency
             spect_corr = np.zeros(xcorr_index_mat.shape)
@@ -333,7 +332,7 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
             # Main export parameters
             xcorr_normalized_max.append(spect_xcorr_normalized_max)
             xcorr_offset_points.append(xcorr_index_mat[frequency_index, time_index])
-            xcorr_offset_seconds.append(xcorr_index_mat[frequency_index, time_index]/df[sig_sample_rate_label][n])
+            xcorr_offset_seconds.append(xcorr_index_mat[frequency_index, time_index] / df[sig_sample_rate_label][n])
             xcorr_peak_frequency_hz.append(spect_corr_frequency[frequency_index])
             if return_xcorr_full:
                 xcorr_full.append(spect_corr)
@@ -350,5 +349,5 @@ def spectcorr_re_ref_pandas(df: pd.DataFrame,
             df[new_column_label_xcorr_full_per_band] = xcorr_full_per_band
             df[new_column_label_xcorr_full_frequency_hz] = xcorr_full_frequency
     else:
-        raise ValueError('ERROR: Incorrect reference station id')
+        raise ValueError("ERROR: Incorrect reference station id")
     return df

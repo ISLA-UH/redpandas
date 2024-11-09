@@ -3,13 +3,13 @@ Module to facilitate reports
 """
 from typing import Tuple
 
-import pandas as pd
 from matplotlib.figure import Figure
+import pandas as pd
 
-import redpandas.redpd_tfr as rpd_tfr
-from redpandas import redpd_scales as rpd_scales
 from redpandas.redpd_plot.mesh import plot_mesh_pandas
 from redpandas.redpd_plot.wiggles import plot_wiggles_pandas, plot_wiggles_3c_pandas
+from redpandas import redpd_scales as rpd_scales
+import redpandas.redpd_tfr as rpd_tfr
 
 
 def plot_wiggles_pandas_audio(df: pd.DataFrame,
@@ -66,8 +66,8 @@ def plot_wiggles_pandas_acc(df: pd.DataFrame,
     :return: matplotlib figure instance x3
     """
     figs = plot_wiggles_3c_pandas(df=df,
-                                  sig_wf_label='accelerometer_wf_highpass',
-                                  sig_timestamps_label='accelerometer_epoch_s',
+                                  sig_wf_label="accelerometer_wf_highpass",
+                                  sig_timestamps_label="accelerometer_epoch_s",
                                   fig_title="Normalized Signals for Accelerometer",
                                   show_figure=False,
                                   start_time_window=start_time_window,
@@ -87,8 +87,8 @@ def plot_wiggles_pandas_gyr(df: pd.DataFrame,
     :return: matplotlib figure instance x3
     """
     figs = plot_wiggles_3c_pandas(df=df,
-                                  sig_wf_label='gyroscope_wf_highpass',
-                                  sig_timestamps_label='gyroscope_epoch_s',
+                                  sig_wf_label="gyroscope_wf_highpass",
+                                  sig_timestamps_label="gyroscope_epoch_s",
                                   fig_title="Normalized Signals for Gyroscope",
                                   show_figure=False,
                                   start_time_window=start_time_window,
@@ -108,8 +108,8 @@ def plot_wiggles_pandas_mag(df: pd.DataFrame,
     :return: matplotlib figure instance x3
     """
     figs = plot_wiggles_3c_pandas(df=df,
-                                  sig_wf_label='magnetometer_wf_highpass',
-                                  sig_timestamps_label='magnetometer_epoch_s',
+                                  sig_wf_label="magnetometer_wf_highpass",
+                                  sig_timestamps_label="magnetometer_epoch_s",
                                   fig_title="Normalized Signals for Magnetometer",
                                   show_figure=False,
                                   start_time_window=start_time_window,

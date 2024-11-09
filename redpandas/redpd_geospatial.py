@@ -3,10 +3,11 @@ Functions to extract and process geospatial data.
 """
 
 import os
+from typing import Any
+
 import numpy as np
 import pandas as pd
 import pymap3d as pm
-from typing import Any
 
 from redpandas.redpd_scales import EPSILON, NANOS_TO_S, DEGREES_TO_METERS, PRESSURE_SEA_LEVEL_KPA
 
@@ -24,18 +25,18 @@ def redvox_loc(df_pqt_path: str) -> pd.DataFrame:
         raise FileNotFoundError(f"Input file does not exist, check path: {df_pqt_path}")
 
     df = pd.read_parquet(df_pqt_path)
-    print('Read parquet with pandas DataFrame')
+    print("Read parquet with pandas DataFrame")
 
     # Extract selected fields
-    loc_fields = ['station_id',
-                  'location_epoch_s',
-                  'location_latitude',
-                  'location_longitude',
-                  'location_altitude',
-                  'location_speed',
-                  'location_horizontal_accuracy',
-                  'barometer_epoch_s',
-                  'barometer_wf_raw']
+    loc_fields = ["station_id",
+                  "location_epoch_s",
+                  "location_latitude",
+                  "location_longitude",
+                  "location_altitude",
+                  "location_speed",
+                  "location_horizontal_accuracy",
+                  "barometer_epoch_s",
+                  "barometer_wf_raw"]
     df_loc = df[loc_fields]
 
     return df_loc
@@ -56,22 +57,21 @@ def bounder_data(path_bounder_csv: str, file_bounder_csv: str, file_bounder_parq
     rows = np.arange(5320, 7174)
 
     input_path = os.path.join(path_bounder_csv, file_bounder_csv)
-    print('Input', input_path)
+    print(f"Input {input_path}")
     output_path = os.path.join(path_bounder_csv, file_bounder_parquet)
 
     df = pd.read_csv(input_path, usecols=[5, 6, 7, 8, 9, 10, 11], skiprows=lambda x: x not in rows,
-                     names=['Pres_kPa', 'Temp_C', 'Batt_V', 'Lon_deg', 'Lat_deg', 'Alt_m', 'Time_hhmmss'])
-    dtime = pd.to_datetime(yyyymmdd + df['Time_hhmmss'], origin='unix')
+                     names=["Pres_kPa", "Temp_C", "Batt_V", "Lon_deg", "Lat_deg", "Alt_m", "Time_hhmmss"])
+    dtime = pd.to_datetime(yyyymmdd + df["Time_hhmmss"], origin="unix")
 
     # Convert datetime to unix nanoseconds, then to seconds
-    # dtime_unix_s = dtime.astype('int64')*NANOS_TO_S  # Deprecated
-    dtime_unix_s = dtime.view('int64')*NANOS_TO_S  # Python 3.9
+    dtime_unix_s = dtime.view("int64") * NANOS_TO_S  # Python 3.9
 
-    skyfall_bounder_loc = df.filter(['Lat_deg', 'Lon_deg', 'Alt_m', 'Pres_kPa', 'Temp_C', 'Batt_V'])
-    skyfall_bounder_loc.insert(0, 'Epoch_s', dtime_unix_s)
-    skyfall_bounder_loc.insert(1, 'Datetime', dtime)
+    skyfall_bounder_loc = df.filter(["Lat_deg", "Lon_deg", "Alt_m", "Pres_kPa", "Temp_C", "Batt_V"])
+    skyfall_bounder_loc.insert(0, "Epoch_s", dtime_unix_s)
+    skyfall_bounder_loc.insert(1, "Datetime", dtime)
 
-    print(skyfall_bounder_loc['Epoch_s'])
+    print(skyfall_bounder_loc["Epoch_s"])
     # Save to parquet
     skyfall_bounder_loc.to_parquet(output_path)
 
@@ -97,7 +97,7 @@ def compute_t_xyz_uvw(unix_s: Any,
                       ref_lat_deg: Any,
                       ref_lon_deg: Any,
                       ref_alt_m: Any,
-                      geodetic_type: str = 'enu') -> pd.DataFrame:
+                      geodetic_type: str = "enu") -> pd.DataFrame:
     """
     Compute time and location relative to a reference value; compute speed.
 
@@ -110,12 +110,12 @@ def compute_t_xyz_uvw(unix_s: Any,
     :param ref_lon_deg: observer geodetic longitude
     :param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
     :param geodetic_type: 'enu' or 'ned'
-    :return: pandas DataFrame with columns: {'T_s', 'X_m', 'Y_m', 'Z_m', 'U_mps', 'V_mps', 'W_mps', 'Speed_mps'}
+    :return: pandas DataFrame with columns: {"T_s", "X_m", "Y_m", "Z_m", "U_mps", "V_mps", "W_mps", "Speed_mps"}
     """
-    if geodetic_type == 'enu':
+    if geodetic_type == "enu":
         x_m, y_m, z_m = pm.geodetic2enu(lat=lat_deg, lon=lon_deg, h=alt_m,
                                         lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
-    elif geodetic_type == 'ned':
+    elif geodetic_type == "ned":
         y_m, x_m, z_m = pm.geodetic2ned(lat=lat_deg, lon=lon_deg, h=alt_m,
                                         lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
     else:
@@ -130,14 +130,14 @@ def compute_t_xyz_uvw(unix_s: Any,
     w_mps = np.gradient(z_m) / (np.gradient(t_s)+EPSILON)
     speed_mps = np.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
 
-    t_xyzuvw_s_m = pd.DataFrame(data={'T_s': t_s,
-                                      'X_m': x_m,
-                                      'Y_m': y_m,
-                                      'Z_m': z_m,
-                                      'U_mps': u_mps,
-                                      'V_mps': v_mps,
-                                      'W_mps': w_mps,
-                                      'Speed_mps': speed_mps})
+    t_xyzuvw_s_m = pd.DataFrame(data={"T_s": t_s,
+                                      "X_m": x_m,
+                                      "Y_m": y_m,
+                                      "Z_m": z_m,
+                                      "U_mps": u_mps,
+                                      "V_mps": v_mps,
+                                      "W_mps": w_mps,
+                                      "Speed_mps": speed_mps})
     return t_xyzuvw_s_m
 
 
@@ -149,7 +149,7 @@ def compute_t_r_z_speed(unix_s: Any,
                         ref_lat_deg: Any,
                         ref_lon_deg: Any,
                         ref_alt_m: Any,
-                        geodetic_type: str = 'enu') -> pd.DataFrame:
+                        geodetic_type: str = "enu") -> pd.DataFrame:
     """
     Compute time and location relative to a reference value; compute speed.
 
@@ -161,13 +161,13 @@ def compute_t_r_z_speed(unix_s: Any,
     :param ref_lat_deg: observer geodetic latitude
     :param ref_lon_deg: observer geodetic longitude
     :param ref_alt_m: observer altitude above geodetic ellipsoid (meters)
-    :param geodetic_type: 'enu' or 'ned'
-    :return: pandas DataFrame with columns: {'Elapsed_s', 'Range_m', 'Z_m', 'LatLon_speed_mps'}
+    :param geodetic_type: "enu" or "ned"
+    :return: pandas DataFrame with columns: {"Elapsed_s", "Range_m", "Z_m", "LatLon_speed_mps"}
     """
-    if geodetic_type == 'enu':
+    if geodetic_type == "enu":
         x_m, y_m, z_m = pm.geodetic2enu(lat=lat_deg, lon=lon_deg, h=alt_m,
                                         lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
-    elif geodetic_type == 'ned':
+    elif geodetic_type == "ned":
         y_m, x_m, z_m = pm.geodetic2ned(lat=lat_deg, lon=lon_deg, h=alt_m,
                                         lat0=ref_lat_deg, lon0=ref_lon_deg, h0=ref_alt_m)
     else:
@@ -182,8 +182,8 @@ def compute_t_r_z_speed(unix_s: Any,
     w_mps = np.gradient(z_m) / (np.gradient(t_s)+EPSILON)
     range_m = np.sqrt(x_m**2 + y_m**2)
     speed_mps = np.ma.sqrt(u_mps**2 + v_mps**2 + w_mps**2)
-    time_range_z_speed_s_m = pd.DataFrame(data={'Elapsed_s': t_s,
-                                                'Range_m': range_m,
-                                                'Z_m': z_m,
-                                                'LatLon_speed_mps': speed_mps})
+    time_range_z_speed_s_m = pd.DataFrame(data={"Elapsed_s": t_s,
+                                                "Range_m": range_m,
+                                                "Z_m": z_m,
+                                                "LatLon_speed_mps": speed_mps})
     return time_range_z_speed_s_m

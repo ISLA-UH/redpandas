@@ -3,24 +3,23 @@ Iterators used in redpd_preprocess.
 """
 
 import numpy as np
-from typing import Tuple, Iterator
+from typing import Iterator, Tuple
 
 # RC filter response: mag first contribution to stack overflow as slipstream
 # https://stackoverflow.com/questions/62448904/how-to-implement-continuous-time-high-low-pass-filter-in-python
 
 
-# todo: put types onto the variables
-def rc_high_pass(x_new,
-                 x_old,
-                 y_old,
+def rc_high_pass(x_new: float,
+                 x_old: int,
+                 y_old: int,
                  sample_rate_hz: int,
                  frequency_cut_low_hz: float) -> float:
     """
     High pass RC filter
 
-    :param x_new: new x
-    :param x_old: old x
-    :param y_old: old y
+    :param x_new: new x value
+    :param x_old: old x value
+    :param y_old: old y value
     :param sample_rate_hz: sample rate in Hz
     :param frequency_cut_low_hz: low cutoff frequency in Hz
     :return: new y
@@ -29,19 +28,18 @@ def rc_high_pass(x_new,
     return (rc / (rc + (1. / sample_rate_hz))) * (y_old + x_new - x_old)
 
 
-# todo: put types onto the variables
-def rc_low_pass(x_new,
-                y_old,
+def rc_low_pass(x_new: float,
+                y_old: int,
                 sample_rate_hz: int,
                 frequency_cut_high_hz: float) -> float:
     """
     Low pass RC filter
 
-    :param x_new: new x
-    :param y_old: old y
+    :param x_new: new x value
+    :param y_old: old y value
     :param sample_rate_hz: sample rate in Hz
     :param frequency_cut_high_hz: high cutoff frequency in Hz
-    :return: new y
+    :return: new y value
     """
     sample_interval_s = 1. / sample_rate_hz
     alpha = sample_interval_s / ((1. / (2. * np.pi * frequency_cut_high_hz)) + sample_interval_s)

@@ -11,7 +11,7 @@ class TestFindWiggleNumTfr(unittest.TestCase):
         self.start_time = 0
         self.end_time = 10
         self.sample_rate_audio = 100
-        self.signal_time_audio = np.arange(self.start_time, self.end_time, 1/self.sample_rate_audio)
+        self.signal_time_audio = np.arange(self.start_time, self.end_time, 1 / self.sample_rate_audio)
         self.frequency = 3
         self.amplitude = 1
         self.sinewave_audio = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_audio)

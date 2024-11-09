@@ -8,6 +8,7 @@ from typing import List, Optional
 import numpy as np
 import pandas as pd
 from redvox.common.data_window import DataWindow
+
 import redpandas.redpd_build_station as rpd_build_sta
 import redpandas.redpd_scales as rpd_scales
 
@@ -94,7 +95,7 @@ def export_df_to_parquet(df: pd.DataFrame,
                 break
     # Make filename if not given
     if output_filename_pqt is None:
-        output_filename_pqt: str = event_name + "_df.parquet"
+        output_filename_pqt: str = f"{event_name}_df.parquet"
     elif output_filename_pqt.find(".parquet") == -1 and output_filename_pqt.find(".pqt") == -1:
         output_filename_pqt += ".parquet"
 
