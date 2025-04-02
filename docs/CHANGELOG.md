@@ -1,5 +1,8 @@
 ## RedVox Pandas (RedPandas) Version History
 
+## 1.5.1 (2025-01-09)
+- Updated project requirements
+
 ## 1.5.0 (2024-11-12)
 - Remove libquantum dependency in favor of quantum-inferno dependency
 

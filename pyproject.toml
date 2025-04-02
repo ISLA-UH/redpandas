@@ -11,17 +11,17 @@ description = "Library to streamline preprocessing of RedVox API 900 and API 100
 readme = "README.md"
 requires-python = ">=3.8"
 license = { file = "LICENSE" }
-version = "1.5.0"
+version = "1.5.1"
 
 dependencies = [
-    "matplotlib==3.9.2",
-    "numpy==1.26.4",
-    "obspy==1.4.1",
-    "pandas==2.2.2",
-    "pymap3d==3.1.0",
-    "quantum-inferno==1.1.0",
-    "redvox==3.8.6",
-    "scipy==1.13.1",
+    "matplotlib>=3.10.0",
+    "numpy>=2.2.1",
+    "obspy>=1.4.1",
+    "pandas>=2.2.2",
+    "pymap3d>=3.1.0",
+    "quantum-inferno>=1.1.3",
+    "redvox>=3.8.6",
+    "scipy>=1.15.0",
 ]
 
 [project.urls]
