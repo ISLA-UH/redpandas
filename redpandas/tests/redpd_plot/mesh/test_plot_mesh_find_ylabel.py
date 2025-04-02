@@ -22,7 +22,7 @@ class TestFindYlabelTfr(unittest.TestCase):
                           frequency_sample_rate_hz=self.sample_rate_audio,
                           band_order_nth=3)
         # Create barometer
-        self.sample_rate_barometer = 31
+        self.sample_rate_barometer = 62
         self.signal_time_barometer = np.arange(self.start_time, self.end_time, 1/self.sample_rate_barometer)
         self.sinewave_barometer_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_barometer)
         self.sinewave_barometer = self.sinewave_barometer_base.reshape((1, len(self.sinewave_barometer_base)))
@@ -41,7 +41,7 @@ class TestFindYlabelTfr(unittest.TestCase):
             self.bar_stft_bits_all.append(self.bar_STFT_bits)
 
         # Create accelerometer
-        self.sample_rate_acc = 30
+        self.sample_rate_acc = 240
         self.signal_time_acc = np.arange(self.start_time, self.end_time, 1/(self.sample_rate_acc/3))
         self.length_for_signal = np.arange(self.start_time, self.end_time, 1/self.sample_rate_acc)
         self.sinewave_acc_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.length_for_signal)
@@ -205,7 +205,7 @@ class TestFindYlabelTfrIrregular(unittest.TestCase):
                           frequency_sample_rate_hz=self.sample_rate_audio,
                           band_order_nth=3)
         # Create barometer
-        self.sample_rate_barometer = 31
+        self.sample_rate_barometer = 62
         self.signal_time_barometer = np.arange(self.start_time, self.end_time, 1/self.sample_rate_barometer)
         self.sinewave_barometer_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.signal_time_barometer)
         self.sinewave_barometer = self.sinewave_barometer_base.reshape((1, len(self.sinewave_barometer_base)))
@@ -224,7 +224,7 @@ class TestFindYlabelTfrIrregular(unittest.TestCase):
             self.bar_stft_bits_all.append(self.bar_STFT_bits)
 
         # Create accelerometer
-        self.sample_rate_acc = 30
+        self.sample_rate_acc = 240
         self.signal_time_acc = np.arange(self.start_time, self.end_time, 1/(self.sample_rate_acc/3))
         self.length_for_signal = np.arange(self.start_time, self.end_time, 1/self.sample_rate_acc)
         self.sinewave_acc_base = self.amplitude * np.sin(2 * np.pi * self.frequency * self.length_for_signal)
